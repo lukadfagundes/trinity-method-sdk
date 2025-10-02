@@ -1,0 +1,35 @@
+#!/bin/bash
+# Trinity Method - Prevent Git Operations Hook
+# Blocks git commands per Trinity Method protocol
+
+echo ""
+echo "════════════════════════════════════════════════════════════"
+echo "    TRINITY METHOD - GIT OPERATION BLOCKED"
+echo "════════════════════════════════════════════════════════════"
+echo ""
+echo "❌ Git operations are restricted per Trinity Method protocol"
+echo ""
+echo "**Why?**"
+echo "  Trinity Method enforces investigation-first development."
+echo "  Git operations should only occur after proper review."
+echo ""
+echo "**What this means:**"
+echo "  - Code changes must be reviewed before commit"
+echo "  - Knowledge base must be updated first"
+echo "  - Session archives must be complete"
+echo ""
+echo "**To commit changes:**"
+echo "  1. Update trinity/knowledge-base/ documentation"
+echo "  2. Archive session to trinity/sessions/"
+echo "  3. Notify project lead for review"
+echo "  4. Project lead will handle git operations"
+echo ""
+echo "**Project:** {{PROJECT_NAME}}"
+echo "**Framework:** {{FRAMEWORK}}"
+echo "**Trinity Version:** {{TRINITY_VERSION}}"
+echo ""
+echo "════════════════════════════════════════════════════════════"
+echo ""
+
+# Block the git command
+exit 1

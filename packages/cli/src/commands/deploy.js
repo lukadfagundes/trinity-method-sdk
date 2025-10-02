@@ -311,7 +311,7 @@ export async function deploy(options) {
     spinner.succeed('Trinity Method structure created');
 
     // Prepare template variables
-    const templatesPath = path.join(__dirname, '../../../templates');
+    const templatesPath = path.join(__dirname, '../../templates');
     const pkg = JSON.parse(readFileSync(path.join(__dirname, '../../package.json'), 'utf8'));
     const variables = {
       PROJECT_NAME: projectName,

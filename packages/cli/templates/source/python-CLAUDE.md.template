@@ -1,0 +1,510 @@
+# CLAUDE.md - Python Technology-Specific Rules
+## {{PROJECT_NAME}} - Python Implementation
+
+**Framework:** {{FRAMEWORK}}
+**Language:** Python
+**Source Directory:** {{SOURCE_DIR}}
+**Package Manager:** pip/poetry/pipenv
+
+---
+
+## Technology Stack Behavioral Modifications
+
+### Python-Specific Requirements
+- **PEP 8 Compliance**: Follow PEP 8 style guide rigorously
+- **Type Hints**: Use type hints for all function signatures (PEP 484)
+- **Async/Await**: Use async/await for I/O-bound operations
+- **Virtual Environments**: Always use virtual environments (venv, virtualenv, conda)
+- **Context Managers**: Use context managers for resource management
+
+### Framework-Specific Adaptations
+- **Django**: Follow Django best practices and MVT pattern
+- **FastAPI**: Implement dependency injection and Pydantic models
+- **Flask**: Use blueprints for modular architecture
+- **Data Science**: Use NumPy/Pandas best practices for data processing
+
+---
+
+## Technology Debugging Standards
+
+### Python Debugging Framework
+```python
+# Standard debugging format for Python applications
+import logging
+import functools
+import time
+from typing import Any, Callable
+from datetime import datetime
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='[%(levelname)s] %(name)s.%(funcName)s - %(message)s'
+)
+
+class DebugLogger:
+    """Standard debugging logger for Trinity Method"""
+
+    def __init__(self, module_name: str):
+        self.logger = logging.getLogger(module_name)
+        self.module_name = module_name
+
+    def entry(self, func_name: str, params: dict[str, Any] | None = None) -> None:
+        """Log function entry"""
+        self.logger.debug(f"[ENTRY] {func_name}", extra={
+            'params': params or {},
+            'timestamp': datetime.now().isoformat(),
+            'module': self.module_name
+        })
+
+    def exit(self, func_name: str, result: Any, duration: float) -> None:
+        """Log function exit"""
+        self.logger.debug(f"[EXIT] {func_name}", extra={
+            'result': str(result)[:200],  # Truncate large results
+            'duration_ms': f"{duration * 1000:.2f}",
+            'timestamp': datetime.now().isoformat()
+        })
+
+    def error(self, func_name: str, error: Exception, context: dict[str, Any] | None = None) -> None:
+        """Log errors"""
+        self.logger.error(f"[ERROR] {func_name}", extra={
+            'error': str(error),
+            'error_type': type(error).__name__,
+            'context': context or {},
+            'timestamp': datetime.now().isoformat()
+        }, exc_info=True)
+
+
+# Decorator for automatic logging
+def debug_function(logger: DebugLogger) -> Callable:
+    """Decorator to automatically log function calls"""
+
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            start_time = time.time()
+            logger.entry(func.__name__, {'args': args, 'kwargs': kwargs})
+
+            try:
+                result = func(*args, **kwargs)
+                duration = time.time() - start_time
+                logger.exit(func.__name__, result, duration)
+                return result
+            except Exception as e:
+                logger.error(func.__name__, e, {'args': args, 'kwargs': kwargs})
+                raise
+
+        return wrapper
+
+    return decorator
+
+
+# Usage example
+logger = DebugLogger('UserService')
+
+@debug_function(logger)
+def get_user(user_id: str) -> dict[str, Any]:
+    """Fetch user by ID"""
+    # Implementation
+    return {"id": user_id, "name": "John Doe"}
+```
+
+---
+
+## Performance Optimization Rules
+
+### Python Performance Monitoring
+```python
+# Performance measurement utilities
+import time
+import cProfile
+import pstats
+from contextlib import contextmanager
+from typing import Generator
+
+class PerformanceMonitor:
+    """Performance monitoring utilities"""
+
+    @staticmethod
+    @contextmanager
+    def measure(operation_name: str) -> Generator[None, None, None]:
+        """Context manager for measuring operation duration"""
+        start_time = time.perf_counter()
+
+        try:
+            yield
+        finally:
+            duration = time.perf_counter() - start_time
+            print(f"[PERF] {operation_name}: {duration * 1000:.2f}ms")
+
+    @staticmethod
+    def profile(func: Callable) -> Callable:
+        """Decorator to profile function execution"""
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            profiler = cProfile.Profile()
+            profiler.enable()
+
+            result = func(*args, **kwargs)
+
+            profiler.disable()
+            stats = pstats.Stats(profiler)
+            stats.strip_dirs()
+            stats.sort_stats('cumulative')
+            print(f"\n[PROFILE] {func.__name__}")
+            stats.print_stats(10)  # Top 10 functions
+
+            return result
+
+        return wrapper
+
+
+# Usage
+with PerformanceMonitor.measure("database_query"):
+    users = db.query(User).all()
+
+@PerformanceMonitor.profile
+def expensive_operation():
+    # Implementation
+    pass
+```
+
+---
+
+## Security Best Practices
+
+### Input Validation
+```python
+# Input validation patterns
+from pydantic import BaseModel, EmailStr, validator, constr
+
+class UserInput(BaseModel):
+    """Validated user input model"""
+    email: EmailStr
+    username: constr(min_length=3, max_length=50)
+    password: constr(min_length=8)
+
+    @validator('password')
+    def password_strength(cls, v):
+        """Validate password strength"""
+        if not any(c.isupper() for c in v):
+            raise ValueError('Password must contain uppercase letter')
+        if not any(c.isdigit() for c in v):
+            raise ValueError('Password must contain digit')
+        return v
+
+
+# SQL injection prevention (use parameterized queries)
+from sqlalchemy import text
+
+# ❌ BAD: String concatenation
+query = f"SELECT * FROM users WHERE id = {user_id}"
+
+# ✅ GOOD: Parameterized query
+query = text("SELECT * FROM users WHERE id = :user_id")
+result = db.execute(query, {"user_id": user_id})
+```
+
+### Secure Configuration
+```python
+# Environment variable handling
+from pydantic import BaseSettings
+
+class Settings(BaseSettings):
+    """Application settings from environment"""
+    database_url: str
+    secret_key: str
+    api_key: str
+
+    class Config:
+        env_file = ".env"
+        case_sensitive = False
+
+settings = Settings()
+
+# Never log sensitive values
+logger.info(f"Database: {settings.database_url.split('@')[1]}")  # Hide credentials
+```
+
+---
+
+## Testing Requirements
+
+### pytest Patterns
+```python
+# Unit testing with pytest
+import pytest
+from unittest.mock import Mock, patch
+
+class TestUserService:
+    """Test suite for UserService"""
+
+    @pytest.fixture
+    def user_service(self):
+        """Fixture for UserService instance"""
+        return UserService()
+
+    @pytest.fixture
+    def mock_database(self):
+        """Fixture for mocked database"""
+        return Mock()
+
+    def test_get_user_success(self, user_service, mock_database):
+        """Test successful user retrieval"""
+        user_service.db = mock_database
+        mock_database.query.return_value.first.return_value = User(id="123", name="John")
+
+        user = user_service.get_user("123")
+
+        assert user is not None
+        assert user.id == "123"
+        assert user.name == "John"
+
+    def test_get_user_not_found(self, user_service, mock_database):
+        """Test user not found scenario"""
+        user_service.db = mock_database
+        mock_database.query.return_value.first.return_value = None
+
+        with pytest.raises(UserNotFoundException):
+            user_service.get_user("invalid")
+
+    @pytest.mark.asyncio
+    async def test_async_operation(self, user_service):
+        """Test async operations"""
+        result = await user_service.fetch_user_async("123")
+        assert result is not None
+```
+
+### Integration Testing
+```python
+# Integration testing with FastAPI/Django
+from fastapi.testclient import TestClient
+
+def test_api_endpoint():
+    """Test API endpoint"""
+    client = TestClient(app)
+
+    response = client.get("/api/users/123")
+
+    assert response.status_code == 200
+    assert response.json()["id"] == "123"
+```
+
+---
+
+## Framework Best Practices
+
+### FastAPI Pattern
+```python
+# FastAPI application structure
+from fastapi import FastAPI, Depends, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+logger = DebugLogger('FastAPI')
+
+class UserResponse(BaseModel):
+    id: str
+    name: str
+    email: str
+
+@app.get("/users/{user_id}", response_model=UserResponse)
+async def get_user(user_id: str, db: Database = Depends(get_database)):
+    """Get user by ID"""
+    start_time = time.time()
+    logger.entry('get_user', {'user_id': user_id})
+
+    try:
+        user = await db.users.find_one({"id": user_id})
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        duration = time.time() - start_time
+        logger.exit('get_user', user, duration)
+
+        return UserResponse(**user)
+    except Exception as e:
+        logger.error('get_user', e, {'user_id': user_id})
+        raise
+```
+
+### Django Pattern
+```python
+# Django view with logging
+from django.http import JsonResponse
+from django.views import View
+
+logger = DebugLogger('DjangoViews')
+
+class UserView(View):
+    """User view handler"""
+
+    @debug_function(logger)
+    def get(self, request, user_id):
+        """Get user by ID"""
+        try:
+            user = User.objects.get(id=user_id)
+            return JsonResponse({
+                'id': user.id,
+                'name': user.name,
+                'email': user.email
+            })
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+```
+
+---
+
+## Error Handling Patterns
+
+### Custom Exceptions
+```python
+# Custom exception hierarchy
+class ApplicationError(Exception):
+    """Base application exception"""
+
+    def __init__(self, message: str, status_code: int = 500, context: dict | None = None):
+        super().__init__(message)
+        self.message = message
+        self.status_code = status_code
+        self.context = context or {}
+
+class ValidationError(ApplicationError):
+    """Validation error"""
+
+    def __init__(self, message: str, context: dict | None = None):
+        super().__init__(message, status_code=400, context=context)
+
+class DatabaseError(ApplicationError):
+    """Database operation error"""
+
+    def __init__(self, message: str, context: dict | None = None):
+        super().__init__(message, status_code=500, context=context)
+
+class NotFoundError(ApplicationError):
+    """Resource not found error"""
+
+    def __init__(self, message: str, context: dict | None = None):
+        super().__init__(message, status_code=404, context=context)
+```
+
+### Exception Handling
+```python
+# Comprehensive error handling
+async def safe_operation(operation: Callable, context: dict | None = None) -> Any:
+    """Execute operation with error handling"""
+    logger = DebugLogger('SafeOperation')
+
+    try:
+        return await operation()
+    except ValidationError as e:
+        logger.error('safe_operation', e, context)
+        raise
+    except DatabaseError as e:
+        logger.error('safe_operation', e, context)
+        # Retry logic or fallback
+        raise
+    except Exception as e:
+        logger.error('safe_operation', e, context)
+        raise ApplicationError(f"Unexpected error: {str(e)}", context=context)
+```
+
+---
+
+## Technology-Specific Command References
+
+### Development Commands
+```bash
+# Python Development
+python {{SOURCE_DIR}}/main.py          # Run application
+python -m {{SOURCE_DIR}}.main          # Run as module
+uvicorn main:app --reload              # FastAPI development
+python manage.py runserver             # Django development
+
+# Virtual Environment
+python -m venv venv                    # Create venv
+source venv/bin/activate               # Activate (Unix)
+venv\Scripts\activate                  # Activate (Windows)
+pip install -r requirements.txt        # Install dependencies
+```
+
+### Testing Commands
+```bash
+# Testing
+pytest                                  # Run tests
+pytest -v                              # Verbose output
+pytest --cov={{SOURCE_DIR}}            # Coverage report
+pytest -k "test_user"                  # Run specific tests
+pytest --pdb                           # Debug on failure
+```
+
+### Code Quality Commands
+```bash
+# Code Quality
+black {{SOURCE_DIR}}/                  # Format code
+flake8 {{SOURCE_DIR}}/                 # Lint code
+mypy {{SOURCE_DIR}}/                   # Type checking
+pylint {{SOURCE_DIR}}/                 # Comprehensive linting
+isort {{SOURCE_DIR}}/                  # Sort imports
+```
+
+---
+
+## Type Hints Best Practices
+
+### Comprehensive Type Annotations
+```python
+# Complete type hints
+from typing import List, Dict, Optional, Union, Callable, Any
+
+def process_users(
+    users: List[Dict[str, Any]],
+    filter_func: Optional[Callable[[Dict], bool]] = None,
+    limit: int = 100
+) -> List[Dict[str, Any]]:
+    """Process users with optional filtering"""
+    if filter_func:
+        users = [u for u in users if filter_func(u)]
+    return users[:limit]
+
+# Generic types
+from typing import TypeVar, Generic
+
+T = TypeVar('T')
+
+class Repository(Generic[T]):
+    """Generic repository pattern"""
+
+    def find_by_id(self, id: str) -> Optional[T]:
+        """Find entity by ID"""
+        pass
+
+    def find_all(self) -> List[T]:
+        """Find all entities"""
+        pass
+```
+
+---
+
+## Reference to Parent Context
+
+This file extends the Trinity Method protocols defined in `../trinity/CLAUDE.md` and global requirements from `../CLAUDE.md`. Python implementations must comply with:
+
+- Trinity Method investigation requirements
+- Global performance baselines
+- Quality gate standards
+- Crisis management protocols
+
+All Python code must implement the debugging frameworks, error handling patterns, and performance monitoring specified in this document.
+
+---
+
+**Technology Context**: Python Implementation
+**Parent References**:
+- `../CLAUDE.md` - Global project requirements
+- `../trinity/CLAUDE.md` - Trinity Method enforcement
+
+**Last Updated**: {{CURRENT_DATE}}
+**Trinity Version**: {{TRINITY_VERSION}}

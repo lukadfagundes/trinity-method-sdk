@@ -1,6 +1,6 @@
 {
   "name": "@trinity-method/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Trinity Method SDK - Structured AI-assisted development framework for Claude Code",
   "bin": {
     "trinity": "./src/index.js"

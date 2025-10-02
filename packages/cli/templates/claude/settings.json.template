@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "Stop": {
+      "*": "bash trinity-hooks/session-end-archive.sh"
+    },
+    "PreToolUse": {
+      "Bash(git commit:*)": "bash trinity-hooks/prevent-git.sh",
+      "Bash(git push:*)": "bash trinity-hooks/prevent-git.sh",
+      "Bash(git merge:*)": "bash trinity-hooks/prevent-git.sh",
+      "Bash(git checkout -b:*)": "bash trinity-hooks/prevent-git.sh",
+      "Bash(git branch:*)": "bash trinity-hooks/prevent-git.sh"
+    },
+    "PostToolUse": {
+      "Edit(trinity/knowledge-base/*)": "bash trinity-hooks/backup-knowledge.sh",
+      "Write(trinity/knowledge-base/*)": "bash trinity-hooks/backup-knowledge.sh"
+    }
+  }
+}

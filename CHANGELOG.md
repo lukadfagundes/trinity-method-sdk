@@ -5,6 +5,21 @@ All notable changes to Trinity Method SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-10-02
+
+### Fixed
+- **Critical:** Missing template files in npm package (only 9 of 36 were included)
+- Fixed file paths to use bundled templates instead of workspace structure
+- All `.md.template` files now properly included in published package
+- Updated `deploy.js` and `update.js` to reference correct template locations
+- Bundled agents and hooks directly into CLI package for standalone operation
+
+### Changed
+- Reorganized package structure to be self-contained when published to npm
+- Templates, agents, and hooks now bundled in `packages/cli/templates/`
+
+---
+
 ## [1.0.0] - 2025-10-01
 
 ### Added

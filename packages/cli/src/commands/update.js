@@ -75,30 +75,30 @@ export async function update(options) {
     }
 
     // Update SDK-managed files
-    const sdkPath = path.join(__dirname, '../../../');
+    const sdkPath = path.join(__dirname, '../../');
 
     // Update templates
-    const woDir = path.join(sdkPath, 'packages/templates/work-orders');
+    const woDir = path.join(sdkPath, 'templates/work-orders');
     if (await fs.pathExists(woDir) && !options.dryRun) {
       await fs.copy(woDir, 'trinity/templates', { overwrite: true });
     }
 
     // Update Trinity.md
-    const trinityMdTemplate = path.join(sdkPath, 'packages/templates/knowledge-base/Trinity.md.template');
+    const trinityMdTemplate = path.join(sdkPath, 'templates/knowledge-base/Trinity.md.template');
     if (await fs.pathExists(trinityMdTemplate) && !options.dryRun) {
       await fs.copy(trinityMdTemplate, 'trinity/knowledge-base/Trinity.md', { overwrite: true });
     }
 
     // Update agents
     if (await fs.pathExists('.claude/agents')) {
-      const agentSource = path.join(sdkPath, 'packages/agents/claude-code');
+      const agentSource = path.join(sdkPath, 'templates/agents/claude-code');
       if (await fs.pathExists(agentSource) && !options.dryRun) {
         await fs.copy(agentSource, '.claude/agents', { overwrite: true });
       }
     }
 
     // Update hooks
-    const hooksSource = path.join(sdkPath, 'packages/hooks');
+    const hooksSource = path.join(sdkPath, 'templates/hooks');
     if (await fs.pathExists(hooksSource) && !options.dryRun) {
       await fs.copy(hooksSource, 'trinity-hooks', { overwrite: true });
     }
