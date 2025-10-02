@@ -36,7 +36,7 @@ describe('update', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
     await fs.ensureDir('trinity');
-    await fs.writeFile('trinity/VERSION', '1.0.0');
+    await fs.writeFile('trinity/VERSION', '1.0.1');
 
     await update({ dryRun: true });
 
@@ -65,7 +65,7 @@ describe('update', () => {
     const output = calls.join('\n');
 
     expect(output).toContain('Current version: 0.9.0');
-    expect(output).toContain('Latest version: 1.0.0');
+    expect(output).toContain('Latest version: 1.0.1');
 
     consoleSpy.mockRestore();
   });
