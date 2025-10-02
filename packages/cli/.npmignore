@@ -39,3 +39,10 @@ work-orders/
 # OS
 Thumbs.db
 .DS_Store
+
+# Trinity Method deployment files
+.claude/
+trinity/
+trinity-hooks/
+CLAUDE.md
+TRINITY.md
