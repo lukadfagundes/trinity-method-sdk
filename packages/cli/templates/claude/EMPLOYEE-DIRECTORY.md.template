@@ -1,0 +1,299 @@
+# Trinity Method - Employee Directory
+**Project:** {{PROJECT_NAME}}
+**Framework:** {{FRAMEWORK}}
+**Trinity Version:** {{TRINITY_VERSION}}
+**Last Updated:** {{DEPLOYMENT_TIMESTAMP}}
+
+---
+
+## 👥 LEADERSHIP TEAM
+
+### Aly (Chief Technology Officer)
+**File:** [.claude/agents/leadership/trinity-cto.md](.claude/agents/leadership/trinity-cto.md)
+**Role:** Strategic leadership and investigation orchestration
+**Specialization:** Trinity Method v7.0 architecture, investigation-first methodology
+
+**When to Deploy:**
+- Complex architectural decisions
+- Investigation planning and work order creation
+- Strategic refactoring initiatives
+- Quality assurance reviews
+
+**To invoke ALY:**
+- Reference: "Please review `.claude/agents/leadership/aly-cto.md` for strategic guidance"
+- ALY provides strategic planning, architecture decisions, and investigation orchestration
+
+---
+
+### AJ (Implementation Lead)
+**File:** [.claude/agents/leadership/trinity-cc.md](.claude/agents/leadership/trinity-cc.md)
+**Role:** Tactical implementation and code execution
+**Specialization:** Work order execution, code implementation, testing
+
+**When to Deploy:**
+- Implementing approved work orders
+- Bug fixes and feature development
+- Code refactoring
+- Test suite creation
+
+**To invoke AJ:**
+- Reference: "Please review `.claude/agents/leadership/aj-cc.md` for implementation tasks"
+- AJ provides tactical implementation, code execution, and work order completion
+
+---
+
+## 🚀 DEPLOYMENT TEAM (4 Specialists)
+
+### TAN (Structure Specialist)
+**File:** [.claude/agents/deployment/tan-structure.md](.claude/agents/deployment/tan-structure.md)
+**Role:** Creates Trinity folder structure and technical debt baseline
+**Specialization:** Directory structures, baseline metrics, file organization
+
+**When to Deploy:**
+- Creating new Trinity structures
+- Initial technical debt baseline
+- Structure verification
+
+**To invoke TAN:**
+- Reference: "Please review `.claude/agents/deployment/tan-structure.md` for structure tasks"
+- TAN creates Trinity folder structures and establishes technical debt baselines
+
+---
+
+### ZEN (Knowledge Base Specialist)
+**File:** [.claude/agents/deployment/zen-knowledge.md](.claude/agents/deployment/zen-knowledge.md)
+**Role:** Maintains and enriches Trinity knowledge base documentation
+**Specialization:** Documentation quality, semantic codebase analysis
+
+**When to Deploy:**
+- Completing ARCHITECTURE.md with semantic analysis
+- Documentation updates and improvements
+- Pattern documentation
+- **Recommended after initial deployment to complete metrics**
+
+**To invoke ZEN:**
+- Reference: "Please review `.claude/agents/deployment/zen-knowledge.md` to complete ARCHITECTURE.md and Technical-Debt.md with full semantic analysis"
+- ZEN maintains and enriches Trinity knowledge base documentation
+
+---
+
+### INO (Context Specialist)
+**File:** [.claude/agents/deployment/ino-context.md](.claude/agents/deployment/ino-context.md)
+**Role:** Creates and maintains CLAUDE.md context hierarchy
+**Specialization:** Context file creation, behavioral requirements
+
+**When to Deploy:**
+- Updating project context documentation
+- Defining AI agent behavioral requirements
+- Context hierarchy maintenance
+
+**To invoke INO:**
+- Reference: "Please review `.claude/agents/deployment/ino-context.md` for context updates"
+- INO creates and maintains CLAUDE.md context hierarchy and behavioral requirements
+
+---
+
+### Ein (CI/CD Specialist)
+**File:** [.claude/agents/deployment/ein-cicd.md](.claude/agents/deployment/ein-cicd.md)
+**Role:** Continuous Integration/Continuous Deployment automation and optimization
+**Specialization:** GitHub Actions, GitLab CI, coverage providers, badge generation, workflow optimization
+
+**When to Deploy:**
+- Customizing CI/CD workflows beyond defaults
+- Setting up coverage providers (Codecov/Coveralls)
+- Injecting status badges into README
+- Troubleshooting CI/CD pipeline failures
+- Optimizing workflow execution time
+- **Recommended after basic CI/CD deployment**
+
+**To invoke Ein:**
+- Reference: "Please review `.claude/agents/deployment/ein-cicd.md` to customize CI/CD for [specific needs]"
+- Ein specializes in CI/CD automation, coverage providers, and workflow optimization
+
+---
+
+## 🔍 AUDIT TEAM
+
+### JUNO (Quality Auditor)
+**File:** [.claude/agents/audit/juno-auditor.md](.claude/agents/audit/juno-auditor.md)
+**Role:** Comprehensive code quality and Trinity deployment audits
+**Specialization:** Quality assurance, security audits, performance analysis
+
+**When to Deploy:**
+- Trinity deployment verification
+- Code quality audits
+- Security vulnerability scans
+- Performance bottleneck identification
+
+**To invoke JUNO:**
+- Reference: "Please review `.claude/agents/audit/juno-auditor.md` to audit Trinity Method deployment and code quality"
+- JUNO performs comprehensive code quality audits and Trinity deployment verification
+
+---
+
+## 📋 DEPLOYMENT WORKFLOWS
+
+### Initial Project Setup (Recommended)
+**1. Deploy Trinity Method:**
+```bash
+npx @trinity-method/cli deploy
+```
+
+**2. Complete knowledge base (optional but recommended):**
+- Reference: "Please review `.claude/agents/deployment/zen-knowledge.md` to complete ARCHITECTURE.md and Technical-Debt.md with full codebase analysis"
+
+**3. Verify deployment quality:**
+- Reference: "Please review `.claude/agents/audit/juno-auditor.md` to audit Trinity Method deployment"
+
+### Fast Deployment (Minimal)
+**Deploy without metrics:**
+```bash
+npx @trinity-method/cli deploy --skip-audit
+```
+
+**Complete manually when needed:**
+- Reference: "Please review `.claude/agents/deployment/zen-knowledge.md` for knowledge base completion"
+
+### Starting a New Feature
+**1. Investigation phase (Aly):**
+- Reference: "Please review `.claude/agents/leadership/aly-cto.md` to investigate [feature name] and create work order"
+
+**2. Implementation phase (AJ):**
+- Reference: "Please review `.claude/agents/leadership/aj-cc.md` to implement work order WO-XXX-[feature-name]"
+
+**3. Quality review (JUNO):**
+- Reference: "Please review `.claude/agents/audit/juno-auditor.md` to review implementation of WO-XXX"
+
+### Bug Investigation
+**1. Investigate root cause (Aly):**
+- Reference: "Please review `.claude/agents/leadership/aly-cto.md` to investigate bug: [description]"
+
+**2. Implement fix (AJ):**
+- Reference: "Please review `.claude/agents/leadership/aj-cc.md` to fix bug per investigation findings"
+
+### Documentation Updates
+**Update architecture docs (ZEN):**
+- Reference: "Please review `.claude/agents/deployment/zen-knowledge.md` to update ARCHITECTURE.md with recent changes"
+
+**Update context files (INO):**
+- Reference: "Please review `.claude/agents/deployment/ino-context.md` to update CLAUDE.md hierarchy with new patterns"
+
+### CI/CD Customization (After Basic Deployment)
+**1. Deploy Trinity Method:**
+```bash
+npx @trinity-method/cli deploy --ci-deploy
+```
+
+**2. Customize CI/CD (Ein):**
+- Reference: "Please review `.claude/agents/deployment/ein-cicd.md` to set up Codecov coverage reporting and inject badges to README"
+
+**3. Verify CI/CD setup (JUNO):**
+- Reference: "Please review `.claude/agents/audit/juno-auditor.md` to audit CI/CD configuration and workflows"
+
+### Coverage Provider Setup
+**Codecov setup with badges (Ein):**
+- Reference: "Please review `.claude/agents/deployment/ein-cicd.md` to configure Codecov with badge injection to README and add CODECOV_TOKEN setup instructions"
+
+**Switch to Coveralls (Ein):**
+- Reference: "Please review `.claude/agents/deployment/ein-cicd.md` to switch from Codecov to Coveralls coverage provider"
+
+**Use both providers (Ein):**
+- Reference: "Please review `.claude/agents/deployment/ein-cicd.md` to configure both Codecov and Coveralls coverage reporting"
+
+### Workflow Optimization
+**Optimize for speed (Ein):**
+- Reference: "Please review `.claude/agents/deployment/ein-cicd.md` to optimize my CI/CD workflow to reduce execution time below 5 minutes"
+
+**Add deployment automation (Ein):**
+- Reference: "Please review `.claude/agents/deployment/ein-cicd.md` to add automated deployment to staging on merge to develop branch"
+
+---
+
+## 🎯 QUICK REFERENCE
+
+| Need | Agent | Team | When to Use |
+|------|-------|------|-------------|
+| Strategic Planning | Aly | Leadership | Architecture, investigations |
+| Code Implementation | AJ | Leadership | Features, bugs, refactoring |
+| Complete Docs | ZEN | Deployment | After deployment, doc updates |
+| Quality Audit | JUNO | Audit | Verification, security review |
+| Context Updates | INO | Deployment | CLAUDE.md maintenance |
+| Structure Tasks | TAN | Deployment | Directory organization |
+| CI/CD Customization | Ein | Deployment | Coverage setup, badges, optimization |
+
+---
+
+## 📚 ADDITIONAL RESOURCES
+
+### Trinity Method Documentation
+- [Trinity Methodology](../trinity/knowledge-base/Trinity.md)
+- [Project Architecture](../trinity/knowledge-base/ARCHITECTURE.md)
+- [Current Tasks](../trinity/knowledge-base/To-do.md)
+- [Known Issues](../trinity/knowledge-base/ISSUES.md)
+- [Technical Debt](../trinity/knowledge-base/Technical-Debt.md)
+
+### Work Order Templates
+Located in `trinity/templates/`:
+- INVESTIGATION-TEMPLATE.md
+- IMPLEMENTATION-TEMPLATE.md
+- ANALYSIS-TEMPLATE.md
+- AUDIT-TEMPLATE.md
+- PATTERN-TEMPLATE.md
+- VERIFICATION-TEMPLATE.md
+
+### Automation Hooks
+Located in `trinity-hooks/` and `.claude/hooks/`:
+- session-end-archive.sh - Archives work at session end
+- quality-gates.sh - Enforces quality standards
+- prevent-git.sh - Blocks unauthorized git operations
+- backup-knowledge.sh - Backs up knowledge base
+
+---
+
+## 🧹 CODE QUALITY TOOLS
+
+### Linting and Formatting
+
+Trinity Method SDK can optionally configure linting tools during deployment.
+
+**Available Tools:**
+
+| Framework | Tools Available |
+|-----------|----------------|
+| Node.js/React | ESLint, Prettier, Pre-commit hooks |
+| Python | Black, Flake8, isort, Pre-commit hooks |
+| Flutter | Dart Analyzer, Pre-commit hooks |
+| Rust | Clippy, Rustfmt, Pre-commit hooks |
+
+**To setup during deployment:**
+```bash
+npx @trinity-method/cli deploy
+# Select "Recommended" or "Custom" when prompted
+```
+
+**After deployment:**
+1. Install dependencies: `npm install` (or `pip install -r requirements-dev.txt`)
+2. Setup hooks: `pip install pre-commit && pre-commit install`
+3. Test: `npm run lint` (or equivalent for your framework)
+
+**Pre-commit Hooks:**
+Trinity uses Python's `pre-commit` framework for ALL project types (Node.js, Python, Rust, Flutter). This ensures consistent quality checks across all frameworks.
+
+**First-time setup:**
+```bash
+# Install pre-commit (one-time global install)
+pip install pre-commit
+
+# In your project directory
+pre-commit install
+```
+
+**How it works:**
+- Runs linters/formatters before each git commit
+- Prevents committing code that fails quality checks
+- Configured via `.pre-commit-config.yaml`
+
+---
+
+**Trinity Method {{TRINITY_VERSION}}**
+**Deployed:** {{DEPLOYMENT_TIMESTAMP}}

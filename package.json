@@ -1,0 +1,31 @@
+{
+  "name": "trinity-method-sdk",
+  "version": "1.0.0",
+  "description": "Trinity Method SDK - Investigation-first development methodology for any project",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "eslint packages/",
+    "format": "prettier --write packages/"
+  },
+  "keywords": [
+    "trinity-method",
+    "development-methodology",
+    "investigation-first",
+    "ai-coding",
+    "claude-code",
+    "cursor",
+    "copilot"
+  ],
+  "author": "Trinity Method",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "jest": "^29.0.0"
+  }
+}

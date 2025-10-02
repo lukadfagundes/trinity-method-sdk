@@ -1,0 +1,593 @@
+# CLAUDE.md - Flutter/Dart Technology-Specific Rules
+## {{PROJECT_NAME}} - Flutter Implementation
+
+**Framework:** Flutter
+**Language:** Dart
+**Source Directory:** {{SOURCE_DIR}}
+**Platform:** Cross-platform (iOS, Android, Web, Desktop)
+
+---
+
+## Technology Stack Behavioral Modifications
+
+### Flutter-Specific Requirements
+- **Widget Patterns**: Use Flutter widget composition patterns
+- **State Management**: Implement appropriate state management (Provider, Riverpod, BLoC, GetX)
+- **Material Design**: Follow Material Design 3 guidelines
+- **Responsive Design**: Build adaptive layouts for all screen sizes
+- **Platform Awareness**: Handle platform-specific behavior (iOS vs Android)
+
+### Dart Language Adaptations
+- **Null Safety**: Enforce sound null safety throughout codebase
+- **Async/Await**: Use async/await for asynchronous operations
+- **Streams**: Leverage Dart streams for reactive programming
+- **Isolates**: Use isolates for CPU-intensive tasks
+- **Extension Methods**: Create extension methods for code reusability
+
+---
+
+## Technology Debugging Standards
+
+### Flutter Debugging Framework
+```dart
+// Standard debugging format for Flutter applications
+class DebugLogger {
+  static const String _tag = 'TRINITY';
+
+  static void entry(String className, String functionName, Map<String, dynamic>? params) {
+    if (kDebugMode) {
+      print('[ENTRY] $_tag.$className.$functionName ${params ?? {}}');
+      print('  Timestamp: ${DateTime.now().toIso8601String()}');
+    }
+  }
+
+  static void exit(String className, String functionName, dynamic result, DateTime startTime) {
+    if (kDebugMode) {
+      final duration = DateTime.now().difference(startTime).inMilliseconds;
+      print('[EXIT] $_tag.$className.$functionName');
+      print('  Result: $result');
+      print('  Duration: ${duration}ms');
+      print('  Timestamp: ${DateTime.now().toIso8601String()}');
+    }
+  }
+
+  static void error(String className, String functionName, dynamic error, StackTrace? stackTrace, {Map<String, dynamic>? context}) {
+    print('[ERROR] $_tag.$className.$functionName');
+    print('  Error: $error');
+    if (stackTrace != null) {
+      print('  Stack: $stackTrace');
+    }
+    if (context != null) {
+      print('  Context: $context');
+    }
+    print('  Timestamp: ${DateTime.now().toIso8601String()}');
+  }
+}
+
+// Usage example
+class UserService {
+  Future<User?> getUser(String userId) async {
+    final startTime = DateTime.now();
+    DebugLogger.entry('UserService', 'getUser', {'userId': userId});
+
+    try {
+      final user = await _fetchUser(userId);
+      DebugLogger.exit('UserService', 'getUser', user?.toJson(), startTime);
+      return user;
+    } catch (e, stackTrace) {
+      DebugLogger.error('UserService', 'getUser', e, stackTrace, context: {'userId': userId});
+      rethrow;
+    }
+  }
+}
+```
+
+### Widget Debugging
+```dart
+// Debug widget lifecycle
+class DebuggedWidget extends StatefulWidget {
+  @override
+  State<DebuggedWidget> createState() {
+    DebugLogger.entry('DebuggedWidget', 'createState', null);
+    return _DebuggedWidgetState();
+  }
+}
+
+class _DebuggedWidgetState extends State<DebuggedWidget> {
+  @override
+  void initState() {
+    super.initState();
+    DebugLogger.entry('DebuggedWidget', 'initState', null);
+  }
+
+  @override
+  void dispose() {
+    DebugLogger.entry('DebuggedWidget', 'dispose', null);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(); // Your widget
+  }
+}
+```
+
+---
+
+## Performance Optimization Rules
+
+### Flutter Performance Monitoring
+```dart
+// Performance measurement utilities
+class PerformanceMonitor {
+  static T measureSync<T>(String name, T Function() operation) {
+    final stopwatch = Stopwatch()..start();
+
+    try {
+      final result = operation();
+      stopwatch.stop();
+
+      if (kDebugMode) {
+        print('[PERF] $name: ${stopwatch.elapsedMilliseconds}ms');
+      }
+
+      return result;
+    } catch (e) {
+      stopwatch.stop();
+      print('[PERF-ERROR] $name: ${stopwatch.elapsedMilliseconds}ms - Error: $e');
+      rethrow;
+    }
+  }
+
+  static Future<T> measureAsync<T>(String name, Future<T> Function() operation) async {
+    final stopwatch = Stopwatch()..start();
+
+    try {
+      final result = await operation();
+      stopwatch.stop();
+
+      if (kDebugMode) {
+        print('[PERF] $name: ${stopwatch.elapsedMilliseconds}ms');
+      }
+
+      return result;
+    } catch (e) {
+      stopwatch.stop();
+      print('[PERF-ERROR] $name: ${stopwatch.elapsedMilliseconds}ms - Error: $e');
+      rethrow;
+    }
+  }
+}
+
+// Usage
+final users = await PerformanceMonitor.measureAsync(
+  'fetchUsers',
+  () => apiService.getUsers()
+);
+```
+
+### Widget Performance Optimization
+```dart
+// Optimize widget rebuilds
+class OptimizedWidget extends StatelessWidget {
+  const OptimizedWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          // Use const constructors where possible
+          // Avoid expensive operations in build()
+          // Extract widgets to separate classes
+          return const ItemWidget(key: ValueKey(index));
+        },
+      ),
+    );
+  }
+}
+```
+
+### Memory Management
+```dart
+// Monitor memory usage in dev builds
+void monitorMemory() {
+  if (kDebugMode) {
+    Timer.periodic(const Duration(minutes: 1), (timer) {
+      final info = ProcessInfo.currentRss ~/ (1024 * 1024);
+      print('[MEMORY] Current RSS: ${info}MB');
+    });
+  }
+}
+```
+
+---
+
+## Security Best Practices
+
+### Secure Storage
+```dart
+// Use flutter_secure_storage for sensitive data
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+class SecureStorage {
+  static const _storage = FlutterSecureStorage();
+
+  static Future<void> saveToken(String token) async {
+    await _storage.write(key: 'auth_token', value: token);
+  }
+
+  static Future<String?> getToken() async {
+    return await _storage.read(key: 'auth_token');
+  }
+}
+```
+
+### Input Validation
+```dart
+// Input validation patterns
+class InputValidator {
+  static String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Invalid email format';
+    }
+
+    return null;
+  }
+
+  static String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+
+    return null;
+  }
+}
+```
+
+---
+
+## Testing Requirements
+
+### Widget Testing
+```dart
+// Widget test example
+void main() {
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame
+    await tester.pumpWidget(const MyApp());
+
+    // Verify initial state
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+
+    // Tap the '+' icon and trigger a frame
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    // Verify counter incremented
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+  });
+}
+```
+
+### Unit Testing
+```dart
+// Unit test example
+void main() {
+  group('UserService', () {
+    late UserService service;
+
+    setUp(() {
+      service = UserService();
+    });
+
+    test('getUser returns user when found', () async {
+      final user = await service.getUser('123');
+
+      expect(user, isNotNull);
+      expect(user?.id, equals('123'));
+    });
+
+    test('getUser throws when not found', () async {
+      expect(
+        () => service.getUser('invalid'),
+        throwsA(isA<UserNotFoundException>()),
+      );
+    });
+  });
+}
+```
+
+### Integration Testing
+```dart
+// Integration test example
+void main() {
+  testWidgets('full app flow', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    // Navigate through app
+    await tester.tap(find.byType(LoginButton));
+    await tester.pumpAndSettle();
+
+    // Enter credentials
+    await tester.enterText(find.byType(EmailField), 'test@example.com');
+    await tester.enterText(find.byType(PasswordField), 'password123');
+
+    // Submit form
+    await tester.tap(find.byType(SubmitButton));
+    await tester.pumpAndSettle();
+
+    // Verify navigation
+    expect(find.byType(HomePage), findsOneWidget);
+  });
+}
+```
+
+---
+
+## Framework Best Practices
+
+### State Management with Provider
+```dart
+// Provider pattern example
+class CounterNotifier extends ChangeNotifier {
+  int _count = 0;
+
+  int get count => _count;
+
+  void increment() {
+    DebugLogger.entry('CounterNotifier', 'increment', {'currentCount': _count});
+    _count++;
+    notifyListeners();
+    DebugLogger.exit('CounterNotifier', 'increment', _count, DateTime.now());
+  }
+}
+
+// Usage in widget
+class CounterWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CounterNotifier>(
+      builder: (context, counter, child) {
+        return Text('Count: ${counter.count}');
+      },
+    );
+  }
+}
+```
+
+### BLoC Pattern
+```dart
+// BLoC pattern example
+class CounterBloc extends Bloc<CounterEvent, CounterState> {
+  CounterBloc() : super(CounterInitial()) {
+    on<IncrementEvent>((event, emit) {
+      DebugLogger.entry('CounterBloc', 'IncrementEvent', {'state': state});
+      emit(CounterState(count: state.count + 1));
+    });
+  }
+}
+```
+
+### Navigation
+```dart
+// Named routes navigation
+class AppRouter {
+  static const String home = '/';
+  static const String profile = '/profile';
+  static const String settings = '/settings';
+
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    DebugLogger.entry('AppRouter', 'generateRoute', {'route': settings.name});
+
+    switch (settings.name) {
+      case home:
+        return MaterialPageRoute(builder: (_) => HomePage());
+      case profile:
+        return MaterialPageRoute(builder: (_) => ProfilePage());
+      case settings:
+        return MaterialPageRoute(builder: (_) => SettingsPage());
+      default:
+        return MaterialPageRoute(builder: (_) => NotFoundPage());
+    }
+  }
+}
+```
+
+---
+
+## Error Handling Patterns
+
+### Comprehensive Error Handling
+```dart
+// Custom exception classes
+class ApplicationException implements Exception {
+  final String message;
+  final int? statusCode;
+  final Map<String, dynamic>? context;
+
+  ApplicationException(this.message, {this.statusCode, this.context});
+
+  @override
+  String toString() => 'ApplicationException: $message';
+}
+
+class NetworkException extends ApplicationException {
+  NetworkException(String message, {Map<String, dynamic>? context})
+      : super(message, statusCode: 500, context: context);
+}
+
+class ValidationException extends ApplicationException {
+  ValidationException(String message, {Map<String, dynamic>? context})
+      : super(message, statusCode: 400, context: context);
+}
+
+// Error handling function
+Future<T> safeOperation<T>(
+  Future<T> Function() operation,
+  String context,
+) async {
+  try {
+    return await operation();
+  } catch (e, stackTrace) {
+    DebugLogger.error('SafeOperation', context, e, stackTrace);
+
+    if (e is SocketException) {
+      throw NetworkException('Network connection failed', context: {'error': e.toString()});
+    }
+
+    rethrow;
+  }
+}
+```
+
+### Global Error Handler
+```dart
+// Global error handling
+void main() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    DebugLogger.error(
+      'Flutter',
+      'onError',
+      details.exception,
+      details.stack,
+      context: {'library': details.library},
+    );
+
+    // Report to crash analytics in production
+    if (kReleaseMode) {
+      // FirebaseCrashlytics.instance.recordFlutterError(details);
+    }
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    DebugLogger.error('Platform', 'onError', error, stack);
+
+    if (kReleaseMode) {
+      // Report to crash analytics
+    }
+
+    return true;
+  };
+
+  runApp(const MyApp());
+}
+```
+
+---
+
+## Technology-Specific Command References
+
+### Development Commands
+```bash
+# Flutter Development
+flutter run                             # Run app in debug mode
+flutter run -d chrome                   # Run on Chrome
+flutter run -d ios                      # Run on iOS simulator
+flutter run --release                   # Run in release mode
+
+# Hot Reload & Restart
+# Press 'r' in terminal for hot reload
+# Press 'R' in terminal for hot restart
+
+# Dependencies
+flutter pub get                         # Get dependencies
+flutter pub upgrade                     # Upgrade dependencies
+flutter pub outdated                    # Check outdated packages
+```
+
+### Testing Commands
+```bash
+# Testing
+flutter test                            # Run unit tests
+flutter test --coverage                 # Generate coverage
+flutter test integration_test/app_test.dart  # Integration tests
+flutter drive --target=test_driver/app.dart  # Driver tests
+```
+
+### Build Commands
+```bash
+# Building
+flutter build apk                       # Build Android APK
+flutter build appbundle                 # Build Android App Bundle
+flutter build ios                       # Build iOS app
+flutter build web                       # Build web app
+flutter build windows                   # Build Windows app
+
+# Clean & Rebuild
+flutter clean                           # Clean build files
+flutter pub get                         # Get dependencies
+flutter build apk                       # Rebuild
+```
+
+---
+
+## Component-Level Customizations
+
+### Project Structure
+```
+{{SOURCE_DIR}}/
+├── main.dart              # App entry point
+├── app.dart               # App widget
+├── screens/               # Screen widgets
+├── widgets/               # Reusable widgets
+├── models/                # Data models
+├── services/              # Business logic
+├── providers/             # State management
+├── utils/                 # Utility functions
+├── constants/             # App constants
+└── theme/                 # Theme configuration
+```
+
+### Asset Management
+```yaml
+# pubspec.yaml
+flutter:
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+
+  fonts:
+    - family: CustomFont
+      fonts:
+        - asset: assets/fonts/CustomFont-Regular.ttf
+        - asset: assets/fonts/CustomFont-Bold.ttf
+          weight: 700
+```
+
+---
+
+## Reference to Parent Context
+
+This file extends the Trinity Method protocols defined in `../trinity/CLAUDE.md` and global requirements from `../CLAUDE.md`. Flutter/Dart implementations must comply with:
+
+- Trinity Method investigation requirements
+- Global performance baselines
+- Quality gate standards
+- Crisis management protocols
+
+All Flutter code must implement the debugging frameworks, error handling patterns, and performance monitoring specified in this document.
+
+---
+
+**Technology Context**: Flutter/Dart Implementation
+**Parent References**:
+- `../CLAUDE.md` - Global project requirements
+- `../trinity/CLAUDE.md` - Trinity Method enforcement
+
+**Last Updated**: {{CURRENT_DATE}}
+**Trinity Version**: {{TRINITY_VERSION}}

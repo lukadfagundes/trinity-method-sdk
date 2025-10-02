@@ -1,0 +1,31 @@
+# Changelog
+
+All notable changes to Trinity Method SDK will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2025-10-01
+
+### Added
+- Initial release of Trinity Method SDK for Claude Code
+- 7 specialized Trinity agents (Aly, AJ, TAN, ZEN, INO, Ein, JUNO)
+- Claude Code-exclusive deployment
+- Interactive deployment with linting and CI/CD configuration
+- Linting configuration (ESLint, Prettier, etc.)
+- CI/CD automation (GitHub Actions, GitLab CI)
+- Matrix testing support
+- Coverage integration (Codecov, Coveralls)
+- Employee Directory with agent documentation
+- Trinity structure (knowledge-base, templates)
+- CLAUDE.md context file deployment
+- README injection for Trinity Method section
+- 8 slash commands (/trinity-init, /trinity-verify, /trinity-docs, /trinity-start, /trinity-continue, /trinity-end, /trinity-workorder, /trinity-agents)
+- Session management with archival system
+- Comprehensive CLI documentation
+
+### Strategic Decision
+- Focused exclusively on Claude Code for exceptional user experience
+- Community contributions welcome for other coding agents
+
+[1.0.0]: https://github.com/lukadfagundes/trinity-method-sdk/releases/tag/v1.0.0

@@ -1,0 +1,653 @@
+# CLAUDE.md - Rust Technology-Specific Rules
+## {{PROJECT_NAME}} - Rust Implementation
+
+**Framework:** {{FRAMEWORK}}
+**Language:** Rust
+**Source Directory:** {{SOURCE_DIR}}
+**Build Tool:** Cargo
+
+---
+
+## Technology Stack Behavioral Modifications
+
+### Rust-Specific Requirements
+- **Ownership & Borrowing**: Leverage Rust's ownership system for memory safety
+- **Error Handling**: Use Result<T, E> and Option<T> for explicit error handling
+- **Trait System**: Design using traits for abstraction and code reuse
+- **Zero-Cost Abstractions**: Use high-level constructs without runtime overhead
+- **Fearless Concurrency**: Utilize Rust's concurrency primitives safely
+
+### Framework-Specific Adaptations
+- **Tokio**: Use async/await for asynchronous I/O operations
+- **Actix/Axum**: Follow web framework patterns and middleware design
+- **Diesel/SQLx**: Type-safe database interactions
+- **Cargo Workspaces**: Organize code in workspaces for modularity
+
+---
+
+## Technology Debugging Standards
+
+### Rust Debugging Framework
+```rust
+// Standard debugging format for Rust applications
+use log::{debug, error, info, warn};
+use std::time::Instant;
+
+/// Debug logger for Trinity Method
+pub struct DebugLogger {
+    module_name: String,
+}
+
+impl DebugLogger {
+    pub fn new(module_name: &str) -> Self {
+        Self {
+            module_name: module_name.to_string(),
+        }
+    }
+
+    pub fn entry<T: std::fmt::Debug>(&self, func_name: &str, params: &T) {
+        debug!(
+            "[ENTRY] {}.{} - Params: {:?}",
+            self.module_name, func_name, params
+        );
+    }
+
+    pub fn exit<T: std::fmt::Debug>(&self, func_name: &str, result: &T, duration_ms: u128) {
+        debug!(
+            "[EXIT] {}.{} - Duration: {}ms, Result: {:?}",
+            self.module_name, func_name, duration_ms, result
+        );
+    }
+
+    pub fn error(&self, func_name: &str, error: &dyn std::error::Error) {
+        error!(
+            "[ERROR] {}.{} - Error: {}",
+            self.module_name, func_name, error
+        );
+    }
+}
+
+// Usage example
+pub struct UserService {
+    logger: DebugLogger,
+}
+
+impl UserService {
+    pub fn new() -> Self {
+        Self {
+            logger: DebugLogger::new("UserService"),
+        }
+    }
+
+    pub fn get_user(&self, user_id: &str) -> Result<User, Box<dyn std::error::Error>> {
+        let start = Instant::now();
+        self.logger.entry("get_user", &user_id);
+
+        let result = self.fetch_user_internal(user_id);
+
+        match &result {
+            Ok(user) => {
+                self.logger.exit("get_user", user, start.elapsed().as_millis());
+            }
+            Err(e) => {
+                self.logger.error("get_user", e.as_ref());
+            }
+        }
+
+        result
+    }
+
+    fn fetch_user_internal(&self, user_id: &str) -> Result<User, Box<dyn std::error::Error>> {
+        // Implementation
+        Ok(User {
+            id: user_id.to_string(),
+            name: "John Doe".to_string(),
+        })
+    }
+}
+
+#[derive(Debug)]
+pub struct User {
+    pub id: String,
+    pub name: String,
+}
+```
+
+---
+
+## Performance Optimization Rules
+
+### Rust Performance Monitoring
+```rust
+// Performance measurement utilities
+use std::time::{Duration, Instant};
+
+pub struct PerformanceMonitor;
+
+impl PerformanceMonitor {
+    /// Measure synchronous operation
+    pub fn measure<F, T>(name: &str, operation: F) -> T
+    where
+        F: FnOnce() -> T,
+    {
+        let start = Instant::now();
+
+        let result = operation();
+
+        let duration = start.elapsed();
+        println!("[PERF] {}: {:?}", name, duration);
+
+        result
+    }
+
+    /// Measure async operation
+    pub async fn measure_async<F, Fut, T>(name: &str, operation: F) -> T
+    where
+        F: FnOnce() -> Fut,
+        Fut: std::future::Future<Output = T>,
+    {
+        let start = Instant::now();
+
+        let result = operation().await;
+
+        let duration = start.elapsed();
+        println!("[PERF] {}: {:?}", name, duration);
+
+        result
+    }
+}
+
+// Usage
+let users = PerformanceMonitor::measure("fetch_users", || {
+    database.query_users()
+});
+
+let result = PerformanceMonitor::measure_async("async_fetch", || {
+    async_database.query_users()
+}).await;
+```
+
+### Memory Efficiency
+```rust
+// Use references to avoid unnecessary clones
+fn process_large_data(data: &Vec<u8>) -> usize {
+    data.len()
+}
+
+// Use iterators for lazy evaluation
+fn sum_even_numbers(numbers: &[i32]) -> i32 {
+    numbers
+        .iter()
+        .filter(|&&n| n % 2 == 0)
+        .sum()
+}
+
+// Use Cow for conditional ownership
+use std::borrow::Cow;
+
+fn modify_if_needed(input: &str) -> Cow<str> {
+    if input.contains("replace") {
+        Cow::Owned(input.replace("replace", "updated"))
+    } else {
+        Cow::Borrowed(input)
+    }
+}
+```
+
+---
+
+## Security Best Practices
+
+### Input Validation
+```rust
+// Input validation with thiserror
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum ValidationError {
+    #[error("Email format is invalid: {0}")]
+    InvalidEmail(String),
+
+    #[error("Password too short: minimum {min} characters, got {actual}")]
+    PasswordTooShort { min: usize, actual: usize },
+
+    #[error("Username contains invalid characters")]
+    InvalidUsername,
+}
+
+pub struct InputValidator;
+
+impl InputValidator {
+    pub fn validate_email(email: &str) -> Result<(), ValidationError> {
+        let email_regex = regex::Regex::new(r"^[\w\.-]+@[\w\.-]+\.\w{2,}$").unwrap();
+
+        if !email_regex.is_match(email) {
+            return Err(ValidationError::InvalidEmail(email.to_string()));
+        }
+
+        Ok(())
+    }
+
+    pub fn validate_password(password: &str) -> Result<(), ValidationError> {
+        const MIN_LENGTH: usize = 8;
+
+        if password.len() < MIN_LENGTH {
+            return Err(ValidationError::PasswordTooShort {
+                min: MIN_LENGTH,
+                actual: password.len(),
+            });
+        }
+
+        Ok(())
+    }
+}
+```
+
+### Safe Concurrency
+```rust
+// Use Arc and Mutex for shared state
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+pub struct SafeCounter {
+    count: Arc<Mutex<i32>>,
+}
+
+impl SafeCounter {
+    pub fn new() -> Self {
+        Self {
+            count: Arc::new(Mutex::new(0)),
+        }
+    }
+
+    pub fn increment(&self) {
+        let mut count = self.count.lock().unwrap();
+        *count += 1;
+    }
+
+    pub fn value(&self) -> i32 {
+        *self.count.lock().unwrap()
+    }
+}
+```
+
+---
+
+## Testing Requirements
+
+### Unit Testing
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_user_success() {
+        let service = UserService::new();
+
+        let result = service.get_user("123");
+
+        assert!(result.is_ok());
+        let user = result.unwrap();
+        assert_eq!(user.id, "123");
+    }
+
+    #[test]
+    fn test_get_user_not_found() {
+        let service = UserService::new();
+
+        let result = service.get_user("invalid");
+
+        assert!(result.is_err());
+    }
+
+    #[test]
+    #[should_panic(expected = "Invalid input")]
+    fn test_panic_scenario() {
+        panic!("Invalid input");
+    }
+}
+```
+
+### Integration Testing
+```rust
+// Integration tests in tests/ directory
+#[cfg(test)]
+mod integration_tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_api_endpoint() {
+        let app = create_test_app().await;
+
+        let response = app
+            .oneshot(
+                Request::builder()
+                    .uri("/api/users/123")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::OK);
+    }
+}
+```
+
+### Property-Based Testing
+```rust
+// Using proptest for property-based testing
+#[cfg(test)]
+mod proptests {
+    use proptest::prelude::*;
+
+    proptest! {
+        #[test]
+        fn test_reverse_twice_is_identity(s: String) {
+            let reversed = s.chars().rev().collect::<String>();
+            let double_reversed = reversed.chars().rev().collect::<String>();
+            prop_assert_eq!(s, double_reversed);
+        }
+    }
+}
+```
+
+---
+
+## Framework Best Practices
+
+### Axum Web Framework Pattern
+```rust
+// Axum application structure
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    response::Json,
+    routing::get,
+    Router,
+};
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Clone)]
+pub struct AppState {
+    logger: Arc<DebugLogger>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct UserResponse {
+    id: String,
+    name: String,
+}
+
+pub async fn get_user(
+    Path(user_id): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Json<UserResponse>, (StatusCode, String)> {
+    let start = Instant::now();
+    state.logger.entry("get_user", &user_id);
+
+    // Fetch user logic
+    let user = UserResponse {
+        id: user_id.clone(),
+        name: "John Doe".to_string(),
+    };
+
+    state.logger.exit("get_user", &user, start.elapsed().as_millis());
+
+    Ok(Json(user))
+}
+
+pub fn create_router() -> Router {
+    let state = AppState {
+        logger: Arc::new(DebugLogger::new("AxumApp")),
+    };
+
+    Router::new()
+        .route("/api/users/:id", get(get_user))
+        .with_state(state)
+}
+```
+
+### Diesel ORM Pattern
+```rust
+// Diesel database operations
+use diesel::prelude::*;
+
+pub struct UserRepository {
+    logger: DebugLogger,
+}
+
+impl UserRepository {
+    pub fn new() -> Self {
+        Self {
+            logger: DebugLogger::new("UserRepository"),
+        }
+    }
+
+    pub fn find_by_id(
+        &self,
+        conn: &mut PgConnection,
+        user_id: &str,
+    ) -> Result<User, diesel::result::Error> {
+        let start = Instant::now();
+        self.logger.entry("find_by_id", &user_id);
+
+        let result = users::table
+            .filter(users::id.eq(user_id))
+            .first::<User>(conn);
+
+        match &result {
+            Ok(user) => {
+                self.logger.exit("find_by_id", user, start.elapsed().as_millis());
+            }
+            Err(e) => {
+                self.logger.error("find_by_id", e);
+            }
+        }
+
+        result
+    }
+}
+```
+
+---
+
+## Error Handling Patterns
+
+### Custom Error Types
+```rust
+// Comprehensive error handling with thiserror
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum ApplicationError {
+    #[error("Database error: {0}")]
+    Database(#[from] diesel::result::Error),
+
+    #[error("Validation error: {0}")]
+    Validation(#[from] ValidationError),
+
+    #[error("User not found: {0}")]
+    NotFound(String),
+
+    #[error("Internal server error: {0}")]
+    Internal(String),
+
+    #[error("Unauthorized: {0}")]
+    Unauthorized(String),
+}
+
+impl ApplicationError {
+    pub fn status_code(&self) -> StatusCode {
+        match self {
+            Self::Database(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Validation(_) => StatusCode::BAD_REQUEST,
+            Self::NotFound(_) => StatusCode::NOT_FOUND,
+            Self::Internal(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Unauthorized(_) => StatusCode::UNAUTHORIZED,
+        }
+    }
+}
+```
+
+### Result Type Patterns
+```rust
+// Use Result for error propagation
+pub fn safe_operation() -> Result<String, ApplicationError> {
+    let value = risky_operation()?;
+    let processed = process_value(&value)?;
+    Ok(processed)
+}
+
+// Custom Result alias
+pub type AppResult<T> = Result<T, ApplicationError>;
+
+pub fn get_user(id: &str) -> AppResult<User> {
+    validate_id(id)?;
+    let user = fetch_from_database(id)?;
+    Ok(user)
+}
+```
+
+---
+
+## Technology-Specific Command References
+
+### Development Commands
+```bash
+# Rust Development
+cargo run                               # Run application
+cargo run --release                     # Run optimized build
+cargo run --bin server                  # Run specific binary
+cargo watch -x run                      # Auto-reload on changes
+
+# Build Commands
+cargo build                             # Debug build
+cargo build --release                   # Production build
+cargo check                             # Fast check without building
+cargo clippy                            # Lint code
+```
+
+### Testing Commands
+```bash
+# Testing
+cargo test                              # Run all tests
+cargo test --lib                        # Library tests only
+cargo test --test integration           # Integration tests
+cargo test -- --nocapture               # Show println! output
+cargo test --release                    # Test optimized build
+
+# Coverage
+cargo tarpaulin                         # Generate coverage (with tarpaulin)
+cargo llvm-cov                          # Generate coverage (with llvm-cov)
+```
+
+### Documentation Commands
+```bash
+# Documentation
+cargo doc                               # Generate documentation
+cargo doc --open                        # Generate and open docs
+cargo doc --no-deps                     # Only document this crate
+```
+
+---
+
+## Trait System Best Practices
+
+### Trait Design
+```rust
+// Design with traits for abstraction
+pub trait Repository<T> {
+    fn find_by_id(&self, id: &str) -> AppResult<T>;
+    fn find_all(&self) -> AppResult<Vec<T>>;
+    fn save(&self, entity: &T) -> AppResult<T>;
+    fn delete(&self, id: &str) -> AppResult<()>;
+}
+
+// Implement for specific types
+impl Repository<User> for UserRepository {
+    fn find_by_id(&self, id: &str) -> AppResult<User> {
+        // Implementation
+    }
+
+    fn find_all(&self) -> AppResult<Vec<User>> {
+        // Implementation
+    }
+
+    fn save(&self, user: &User) -> AppResult<User> {
+        // Implementation
+    }
+
+    fn delete(&self, id: &str) -> AppResult<()> {
+        // Implementation
+    }
+}
+```
+
+---
+
+## Async/Await Patterns
+
+### Tokio Async Runtime
+```rust
+// Async function with Tokio
+use tokio::time::{sleep, Duration};
+
+pub async fn fetch_user_async(user_id: &str) -> AppResult<User> {
+    let logger = DebugLogger::new("AsyncUserService");
+    let start = Instant::now();
+    logger.entry("fetch_user_async", &user_id);
+
+    // Async operation
+    sleep(Duration::from_millis(100)).await;
+
+    let user = User {
+        id: user_id.to_string(),
+        name: "John Doe".to_string(),
+    };
+
+    logger.exit("fetch_user_async", &user, start.elapsed().as_millis());
+
+    Ok(user)
+}
+
+// Spawn concurrent tasks
+pub async fn fetch_multiple_users(user_ids: Vec<String>) -> Vec<AppResult<User>> {
+    let tasks: Vec<_> = user_ids
+        .into_iter()
+        .map(|id| tokio::spawn(fetch_user_async(id)))
+        .collect();
+
+    let results = futures::future::join_all(tasks).await;
+
+    results
+        .into_iter()
+        .map(|r| r.unwrap())
+        .collect()
+}
+```
+
+---
+
+## Reference to Parent Context
+
+This file extends the Trinity Method protocols defined in `../trinity/CLAUDE.md` and global requirements from `../CLAUDE.md`. Rust implementations must comply with:
+
+- Trinity Method investigation requirements
+- Global performance baselines
+- Quality gate standards
+- Crisis management protocols
+
+All Rust code must implement the debugging frameworks, error handling patterns, and performance monitoring specified in this document.
+
+---
+
+**Technology Context**: Rust Implementation
+**Parent References**:
+- `../CLAUDE.md` - Global project requirements
+- `../trinity/CLAUDE.md` - Trinity Method enforcement
+
+**Last Updated**: {{CURRENT_DATE}}
+**Trinity Version**: {{TRINITY_VERSION}}

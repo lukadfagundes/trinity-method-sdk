@@ -1,0 +1,103 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "20"
+  CI: "true"
+
+.node_template: &node_template
+  image: node:${NODE_VERSION}
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+
+test:lint:
+  <<: *node_template
+  stage: test
+  script:
+    - npm run lint || true
+  allow_failure: true
+  only:
+    - main
+    - dev
+    - develop
+    - merge_requests
+
+test:unit:
+  <<: *node_template
+  stage: test
+  parallel:
+    matrix:
+      - NODE_VERSION: ["18", "20"]
+  script:
+    - npm test
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    when: always
+    reports:
+      junit: junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+  only:
+    - main
+    - dev
+    - develop
+    - merge_requests
+
+test:coverage:
+  <<: *node_template
+  stage: test
+  script:
+    - npm run test:coverage
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    paths:
+      - coverage/
+    expire_in: 30 days
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+  only:
+    - main
+    - dev
+    - develop
+
+build:
+  <<: *node_template
+  stage: build
+  needs: ["test:unit"]
+  script:
+    - npm run build || echo "No build script found"
+  artifacts:
+    paths:
+      - dist/
+      - build/
+    expire_in: 7 days
+  only:
+    - main
+    - dev
+    - develop
+
+deploy:trinity:
+  <<: *node_template
+  stage: deploy
+  needs: ["test:coverage", "build"]
+  script:
+    - npx trinity deploy --agent claude --ci-deploy --yes
+  artifacts:
+    paths:
+      - trinity/
+      - CLAUDE.md
+    expire_in: 30 days
+  only:
+    - main
+    - dev
+  when: on_success

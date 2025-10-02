@@ -1,0 +1,115 @@
+# Generic CI/CD Template for Trinity Method
+#
+# This template can be adapted for various CI/CD platforms including:
+# - Jenkins, CircleCI, Travis CI, Bitbucket Pipelines, Azure Pipelines, etc.
+#
+# Adapt the syntax to your platform's requirements
+
+# ====================
+# Environment Setup
+# ====================
+environment:
+  node_version: "20.x"
+  ci: true
+
+# ====================
+# Dependencies
+# ====================
+install_dependencies:
+  command: npm ci
+  cache:
+    - node_modules/
+
+# ====================
+# Linting Stage
+# ====================
+lint:
+  stage: test
+  command: npm run lint
+  allow_failure: true
+  run_on:
+    - main
+    - dev
+    - develop
+    - pull_requests
+
+# ====================
+# Testing Stage
+# ====================
+test:
+  stage: test
+  matrix:
+    node_version: ["18.x", "20.x"]
+  commands:
+    - npm test
+  artifacts:
+    - coverage/
+  run_on:
+    - main
+    - dev
+    - develop
+    - pull_requests
+
+test_with_coverage:
+  stage: test
+  node_version: "20.x"
+  commands:
+    - npm run test:coverage
+  artifacts:
+    - coverage/
+    - coverage/lcov.info
+  coverage_report: coverage/lcov.info
+  run_on:
+    - main
+    - dev
+    - develop
+
+# ====================
+# Build Stage
+# ====================
+build:
+  stage: build
+  depends_on:
+    - test
+  commands:
+    - npm run build || echo "No build script configured"
+  artifacts:
+    - dist/
+    - build/
+  run_on:
+    - main
+    - dev
+    - develop
+
+# ====================
+# Trinity Method Deployment Stage
+# ====================
+deploy_trinity:
+  stage: deploy
+  node_version: "20.x"
+  depends_on:
+    - test_with_coverage
+    - build
+  commands:
+    - npx trinity deploy --agent claude --ci-deploy --yes
+  artifacts:
+    - trinity/
+    - CLAUDE.md
+  run_on:
+    - main
+    - dev
+  when: on_success
+
+# ====================
+# Configuration Notes
+# ====================
+#
+# 1. Ensure your CI environment has Node.js installed
+# 2. Set CI=true environment variable for CI detection
+# 3. Configure artifact storage according to your platform
+# 4. Adjust branch names to match your repository's branching strategy
+# 5. Add platform-specific authentication if needed for deployment
+# 6. Consider adding notification steps for failures
+# 7. Customize caching strategy based on platform capabilities
+#
+# Trinity Method CLI Documentation: https://github.com/trinity-method/sdk

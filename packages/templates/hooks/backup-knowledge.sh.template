@@ -1,0 +1,55 @@
+#!/bin/bash
+# Trinity Method - Backup Knowledge Hook
+# Backs up knowledge base before major operations
+
+echo "[TRINITY HOOK]: Backing up knowledge base..."
+
+# Create backup directory
+BACKUP_DIR="trinity/sessions/backups"
+mkdir -p "$BACKUP_DIR"
+
+# Generate timestamp
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+BACKUP_FILE="${BACKUP_DIR}/knowledge-base-${TIMESTAMP}.tar.gz"
+
+# Create compressed backup
+if [ -d "trinity/knowledge-base" ]; then
+  tar -czf "$BACKUP_FILE" trinity/knowledge-base/ 2>/dev/null
+
+  if [ $? -eq 0 ]; then
+    BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+    echo "[TRINITY HOOK]: ✅ Knowledge base backed up"
+    echo "[TRINITY HOOK]:    File: ${BACKUP_FILE}"
+    echo "[TRINITY HOOK]:    Size: ${BACKUP_SIZE}"
+
+    # Keep only last 10 backups
+    BACKUP_COUNT=$(ls -1 "${BACKUP_DIR}"/knowledge-base-*.tar.gz 2>/dev/null | wc -l)
+    if [ $BACKUP_COUNT -gt 10 ]; then
+      echo "[TRINITY HOOK]: Cleaning old backups (keeping last 10)..."
+      ls -1t "${BACKUP_DIR}"/knowledge-base-*.tar.gz | tail -n +11 | xargs rm -f 2>/dev/null
+    fi
+  else
+    echo "[TRINITY HOOK]: ⚠️  Backup failed"
+    exit 1
+  fi
+else
+  echo "[TRINITY HOOK]: ⚠️  trinity/knowledge-base/ not found"
+  exit 1
+fi
+
+# Create backup index
+if [ ! -f "${BACKUP_DIR}/INDEX.md" ]; then
+  cat > "${BACKUP_DIR}/INDEX.md" <<EOF
+# Knowledge Base Backups - {{PROJECT_NAME}}
+
+**Framework:** {{FRAMEWORK}}
+**Trinity Version:** {{TRINITY_VERSION}}
+
+## Backup History
+
+EOF
+fi
+
+echo "- **${TIMESTAMP}**: Backup created (${BACKUP_SIZE})" >> "${BACKUP_DIR}/INDEX.md"
+
+echo "[TRINITY HOOK]: Backup complete"
