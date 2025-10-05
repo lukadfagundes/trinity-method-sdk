@@ -5,6 +5,9 @@
  */
 
 import { Benchmark, BenchmarkResult, BenchmarkSuite, BenchmarkComparison } from './types';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('BenchmarkHarness');
 
 export class BenchmarkHarness {
   private benchmarks: Benchmark[] = [];
@@ -21,8 +24,8 @@ export class BenchmarkHarness {
    * Run all registered benchmarks
    */
   async runAll(name: string = 'Benchmark Suite', description: string = ''): Promise<BenchmarkSuite> {
-    console.log(`\n🏁 Starting Benchmark Suite: ${name}`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+    logger.info(`\n🏁 Starting Benchmark Suite: ${name}`);
+    logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
 
     this.results = [];
     const suiteStart = Date.now();
@@ -33,7 +36,7 @@ export class BenchmarkHarness {
         this.results.push(result);
 
         const status = result.passed ? '✅' : '❌';
-        console.log(`${status} ${result.name} - ${result.duration}ms`);
+        logger.info(`${status} ${result.name} - ${result.duration}ms`);
       } catch (error) {
         const errorResult: BenchmarkResult = {
           name: 'Unknown',
@@ -46,14 +49,14 @@ export class BenchmarkHarness {
           error: error instanceof Error ? error.message : String(error),
         };
         this.results.push(errorResult);
-        console.log(`❌ Benchmark failed: ${errorResult.error}`);
+        logger.error(`Benchmark failed: ${errorResult.error}`);
       }
     }
 
     const suiteDuration = Date.now() - suiteStart;
 
-    console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-    console.log(`✅ Suite completed in ${suiteDuration}ms\n`);
+    logger.info(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    logger.info(`✅ Suite completed in ${suiteDuration}ms\n`);
 
     const suite: BenchmarkSuite = {
       name,
@@ -79,14 +82,14 @@ export class BenchmarkHarness {
       throw new Error(`Benchmark "${benchmarkName}" not found`);
     }
 
-    console.log(`\n🏁 Running Benchmark: ${benchmarkName}`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+    logger.info(`\n🏁 Running Benchmark: ${benchmarkName}`);
+    logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
 
     const result = await benchmark.run();
     this.results.push(result);
 
     const status = result.passed ? '✅' : '❌';
-    console.log(`${status} ${result.name} - ${result.duration}ms\n`);
+    logger.info(`${status} ${result.name} - ${result.duration}ms\n`);
 
     return result;
   }

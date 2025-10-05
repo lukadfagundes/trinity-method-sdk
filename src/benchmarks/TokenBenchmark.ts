@@ -5,6 +5,9 @@
  */
 
 import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('TokenBenchmark');
 
 export interface TokenBenchmarkScenario {
   name: string;
@@ -28,34 +31,34 @@ export class TokenBenchmark extends Benchmark {
     const startTime = Date.now();
     const iterations = this.config.iterations || 10;
 
-    console.log(`\n📊 Token Usage Benchmark`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    logger.info(`\n📊 Token Usage Benchmark`);
+    logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 
     // Warmup runs
-    console.log(`Warming up (${this.config.warmupRuns} runs)...`);
+    logger.info(`Warming up (${this.config.warmupRuns} runs)...`);
     for (let i = 0; i < (this.config.warmupRuns || 2); i++) {
       await this.runIteration(false);
     }
 
     // Baseline (no cache) measurements
-    console.log(`\nBaseline (no cache) - ${iterations} iterations...`);
+    logger.info(`\nBaseline (no cache) - ${iterations} iterations...`);
     const baselineResults: number[] = [];
     for (let i = 0; i < iterations; i++) {
       const result = await this.runIteration(false);
       baselineResults.push(result.totalTokens);
       process.stdout.write(`  Iteration ${i + 1}: ${result.totalTokens} tokens\r`);
     }
-    console.log(); // New line
+    logger.info(''); // New line
 
     // Optimized (with cache) measurements
-    console.log(`\nOptimized (with cache) - ${iterations} iterations...`);
+    logger.info(`\nOptimized (with cache) - ${iterations} iterations...`);
     const optimizedResults: number[] = [];
     for (let i = 0; i < iterations; i++) {
       const result = await this.runIteration(true);
       optimizedResults.push(result.totalTokens);
       process.stdout.write(`  Iteration ${i + 1}: ${result.totalTokens} tokens\r`);
     }
-    console.log(); // New line
+    logger.info(''); // New line
 
     // Calculate statistics
     const baselineStats = this.calculateStatistics(baselineResults);
@@ -66,10 +69,10 @@ export class TokenBenchmark extends Benchmark {
 
     const duration = Date.now() - startTime;
 
-    console.log(`\n📈 Results:`);
-    console.log(`  Baseline:   ${baselineStats.avg.toFixed(0)} tokens (±${baselineStats.stdDev.toFixed(0)})`);
-    console.log(`  Optimized:  ${optimizedStats.avg.toFixed(0)} tokens (±${optimizedStats.stdDev.toFixed(0)})`);
-    console.log(`  Reduction:  ${tokenReduction.toFixed(0)} tokens (${percentReduction.toFixed(1)}%)`);
+    logger.info(`\n📈 Results:`);
+    logger.info(`  Baseline:   ${baselineStats.avg.toFixed(0)} tokens (±${baselineStats.stdDev.toFixed(0)})`);
+    logger.info(`  Optimized:  ${optimizedStats.avg.toFixed(0)} tokens (±${optimizedStats.stdDev.toFixed(0)})`);
+    logger.info(`  Reduction:  ${tokenReduction.toFixed(0)} tokens (${percentReduction.toFixed(1)}%)`);
 
     // Validation: Check if reduction meets claim (e.g., >60% reduction)
     const passed = percentReduction >= 60 && baselineStats.stdDev / baselineStats.avg <= 0.05;

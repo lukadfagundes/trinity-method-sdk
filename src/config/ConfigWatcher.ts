@@ -6,6 +6,9 @@
 
 import { watch, FSWatcher } from 'chokidar';
 import { ConfigurationManager } from './ConfigurationManager';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('ConfigWatcher');
 
 export class ConfigWatcher {
   private watcher?: FSWatcher;
@@ -31,11 +34,11 @@ export class ConfigWatcher {
    */
   start(): void {
     if (this.watcher) {
-      console.warn('ConfigWatcher already started');
+      logger.warn('ConfigWatcher already started');
       return;
     }
 
-    console.log(`Watching configuration file: ${this.configPath}`);
+    logger.info(`Watching configuration file: ${this.configPath}`);
 
     this.watcher = watch(this.configPath, {
       persistent: true,
@@ -43,12 +46,12 @@ export class ConfigWatcher {
     });
 
     this.watcher.on('change', (path) => {
-      console.log(`Configuration file changed: ${path}`);
+      logger.info(`Configuration file changed: ${path}`);
       this.scheduleReload();
     });
 
     this.watcher.on('error', (error) => {
-      console.error('ConfigWatcher error:', error);
+      logger.error('ConfigWatcher error:', error);
     });
   }
 
@@ -59,7 +62,7 @@ export class ConfigWatcher {
     if (this.watcher) {
       this.watcher.close();
       this.watcher = undefined;
-      console.log('ConfigWatcher stopped');
+      logger.info('ConfigWatcher stopped');
     }
 
     if (this.reloadTimeout) {
@@ -81,9 +84,9 @@ export class ConfigWatcher {
     this.reloadTimeout = setTimeout(async () => {
       try {
         await this.configManager.reload();
-        console.log('✅ Configuration hot-reloaded successfully');
+        logger.info('✅ Configuration hot-reloaded successfully');
       } catch (error) {
-        console.error('❌ Configuration reload failed:', error);
+        logger.error('❌ Configuration reload failed:', error);
       }
     }, this.reloadDebounceMs);
   }

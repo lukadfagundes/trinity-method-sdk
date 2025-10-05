@@ -5,6 +5,9 @@
  */
 
 import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('SpeedBenchmark');
 
 export interface SpeedScenario {
   name: string;
@@ -28,35 +31,35 @@ export class SpeedBenchmark extends Benchmark {
     const startTime = Date.now();
     const iterations = this.config.iterations || 10;
 
-    console.log(`\n⚡ Investigation Speed Benchmark`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    logger.info(`\n⚡ Investigation Speed Benchmark`);
+    logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 
     // Warmup runs
-    console.log(`Warming up (${this.config.warmupRuns} runs)...`);
+    logger.info(`Warming up (${this.config.warmupRuns} runs)...`);
     for (let i = 0; i < (this.config.warmupRuns || 2); i++) {
       await this.runIteration(false);
       await this.runIteration(true);
     }
 
     // Sequential (baseline) measurements
-    console.log(`\nSequential (baseline) - ${iterations} iterations...`);
+    logger.info(`\nSequential (baseline) - ${iterations} iterations...`);
     const sequentialResults: number[] = [];
     for (let i = 0; i < iterations; i++) {
       const result = await this.runIteration(false);
       sequentialResults.push(result.duration);
       process.stdout.write(`  Iteration ${i + 1}: ${result.duration.toFixed(0)}ms\r`);
     }
-    console.log(); // New line
+    logger.info(''); // New line
 
     // Parallel (optimized) measurements
-    console.log(`\nParallel (coordinated) - ${iterations} iterations...`);
+    logger.info(`\nParallel (coordinated) - ${iterations} iterations...`);
     const parallelResults: number[] = [];
     for (let i = 0; i < iterations; i++) {
       const result = await this.runIteration(true);
       parallelResults.push(result.duration);
       process.stdout.write(`  Iteration ${i + 1}: ${result.duration.toFixed(0)}ms\r`);
     }
-    console.log(); // New line
+    logger.info(''); // New line
 
     // Calculate statistics
     const sequentialStats = this.calculateStatistics(sequentialResults);
@@ -67,10 +70,10 @@ export class SpeedBenchmark extends Benchmark {
 
     const duration = Date.now() - startTime;
 
-    console.log(`\n📈 Results:`);
-    console.log(`  Sequential: ${sequentialStats.avg.toFixed(0)}ms (±${sequentialStats.stdDev.toFixed(0)}ms)`);
-    console.log(`  Parallel:   ${parallelStats.avg.toFixed(0)}ms (±${parallelStats.stdDev.toFixed(0)}ms)`);
-    console.log(`  Speedup:    ${speedup.toFixed(2)}x (${percentReduction.toFixed(1)}% faster)`);
+    logger.info(`\n📈 Results:`);
+    logger.info(`  Sequential: ${sequentialStats.avg.toFixed(0)}ms (±${sequentialStats.stdDev.toFixed(0)}ms)`);
+    logger.info(`  Parallel:   ${parallelStats.avg.toFixed(0)}ms (±${parallelStats.stdDev.toFixed(0)}ms)`);
+    logger.info(`  Speedup:    ${speedup.toFixed(2)}x (${percentReduction.toFixed(1)}% faster)`);
 
     // Validation: Check if speedup meets expectations (e.g., >2x faster)
     const passed = speedup >= 2.0 && sequentialStats.stdDev / sequentialStats.avg <= 0.05;

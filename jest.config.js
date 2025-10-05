@@ -9,7 +9,7 @@ module.exports = {
     '!src/**/*.spec.ts',
     '!src/**/__tests__/**',
   ],
-  coverageThresholds: {
+  coverageThreshold: {
     global: {
       branches: 80,
       functions: 80,
@@ -23,23 +23,71 @@ module.exports = {
   projects: [
     {
       displayName: 'unit',
+      preset: 'ts-jest',
+      testEnvironment: 'node',
       testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
-      testTimeout: 10000,
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
+      globals: {
+        'ts-jest': {
+          tsconfig: {
+            esModuleInterop: true,
+            allowSyntheticDefaultImports: true,
+          },
+        },
+      },
     },
     {
       displayName: 'integration',
+      preset: 'ts-jest',
+      testEnvironment: 'node',
       testMatch: ['<rootDir>/tests/integration/**/*.spec.ts'],
-      testTimeout: 30000,
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
+      globals: {
+        'ts-jest': {
+          tsconfig: {
+            esModuleInterop: true,
+            allowSyntheticDefaultImports: true,
+          },
+        },
+      },
     },
     {
       displayName: 'e2e',
+      preset: 'ts-jest',
+      testEnvironment: 'node',
       testMatch: ['<rootDir>/tests/e2e/**/*.spec.ts'],
-      testTimeout: 60000,
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
+      globals: {
+        'ts-jest': {
+          tsconfig: {
+            esModuleInterop: true,
+            allowSyntheticDefaultImports: true,
+          },
+        },
+      },
     },
     {
       displayName: 'performance',
+      preset: 'ts-jest',
+      testEnvironment: 'node',
       testMatch: ['<rootDir>/tests/performance/**/*.spec.ts'],
-      testTimeout: 300000, // 5 minutes for performance tests
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
+      globals: {
+        'ts-jest': {
+          tsconfig: {
+            esModuleInterop: true,
+            allowSyntheticDefaultImports: true,
+          },
+        },
+      },
     },
   ],
   reporters: [

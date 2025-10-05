@@ -7,6 +7,9 @@
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import { BenchmarkSuite, BenchmarkResult, BenchmarkComparison } from './types';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('BenchmarkReporter');
 
 export class BenchmarkReporter {
   private outputDir: string;
@@ -26,17 +29,17 @@ export class BenchmarkReporter {
     // Generate JSON report
     const jsonPath = join(this.outputDir, `${baseFilename}.json`);
     this.generateJSON(suite, jsonPath);
-    console.log(`\n📄 JSON Report: ${jsonPath}`);
+    logger.info(`\n📄 JSON Report: ${jsonPath}`);
 
     // Generate Markdown report
     const mdPath = join(this.outputDir, `${baseFilename}.md`);
     this.generateMarkdown(suite, mdPath);
-    console.log(`📄 Markdown Report: ${mdPath}`);
+    logger.info(`📄 Markdown Report: ${mdPath}`);
 
     // Generate summary report (latest.md)
     const summaryPath = join(this.outputDir, 'latest.md');
     this.generateMarkdown(suite, summaryPath);
-    console.log(`📄 Latest Summary: ${summaryPath}`);
+    logger.info(`📄 Latest Summary: ${summaryPath}`);
   }
 
   /**

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="55" failures="1" errors="0" time="9.488">
+  <testsuite name="ContextDetector" errors="0" failures="1" skipped="0" timestamp="2025-10-05T22:21:40" time="4.694" tests="7">
+    <testcase classname="ContextDetector › Framework Detection" name="should detect Next.js from package.json" time="0.032">
+    </testcase>
+    <testcase classname="ContextDetector › Framework Detection" name="should detect React from package.json" time="0.012">
+    </testcase>
+    <testcase classname="ContextDetector › Framework Detection" name="should return Unknown for unrecognized frameworks" time="0.018">
+    </testcase>
+    <testcase classname="ContextDetector › Language Detection" name="should detect TypeScript from tsconfig.json" time="0.017">
+    </testcase>
+    <testcase classname="ContextDetector › Language Detection" name="should detect JavaScript from .js files" time="0.023">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: &quot;JavaScript&quot;
+Received: &quot;TypeScript&quot;
+    at Object.&lt;anonymous&gt; (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\tests\unit\wizard\ContextDetector.spec.ts:72:24)</failure>
+    </testcase>
+    <testcase classname="ContextDetector › Testing Framework Detection" name="should detect Jest from package.json" time="0.004">
+    </testcase>
+    <testcase classname="ContextDetector › Context Detection" name="should detect complete context" time="0.019">
+    </testcase>
+  </testsuite>
+  <testsuite name="InvestigationPlanner" errors="0" failures="0" skipped="0" timestamp="2025-10-05T22:21:40" time="5.042" tests="8">
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should generate security audit plan" time="0.036">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should auto-detect investigation type from goal" time="0.001">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should generate phases with deliverables" time="0.003">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should estimate resources" time="0.002">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should identify risks" time="0.001">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should calculate quality and completeness scores" time="0.001">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Planning Strategies" name="should apply comprehensive strategy" time="0.001">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Planning Strategies" name="should apply rapid strategy" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="UserPreferencesManager" errors="0" failures="0" skipped="0" timestamp="2025-10-05T22:21:40" time="5.143" tests="32">
+    <testcase classname="UserPreferencesManager › Initialization" name="should load default preferences when file does not exist" time="0.027">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Initialization" name="should create preferences file on save" time="0.025">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Initialization" name="should persist preferences across instances" time="0.011">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Preference Updates" name="should update preferences" time="0.016">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Preference Updates" name="should merge updates with existing preferences" time="0.013">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Profile Management" name="should create a profile" time="0.012">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Profile Management" name="should list all profiles" time="0.021">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Profile Management" name="should update existing profile with same name" time="0.015">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Profile Management" name="should delete a profile" time="0.014">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Profile Management" name="should return false when deleting non-existent profile" time="0.005">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Profile Management" name="should store custom settings in profile" time="0.026">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Active Profile" name="should set active profile" time="0.007">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Active Profile" name="should get active profile" time="0.014">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Active Profile" name="should return false when setting non-existent profile as active" time="0.003">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Active Profile" name="should return undefined when no active profile set" time="0.005">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Active Profile" name="should clear active profile" time="0.016">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Active Profile" name="should clear active profile when deleting it" time="0.017">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Last Used Settings" name="should update last used settings" time="0.012">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Last Used Settings" name="should track timestamp for last used" time="0.006">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Last Used Settings" name="should return undefined when no last used settings" time="0.006">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Framework Preferences" name="should set framework-specific preferences" time="0.008">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Framework Preferences" name="should return undefined for framework with no preferences" time="0.002">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Framework Preferences" name="should handle multiple framework preferences" time="0.018">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Behavior Settings" name="should update behavior settings" time="0.008">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Behavior Settings" name="should return default behavior when not set" time="0.003">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Behavior Settings" name="should merge behavior updates" time="0.011">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Import/Export" name="should export preferences as JSON" time="0.019">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Import/Export" name="should import preferences from JSON" time="0.008">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Import/Export" name="should reject invalid JSON on import" time="0.08">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Reset" name="should reset preferences to defaults" time="0.025">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Persistence" name="should persist preferences to disk" time="0.009">
+    </testcase>
+    <testcase classname="UserPreferencesManager › Persistence" name="should create config directory if it does not exist" time="0.01">
+    </testcase>
+  </testsuite>
+  <testsuite name="Critical Trinity Agents" errors="0" failures="0" skipped="0" timestamp="2025-10-05T22:21:40" time="5.141" tests="8">
+    <testcase classname="Critical Trinity Agents › TAN Agent (Structure Specialist)" name="should create TAN agent instance" time="0.027">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › TAN Agent (Structure Specialist)" name="should execute architecture analysis investigation" time="0.042">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › ZEN Agent (Documentation Specialist)" name="should create ZEN agent instance" time="0.001">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › ZEN Agent (Documentation Specialist)" name="should execute custom investigation" time="0.041">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › INO Agent (Context Specialist)" name="should create INO agent instance" time="0.001">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › INO Agent (Context Specialist)" name="should execute custom investigation" time="0.076">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › JUNO Agent (Quality Auditor)" name="should create JUNO agent instance" time="0.001">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › JUNO Agent (Quality Auditor)" name="should execute code quality audit" time="0.056">
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -5,6 +5,9 @@
  */
 
 import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('LearningBenchmark');
 
 export interface LearningMetrics {
   speed: number; // Task completion speed
@@ -24,17 +27,17 @@ export class LearningBenchmark extends Benchmark {
     const startTime = Date.now();
     const iterations = this.config.iterations || 10;
 
-    console.log(`\n🧠 Learning Effectiveness Benchmark`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    logger.info(`\n🧠 Learning Effectiveness Benchmark`);
+    logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 
     // Warmup runs
-    console.log(`Warming up (${this.config.warmupRuns} runs)...`);
+    logger.info(`Warming up (${this.config.warmupRuns} runs)...`);
     for (let i = 0; i < (this.config.warmupRuns || 2); i++) {
       await this.runIteration(0);
     }
 
     // Baseline (first 10 investigations - no learning)
-    console.log(`\nBaseline (first 10 investigations) - ${iterations} iterations...`);
+    logger.info(`\nBaseline (first 10 investigations) - ${iterations} iterations...`);
     const baselineResults: LearningMetrics[] = [];
     for (let i = 0; i < iterations; i++) {
       const result = await this.runIteration(0); // Experience level: 0
@@ -43,10 +46,10 @@ export class LearningBenchmark extends Benchmark {
         `  Iteration ${i + 1}: Speed=${result.speed.toFixed(0)}ms Accuracy=${result.accuracy.toFixed(1)}%\r`
       );
     }
-    console.log(); // New line
+    logger.info(''); // New line
 
     // Optimized (after 100 investigations - with learning)
-    console.log(`\nOptimized (after 100 investigations) - ${iterations} iterations...`);
+    logger.info(`\nOptimized (after 100 investigations) - ${iterations} iterations...`);
     const optimizedResults: LearningMetrics[] = [];
     for (let i = 0; i < iterations; i++) {
       const result = await this.runIteration(100); // Experience level: 100
@@ -55,7 +58,7 @@ export class LearningBenchmark extends Benchmark {
         `  Iteration ${i + 1}: Speed=${result.speed.toFixed(0)}ms Accuracy=${result.accuracy.toFixed(1)}%\r`
       );
     }
-    console.log(); // New line
+    logger.info(''); // New line
 
     // Calculate statistics
     const baselineSpeed = baselineResults.map((r) => r.speed);
@@ -87,16 +90,16 @@ export class LearningBenchmark extends Benchmark {
 
     const duration = Date.now() - startTime;
 
-    console.log(`\n📈 Results:`);
-    console.log(`  Speed:`);
-    console.log(`    Baseline:  ${speedStats.baseline.avg.toFixed(0)}ms`);
-    console.log(`    Optimized: ${speedStats.optimized.avg.toFixed(0)}ms (${speedImprovement.toFixed(1)}% faster)`);
-    console.log(`  Accuracy:`);
-    console.log(`    Baseline:  ${accuracyStats.baseline.avg.toFixed(1)}%`);
-    console.log(`    Optimized: ${accuracyStats.optimized.avg.toFixed(1)}% (+${(accuracyStats.optimized.avg - accuracyStats.baseline.avg).toFixed(1)}%)`);
-    console.log(`  Token Efficiency:`);
-    console.log(`    Baseline:  ${tokenStats.baseline.avg.toFixed(0)} tokens/task`);
-    console.log(`    Optimized: ${tokenStats.optimized.avg.toFixed(0)} tokens/task (${tokenImprovement.toFixed(1)}% reduction)`);
+    logger.info(`\n📈 Results:`);
+    logger.info(`  Speed:`);
+    logger.info(`    Baseline:  ${speedStats.baseline.avg.toFixed(0)}ms`);
+    logger.info(`    Optimized: ${speedStats.optimized.avg.toFixed(0)}ms (${speedImprovement.toFixed(1)}% faster)`);
+    logger.info(`  Accuracy:`);
+    logger.info(`    Baseline:  ${accuracyStats.baseline.avg.toFixed(1)}%`);
+    logger.info(`    Optimized: ${accuracyStats.optimized.avg.toFixed(1)}% (+${(accuracyStats.optimized.avg - accuracyStats.baseline.avg).toFixed(1)}%)`);
+    logger.info(`  Token Efficiency:`);
+    logger.info(`    Baseline:  ${tokenStats.baseline.avg.toFixed(0)} tokens/task`);
+    logger.info(`    Optimized: ${tokenStats.optimized.avg.toFixed(0)} tokens/task (${tokenImprovement.toFixed(1)}% reduction)`);
 
     // Validation: Check if learning effectiveness meets expectations
     // Speed: >20% improvement, Accuracy: +5% minimum, Tokens: >15% reduction

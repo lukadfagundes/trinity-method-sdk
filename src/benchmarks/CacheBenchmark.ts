@@ -5,6 +5,9 @@
  */
 
 import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('CacheBenchmark');
 
 export interface CacheSimulation {
   l1Size: number;
@@ -35,17 +38,17 @@ export class CacheBenchmark extends Benchmark {
     const startTime = Date.now();
     const iterations = this.config.iterations || 10;
 
-    console.log(`\n💾 Cache Performance Benchmark`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    logger.info(`\n💾 Cache Performance Benchmark`);
+    logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 
     // Warmup runs
-    console.log(`Warming up (${this.config.warmupRuns} runs)...`);
+    logger.info(`Warming up (${this.config.warmupRuns} runs)...`);
     for (let i = 0; i < (this.config.warmupRuns || 2); i++) {
       await this.runIteration();
     }
 
     // Benchmark runs
-    console.log(`\nRunning ${iterations} iterations...`);
+    logger.info(`\nRunning ${iterations} iterations...`);
     const results: {
       l1HitRate: number;
       l2HitRate: number;
@@ -60,7 +63,7 @@ export class CacheBenchmark extends Benchmark {
         `  Iteration ${i + 1}: L1=${result.l1HitRate.toFixed(1)}% L2=${result.l2HitRate.toFixed(1)}% L3=${result.l3HitRate.toFixed(1)}%\r`
       );
     }
-    console.log(); // New line
+    logger.info(''); // New line
 
     // Calculate statistics
     const l1Rates = results.map((r) => r.l1HitRate);
@@ -75,11 +78,11 @@ export class CacheBenchmark extends Benchmark {
 
     const duration = Date.now() - startTime;
 
-    console.log(`\n📈 Results:`);
-    console.log(`  L1 Hit Rate: ${l1Stats.avg.toFixed(1)}% (±${l1Stats.stdDev.toFixed(1)}%)`);
-    console.log(`  L2 Hit Rate: ${l2Stats.avg.toFixed(1)}% (±${l2Stats.stdDev.toFixed(1)}%)`);
-    console.log(`  L3 Hit Rate: ${l3Stats.avg.toFixed(1)}% (±${l3Stats.stdDev.toFixed(1)}%)`);
-    console.log(`  Avg Lookup:  ${timeStats.avg.toFixed(2)}ms (±${timeStats.stdDev.toFixed(2)}ms)`);
+    logger.info(`\n📈 Results:`);
+    logger.info(`  L1 Hit Rate: ${l1Stats.avg.toFixed(1)}% (±${l1Stats.stdDev.toFixed(1)}%)`);
+    logger.info(`  L2 Hit Rate: ${l2Stats.avg.toFixed(1)}% (±${l2Stats.stdDev.toFixed(1)}%)`);
+    logger.info(`  L3 Hit Rate: ${l3Stats.avg.toFixed(1)}% (±${l3Stats.stdDev.toFixed(1)}%)`);
+    logger.info(`  Avg Lookup:  ${timeStats.avg.toFixed(2)}ms (±${timeStats.stdDev.toFixed(2)}ms)`);
 
     // Validation: Check if performance meets expectations
     // L1 should be >80%, L2 >60%, L3 >40%, lookup time <5ms

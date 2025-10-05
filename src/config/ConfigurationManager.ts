@@ -13,6 +13,9 @@ import {
   ConfigurationOptions,
   ConfigChangeListener,
 } from './types';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('ConfigurationManager');
 
 export class ConfigurationManager {
   private config!: TrinityConfiguration;
@@ -61,9 +64,9 @@ export class ConfigurationManager {
       // Notify listeners
       await this.notifyListeners();
 
-      console.log(`Configuration reloaded in ${duration}ms`);
+      logger.info(`Configuration reloaded in ${duration}ms`);
     } catch (error) {
-      console.error('Failed to reload configuration:', error);
+      logger.error('Failed to reload configuration:', error);
       throw error;
     }
   }
@@ -225,7 +228,7 @@ export class ConfigurationManager {
           promises.push(result);
         }
       } catch (error) {
-        console.error('Configuration change listener error:', error);
+        logger.error('Configuration change listener error:', error);
       }
     }
 

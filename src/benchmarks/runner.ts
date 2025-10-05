@@ -10,6 +10,9 @@ import { TokenBenchmark } from './TokenBenchmark';
 import { CacheBenchmark } from './CacheBenchmark';
 import { SpeedBenchmark } from './SpeedBenchmark';
 import { LearningBenchmark } from './LearningBenchmark';
+import { createLogger } from '../utils/Logger';
+
+const logger = createLogger('BenchmarkRunner');
 
 export interface RunnerOptions {
   type?: 'token' | 'cache' | 'speed' | 'learning' | 'all';
@@ -88,23 +91,23 @@ export async function runBenchmarks(options: RunnerOptions = {}): Promise<void> 
     const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
     const htmlPath = `${outputDir}/${suiteName.replace(/\s+/g, '-').toLowerCase()}-${timestamp}.html`;
     reporter.generateVisualization(suite, htmlPath);
-    console.log(`📊 Visualization: ${htmlPath}`);
+    logger.info(`📊 Visualization: ${htmlPath}`);
   }
 
   // Print summary
-  console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  console.log(`📊 Benchmark Summary`);
-  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  console.log(`Total: ${suite.summary.total}`);
-  console.log(`Passed: ${suite.summary.passed} ✅`);
-  console.log(`Failed: ${suite.summary.failed} ${suite.summary.failed > 0 ? '❌' : ''}`);
-  console.log(`Success Rate: ${((suite.summary.passed / suite.summary.total) * 100).toFixed(1)}%`);
-  console.log(`Duration: ${(suite.duration / 1000).toFixed(2)}s`);
-  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+  logger.info(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  logger.info(`📊 Benchmark Summary`);
+  logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  logger.info(`Total: ${suite.summary.total}`);
+  logger.info(`Passed: ${suite.summary.passed} ✅`);
+  logger.info(`Failed: ${suite.summary.failed} ${suite.summary.failed > 0 ? '❌' : ''}`);
+  logger.info(`Success Rate: ${((suite.summary.passed / suite.summary.total) * 100).toFixed(1)}%`);
+  logger.info(`Duration: ${(suite.duration / 1000).toFixed(2)}s`);
+  logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
 
   if (suite.summary.failed > 0) {
-    console.log(`⚠️  ${suite.summary.failed} benchmark(s) failed validation criteria.`);
-    console.log(`Review the reports for detailed analysis.\n`);
+    logger.warn(`⚠️  ${suite.summary.failed} benchmark(s) failed validation criteria.`);
+    logger.warn(`Review the reports for detailed analysis.\n`);
     process.exit(1);
   }
 }
@@ -132,7 +135,7 @@ if (require.main === module) {
   }
 
   runBenchmarks(options).catch((error) => {
-    console.error('Benchmark execution failed:', error);
+    logger.error('Benchmark execution failed:', error);
     process.exit(1);
   });
 }
