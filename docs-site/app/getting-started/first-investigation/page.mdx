@@ -1,0 +1,257 @@
+# Your First Investigation
+
+This guide walks you through creating and completing your first Trinity Method investigation - a security audit of a sample application.
+
+## Overview
+
+You'll learn how to:
+1. Create an investigation using the wizard
+2. Execute the investigation with AI agents
+3. Review findings and metrics
+4. Generate reports and documentation
+
+**Time to complete**: ~15 minutes
+
+## Step 1: Create the Investigation
+
+Use the Trinity wizard to create a security audit:
+
+```bash
+trinity wizard
+```
+
+You'll be prompted with:
+
+```
+? What type of investigation would you like to create?
+  ❯ Security Audit
+    Performance Review
+    Architecture Analysis
+    Code Quality
+    Custom Investigation
+
+? Where is your codebase located? (.)
+
+? Would you like to use smart context detection? (Y/n)
+```
+
+Select **Security Audit** and accept the defaults. The wizard will:
+
+- 🔍 Auto-detect your framework (Next.js, React, Express, etc.)
+- 🎯 Identify your programming language
+- 📋 Generate an investigation plan with 14 security tasks
+- ⏱️ Estimate time and resource requirements
+
+## Step 2: Review the Investigation Plan
+
+The wizard creates:
+
+```
+trinity/
+├── sessions/
+│   └── SEC-2025-001/
+│       ├── INVESTIGATION.md      # Investigation overview
+│       ├── PLAN.md              # Detailed plan
+│       └── FINDINGS.md          # Results (empty for now)
+```
+
+Open `INVESTIGATION.md` to see your investigation:
+
+```markdown
+# Security Audit Investigation
+
+**ID**: SEC-2025-001
+**Type**: Security Audit
+**Status**: Ready
+**Created**: 2025-01-15
+
+## Scope
+- Authentication & Authorization
+- Input Validation
+- XSS Prevention
+- CSRF Protection
+- Dependency Vulnerabilities
+...
+```
+
+## Step 3: Run the Investigation
+
+Start the investigation with:
+
+```bash
+trinity run SEC-2025-001
+```
+
+This launches the AI agents to execute the security audit:
+
+```
+🔍 Starting Security Audit Investigation (SEC-2025-001)
+
+[TAN] Analyzing authentication implementation...
+[TAN] ✓ Found authentication logic in src/auth/
+[JUNO] Auditing authentication for security issues...
+[JUNO] ⚠️ Warning: JWT tokens do not expire
+[JUNO] ⚠️ Warning: No rate limiting on login endpoint
+
+[TAN] Analyzing input validation...
+[TAN] ✓ Found user input handlers
+[JUNO] ✓ Input validation present
+[JUNO] ⚠️ Warning: SQL injection risk in search query
+
+...
+
+📊 Investigation complete: 3 high, 5 medium, 2 low priority findings
+```
+
+## Step 4: Review Findings
+
+Findings are automatically captured in `FINDINGS.md`:
+
+```markdown
+# Security Audit Findings
+
+## High Priority
+
+### 1. SQL Injection Vulnerability
+**Location**: src/api/search.ts:42
+**Severity**: High
+**Description**: User input directly concatenated into SQL query
+
+**Recommendation**: Use parameterized queries or an ORM
+```
+
+## Step 5: View Analytics
+
+Check the performance metrics:
+
+```bash
+trinity analytics SEC-2025-001
+```
+
+Output:
+
+```
+Investigation Metrics (SEC-2025-001)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Duration:           45 minutes
+Tasks Completed:    14/14
+Tokens Used:        142,500
+Cost Estimate:      $0.75
+
+Agent Performance:
+  TAN:  8 tasks (avg 4.2 min, 8,500 tokens)
+  JUNO: 6 tasks (avg 6.1 min, 15,200 tokens)
+
+Findings:
+  High:     3
+  Medium:   5
+  Low:      2
+```
+
+## Step 6: Generate Report
+
+Create a comprehensive report:
+
+```bash
+trinity report SEC-2025-001 --format markdown
+```
+
+This generates `trinity/sessions/SEC-2025-001/REPORT.md` with:
+
+- Executive summary
+- Detailed findings with code examples
+- Risk assessment
+- Remediation recommendations
+- Metrics and analytics
+
+## Step 7: Fix Issues (Optional)
+
+Use the findings to create work orders:
+
+```bash
+trinity workorder from-finding SEC-2025-001 --finding-id F001
+```
+
+This creates a work order to fix the SQL injection vulnerability:
+
+```markdown
+# Work Order: Fix SQL Injection in Search
+
+**From**: SEC-2025-001, Finding F001
+**Priority**: High
+**Assigned**: Developer
+
+## Task
+Replace string concatenation with parameterized query in search endpoint
+
+## Location
+src/api/search.ts:42
+...
+```
+
+## What You've Learned
+
+✅ Created an investigation using the wizard
+✅ Executed automated security analysis with AI agents
+✅ Reviewed findings and metrics
+✅ Generated professional reports
+✅ Created actionable work orders
+
+## Next Steps
+
+- [Run a Performance Review](/guides/performance) - Optimize your application
+- [Architecture Analysis](/guides/architecture) - Document your system
+- [Agent Reference](/agents) - Learn about each AI agent's capabilities
+- [API Documentation](/api) - Explore the full Trinity API
+
+## Common Issues
+
+### "Investigation not found"
+
+Make sure you're in the project root directory where `trinity/` exists.
+
+### "No findings captured"
+
+Check that your AI provider (Claude, Copilot) is properly configured in your IDE.
+
+### "Permission denied"
+
+Run `chmod +x $(which trinity)` to make the CLI executable.
+
+## Advanced Options
+
+### Custom Investigation Scope
+
+```bash
+trinity create investigation \
+  --type security-audit \
+  --scope "src/api/**/*.ts" \
+  --exclude "**/*.test.ts"
+```
+
+### Specific Focus Areas
+
+```bash
+trinity wizard --focus authentication,authorization,input-validation
+```
+
+### Using Saved Preferences
+
+```bash
+trinity wizard --profile my-security-profile
+```
+
+## Tips for Success
+
+1. **Start Small** - Focus on one module or feature first
+2. **Review Context** - Ensure agents have access to relevant code
+3. **Iterate** - Investigations can be re-run with refined scope
+4. **Document** - Keep session notes in `INVESTIGATION.md`
+5. **Track Progress** - Use metrics to measure improvement over time
+
+## Resources
+
+- [Security Audit Guide](/guides/security) - Complete security investigation guide
+- [Investigation Planning](/api/planning) - Advanced planning techniques
+- [Hook Automation](/api/hooks) - Automate investigation workflows
+- [Troubleshooting](/support/troubleshooting) - Common issues and solutions

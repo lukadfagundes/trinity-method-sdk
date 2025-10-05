@@ -1,0 +1,588 @@
+# Performance Review Investigations
+
+Complete guide to conducting performance reviews and optimization with Trinity Method SDK.
+
+## Overview
+
+Performance reviews systematically identify bottlenecks, optimization opportunities, and performance anti-patterns in your application. Trinity's performance review template covers Core Web Vitals, backend performance, and resource optimization.
+
+**Best for:**
+- Pre-launch performance optimization
+- Performance regression investigation
+- Cost optimization (cloud resources)
+- User experience improvement
+
+**Time estimate:** 15-30 hours depending on application complexity
+
+## Quick Start
+
+Create a performance review:
+
+```bash
+trinity wizard --type performance-review
+```
+
+Or with specific focus:
+
+```bash
+trinity create investigation \
+  --type performance-review \
+  --scope "src/**/*.{ts,js,tsx,jsx}" \
+  --focus frontend,backend,database
+```
+
+## Investigation Scope
+
+### Frontend Performance
+
+#### Core Web Vitals
+- **LCP (Largest Contentful Paint)** - Loading performance
+- **FID (First Input Delay)** - Interactivity
+- **CLS (Cumulative Layout Shift)** - Visual stability
+- **TTFB (Time to First Byte)** - Server response time
+
+#### Optimization Areas
+- Bundle size analysis
+- Code splitting effectiveness
+- Image optimization
+- Font loading strategies
+- CSS optimization
+- JavaScript execution time
+- Third-party script impact
+- Caching strategies
+
+### Backend Performance
+
+#### API Performance
+- Response time analysis
+- Database query optimization
+- N+1 query detection
+- API payload size
+- Caching implementation
+- Rate limiting efficiency
+
+#### Resource Utilization
+- Memory usage patterns
+- CPU utilization
+- Network I/O
+- Database connection pooling
+- Background job performance
+
+### Infrastructure
+
+- CDN configuration
+- Server response times
+- Cold start performance (serverless)
+- Auto-scaling behavior
+- Resource allocation
+
+## Execution Flow
+
+### Phase 1: Measurement (AJ + TAN)
+
+**AJ** (Performance Specialist) measures:
+- Baseline performance metrics
+- Lighthouse scores
+- Real User Monitoring (RUM) data
+- Synthetic monitoring results
+
+**TAN** instruments code:
+- Performance markers
+- Custom metrics
+- Profiling points
+
+**Duration:** 3-5 hours
+
+### Phase 2: Analysis (AJ + TAN)
+
+**AJ** identifies bottlenecks:
+- Slow components/routes
+- Heavy computations
+- Inefficient algorithms
+- Resource leaks
+
+**TAN** analyzes root causes:
+- Code complexity analysis
+- Dependency impact
+- Architecture issues
+
+**Duration:** 8-15 hours
+
+### Phase 3: Recommendations (AJ + ZEN)
+
+**AJ** provides optimization strategies:
+- Quick wins
+- Long-term improvements
+- Performance budgets
+
+**ZEN** identifies patterns:
+- Common anti-patterns
+- Best practices violations
+- Systemic issues
+
+**Duration:** 4-10 hours
+
+## Example Investigation
+
+### 1. Create Investigation
+
+```bash
+trinity wizard
+# Select: Performance Review
+# Target: src/
+# Focus: Frontend + Backend
+```
+
+### 2. Baseline Measurement
+
+```bash
+trinity run PERF-2025-023
+```
+
+Output:
+
+```
+📊 Performance Review Investigation (PERF-2025-023)
+
+[AJ] Measuring baseline performance...
+  ✓ Lighthouse Score: 67/100
+    Performance:    58/100 ⚠️
+    Accessibility:  95/100 ✓
+    Best Practices: 92/100 ✓
+    SEO:            100/100 ✓
+
+[AJ] Core Web Vitals:
+  LCP: 4.2s ⚠️ (target: <2.5s)
+  FID: 180ms ⚠️ (target: <100ms)
+  CLS: 0.18 ⚠️ (target: <0.1)
+  TTFB: 850ms ⚠️ (target: <600ms)
+
+[TAN] Analyzing bundle size...
+  Main bundle: 847 KB ⚠️ (target: <500 KB)
+  Vendor bundle: 1.2 MB ⚠️
+  Total JS: 2.1 MB ⚠️
+```
+
+### 3. Identify Bottlenecks
+
+```
+[AJ] Top Performance Issues:
+
+1. Large JavaScript bundles (2.1 MB)
+   Impact: Slow initial load
+   Location: webpack config
+
+2. Unoptimized images (8 images > 500 KB)
+   Impact: Poor LCP score
+   Location: public/images/
+
+3. Render-blocking CSS (340 KB)
+   Impact: Delayed first paint
+   Location: styles/global.css
+
+4. Heavy React components (UserDashboard)
+   Impact: Slow interactivity
+   Location: src/components/UserDashboard.tsx
+
+5. Database N+1 queries (Users API)
+   Impact: Slow API responses
+   Location: src/api/users/route.ts
+```
+
+### 4. Review Recommendations
+
+Generated in `trinity/sessions/PERF-2025-023/FINDINGS.md`:
+
+```markdown
+## Finding #1: Excessive JavaScript Bundle Size
+
+**Severity**: 🟡 MEDIUM
+**Impact**: Page Load Time +3.2s
+**Location**: webpack.config.js
+
+### Current State
+```javascript
+// Main bundle: 847 KB
+// Vendor bundle: 1.2 MB
+// Total: 2.1 MB (uncompressed)
+```
+
+### Analysis
+- No code splitting implemented
+- All routes bundled together
+- Heavy dependencies (moment.js, lodash)
+
+### Recommendations
+
+#### Quick Wins (1-2 days)
+1. Enable code splitting:
+```javascript
+// next.config.js
+module.exports = {
+  webpack: (config) => {
+    config.optimization.splitChunks = {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          priority: 10,
+        },
+      },
+    };
+    return config;
+  },
+};
+```
+
+2. Replace heavy dependencies:
+```bash
+# Replace moment.js (230 KB) with date-fns (13 KB)
+npm uninstall moment
+npm install date-fns
+
+# Replace lodash with lodash-es (tree-shakeable)
+npm uninstall lodash
+npm install lodash-es
+```
+
+#### Long-term (1-2 weeks)
+1. Implement route-based code splitting
+2. Lazy load non-critical components
+3. Create performance budget: Max 500 KB initial JS
+
+### Expected Impact
+- Bundle size: 2.1 MB → 650 KB (-69%)
+- LCP: 4.2s → 2.1s (-50%)
+- Lighthouse Performance: 58 → 85 (+47%)
+```
+
+## Advanced Techniques
+
+### Performance Budgets
+
+Set automated performance budgets:
+
+```yaml
+# trinity/config/performance-budgets.yml
+budgets:
+  javascript:
+    initial: 500KB
+    total: 1MB
+
+  css:
+    initial: 100KB
+    total: 200KB
+
+  images:
+    max-size: 500KB
+    formats: [webp, avif]
+
+  metrics:
+    lcp: 2500ms
+    fid: 100ms
+    cls: 0.1
+    ttfb: 600ms
+
+alerts:
+  on-exceed: slack
+  channel: #performance-alerts
+```
+
+Monitor in CI/CD:
+
+```bash
+trinity check-budgets --fail-on-exceed
+```
+
+### Performance Profiling
+
+Deep performance profiling:
+
+```typescript
+// Enable profiling in investigation
+import { enableProfiling } from '@trinity-method/sdk';
+
+enableProfiling({
+  components: ['UserDashboard', 'ProductList'],
+  apis: ['/api/users', '/api/products'],
+  database: true,
+  memory: true,
+});
+```
+
+### Load Testing Integration
+
+Integrate with load testing tools:
+
+```yaml
+# trinity/config/load-tests.yml
+scenarios:
+  - name: Homepage Load
+    url: https://app.example.com
+    users: 100
+    duration: 5m
+    ramp-up: 30s
+
+  - name: API Stress Test
+    url: https://api.example.com/users
+    requests-per-second: 1000
+    duration: 2m
+```
+
+Run during investigation:
+
+```bash
+trinity run PERF-2025-023 --with-load-tests
+```
+
+## Optimization Strategies
+
+### Frontend Optimizations
+
+#### 1. Code Splitting
+
+```typescript
+// Before: All code in one bundle
+import { UserDashboard } from './components/UserDashboard';
+
+// After: Lazy load components
+const UserDashboard = lazy(() => import('./components/UserDashboard'));
+
+<Suspense fallback={<Loading />}>
+  <UserDashboard />
+</Suspense>
+```
+
+#### 2. Image Optimization
+
+```typescript
+// Before: Unoptimized images
+<img src="/images/hero.jpg" alt="Hero" />
+
+// After: Next.js Image component
+import Image from 'next/image';
+
+<Image
+  src="/images/hero.jpg"
+  alt="Hero"
+  width={1200}
+  height={600}
+  priority
+  placeholder="blur"
+/>
+```
+
+#### 3. React Query Optimization
+
+```typescript
+// Before: No caching
+const { data } = useQuery('users', fetchUsers);
+
+// After: Smart caching
+const { data } = useQuery('users', fetchUsers, {
+  staleTime: 5 * 60 * 1000, // 5 minutes
+  cacheTime: 10 * 60 * 1000, // 10 minutes
+  refetchOnWindowFocus: false,
+});
+```
+
+### Backend Optimizations
+
+#### 1. Database Query Optimization
+
+```typescript
+// Before: N+1 query problem
+const users = await db.user.findMany();
+for (const user of users) {
+  user.posts = await db.post.findMany({ where: { userId: user.id } });
+}
+
+// After: Single query with include
+const users = await db.user.findMany({
+  include: { posts: true },
+});
+```
+
+#### 2. API Response Caching
+
+```typescript
+// Before: No caching
+export async function GET() {
+  const data = await fetchExpensiveData();
+  return Response.json(data);
+}
+
+// After: Cache responses
+export async function GET() {
+  return Response.json(data, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30',
+    },
+  });
+}
+```
+
+#### 3. Database Connection Pooling
+
+```typescript
+// Before: New connection per request
+const db = new Database(connectionString);
+
+// After: Connection pooling
+const pool = new Pool({
+  connectionString,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+```
+
+## Performance Monitoring
+
+### Real-time Monitoring
+
+Set up continuous monitoring:
+
+```bash
+trinity monitor enable --investigation PERF-2025-023
+```
+
+This tracks:
+- Core Web Vitals (real users)
+- API response times
+- Error rates
+- Resource utilization
+
+### Performance Dashboard
+
+View performance trends:
+
+```bash
+trinity dashboard performance
+```
+
+Output:
+
+```
+Performance Metrics (Last 7 Days)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LCP:    2.8s → 2.1s  (-25%) ✓
+FID:    150ms → 85ms (-43%) ✓
+CLS:    0.15 → 0.08  (-47%) ✓
+TTFB:   720ms → 580ms (-19%) ✓
+
+API Response Times:
+  /api/users:     245ms → 180ms (-27%)
+  /api/products:  380ms → 290ms (-24%)
+  /api/orders:    520ms → 410ms (-21%)
+
+Bundle Size:
+  JS:   2.1MB → 680KB (-68%)
+  CSS:  340KB → 120KB (-65%)
+```
+
+## Best Practices
+
+### 1. Establish Baselines
+
+Always measure before optimizing:
+
+```bash
+trinity baseline create PERF-2025-023
+```
+
+### 2. Performance Budget
+
+Set and enforce budgets:
+
+```yaml
+budgets:
+  lighthouse-performance: 90
+  lcp: 2500ms
+  fid: 100ms
+  bundle-size: 500KB
+```
+
+### 3. Regular Reviews
+
+Schedule performance reviews:
+- Weekly: Quick health checks
+- Monthly: Deep performance audits
+- Quarterly: Architecture performance review
+
+### 4. Track Metrics
+
+Monitor trends over time:
+
+```bash
+trinity metrics performance --trend 3-months --export csv
+```
+
+## Common Issues
+
+### Slow Initial Load
+- Large JavaScript bundles
+- Unoptimized images
+- Render-blocking resources
+- No code splitting
+
+### Poor Interactivity
+- Heavy JavaScript execution
+- Large React component trees
+- Excessive re-renders
+- Blocking main thread
+
+### Layout Shifts
+- Images without dimensions
+- Dynamic content injection
+- Web fonts loading
+- Ads without reserved space
+
+### Slow API Responses
+- N+1 database queries
+- Missing indexes
+- No caching
+- Large payload sizes
+
+## Troubleshooting
+
+### Investigation Running Slow
+
+Optimize investigation execution:
+
+```bash
+# Run in parallel
+trinity run PERF-2025-023 --parallel 4
+
+# Enable caching
+trinity run PERF-2025-023 --cache-enabled
+
+# Focus on specific areas
+trinity run PERF-2025-023 --focus frontend
+```
+
+### Inconsistent Results
+
+Ensure consistent measurements:
+
+```bash
+# Run with stable environment
+trinity run PERF-2025-023 --stable-mode \
+  --warmup 3 \
+  --runs 5
+```
+
+## Next Steps
+
+- [Architecture Analysis](/guides/architecture) - Review system design
+- [AJ Agent Reference](/agents/aj) - Performance specialist
+- [Analytics API](/api/analytics) - Performance metrics
+- [Hook Automation](/api/hooks) - Automate performance checks
+
+## Resources
+
+- [Web Vitals](https://web.dev/vitals/)
+- [Lighthouse](https://developers.google.com/web/tools/lighthouse)
+- [Chrome DevTools Performance](https://developer.chrome.com/docs/devtools/performance/)
+- [React Performance](https://react.dev/learn/render-and-commit)

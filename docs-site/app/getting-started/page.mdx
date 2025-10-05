@@ -1,0 +1,158 @@
+# Getting Started with Trinity Method SDK
+
+Welcome to the Trinity Method SDK! This guide will help you get up and running with investigation-first development in minutes.
+
+## What is Trinity Method?
+
+Trinity Method is an **investigation-first development methodology** that helps you build better software through systematic investigations powered by AI agents. Instead of jumping straight to coding, you start with structured investigations that uncover insights, identify patterns, and guide your development.
+
+### Key Features
+
+- 🔍 **Investigation Wizard** - Create comprehensive investigations in minutes with smart templates
+- 🤖 **AI Agents** - Specialized agents for technical analysis, patterns, research, and quality
+- 📊 **Performance Analytics** - Real-time metrics and anomaly detection
+- 🔗 **Hook Library** - 28 pre-built safe hooks for automation
+- 📈 **Planning System** - AI-powered investigation planning with resource estimation
+
+## Quick Start
+
+### Installation
+
+```bash
+npm install -g @trinity-method/sdk
+```
+
+Or with your project:
+
+```bash
+npm install @trinity-method/sdk
+```
+
+### Initialize Trinity in Your Project
+
+```bash
+trinity init
+```
+
+This creates the Trinity directory structure:
+
+```
+your-project/
+├── trinity/
+│   ├── sessions/          # Investigation sessions
+│   ├── knowledge-base/    # Captured knowledge
+│   ├── work-orders/       # Work order tracking
+│   └── archive/           # Completed work
+└── CLAUDE.md              # AI behavioral instructions
+```
+
+### Your First Investigation
+
+Create a security audit investigation:
+
+```bash
+trinity create investigation --type security-audit
+```
+
+Or use the interactive wizard:
+
+```bash
+trinity wizard
+```
+
+The wizard will:
+1. Detect your project's framework and language
+2. Suggest relevant investigation types
+3. Generate a comprehensive investigation plan
+4. Set up all necessary files and structure
+
+## What's Next?
+
+Now that you have Trinity set up, here's what to explore:
+
+<div className="grid md:grid-cols-2 gap-4 my-8">
+  <Card
+    title="Your First Investigation"
+    description="Complete walkthrough of creating and running a security audit"
+    href="/getting-started/first-investigation"
+  />
+  <Card
+    title="Investigation Types"
+    description="Learn about security, performance, architecture, and quality investigations"
+    href="/guides"
+  />
+  <Card
+    title="Agent Reference"
+    description="Understand the specialized AI agents (TAN, ZEN, INO, JUNO)"
+    href="/agents"
+  />
+  <Card
+    title="API Documentation"
+    description="Complete API reference for all Trinity features"
+    href="/api"
+  />
+</div>
+
+## Core Concepts
+
+### Investigations
+
+Investigations are systematic explorations of your codebase to uncover insights:
+
+- **Security Audits** - Find vulnerabilities and security issues
+- **Performance Reviews** - Identify bottlenecks and optimization opportunities
+- **Architecture Analysis** - Understand and document system architecture
+- **Code Quality** - Assess maintainability and code health
+
+### AI Agents
+
+Trinity uses specialized agents for different tasks:
+
+- **TAN** (Technical Analysis) - Deep technical investigation and analysis
+- **ZEN** (Pattern Recognition) - Identifies patterns and best practices
+- **INO** (Research) - Gathers context and external knowledge
+- **JUNO** (Quality Audit) - Validates quality and completeness
+
+### Sessions
+
+Each investigation runs in a session that captures:
+- Context and decisions made
+- Findings and insights discovered
+- Work completed and next steps
+- Metrics and performance data
+
+## Prerequisites
+
+- Node.js 18+ or 20+
+- npm or pnpm
+- Git (recommended)
+- Claude Code, Cursor, or GitHub Copilot (for AI agent integration)
+
+## System Requirements
+
+- **OS**: Windows, macOS, or Linux
+- **Memory**: 4GB+ RAM recommended
+- **Disk**: 100MB for SDK + space for investigations
+
+## Need Help?
+
+- 📖 [Full Documentation](/guides)
+- 💬 [Community Forum](https://github.com/trinity-method/trinity-method-sdk/discussions)
+- 🐛 [Report Issues](https://github.com/trinity-method/trinity-method-sdk/issues)
+- 📧 [Email Support](mailto:support@trinity-method.dev)
+
+export function Card({ title, description, href }) {
+  return (
+    <a
+      href={href}
+      className="block p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 dark:hover:border-primary-400 transition"
+    >
+      <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+        {title}
+      </h3>
+      <p className="text-gray-600 dark:text-gray-300 text-sm">
+        {description}
+      </p>
+    </a>
+  )
+}

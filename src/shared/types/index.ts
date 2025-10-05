@@ -23,19 +23,22 @@
  */
 export interface InvestigationResult {
   /** Unique identifier for this investigation */
-  investigationId: string;
+  investigationId?: string;
+
+  /** Unique identifier (alias for investigationId) */
+  id?: string;
 
   /** Human-readable investigation name */
-  name: string;
+  name?: string;
 
   /** Investigation goal/objective */
-  goal: string;
+  goal?: string;
 
   /** Investigation type/category */
   type: InvestigationType;
 
   /** Start timestamp (ISO 8601) */
-  startedAt: string;
+  startedAt?: string;
 
   /** End timestamp (ISO 8601) */
   completedAt?: string;
@@ -43,44 +46,65 @@ export interface InvestigationResult {
   /** Investigation status */
   status: InvestigationStatus;
 
+  /** Errors encountered during investigation */
+  errors?: (string | ErrorResolution)[];
+
   /** Investigation scope definition */
-  scope: InvestigationScope;
+  scope?: InvestigationScope;
 
   /** Execution phases and their results */
-  phases: InvestigationPhase[];
+  phases?: InvestigationPhase[];
 
   /** Key findings and insights */
-  findings: Finding[];
+  findings?: Finding[];
 
   /** Patterns detected during investigation */
-  patterns: Pattern[];
+  patterns?: Pattern[] | LearnedPattern[];
 
   /** Issues discovered during investigation */
-  issues: Issue[];
+  issues?: Issue[];
 
   /** Performance metrics */
-  metrics: InvestigationMetrics;
+  metrics?: InvestigationMetrics | AgentPerformanceMetrics;
 
   /** Resources used (files analyzed, agents involved) */
-  resources: InvestigationResources;
+  resources?: InvestigationResources;
 
   /** Success criteria and validation */
-  successCriteria: SuccessCriterion[];
+  successCriteria?: SuccessCriterion[];
 
   /** Risks identified and mitigations */
-  risks: Risk[];
+  risks?: Risk[];
 
   /** Investigation timeline */
-  timeline: Timeline;
+  timeline?: Timeline;
 
   /** Artifacts produced (reports, diagrams, etc.) */
-  artifacts: Artifact[];
+  artifacts?: Artifact[];
 
   /** Agent collaboration details */
-  agentCollaboration: AgentCollaboration;
+  agentCollaboration?: AgentCollaboration;
 
   /** Context from CLAUDE.md */
   context?: ClaudeMdContext;
+
+  /** Agent identifier */
+  agent?: string;
+
+  /** Investigation start time */
+  startTime?: Date;
+
+  /** Investigation end time */
+  endTime?: Date;
+
+  /** Total duration in milliseconds */
+  duration?: number;
+
+  /** Recommendations */
+  recommendations?: string[];
+
+  /** Investigation metadata */
+  metadata?: InvestigationMetadata | LearningMetadata;
 }
 
 /**
@@ -90,6 +114,7 @@ export type InvestigationType =
   | 'security-audit'
   | 'performance-review'
   | 'architecture-review'
+  | 'architecture-analysis'
   | 'code-quality'
   | 'dependency-audit'
   | 'test-coverage'
@@ -177,10 +202,28 @@ export interface InvestigationPhase {
   tasks: Task[];
 
   /** Results from this phase */
-  results: PhaseResult[];
+  results?: PhaseResult[];
 
   /** Agent responsible for this phase */
   agent?: string;
+
+  /** Agents involved in this phase (plural) */
+  agents?: string[];
+
+  /** Estimated hours for this phase */
+  estimatedHours?: number;
+
+  /** Deliverables for this phase */
+  deliverables?: string[];
+
+  /** Dependencies for this phase */
+  dependencies?: string[];
+
+  /** Findings from this phase */
+  findings?: Finding[];
+
+  /** Metrics for this phase */
+  metrics?: Record<string, any>;
 }
 
 /**
@@ -240,13 +283,16 @@ export interface Finding {
   severity: 'critical' | 'high' | 'medium' | 'low' | 'info';
 
   /** Finding category */
-  category: string;
+  category?: string;
+
+  /** Finding type */
+  type?: string;
 
   /** Location (file path, line number, etc.) */
   location?: Location;
 
   /** Evidence supporting this finding */
-  evidence: Evidence[];
+  evidence?: (Evidence | string)[];
 
   /** Recommendation to address this finding */
   recommendation?: string;
@@ -255,7 +301,7 @@ export interface Finding {
   estimatedEffort?: number;
 
   /** Finding confidence (0-1) */
-  confidence: number;
+  confidence?: number;
 }
 
 /**
@@ -263,7 +309,10 @@ export interface Finding {
  */
 export interface Location {
   /** File path */
-  filePath: string;
+  filePath?: string;
+
+  /** File path (alias for filePath) */
+  file?: string;
 
   /** Start line number */
   startLine?: number;
@@ -578,7 +627,7 @@ export interface Risk {
   id: string;
 
   /** Risk title */
-  title: string;
+  title?: string;
 
   /** Risk description */
   description: string;
@@ -589,11 +638,11 @@ export interface Risk {
   /** Risk probability (0-1) */
   probability: number;
 
-  /** Risk impact */
-  impact: 'critical' | 'high' | 'medium' | 'low';
+  /** Risk impact (severity level or description) */
+  impact: 'critical' | 'high' | 'medium' | 'low' | string;
 
   /** Risk category */
-  category: string;
+  category?: string;
 
   /** Mitigation strategy */
   mitigation?: string;
@@ -1078,43 +1127,95 @@ export interface LearningData {
   /** Agent identifier */
   agent: string;
 
-  /** Learned patterns */
-  patterns: LearnedPattern[];
+  /** Learned patterns - stored as Map for fast lookup */
+  patterns: Map<string, LearnedPattern> | LearnedPattern[];
 
-  /** Strategy performance data */
-  strategies: StrategyPerformance[];
+  /** Strategy performance data - stored as Map for fast lookup */
+  strategies: Map<string, StrategyPerformance> | StrategyPerformance[];
 
   /** Investigation history */
   investigations: InvestigationSummary[];
 
   /** Learning metadata */
   metadata: LearningMetadata;
+
+  /** Total investigations count */
+  totalInvestigations?: number;
+
+  /** Successful investigations count */
+  successfulInvestigations?: number;
+
+  /** Failed investigations count */
+  failedInvestigations?: number;
 }
 
 /**
  * Learned pattern with performance data
  */
-export interface LearnedPattern extends Pattern {
+export interface LearnedPattern extends Partial<Pattern> {
+  /** Pattern identifier */
+  id?: string;
+
+  /** Pattern name */
+  name?: string;
+
+  /** Pattern category */
+  category?: PatternCategory;
+
   /** Times this pattern was detected */
-  detectionCount: number;
+  detectionCount?: number;
 
   /** Times this pattern was correct */
-  correctCount: number;
+  correctCount?: number;
 
   /** Accuracy rate (0-1) */
-  accuracy: number;
+  accuracy?: number;
 
   /** Last detected timestamp */
-  lastDetected: string;
+  lastDetected?: string;
 
   /** First detected timestamp */
-  firstDetected: string;
+  firstDetected?: string;
 
   /** Frameworks where pattern was seen */
-  frameworks: string[];
+  frameworks?: string[];
 
   /** Average time saved by recognizing this pattern (ms) */
   averageTimeSavings?: number;
+
+  // Legacy aliases for backward compatibility
+  /** Pattern identifier (alias for id) */
+  patternId?: string;
+
+  /** Pattern type (alias for type) */
+  patternType?: 'anti-pattern' | 'best-practice' | 'code-smell' | 'design-pattern' | 'architectural-pattern' | 'validation-rule' | 'code-structure' | 'research-source';
+
+  /** Usage count (total times pattern was used) */
+  usageCount?: number;
+
+  /** Success count (times pattern application succeeded) */
+  successCount?: number;
+
+  /** File paths where pattern appears */
+  filePaths?: string[];
+
+  /** Detection criteria description */
+  detectionCriteria?: string;
+
+  /** Tags for categorization */
+  tags?: string[];
+
+  /** Error types associated with this pattern */
+  errorTypes?: string[];
+
+  /** Investigation IDs where pattern was found */
+  investigationIds?: string[];
+
+  /** Last seen timestamp */
+  lastSeen?: Date;
+
+  /** Agent ID that learned this pattern */
+  agentId?: string;
 }
 
 /**
@@ -1136,11 +1237,41 @@ export interface StrategyPerformance {
   /** Success rate (0-1) */
   successRate: number;
 
+  /** Confidence in this strategy (0-1) */
+  confidence?: number;
+
   /** Average execution time (ms) */
-  averageExecutionTime: number;
+  averageExecutionTime?: number;
 
   /** Context where strategy performs best */
-  optimalContext: Record<string, any>;
+  optimalContext?: Record<string, any>;
+
+  /** Agent ID that uses this strategy */
+  agentId?: string;
+
+  /** Strategy description */
+  description?: string;
+
+  /** Average duration (ms) */
+  averageDuration?: number;
+
+  /** Token efficiency (results per token) */
+  tokenEfficiency?: number;
+
+  /** Successful investigations count or IDs */
+  successfulInvestigations?: number | string[];
+
+  /** Failed investigations count or IDs */
+  failedInvestigations?: number | string[];
+
+  /** Failure count */
+  failureCount?: number;
+
+  /** Last used timestamp */
+  lastUsed?: Date | string;
+
+  /** Applicable contexts for this strategy */
+  applicableContexts?: string[];
 }
 
 /**
@@ -1173,26 +1304,69 @@ export interface InvestigationSummary {
  * Learning metadata
  */
 export interface LearningMetadata {
+  /** Investigation ID (for single investigation metadata) */
+  investigationId?: string;
+
+  /** Creation timestamp */
+  createdAt?: string | Date;
+
+  /** Updated timestamp (alias for lastUpdated) */
+  updatedAt?: string | Date;
+
   /** Learning data version */
-  version: string;
+  version?: string;
 
   /** Last updated timestamp */
-  lastUpdated: string;
+  lastUpdated?: string;
 
   /** Total investigations analyzed */
-  totalInvestigations: number;
+  totalInvestigations?: number;
 
   /** Learning accuracy */
-  accuracy: {
+  accuracy?: {
     precision: number;
     recall: number;
     f1Score: number;
   };
 
   /** Learning performance */
-  performance: {
+  performance?: {
     speedImprovement: number;
     errorReduction: number;
+  };
+
+  /** Agent ID */
+  agentId?: string;
+
+  /** Average completion time */
+  averageCompletionTime?: number;
+
+  /** Average token usage */
+  averageTokenUsage?: number;
+
+  /** Error rate (0-1) */
+  errorRate?: number;
+
+  /** Strategy success rate */
+  strategySuccessRate?: number;
+
+  /** Created by (agent name) */
+  createdBy?: string;
+
+  /** Tags for categorization */
+  tags?: string[];
+
+  /** Priority level */
+  priority?: 'low' | 'medium' | 'high' | 'critical';
+
+  /** Pattern accuracy */
+  patternAccuracy?: number;
+
+  /** Improvement trend */
+  improvementTrend?: number | {
+    speedImprovement: number;
+    tokenImprovement: number;
+    accuracyImprovement: number;
   };
 }
 
@@ -1664,6 +1838,431 @@ export const PATTERN_CATEGORIES: PatternCategory[] = [
   'ui-ux',
   'other'
 ];
+
+// ============================================================================
+// TASK COORDINATION TYPES (Used in: WO-003 - Task Pool Coordination)
+// ============================================================================
+
+/**
+ * Task status enumeration
+ */
+export type TaskStatus =
+  | 'pending'      // Task waiting to be assigned
+  | 'in-progress'  // Task currently being executed
+  | 'completed'    // Task successfully completed
+  | 'failed'       // Task execution failed
+  | 'blocked';     // Task blocked by dependencies
+
+/**
+ * Agent type enumeration
+ */
+export type AgentType =
+  | 'TAN'   // Trinity Architecture Navigator (structure specialist)
+  | 'ZEN'   // Zentient (knowledge base specialist)
+  | 'INO'   // Investigator (context specialist)
+  | 'JUNO'  // Quality Auditor
+  | 'AJ';   // Project Manager
+
+/**
+ * Task priority enumeration
+ */
+export type TaskPriority =
+  | 'critical'  // Must execute immediately
+  | 'high'      // Execute soon
+  | 'medium'    // Normal priority
+  | 'low';      // Execute when resources available
+
+/**
+ * Investigation task for coordination system
+ */
+export interface InvestigationTask {
+  /** Unique task identifier */
+  id: string;
+
+  /** Task description */
+  description: string;
+
+  /** Agent type best suited for this task */
+  agentType: AgentType;
+
+  /** Task priority */
+  priority: TaskPriority;
+
+  /** Task IDs that must complete before this task */
+  dependencies: string[];
+
+  /** Current task status */
+  status: TaskStatus;
+
+  /** Agent instance ID assigned to this task */
+  assignedTo?: string;
+
+  /** Task execution result */
+  result?: any;
+
+  /** Error message if task failed */
+  error?: string;
+
+  /** Task start timestamp */
+  startTime?: Date;
+
+  /** Task end timestamp */
+  endTime?: Date;
+
+  /** Number of retry attempts */
+  retryCount: number;
+
+  /** Task metadata */
+  metadata: TaskMetadata;
+}
+
+/**
+ * Task metadata and configuration
+ */
+export interface TaskMetadata {
+  /** Investigation ID this task belongs to */
+  investigationId: string;
+
+  /** Estimated task duration (milliseconds) */
+  estimatedDuration?: number;
+
+  /** Task timeout (milliseconds) */
+  timeout?: number;
+
+  /** Whether task can be retried on failure */
+  canRetry: boolean;
+
+  /** Maximum retry attempts */
+  maxRetries: number;
+
+  /** Custom task data */
+  customData?: Record<string, any>;
+}
+
+/**
+ * Task dependency graph (DAG)
+ */
+export interface TaskDependencyGraph {
+  /** Task nodes (task ID -> task object) */
+  nodes: Map<string, InvestigationTask>;
+
+  /** Dependency edges (task ID -> dependent task IDs) */
+  edges: Map<string, string[]>;
+
+  /** Root tasks (no dependencies) */
+  roots: string[];
+
+  /** Tasks ready to execute (dependencies satisfied) */
+  readyQueue: string[];
+}
+
+/**
+ * Agent status and workload information
+ */
+export interface AgentStatus {
+  /** Agent instance identifier */
+  agentId: string;
+
+  /** Agent type */
+  agentType: AgentType;
+
+  /** Current agent status */
+  status: 'idle' | 'busy' | 'error';
+
+  /** Current task ID (if busy) */
+  currentTask?: string;
+
+  /** Number of tasks completed */
+  tasksCompleted: number;
+
+  /** Average task duration (milliseconds) */
+  averageTaskDuration: number;
+
+  /** Current workload (0-1, where 1 is fully loaded) */
+  workload: number;
+
+  /** Agent capabilities/skills */
+  capabilities?: string[];
+
+  /** Agent performance metrics */
+  performance?: AgentPerformanceMetrics;
+}
+
+/**
+ * Agent performance metrics
+ */
+export interface AgentPerformanceMetrics {
+  /** Success rate (0-1) */
+  successRate?: number;
+
+  /** Average execution time (ms) */
+  averageExecutionTime?: number;
+
+  /** Total duration (ms) */
+  duration?: number;
+
+  /** Error rate (0-1) */
+  errorRate?: number;
+
+  /** Last active timestamp */
+  lastActive?: string;
+
+  /** Tokens used */
+  tokensUsed?: number;
+
+  /** Patterns learned count */
+  patternsLearned?: number;
+
+  /** Issues found count */
+  issuesFound?: number;
+
+  /** API calls made */
+  apiCalls?: number;
+
+  /** Errors encountered */
+  errors?: number;
+
+  /** Warnings issued */
+  warnings?: number;
+
+  /** Files analyzed */
+  filesAnalyzed?: number;
+
+  /** Lines of code analyzed */
+  linesAnalyzed?: number;
+
+  /** Timestamp of metrics */
+  timestamp?: Date | string;
+}
+
+/**
+ * Task pool statistics
+ */
+export interface TaskPoolStats {
+  /** Total tasks in pool */
+  totalTasks: number;
+
+  /** Pending tasks */
+  pendingTasks: number;
+
+  /** In-progress tasks */
+  inProgressTasks: number;
+
+  /** Completed tasks */
+  completedTasks: number;
+
+  /** Failed tasks */
+  failedTasks: number;
+
+  /** Blocked tasks */
+  blockedTasks: number;
+
+  /** Average task duration (ms) */
+  averageTaskDuration: number;
+
+  /** Parallel efficiency (0-1) */
+  parallelEfficiency: number;
+}
+
+/**
+ * Investigation execution status
+ */
+export interface InvestigationExecutionStatus {
+  /** Investigation ID */
+  investigationId: string;
+
+  /** Overall status */
+  status: InvestigationStatus;
+
+  /** Task graph */
+  taskGraph: TaskDependencyGraph;
+
+  /** Agent statuses */
+  agents: AgentStatus[];
+
+  /** Statistics */
+  stats: TaskPoolStats;
+
+  /** Start timestamp */
+  startedAt: string;
+
+  /** Completion timestamp */
+  completedAt?: string;
+
+  /** Total duration (ms) */
+  duration?: number;
+}
+
+/**
+ * Dependency resolution result
+ */
+export interface DependencyResolutionResult {
+  /** Whether resolution was successful */
+  success: boolean;
+
+  /** Execution order (topologically sorted task IDs) */
+  executionOrder: string[];
+
+  /** Cycles detected (array of task ID cycles) */
+  cycles: string[][];
+
+  /** Blocked tasks (missing dependencies) */
+  blockedTasks: string[];
+
+  /** Resolution errors */
+  errors: string[];
+}
+
+/**
+ * Agent assignment result
+ */
+export interface AgentAssignmentResult {
+  /** Task ID */
+  taskId: string;
+
+  /** Assigned agent ID */
+  agentId: string | null;
+
+  /** Skill match score (0-1) */
+  skillMatchScore: number;
+
+  /** Workload score (0-1, lower is better) */
+  workloadScore: number;
+
+  /** Assignment confidence (0-1) */
+  confidence: number;
+
+  /** Assignment reason */
+  reason: string;
+}
+
+/**
+ * Lock acquisition error
+ */
+export class LockAcquisitionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'LockAcquisitionError';
+  }
+}
+
+/**
+ * Cycle detection error
+ */
+export class CycleDetectionError extends Error {
+  /** Cycles found in graph */
+  cycles: string[][];
+
+  constructor(message: string, cycles: string[][]) {
+    super(message);
+    this.name = 'CycleDetectionError';
+    this.cycles = cycles;
+  }
+}
+
+/**
+ * Task execution error
+ */
+export class TaskExecutionError extends Error {
+  /** Task ID */
+  taskId: string;
+
+  /** Original error */
+  originalError?: Error;
+
+  constructor(message: string, taskId: string, originalError?: Error) {
+    super(message);
+    this.name = 'TaskExecutionError';
+    this.taskId = taskId;
+    this.originalError = originalError;
+  }
+}
+
+// ============================================================================
+// TYPE ALIASES FOR BACKWARD COMPATIBILITY
+// ============================================================================
+
+/**
+ * Performance metrics type alias
+ */
+export type PerformanceMetrics = AgentPerformanceMetrics;
+
+/**
+ * Investigation metadata type alias
+ */
+export type InvestigationMetadata = LearningMetadata;
+
+/**
+ * Learning metrics type alias
+ */
+export type LearningMetrics = LearningMetadata;
+
+/**
+ * Error resolution tracking
+ */
+export interface ErrorResolution {
+  /** Error identifier */
+  errorId: string;
+
+  /** Error message */
+  errorMessage: string;
+
+  /** Resolution description */
+  resolution: string;
+
+  /** Timestamp when error was resolved */
+  resolvedAt?: string;
+
+  /** Whether error is resolved */
+  resolved?: boolean;
+
+  /** Agent that resolved the error */
+  resolvedBy?: string;
+
+  /** Strategy used to resolve */
+  strategy?: string;
+
+  /** Occurrence count */
+  occurrenceCount?: number;
+
+  /** Success rate */
+  successRate?: number;
+
+  /** Confidence */
+  confidence?: number;
+
+  /** Last seen timestamp */
+  lastSeen?: Date | string;
+
+  /** Error type classification */
+  errorType?: string;
+
+  /** Count of resolved instances */
+  resolvedCount?: number;
+
+  /** First seen timestamp */
+  firstSeen?: Date | string;
+
+  /** Agent ID that encountered this error */
+  agentId?: string;
+
+  /** Investigation IDs where this error appeared */
+  investigationIds?: string[];
+}
+
+/**
+ * Investigation context for strategy selection
+ */
+export interface InvestigationContext {
+  type: InvestigationType;
+  scope: string[];
+  framework?: string;
+  language?: string;
+  codebaseSize?: number;
+  estimatedComplexity?: 'low' | 'medium' | 'high';
+  testingFramework?: string;
+  dependencies?: string[];
+}
 
 // ============================================================================
 // END OF SHARED TYPE DEFINITIONS

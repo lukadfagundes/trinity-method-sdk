@@ -1,0 +1,437 @@
+# Security Audit Investigations
+
+Comprehensive guide to conducting security audits with Trinity Method SDK.
+
+## Overview
+
+Security audits systematically identify vulnerabilities, security misconfigurations, and potential attack vectors in your application. Trinity's security audit template covers the OWASP Top 10 and provides detailed analysis with actionable recommendations.
+
+**Best for:**
+- Pre-production security reviews
+- Compliance audits (SOC 2, HIPAA, etc.)
+- Post-incident analysis
+- Regular security assessments
+
+**Time estimate:** 20-40 hours depending on codebase size
+
+## Quick Start
+
+Create a security audit:
+
+```bash
+trinity wizard --type security-audit
+```
+
+Or use the CLI directly:
+
+```bash
+trinity create investigation \
+  --type security-audit \
+  --scope "src/**/*.{ts,js}" \
+  --focus authentication,authorization,input-validation
+```
+
+## Investigation Scope
+
+The security audit template covers:
+
+### 1. Authentication & Authorization
+- User authentication implementation
+- Session management
+- Password policies and storage
+- OAuth/SSO integration
+- Role-based access control (RBAC)
+- JWT token handling
+
+### 2. Input Validation
+- User input sanitization
+- File upload validation
+- API parameter validation
+- SQL injection prevention
+- Command injection prevention
+
+### 3. XSS Prevention
+- Output encoding
+- Content Security Policy (CSP)
+- DOM-based XSS risks
+- Stored XSS vulnerabilities
+
+### 4. CSRF Protection
+- CSRF token implementation
+- SameSite cookie attributes
+- State-changing operations protection
+
+### 5. Security Headers
+- HTTPS enforcement
+- HSTS implementation
+- X-Frame-Options
+- X-Content-Type-Options
+- Referrer-Policy
+
+### 6. Data Protection
+- Sensitive data encryption
+- Data at rest encryption
+- PII handling
+- Secure data transmission
+
+### 7. Dependency Vulnerabilities
+- npm/yarn audit results
+- Known CVEs in dependencies
+- Outdated package versions
+- Supply chain security
+
+### 8. API Security
+- API authentication
+- Rate limiting
+- API key management
+- GraphQL security
+
+### 9. Error Handling
+- Information disclosure
+- Stack trace exposure
+- Error message sanitization
+
+### 10. Logging & Monitoring
+- Security event logging
+- Audit trail completeness
+- Log injection prevention
+
+## Execution Flow
+
+### Phase 1: Discovery (TAN + INO)
+
+**TAN** scans the codebase for:
+- Authentication entry points
+- User input handlers
+- API endpoints
+- Database queries
+- External integrations
+
+**INO** gathers:
+- Security best practices for your framework
+- Known vulnerabilities in dependencies
+- Industry standards (OWASP, CWE)
+
+**Duration:** 2-4 hours
+
+### Phase 2: Analysis (TAN + JUNO)
+
+**TAN** performs deep analysis:
+- Code pattern analysis
+- Data flow analysis
+- Attack surface mapping
+
+**JUNO** validates findings:
+- Confirms vulnerabilities
+- Assesses severity
+- Eliminates false positives
+
+**Duration:** 10-20 hours
+
+### Phase 3: Reporting (ZEN + JUNO)
+
+**ZEN** identifies patterns:
+- Common vulnerability types
+- Systemic security issues
+- Architecture weaknesses
+
+**JUNO** creates comprehensive report:
+- Executive summary
+- Detailed findings
+- Remediation priorities
+- Code examples
+
+**Duration:** 4-8 hours
+
+## Example Investigation
+
+Let's walk through a real security audit:
+
+### 1. Create Investigation
+
+```bash
+trinity wizard
+# Select: Security Audit
+# Target: src/
+# Focus: All security areas
+```
+
+### 2. Review Generated Plan
+
+```markdown
+# Security Audit Plan (SEC-2025-042)
+
+## Scope
+- Target: src/
+- Framework: Next.js 14
+- Language: TypeScript
+
+## Tasks (14 total)
+1. Analyze authentication flow
+2. Review session management
+3. Check input validation
+4. Test for XSS vulnerabilities
+...
+```
+
+### 3. Execute Investigation
+
+```bash
+trinity run SEC-2025-042
+```
+
+Real-time output:
+
+```
+🔍 Security Audit Investigation (SEC-2025-042)
+
+[TAN] Analyzing authentication...
+  ✓ Found JWT implementation in src/auth/jwt.ts
+  ⚠️ Tokens do not expire (line 42)
+
+[JUNO] Validating finding...
+  ✓ Confirmed: JWT_EXPIRES_IN not set
+  Severity: HIGH
+  Impact: Session hijacking possible
+
+[TAN] Checking input validation...
+  ✓ Found user inputs in src/api/users.ts
+  ⚠️ No sanitization on username field (line 28)
+
+[JUNO] Validating finding...
+  ✓ Confirmed: XSS possible via username
+  Severity: HIGH
+  Impact: Stored XSS attack vector
+```
+
+### 4. Review Findings
+
+Generated findings in `trinity/sessions/SEC-2025-042/FINDINGS.md`:
+
+```markdown
+## Finding #1: JWT Tokens Do Not Expire
+
+**Severity**: 🔴 HIGH
+**CWE**: CWE-613 (Insufficient Session Expiration)
+**Location**: src/auth/jwt.ts:42
+
+### Description
+JWT tokens are generated without expiration time, allowing
+indefinite access if token is compromised.
+
+### Code
+```typescript
+// ❌ Bad
+const token = jwt.sign({ userId }, SECRET);
+
+// ✅ Good
+const token = jwt.sign(
+  { userId },
+  SECRET,
+  { expiresIn: '1h' }
+);
+```
+
+### Impact
+- Compromised tokens remain valid indefinitely
+- No forced re-authentication
+- Increased risk of session hijacking
+
+### Remediation
+1. Add `expiresIn` option to jwt.sign()
+2. Implement token refresh mechanism
+3. Add token blacklisting for logout
+
+### References
+- [OWASP Session Management](https://owasp.org/...)
+- [JWT Best Practices](https://...)
+```
+
+## Advanced Techniques
+
+### Custom Security Rules
+
+Create custom security checks:
+
+```typescript
+// trinity/custom-rules/auth-check.ts
+export const authSecurityCheck = {
+  name: 'Custom Auth Validation',
+  check: async (codebase) => {
+    // Your custom security logic
+    const findings = [];
+
+    // Check for hardcoded credentials
+    const hardcodedSecrets = await codebase.grep(/password\s*=\s*["'].*["']/);
+    if (hardcodedSecrets.length > 0) {
+      findings.push({
+        severity: 'HIGH',
+        message: 'Hardcoded credentials detected',
+        locations: hardcodedSecrets,
+      });
+    }
+
+    return findings;
+  },
+};
+```
+
+Register in your investigation:
+
+```bash
+trinity run SEC-2025-042 --custom-rules ./trinity/custom-rules/
+```
+
+### Integration with Security Tools
+
+Enhance investigations with external tools:
+
+```yaml
+# trinity/config/security-tools.yml
+tools:
+  - name: npm-audit
+    command: npm audit --json
+    parser: npm-audit-parser
+
+  - name: snyk
+    command: snyk test --json
+    parser: snyk-parser
+
+  - name: sonarqube
+    api: https://sonarqube.company.com
+    project: my-project
+```
+
+Trinity automatically integrates findings from these tools.
+
+### Compliance Reporting
+
+Generate compliance reports:
+
+```bash
+trinity report SEC-2025-042 \
+  --format compliance \
+  --standard SOC2 \
+  --output compliance-report.pdf
+```
+
+## Best Practices
+
+### 1. Regular Audits
+Run security audits:
+- Before major releases
+- After significant changes
+- Quarterly for production apps
+- After security incidents
+
+### 2. Focus Areas
+Prioritize based on your application:
+- **Financial apps**: Authentication, encryption, audit logs
+- **Healthcare**: PHI protection, access control, encryption
+- **E-commerce**: Payment security, PCI compliance, session security
+- **SaaS**: Multi-tenancy, API security, data isolation
+
+### 3. Remediation Tracking
+
+Create work orders for findings:
+
+```bash
+# Create work order for high-priority findings
+trinity workorder from-investigation SEC-2025-042 \
+  --severity high \
+  --assignee security-team
+```
+
+### 4. Continuous Improvement
+
+Track security metrics over time:
+
+```bash
+trinity metrics security --trend 6-months
+```
+
+Output:
+
+```
+Security Metrics Trend (6 months)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+High Severity:     15 → 3    (-80%)
+Medium Severity:   42 → 18   (-57%)
+Low Severity:      28 → 12   (-57%)
+
+Time to Fix (avg):
+  High:    2.1 days → 0.8 days
+  Medium:  7.3 days → 3.2 days
+```
+
+## Common Findings
+
+### 1. Authentication Issues
+- Weak password requirements
+- Missing MFA
+- Session fixation vulnerabilities
+- Insecure password reset flows
+
+### 2. Authorization Flaws
+- Missing access controls
+- Insecure direct object references (IDOR)
+- Privilege escalation paths
+- Missing rate limiting
+
+### 3. Input Validation
+- SQL injection
+- NoSQL injection
+- Command injection
+- Path traversal
+
+### 4. Output Encoding
+- XSS vulnerabilities
+- Template injection
+- Server-side template injection (SSTI)
+
+## Troubleshooting
+
+### False Positives
+
+If you encounter false positives:
+
+```bash
+# Mark finding as false positive
+trinity finding SEC-2025-042 F001 --mark-false-positive \
+  --reason "Input is already sanitized by framework middleware"
+```
+
+### Incomplete Coverage
+
+If areas are missed:
+
+```bash
+# Re-run with expanded scope
+trinity run SEC-2025-042 --scope "**/*.{ts,js,tsx,jsx}" \
+  --include-tests
+```
+
+### Performance Issues
+
+For large codebases:
+
+```bash
+# Run in focused mode
+trinity run SEC-2025-042 --mode focused \
+  --parallel 4 \
+  --cache-enabled
+```
+
+## Next Steps
+
+- [Performance Review Guide](/guides/performance)
+- [Architecture Analysis](/guides/architecture)
+- [JUNO Agent Reference](/agents/juno) - Quality validation agent
+- [Analytics API](/api/analytics) - Security metrics tracking
+
+## Resources
+
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [CWE Top 25](https://cwe.mitre.org/top25/)
+- [Security Headers](https://securityheaders.com/)
+- [npm Security Best Practices](https://docs.npmjs.com/security-best-practices)

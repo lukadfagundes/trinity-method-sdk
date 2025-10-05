@@ -1,0 +1,46 @@
+{
+  "environment": "development",
+  "learning": {
+    "enabled": true,
+    "confidenceThreshold": 0.6,
+    "dataPath": "trinity/learning",
+    "maxCacheSize": 1000
+  },
+  "cache": {
+    "enabled": true,
+    "l1MaxSize": 100,
+    "l2MaxSizeMB": 50,
+    "l3MaxSizeMB": 500,
+    "ttl": 3600
+  },
+  "coordination": {
+    "enabled": true,
+    "maxConcurrentTasks": 4,
+    "taskTimeout": 300000,
+    "retryAttempts": 3
+  },
+  "analytics": {
+    "enabled": true,
+    "metricsPath": "trinity/analytics",
+    "trackTokenUsage": true,
+    "trackPerformance": true
+  },
+  "hooks": {
+    "enabled": true,
+    "enabledHooks": [],
+    "hooksPath": "trinity/hooks"
+  },
+  "registry": {
+    "enabled": true,
+    "dbPath": "trinity/registry/investigations.db",
+    "autoRegister": true
+  },
+  "benchmarking": {
+    "enabled": true,
+    "outputPath": "trinity/benchmarks"
+  },
+  "logging": {
+    "level": "debug",
+    "outputPath": "trinity/logs/trinity.log"
+  }
+}

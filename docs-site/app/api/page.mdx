@@ -1,0 +1,450 @@
+# API Documentation
+
+Complete API reference for Trinity Method SDK.
+
+## Overview
+
+Trinity Method SDK provides a comprehensive TypeScript/JavaScript API for programmatic investigation creation, execution, and analysis.
+
+## Installation
+
+```bash
+npm install @trinity-method/sdk
+```
+
+## Quick Start
+
+```typescript
+import { TrinitySDK } from '@trinity-method/sdk';
+
+// Initialize SDK
+const trinity = new TrinitySDK({
+  rootPath: './trinity',
+  codebasePath: '.',
+});
+
+// Create investigation
+const investigation = await trinity.wizard.createInvestigation({
+  type: 'security-audit',
+  scope: ['src/**/*.ts'],
+});
+
+// Execute investigation
+await trinity.execute(investigation.id);
+
+// Get results
+const results = await trinity.getInvestigationSummary(investigation.id);
+console.log(results);
+```
+
+## Core APIs
+
+### TrinitySDK
+
+Main SDK class for all operations.
+
+```typescript
+class TrinitySDK {
+  constructor(config: TrinityConfig);
+
+  // Investigation Wizard
+  wizard: InvestigationWizard;
+
+  // Planning System
+  planner: InvestigationPlanner;
+
+  // Analytics
+  analytics: AnalyticsEngine;
+
+  // Hook Library
+  hooks: TrinityHookLibrary;
+
+  // Metrics
+  metrics: MetricsCollector;
+}
+```
+
+#### Configuration
+
+```typescript
+interface TrinityConfig {
+  rootPath: string;              // Trinity directory path
+  codebasePath: string;          // Project root path
+  autoDetectContext?: boolean;   // Auto-detect framework/language
+  cache?: {
+    enabled: boolean;
+    ttl: number;
+  };
+  agents?: {
+    enabled: AgentType[];
+    config: AgentConfig;
+  };
+}
+```
+
+## Module APIs
+
+<div className="grid md:grid-cols-2 gap-6 my-8">
+  <ApiModuleCard
+    title="Investigation Wizard"
+    description="Create investigations with smart templates and context detection"
+    href="/api/wizard"
+    methods={['createInvestigation', 'quickCreate', 'listTemplates']}
+  />
+  <ApiModuleCard
+    title="Planning System"
+    description="AI-powered investigation planning and resource estimation"
+    href="/api/planning"
+    methods={['generatePlan', 'estimateResources', 'visualizePlan']}
+  />
+  <ApiModuleCard
+    title="Analytics Engine"
+    description="Performance metrics, trends, and anomaly detection"
+    href="/api/analytics"
+    methods={['getSystemMetrics', 'detectAnomalies', 'generateReport']}
+  />
+  <ApiModuleCard
+    title="Hook Library"
+    description="Safe automation hooks for investigation workflows"
+    href="/api/hooks"
+    methods={['registerHook', 'executeHooks', 'validateHook']}
+  />
+</div>
+
+## Common Patterns
+
+### Create and Execute Investigation
+
+```typescript
+import { TrinitySDK } from '@trinity-method/sdk';
+
+const trinity = new TrinitySDK({
+  rootPath: './trinity',
+  codebasePath: '.',
+});
+
+// Create investigation
+const investigation = await trinity.wizard.createInvestigation({
+  type: 'security-audit',
+  scope: ['src/**/*.ts'],
+  agents: ['TAN', 'JUNO'],
+});
+
+// Execute
+await trinity.execute(investigation.id, {
+  parallel: true,
+  maxConcurrency: 4,
+});
+
+// Get results
+const summary = await trinity.getInvestigationSummary(investigation.id);
+console.log(`Completed ${summary.taskCount} tasks`);
+console.log(`Found ${summary.findings.length} findings`);
+```
+
+### Generate Investigation Plan
+
+```typescript
+const plan = await trinity.planner.generatePlan({
+  investigationGoal: 'Comprehensive security audit',
+  targetCodebase: '.',
+  investigationType: 'security-audit',
+  strategy: 'comprehensive',
+});
+
+console.log(`Plan has ${plan.phases.length} phases`);
+console.log(`Estimated ${plan.resourceEstimate.totalHours} hours`);
+console.log(`Est. cost: $${plan.resourceEstimate.estimatedCost}`);
+```
+
+### Track Metrics
+
+```typescript
+// Start tracking
+await trinity.metrics.startInvestigation('inv-1', 'security-audit');
+
+// Record events
+await trinity.metrics.recordTaskComplete('inv-1', 'task-1', 'TAN', 120, 5000);
+
+// Get analytics
+const metrics = await trinity.analytics.getSystemMetrics();
+console.log(`Total investigations: ${metrics.totalInvestigations}`);
+
+// Detect anomalies
+const events = await trinity.metrics.getEvents('inv-1');
+const anomalies = await trinity.analytics.detectAnomalies(events);
+```
+
+### Register and Execute Hooks
+
+```typescript
+// Register hook
+trinity.hooks.registerHook({
+  id: 'auto-report',
+  name: 'Auto Generate Report',
+  category: 'investigation-lifecycle',
+  triggerEvent: 'investigation_complete',
+  action: {
+    type: 'bash',
+    command: 'trinity report {{investigationId}} --format pdf',
+  },
+  enabled: true,
+});
+
+// Execute hooks for event
+const results = await trinity.hooks.executeHooksForEvent('investigation_complete', {
+  investigationId: 'inv-1',
+  status: 'completed',
+});
+```
+
+## TypeScript Types
+
+### Investigation
+
+```typescript
+interface Investigation {
+  id: string;
+  type: InvestigationType;
+  status: InvestigationStatus;
+  scope: InvestigationScope;
+  agents: AgentType[];
+  createdAt: Date;
+  completedAt?: Date;
+  findings: Finding[];
+  metrics: InvestigationMetrics;
+}
+
+type InvestigationType =
+  | 'security-audit'
+  | 'performance-review'
+  | 'architecture-review'
+  | 'code-quality'
+  | 'custom';
+
+type InvestigationStatus =
+  | 'draft'
+  | 'ready'
+  | 'in-progress'
+  | 'completed'
+  | 'failed';
+```
+
+### Finding
+
+```typescript
+interface Finding {
+  id: string;
+  investigationId: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  title: string;
+  description: string;
+  location: CodeLocation;
+  recommendation: string;
+  cwe?: string;
+  owasp?: string;
+  impact: string;
+  evidence: CodeSnippet[];
+}
+```
+
+### Plan
+
+```typescript
+interface InvestigationPlan {
+  id: string;
+  type: InvestigationType;
+  title: string;
+  description: string;
+  scope: InvestigationScope;
+  phases: InvestigationPhase[];
+  resourceEstimate: ResourceEstimate;
+  risks: Risk[];
+  successCriteria: string[];
+  timeline: Timeline;
+  metadata: PlanMetadata;
+}
+```
+
+## Error Handling
+
+```typescript
+import { TrinityError, ErrorCode } from '@trinity-method/sdk';
+
+try {
+  await trinity.execute('inv-1');
+} catch (error) {
+  if (error instanceof TrinityError) {
+    switch (error.code) {
+      case ErrorCode.INVESTIGATION_NOT_FOUND:
+        console.error('Investigation not found');
+        break;
+      case ErrorCode.AGENT_TIMEOUT:
+        console.error('Agent timed out');
+        break;
+      case ErrorCode.VALIDATION_FAILED:
+        console.error('Validation failed:', error.details);
+        break;
+      default:
+        console.error('Unknown error:', error.message);
+    }
+  }
+}
+```
+
+## Events
+
+Subscribe to SDK events:
+
+```typescript
+// Listen to investigation events
+trinity.on('investigation:started', (investigation) => {
+  console.log(`Investigation ${investigation.id} started`);
+});
+
+trinity.on('investigation:completed', (investigation) => {
+  console.log(`Investigation ${investigation.id} completed`);
+  console.log(`Found ${investigation.findings.length} findings`);
+});
+
+trinity.on('task:completed', (task) => {
+  console.log(`Task ${task.id} completed by ${task.agentId}`);
+});
+
+trinity.on('finding:discovered', (finding) => {
+  console.log(`New ${finding.severity} finding: ${finding.title}`);
+});
+```
+
+## Advanced Usage
+
+### Custom Templates
+
+```typescript
+const customTemplate = {
+  id: 'api-security-audit',
+  name: 'API Security Audit',
+  type: 'security-audit',
+  scope: {
+    include: ['src/api/**/*.ts'],
+    focusAreas: ['authentication', 'authorization', 'rate-limiting'],
+  },
+  tasks: [
+    {
+      id: 'check-auth',
+      name: 'Review API Authentication',
+      agent: 'TAN',
+      estimatedDuration: 120,
+    },
+    // ... more tasks
+  ],
+};
+
+trinity.wizard.registerTemplate(customTemplate);
+```
+
+### Custom Agents
+
+```typescript
+const customAgent = {
+  id: 'CUSTOM',
+  name: 'Custom Agent',
+  capabilities: ['code-analysis', 'pattern-detection'],
+  config: {
+    model: 'claude-3-opus',
+    maxTokens: 50000,
+  },
+};
+
+trinity.registerAgent(customAgent);
+```
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# Trinity configuration
+TRINITY_ROOT=./trinity
+TRINITY_CODEBASE=.
+TRINITY_AUTO_DETECT=true
+
+# Agent configuration
+TRINITY_AGENTS_ENABLED=TAN,ZEN,INO,JUNO
+TRINITY_AGENT_TIMEOUT=600000
+
+# Analytics
+TRINITY_ANALYTICS_ENABLED=true
+TRINITY_METRICS_LATENCY=1000
+
+# Cache
+TRINITY_CACHE_ENABLED=true
+TRINITY_CACHE_TTL=3600000
+```
+
+### Configuration File
+
+```yaml
+# trinity.config.yml
+root: ./trinity
+codebase: .
+
+agents:
+  enabled: [TAN, ZEN, INO, JUNO]
+  timeout: 600000
+  config:
+    TAN:
+      analysis-depth: deep
+    JUNO:
+      validation-strictness: high
+
+analytics:
+  enabled: true
+  latency-target: 1000
+
+cache:
+  enabled: true
+  ttl: 3600000
+
+hooks:
+  auto-execute: true
+  dry-run: false
+```
+
+## Next Steps
+
+Explore specific APIs:
+
+- [Investigation Wizard API](/api/wizard)
+- [Planning System API](/api/planning)
+- [Analytics API](/api/analytics)
+- [Hook Library API](/api/hooks)
+
+Or check out:
+
+- [Guides](/guides) - Practical examples
+- [Agents](/agents) - AI agent reference
+- [Best Practices](/trinity-method/best-practices)
+
+export function ApiModuleCard({ title, description, href, methods }) {
+  return (
+    <a
+      href={href}
+      className="block p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-500 dark:hover:border-primary-400 transition"
+    >
+      <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+        {title}
+      </h3>
+      <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
+        {description}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {methods.map((method) => (
+          <code key={method} className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">
+            {method}()
+          </code>
+        ))}
+      </div>
+    </a>
+  );
+}

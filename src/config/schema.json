@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trinity Method Configuration",
+  "type": "object",
+  "required": ["environment"],
+  "properties": {
+    "environment": {
+      "type": "string",
+      "enum": ["development", "staging", "production"],
+      "description": "Current environment"
+    },
+    "learning": {
+      "type": "object",
+      "required": ["enabled", "confidenceThreshold", "dataPath"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable learning system"
+        },
+        "confidenceThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum confidence threshold for learning"
+        },
+        "dataPath": {
+          "type": "string",
+          "description": "Path to learning data"
+        },
+        "maxCacheSize": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Maximum cache size for learned data"
+        }
+      }
+    },
+    "cache": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable caching system"
+        },
+        "l1MaxSize": {
+          "type": "number",
+          "minimum": 0,
+          "description": "L1 cache maximum size"
+        },
+        "l2MaxSizeMB": {
+          "type": "number",
+          "minimum": 0,
+          "description": "L2 cache maximum size in MB"
+        },
+        "l3MaxSizeMB": {
+          "type": "number",
+          "minimum": 0,
+          "description": "L3 cache maximum size in MB"
+        },
+        "ttl": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Time to live in seconds"
+        }
+      }
+    },
+    "coordination": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable task coordination"
+        },
+        "maxConcurrentTasks": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Maximum concurrent tasks"
+        },
+        "taskTimeout": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Task timeout in milliseconds"
+        },
+        "retryAttempts": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Number of retry attempts"
+        }
+      }
+    },
+    "analytics": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable analytics"
+        },
+        "metricsPath": {
+          "type": "string",
+          "description": "Path to metrics data"
+        },
+        "trackTokenUsage": {
+          "type": "boolean",
+          "description": "Track token usage"
+        },
+        "trackPerformance": {
+          "type": "boolean",
+          "description": "Track performance metrics"
+        }
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable hooks system"
+        },
+        "enabledHooks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of enabled hooks"
+        },
+        "hooksPath": {
+          "type": "string",
+          "description": "Path to hooks directory"
+        }
+      }
+    },
+    "registry": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable investigation registry"
+        },
+        "dbPath": {
+          "type": "string",
+          "description": "Path to registry database"
+        },
+        "autoRegister": {
+          "type": "boolean",
+          "description": "Automatically register investigations"
+        }
+      }
+    },
+    "benchmarking": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable benchmarking system"
+        },
+        "outputPath": {
+          "type": "string",
+          "description": "Path to benchmark output"
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "required": ["level"],
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["debug", "info", "warn", "error"],
+          "description": "Logging level"
+        },
+        "outputPath": {
+          "type": "string",
+          "description": "Path to log file (optional)"
+        }
+      }
+    }
+  }
+}
