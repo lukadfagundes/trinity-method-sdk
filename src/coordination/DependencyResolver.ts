@@ -14,7 +14,7 @@ import {
   TaskDependencyGraph,
   DependencyResolutionResult,
   CycleDetectionError,
-} from '@shared/types';
+} from '../shared/types';
 
 /**
  * Resolves task dependencies and determines execution order

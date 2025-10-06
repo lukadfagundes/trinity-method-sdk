@@ -13,7 +13,7 @@ import {
   StrategyPerformance,
   LearningMetrics,
   AgentType,
-} from '@shared/types';
+} from '../shared/types';
 
 import { KnowledgeSharingBus, PatternBroadcast } from '../learning/KnowledgeSharingBus';
 import { LearningDataStore } from '../learning/LearningDataStore';

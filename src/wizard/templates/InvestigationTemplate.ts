@@ -15,7 +15,7 @@ import {
   TaskPriority,
   SuccessCriterion,
   InvestigationContext,
-} from '@shared/types';
+} from '../../shared/types';
 
 /**
  * Template generation context

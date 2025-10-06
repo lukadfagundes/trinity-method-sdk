@@ -13,7 +13,7 @@ import {
   AgentStatus,
   AgentType,
   AgentAssignmentResult,
-} from '@shared/types';
+} from '../shared/types';
 
 /**
  * Agent skill definitions (what each agent specializes in)

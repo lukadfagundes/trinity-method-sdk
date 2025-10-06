@@ -13,7 +13,7 @@ import {
   InvestigationTask,
   AgentType,
   InvestigationResult,
-} from '@shared/types';
+} from '../shared/types';
 
 import { ContextDetector } from './ContextDetector';
 import { InvestigationTemplate } from './templates/InvestigationTemplate';

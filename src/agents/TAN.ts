@@ -18,7 +18,7 @@ import {
   LearnedPattern,
   PerformanceMetrics,
   InvestigationMetadata,
-} from '@shared/types';
+} from '../shared/types';
 
 import { InvestigationContext } from '../learning/StrategySelectionEngine';
 

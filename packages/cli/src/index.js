@@ -4,6 +4,9 @@ import { deploy } from './commands/deploy.js';
 import { update } from './commands/update.js';
 import { status } from './commands/status.js';
 import { review } from './commands/review.js';
+import { investigate } from './commands/investigate.js';
+import { dashboard } from './commands/dashboard.js';
+import { analyze } from './commands/analyze.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -14,8 +17,12 @@ const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8'))
 
 program
   .name('trinity')
-  .description('Trinity Method SDK - Deploy investigation-first development methodology')
+  .description('Trinity Method SDK - Investigation-first development with AI agents')
   .version(`${pkg.version} (Trinity Method SDK)`, '-v, --version', 'Output the current version');
+
+// ========================================
+// Setup Commands (Original CLI)
+// ========================================
 
 program
   .command('deploy')
@@ -46,5 +53,34 @@ program
   .option('--since <date>', 'Review sessions since date')
   .option('--project <name>', 'Review specific project')
   .action(review);
+
+// ========================================
+// SDK Commands (New - Powered by Agents)
+// ========================================
+
+program
+  .command('investigate')
+  .description('🔍 Create and run AI-powered investigations')
+  .option('--type <type>', 'Investigation type (security, performance, architecture, quality)')
+  .option('--target <path>', 'Target directory or file', './src')
+  .option('--scope <pattern>', 'File pattern glob', '**/*.{js,ts,jsx,tsx}')
+  .option('--no-learning', 'Disable learning from past investigations')
+  .option('--verbose', 'Show detailed output')
+  .action(investigate);
+
+program
+  .command('dashboard')
+  .description('📊 Launch interactive dashboards')
+  .option('--type <type>', 'Dashboard type (cache, learning, registry, benchmark)', 'cache')
+  .option('--output <file>', 'Output file for HTML dashboards')
+  .option('--verbose', 'Show detailed output')
+  .action(dashboard);
+
+program
+  .command('analyze [target]')
+  .description('🔍 Quick project analysis and recommendations')
+  .option('--metrics', 'Include system metrics')
+  .option('--verbose', 'Show detailed output')
+  .action(analyze);
 
 program.parse();

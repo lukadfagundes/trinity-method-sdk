@@ -12,7 +12,7 @@ import {
   StrategyPerformance,
   LearningMetrics,
   AgentType,
-} from '@shared/types';
+} from '../shared/types';
 
 import { LearningDataStore } from './LearningDataStore';
 

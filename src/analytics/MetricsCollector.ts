@@ -27,7 +27,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-import { AgentType } from '@shared/types';
+import { AgentType } from '../shared/types';
 
 /**
  * Investigation metrics

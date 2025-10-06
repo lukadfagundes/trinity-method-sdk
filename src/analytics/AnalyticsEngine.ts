@@ -12,7 +12,7 @@
  * @version 1.0.0
  */
 
-import { AgentType } from '@shared/types';
+import { AgentType } from '../shared/types';
 
 import { MetricsCollector, InvestigationMetrics } from './MetricsCollector';
 

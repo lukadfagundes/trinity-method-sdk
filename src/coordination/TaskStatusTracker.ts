@@ -16,7 +16,7 @@ import {
   TaskStatus,
   TaskPoolStats,
   LockAcquisitionError,
-} from '@shared/types';
+} from '../shared/types';
 
 /**
  * Task status transition rules

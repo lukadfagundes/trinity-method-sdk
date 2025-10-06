@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="346" failures="1" errors="0" time="14.609">
-  <testsuite name="UserPreferencesManager" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:55:59" time="4.168" tests="32">
-    <testcase classname="UserPreferencesManager › Initialization" name="should load default preferences when file does not exist" time="0.021">
+<testsuites name="jest tests" tests="346" failures="0" errors="0" time="15.192">
+  <testsuite name="UserPreferencesManager" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:28" time="4.699" tests="32">
+    <testcase classname="UserPreferencesManager › Initialization" name="should load default preferences when file does not exist" time="0.02">
     </testcase>
-    <testcase classname="UserPreferencesManager › Initialization" name="should create preferences file on save" time="0.011">
+    <testcase classname="UserPreferencesManager › Initialization" name="should create preferences file on save" time="0.014">
     </testcase>
-    <testcase classname="UserPreferencesManager › Initialization" name="should persist preferences across instances" time="0.009">
+    <testcase classname="UserPreferencesManager › Initialization" name="should persist preferences across instances" time="0.018">
     </testcase>
     <testcase classname="UserPreferencesManager › Preference Updates" name="should update preferences" time="0.006">
     </testcase>
-    <testcase classname="UserPreferencesManager › Preference Updates" name="should merge updates with existing preferences" time="0.012">
+    <testcase classname="UserPreferencesManager › Preference Updates" name="should merge updates with existing preferences" time="0.01">
     </testcase>
-    <testcase classname="UserPreferencesManager › Profile Management" name="should create a profile" time="0.008">
+    <testcase classname="UserPreferencesManager › Profile Management" name="should create a profile" time="0.015">
     </testcase>
-    <testcase classname="UserPreferencesManager › Profile Management" name="should list all profiles" time="0.008">
+    <testcase classname="UserPreferencesManager › Profile Management" name="should list all profiles" time="0.011">
     </testcase>
-    <testcase classname="UserPreferencesManager › Profile Management" name="should update existing profile with same name" time="0.008">
+    <testcase classname="UserPreferencesManager › Profile Management" name="should update existing profile with same name" time="0.009">
     </testcase>
-    <testcase classname="UserPreferencesManager › Profile Management" name="should delete a profile" time="0.009">
+    <testcase classname="UserPreferencesManager › Profile Management" name="should delete a profile" time="0.008">
     </testcase>
     <testcase classname="UserPreferencesManager › Profile Management" name="should return false when deleting non-existent profile" time="0.002">
     </testcase>
-    <testcase classname="UserPreferencesManager › Profile Management" name="should store custom settings in profile" time="0.011">
+    <testcase classname="UserPreferencesManager › Profile Management" name="should store custom settings in profile" time="0.008">
     </testcase>
     <testcase classname="UserPreferencesManager › Active Profile" name="should set active profile" time="0.007">
     </testcase>
-    <testcase classname="UserPreferencesManager › Active Profile" name="should get active profile" time="0.01">
+    <testcase classname="UserPreferencesManager › Active Profile" name="should get active profile" time="0.007">
     </testcase>
-    <testcase classname="UserPreferencesManager › Active Profile" name="should return false when setting non-existent profile as active" time="0.003">
+    <testcase classname="UserPreferencesManager › Active Profile" name="should return false when setting non-existent profile as active" time="0.005">
     </testcase>
-    <testcase classname="UserPreferencesManager › Active Profile" name="should return undefined when no active profile set" time="0.002">
+    <testcase classname="UserPreferencesManager › Active Profile" name="should return undefined when no active profile set" time="0.004">
     </testcase>
-    <testcase classname="UserPreferencesManager › Active Profile" name="should clear active profile" time="0.007">
+    <testcase classname="UserPreferencesManager › Active Profile" name="should clear active profile" time="0.008">
     </testcase>
-    <testcase classname="UserPreferencesManager › Active Profile" name="should clear active profile when deleting it" time="0.019">
+    <testcase classname="UserPreferencesManager › Active Profile" name="should clear active profile when deleting it" time="0.01">
     </testcase>
-    <testcase classname="UserPreferencesManager › Last Used Settings" name="should update last used settings" time="0.024">
+    <testcase classname="UserPreferencesManager › Last Used Settings" name="should update last used settings" time="0.008">
     </testcase>
     <testcase classname="UserPreferencesManager › Last Used Settings" name="should track timestamp for last used" time="0.007">
     </testcase>
-    <testcase classname="UserPreferencesManager › Last Used Settings" name="should return undefined when no last used settings" time="0.003">
+    <testcase classname="UserPreferencesManager › Last Used Settings" name="should return undefined when no last used settings" time="0.002">
     </testcase>
-    <testcase classname="UserPreferencesManager › Framework Preferences" name="should set framework-specific preferences" time="0.005">
+    <testcase classname="UserPreferencesManager › Framework Preferences" name="should set framework-specific preferences" time="0.006">
     </testcase>
     <testcase classname="UserPreferencesManager › Framework Preferences" name="should return undefined for framework with no preferences" time="0.002">
     </testcase>
     <testcase classname="UserPreferencesManager › Framework Preferences" name="should handle multiple framework preferences" time="0.006">
     </testcase>
-    <testcase classname="UserPreferencesManager › Behavior Settings" name="should update behavior settings" time="0.005">
+    <testcase classname="UserPreferencesManager › Behavior Settings" name="should update behavior settings" time="0.007">
     </testcase>
-    <testcase classname="UserPreferencesManager › Behavior Settings" name="should return default behavior when not set" time="0.002">
+    <testcase classname="UserPreferencesManager › Behavior Settings" name="should return default behavior when not set" time="0.003">
     </testcase>
-    <testcase classname="UserPreferencesManager › Behavior Settings" name="should merge behavior updates" time="0.008">
+    <testcase classname="UserPreferencesManager › Behavior Settings" name="should merge behavior updates" time="0.007">
     </testcase>
-    <testcase classname="UserPreferencesManager › Import/Export" name="should export preferences as JSON" time="0.009">
+    <testcase classname="UserPreferencesManager › Import/Export" name="should export preferences as JSON" time="0.011">
     </testcase>
-    <testcase classname="UserPreferencesManager › Import/Export" name="should import preferences from JSON" time="0.007">
+    <testcase classname="UserPreferencesManager › Import/Export" name="should import preferences from JSON" time="0.005">
     </testcase>
-    <testcase classname="UserPreferencesManager › Import/Export" name="should reject invalid JSON on import" time="0.043">
+    <testcase classname="UserPreferencesManager › Import/Export" name="should reject invalid JSON on import" time="0.031">
     </testcase>
-    <testcase classname="UserPreferencesManager › Reset" name="should reset preferences to defaults" time="0.008">
+    <testcase classname="UserPreferencesManager › Reset" name="should reset preferences to defaults" time="0.011">
     </testcase>
-    <testcase classname="UserPreferencesManager › Persistence" name="should persist preferences to disk" time="0.006">
+    <testcase classname="UserPreferencesManager › Persistence" name="should persist preferences to disk" time="0.01">
     </testcase>
-    <testcase classname="UserPreferencesManager › Persistence" name="should create config directory if it does not exist" time="0.006">
+    <testcase classname="UserPreferencesManager › Persistence" name="should create config directory if it does not exist" time="0.007">
     </testcase>
   </testsuite>
-  <testsuite name="L1Cache" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:55:59" time="4.469" tests="59">
-    <testcase classname="L1Cache › Basic Operations" name="should store and retrieve values" time="0.019">
+  <testsuite name="L1Cache" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:28" time="5.027" tests="59">
+    <testcase classname="L1Cache › Basic Operations" name="should store and retrieve values" time="0.02">
     </testcase>
     <testcase classname="L1Cache › Basic Operations" name="should return undefined for non-existent keys" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Basic Operations" name="should update access count on get" time="0.002">
+    <testcase classname="L1Cache › Basic Operations" name="should update access count on get" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Basic Operations" name="should update lastAccessedAt on get" time="0.053">
+    <testcase classname="L1Cache › Basic Operations" name="should update lastAccessedAt on get" time="0.055">
     </testcase>
     <testcase classname="L1Cache › Basic Operations" name="should check key existence with has()" time="0.002">
     </testcase>
@@ -81,59 +81,59 @@
     </testcase>
     <testcase classname="L1Cache › Basic Operations" name="should return false when deleting non-existent key" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Basic Operations" name="should clear all entries" time="0.002">
+    <testcase classname="L1Cache › Basic Operations" name="should clear all entries" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › TTL and Expiration" name="should expire entries after TTL" time="0.116">
+    <testcase classname="L1Cache › TTL and Expiration" name="should expire entries after TTL" time="0.114">
     </testcase>
-    <testcase classname="L1Cache › TTL and Expiration" name="should use default TTL if not specified" time="0.002">
+    <testcase classname="L1Cache › TTL and Expiration" name="should use default TTL if not specified" time="0.001">
     </testcase>
     <testcase classname="L1Cache › TTL and Expiration" name="should use custom TTL when provided" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › TTL and Expiration" name="should return remaining TTL" time="0.002">
+    <testcase classname="L1Cache › TTL and Expiration" name="should return remaining TTL" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › TTL and Expiration" name="should return 0 for expired entries" time="0.103">
+    <testcase classname="L1Cache › TTL and Expiration" name="should return 0 for expired entries" time="0.102">
     </testcase>
     <testcase classname="L1Cache › TTL and Expiration" name="should return 0 for non-existent entries" time="0">
     </testcase>
-    <testcase classname="L1Cache › LRU Eviction" name="should evict least recently used entry when full" time="0.001">
+    <testcase classname="L1Cache › LRU Eviction" name="should evict least recently used entry when full" time="0.003">
     </testcase>
     <testcase classname="L1Cache › LRU Eviction" name="should track evictions in statistics" time="0.002">
     </testcase>
-    <testcase classname="L1Cache › LRU Eviction" name="should maintain LRU order" time="0">
+    <testcase classname="L1Cache › LRU Eviction" name="should maintain LRU order" time="0.003">
     </testcase>
-    <testcase classname="L1Cache › Size Management" name="should enforce max size limit" time="0">
+    <testcase classname="L1Cache › Size Management" name="should enforce max size limit" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Size Management" name="should calculate entry size correctly for strings" time="0">
+    <testcase classname="L1Cache › Size Management" name="should calculate entry size correctly for strings" time="0.001">
     </testcase>
     <testcase classname="L1Cache › Size Management" name="should calculate entry size correctly for objects" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Size Management" name="should track total memory usage" time="0.001">
+    <testcase classname="L1Cache › Size Management" name="should track total memory usage" time="0">
     </testcase>
-    <testcase classname="L1Cache › Size Management" name="should update size when entries are added/removed" time="0">
+    <testcase classname="L1Cache › Size Management" name="should update size when entries are added/removed" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Statistics" name="should track cache hits" time="0">
+    <testcase classname="L1Cache › Statistics" name="should track cache hits" time="0.001">
     </testcase>
     <testcase classname="L1Cache › Statistics" name="should track cache misses" time="0.001">
     </testcase>
     <testcase classname="L1Cache › Statistics" name="should calculate hit rate correctly" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Statistics" name="should reset statistics" time="0">
+    <testcase classname="L1Cache › Statistics" name="should reset statistics" time="0.002">
     </testcase>
     <testcase classname="L1Cache › Statistics" name="should track total entries" time="0">
     </testcase>
     <testcase classname="L1Cache › Statistics" name="should report total size" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Advanced Operations" name="should peek without updating access time" time="0.016">
+    <testcase classname="L1Cache › Advanced Operations" name="should peek without updating access time" time="0.012">
     </testcase>
-    <testcase classname="L1Cache › Advanced Operations" name="should peek without incrementing access count" time="0">
+    <testcase classname="L1Cache › Advanced Operations" name="should peek without incrementing access count" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Advanced Operations" name="should get all keys" time="0.002">
+    <testcase classname="L1Cache › Advanced Operations" name="should get all keys" time="0.001">
     </testcase>
     <testcase classname="L1Cache › Advanced Operations" name="should get all entries" time="0">
     </testcase>
     <testcase classname="L1Cache › Advanced Operations" name="should find entries matching predicate" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Advanced Operations" name="should purge expired entries" time="0.106">
+    <testcase classname="L1Cache › Advanced Operations" name="should purge expired entries" time="0.105">
     </testcase>
     <testcase classname="L1Cache › Configuration" name="should get current configuration" time="0.001">
     </testcase>
@@ -141,115 +141,67 @@
     </testcase>
     <testcase classname="L1Cache › Configuration" name="should preserve entries when updating config" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Configuration" name="should respect new size limits after config update" time="0">
+    <testcase classname="L1Cache › Configuration" name="should respect new size limits after config update" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Data Types" name="should cache strings" time="0.001">
+    <testcase classname="L1Cache › Data Types" name="should cache strings" time="0">
     </testcase>
-    <testcase classname="L1Cache › Data Types" name="should cache numbers" time="0">
+    <testcase classname="L1Cache › Data Types" name="should cache numbers" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Data Types" name="should cache booleans" time="0.003">
+    <testcase classname="L1Cache › Data Types" name="should cache booleans" time="0">
     </testcase>
     <testcase classname="L1Cache › Data Types" name="should cache objects" time="0.002">
     </testcase>
-    <testcase classname="L1Cache › Data Types" name="should cache arrays" time="0.001">
+    <testcase classname="L1Cache › Data Types" name="should cache arrays" time="0">
     </testcase>
     <testcase classname="L1Cache › Data Types" name="should cache null" time="0">
     </testcase>
-    <testcase classname="L1Cache › Data Types" name="should cache undefined" time="0.001">
+    <testcase classname="L1Cache › Data Types" name="should cache undefined" time="0">
     </testcase>
     <testcase classname="L1Cache › Data Types" name="should cache complex nested objects" time="0.002">
     </testcase>
-    <testcase classname="L1Cache › Edge Cases" name="should handle empty string key" time="0">
+    <testcase classname="L1Cache › Edge Cases" name="should handle empty string key" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Edge Cases" name="should handle very long keys" time="0.001">
+    <testcase classname="L1Cache › Edge Cases" name="should handle very long keys" time="0">
     </testcase>
     <testcase classname="L1Cache › Edge Cases" name="should handle very large values" time="0">
     </testcase>
-    <testcase classname="L1Cache › Edge Cases" name="should handle special characters in keys" time="0">
+    <testcase classname="L1Cache › Edge Cases" name="should handle special characters in keys" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Edge Cases" name="should handle unicode keys" time="0">
+    <testcase classname="L1Cache › Edge Cases" name="should handle unicode keys" time="0.001">
     </testcase>
     <testcase classname="L1Cache › Edge Cases" name="should handle 0 TTL" time="0.001">
     </testcase>
     <testcase classname="L1Cache › Edge Cases" name="should handle negative TTL" time="0">
     </testcase>
-    <testcase classname="L1Cache › Performance" name="should handle 1000 set operations quickly" time="0.01">
+    <testcase classname="L1Cache › Performance" name="should handle 1000 set operations quickly" time="0.009">
     </testcase>
-    <testcase classname="L1Cache › Performance" name="should handle 1000 get operations quickly" time="0.004">
+    <testcase classname="L1Cache › Performance" name="should handle 1000 get operations quickly" time="0.005">
     </testcase>
-    <testcase classname="L1Cache › Performance" name="should maintain performance with many entries" time="0.055">
+    <testcase classname="L1Cache › Performance" name="should maintain performance with many entries" time="0.066">
     </testcase>
     <testcase classname="L1Cache › Concurrent Operations" name="should handle concurrent gets" time="0.001">
     </testcase>
-    <testcase classname="L1Cache › Concurrent Operations" name="should handle concurrent sets" time="0.004">
+    <testcase classname="L1Cache › Concurrent Operations" name="should handle concurrent sets" time="0.002">
     </testcase>
     <testcase classname="L1Cache › Concurrent Operations" name="should handle mixed concurrent operations" time="0.002">
     </testcase>
   </testsuite>
-  <testsuite name="Critical Trinity Agents" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:56:03" time="0.331" tests="8">
-    <testcase classname="Critical Trinity Agents › TAN Agent (Structure Specialist)" name="should create TAN agent instance" time="0.002">
-    </testcase>
-    <testcase classname="Critical Trinity Agents › TAN Agent (Structure Specialist)" name="should execute architecture analysis investigation" time="0.025">
-    </testcase>
-    <testcase classname="Critical Trinity Agents › ZEN Agent (Documentation Specialist)" name="should create ZEN agent instance" time="0">
-    </testcase>
-    <testcase classname="Critical Trinity Agents › ZEN Agent (Documentation Specialist)" name="should execute custom investigation" time="0.031">
-    </testcase>
-    <testcase classname="Critical Trinity Agents › INO Agent (Context Specialist)" name="should create INO agent instance" time="0.001">
-    </testcase>
-    <testcase classname="Critical Trinity Agents › INO Agent (Context Specialist)" name="should execute custom investigation" time="0.027">
-    </testcase>
-    <testcase classname="Critical Trinity Agents › JUNO Agent (Quality Auditor)" name="should create JUNO agent instance" time="0.001">
-    </testcase>
-    <testcase classname="Critical Trinity Agents › JUNO Agent (Quality Auditor)" name="should execute code quality audit" time="0.027">
-    </testcase>
-  </testsuite>
-  <testsuite name="Multi-Agent Task Coordination" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:55:59" time="4.5" tests="14">
-    <testcase classname="Multi-Agent Task Coordination › Simple Investigation Flow" name="should coordinate 3-task linear investigation" time="0.073">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Simple Investigation Flow" name="should handle task failure and retry" time="0.017">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Parallel Execution" name="should execute independent tasks in parallel" time="0.024">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Parallel Execution" name="should respect dependencies in parallel execution" time="0.036">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Agent Assignment" name="should assign tasks to correctly skilled agents" time="0.016">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Agent Assignment" name="should balance workload across agents" time="0.025">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Complex Investigation (10+ Tasks)" name="should handle complex 15-task investigation" time="0.147">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Error Handling" name="should handle missing dependencies gracefully" time="0.004">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Error Handling" name="should detect and reject circular dependencies" time="0.008">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Error Handling" name="should handle agent unavailability" time="0.012">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Performance Metrics" name="should track task pool statistics" time="0.035">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Performance Metrics" name="should calculate parallel efficiency" time="0.024">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Cleanup and Maintenance" name="should cleanup old completed tasks" time="0.016">
-    </testcase>
-    <testcase classname="Multi-Agent Task Coordination › Cleanup and Maintenance" name="should cleanup stale locks" time="0.005">
-    </testcase>
-  </testsuite>
-  <testsuite name="TrinityHookLibrary" errors="0" failures="0" skipped="6" timestamp="2025-10-06T04:55:59" time="4.575" tests="26">
+  <testsuite name="TrinityHookLibrary" errors="0" failures="0" skipped="6" timestamp="2025-10-06T06:39:28" time="5.262" tests="26">
     <testcase classname="TrinityHookLibrary › Hook Registration" name="should register a hook" time="0.02">
     </testcase>
     <testcase classname="TrinityHookLibrary › Hook Registration" name="should register multiple hooks" time="0.003">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Hook Registration" name="should prevent duplicate hook IDs" time="0.047">
+    <testcase classname="TrinityHookLibrary › Hook Registration" name="should prevent duplicate hook IDs" time="0.041">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Hook Execution" name="should execute hook for matching event" time="0.033">
+    <testcase classname="TrinityHookLibrary › Hook Execution" name="should execute hook for matching event" time="0.046">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Hook Execution" name="should execute multiple hooks for same event" time="0.052">
+    <testcase classname="TrinityHookLibrary › Hook Execution" name="should execute multiple hooks for same event" time="0.06">
     </testcase>
     <testcase classname="TrinityHookLibrary › Hook Execution" name="should not execute disabled hooks" time="0.002">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Hook Execution" name="should substitute variables in hook commands" time="0.035">
+    <testcase classname="TrinityHookLibrary › Hook Execution" name="should substitute variables in hook commands" time="0.028">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Hook Management" name="should enable a hook" time="0.01">
+    <testcase classname="TrinityHookLibrary › Hook Management" name="should enable a hook" time="0.008">
     </testcase>
     <testcase classname="TrinityHookLibrary › Hook Management" name="should disable a hook" time="0.007">
     </testcase>
@@ -259,7 +211,7 @@
     <testcase classname="TrinityHookLibrary › Hook Management" name="should update hook configuration" time="0">
       <skipped/>
     </testcase>
-    <testcase classname="TrinityHookLibrary › Hook Filtering" name="should filter hooks by category" time="0.003">
+    <testcase classname="TrinityHookLibrary › Hook Filtering" name="should filter hooks by category" time="0.002">
     </testcase>
     <testcase classname="TrinityHookLibrary › Hook Filtering" name="should filter hooks by event" time="0">
       <skipped/>
@@ -271,15 +223,15 @@
     <testcase classname="TrinityHookLibrary › Dry Run Mode" name="should disable dry run mode" time="0">
       <skipped/>
     </testcase>
-    <testcase classname="TrinityHookLibrary › Execution History" name="should track hook execution history" time="0.049">
+    <testcase classname="TrinityHookLibrary › Execution History" name="should track hook execution history" time="0.041">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Execution History" name="should track execution success and failure" time="0.026">
+    <testcase classname="TrinityHookLibrary › Execution History" name="should track execution success and failure" time="0.028">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Execution History" name="should clear execution history" time="0.024">
+    <testcase classname="TrinityHookLibrary › Execution History" name="should clear execution history" time="0.031">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Configuration Persistence" name="should save configuration to disk" time="0.007">
+    <testcase classname="TrinityHookLibrary › Configuration Persistence" name="should save configuration to disk" time="0.009">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Configuration Persistence" name="should load configuration from disk" time="0.007">
+    <testcase classname="TrinityHookLibrary › Configuration Persistence" name="should load configuration from disk" time="0.008">
     </testcase>
     <testcase classname="TrinityHookLibrary › Hook Statistics" name="should provide hook statistics" time="0">
       <skipped/>
@@ -287,23 +239,297 @@
     <testcase classname="TrinityHookLibrary › Hook Statistics" name="should calculate success rate" time="0">
       <skipped/>
     </testcase>
-    <testcase classname="TrinityHookLibrary › Hook Statistics" name="should provide library-wide statistics" time="0.002">
+    <testcase classname="TrinityHookLibrary › Hook Statistics" name="should provide library-wide statistics" time="0.008">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Error Handling" name="should handle hook execution errors gracefully" time="0.12">
+    <testcase classname="TrinityHookLibrary › Error Handling" name="should handle hook execution errors gracefully" time="0.13">
     </testcase>
-    <testcase classname="TrinityHookLibrary › Error Handling" name="should continue executing hooks after one fails" time="0.047">
+    <testcase classname="TrinityHookLibrary › Error Handling" name="should continue executing hooks after one fails" time="0.062">
     </testcase>
   </testsuite>
-  <testsuite name="CacheKeyGenerator" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:56:04" time="0.214" tests="54">
+  <testsuite name="Multi-Agent Task Coordination" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:28" time="5.344" tests="14">
+    <testcase classname="Multi-Agent Task Coordination › Simple Investigation Flow" name="should coordinate 3-task linear investigation" time="0.068">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Simple Investigation Flow" name="should handle task failure and retry" time="0.019">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Parallel Execution" name="should execute independent tasks in parallel" time="0.029">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Parallel Execution" name="should respect dependencies in parallel execution" time="0.053">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Agent Assignment" name="should assign tasks to correctly skilled agents" time="0.022">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Agent Assignment" name="should balance workload across agents" time="0.018">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Complex Investigation (10+ Tasks)" name="should handle complex 15-task investigation" time="0.16">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Error Handling" name="should handle missing dependencies gracefully" time="0.005">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Error Handling" name="should detect and reject circular dependencies" time="0.006">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Error Handling" name="should handle agent unavailability" time="0.007">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Performance Metrics" name="should track task pool statistics" time="0.034">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Performance Metrics" name="should calculate parallel efficiency" time="0.029">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Cleanup and Maintenance" name="should cleanup old completed tasks" time="0.015">
+    </testcase>
+    <testcase classname="Multi-Agent Task Coordination › Cleanup and Maintenance" name="should cleanup stale locks" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="InvestigationPlanner" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:34" time="0.464" tests="8">
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should generate security audit plan" time="0.012">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should auto-detect investigation type from goal" time="0.001">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should generate phases with deliverables" time="0.002">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should estimate resources" time="0.001">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should identify risks" time="0.001">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Plan Generation" name="should calculate quality and completeness scores" time="0.002">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Planning Strategies" name="should apply comprehensive strategy" time="0.001">
+    </testcase>
+    <testcase classname="InvestigationPlanner › Planning Strategies" name="should apply rapid strategy" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="ContextDetector" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:34" time="0.597" tests="7">
+    <testcase classname="ContextDetector › Framework Detection" name="should detect Next.js from package.json" time="0.012">
+    </testcase>
+    <testcase classname="ContextDetector › Framework Detection" name="should detect React from package.json" time="0.005">
+    </testcase>
+    <testcase classname="ContextDetector › Framework Detection" name="should return Unknown for unrecognized frameworks" time="0.013">
+    </testcase>
+    <testcase classname="ContextDetector › Language Detection" name="should detect TypeScript from tsconfig.json" time="0.01">
+    </testcase>
+    <testcase classname="ContextDetector › Language Detection" name="should detect JavaScript from .js files" time="0.012">
+    </testcase>
+    <testcase classname="ContextDetector › Testing Framework Detection" name="should detect Jest from package.json" time="0.006">
+    </testcase>
+    <testcase classname="ContextDetector › Context Detection" name="should detect complete context" time="0.013">
+    </testcase>
+  </testsuite>
+  <testsuite name="ConfigValidator" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:28" time="6.007" tests="45">
+    <testcase classname="ConfigValidator › Valid Configuration" name="should validate valid configuration" time="0.098">
+    </testcase>
+    <testcase classname="ConfigValidator › Valid Configuration" name="should validate minimal valid configuration" time="0.05">
+    </testcase>
+    <testcase classname="ConfigValidator › Valid Configuration" name="should validate all environment types" time="0.033">
+    </testcase>
+    <testcase classname="ConfigValidator › Valid Configuration" name="should validate all logging levels" time="0.031">
+    </testcase>
+    <testcase classname="ConfigValidator › Valid Configuration" name="should validate configuration with optional fields" time="0.038">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject missing environment field" time="0.031">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid environment value" time="0.022">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid logging level" time="0.029">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject missing required learning fields" time="0.031">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid confidenceThreshold range" time="0.026">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject negative cache sizes" time="0.026">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject negative maxConcurrentTasks" time="0.031">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject negative retry attempts" time="0.033">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid boolean values" time="0.032">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid array types" time="0.026">
+    </testcase>
+    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject non-string array items" time="0.03">
+    </testcase>
+    <testcase classname="ConfigValidator › Type Validation" name="should validate string types" time="0.029">
+    </testcase>
+    <testcase classname="ConfigValidator › Type Validation" name="should validate number types" time="0.029">
+    </testcase>
+    <testcase classname="ConfigValidator › Type Validation" name="should validate boolean types" time="0.03">
+    </testcase>
+    <testcase classname="ConfigValidator › Type Validation" name="should validate object types" time="0.027">
+    </testcase>
+    <testcase classname="ConfigValidator › Type Validation" name="should validate nested object types" time="0.03">
+    </testcase>
+    <testcase classname="ConfigValidator › Error Reporting" name="should provide detailed error messages" time="0.024">
+    </testcase>
+    <testcase classname="ConfigValidator › Error Reporting" name="should report multiple errors" time="0.028">
+    </testcase>
+    <testcase classname="ConfigValidator › Error Reporting" name="should include field path in errors" time="0.025">
+    </testcase>
+    <testcase classname="ConfigValidator › Error Reporting" name="should include error information" time="0.026">
+    </testcase>
+    <testcase classname="ConfigValidator › validateOrThrow" name="should not throw for valid configuration" time="0.027">
+    </testcase>
+    <testcase classname="ConfigValidator › validateOrThrow" name="should throw for invalid configuration" time="0.053">
+    </testcase>
+    <testcase classname="ConfigValidator › validateOrThrow" name="should include all errors in throw message" time="0.024">
+    </testcase>
+    <testcase classname="ConfigValidator › validateOrThrow" name="should format errors with field and message" time="0.026">
+    </testcase>
+    <testcase classname="ConfigValidator › validateOrThrow" name="should assert type on successful validation" time="0.024">
+    </testcase>
+    <testcase classname="ConfigValidator › Boundary Values" name="should accept confidenceThreshold at minimum (0)" time="0.027">
+    </testcase>
+    <testcase classname="ConfigValidator › Boundary Values" name="should accept confidenceThreshold at maximum (1)" time="0.023">
+    </testcase>
+    <testcase classname="ConfigValidator › Boundary Values" name="should accept maxConcurrentTasks at minimum (1)" time="0.023">
+    </testcase>
+    <testcase classname="ConfigValidator › Boundary Values" name="should accept zero for optional numeric fields" time="0.024">
+    </testcase>
+    <testcase classname="ConfigValidator › Boundary Values" name="should accept empty array for enabledHooks" time="0.024">
+    </testcase>
+    <testcase classname="ConfigValidator › Schema Loading" name="should load schema on instantiation" time="0.051">
+    </testcase>
+    <testcase classname="ConfigValidator › Schema Loading" name="should compile schema successfully" time="0.049">
+    </testcase>
+    <testcase classname="ConfigValidator › Edge Cases" name="should handle null values" time="0.031">
+    </testcase>
+    <testcase classname="ConfigValidator › Edge Cases" name="should allow optional sections to be missing" time="0.031">
+    </testcase>
+    <testcase classname="ConfigValidator › Edge Cases" name="should handle empty object" time="0.034">
+    </testcase>
+    <testcase classname="ConfigValidator › Edge Cases" name="should handle non-object input" time="0.022">
+    </testcase>
+    <testcase classname="ConfigValidator › Edge Cases" name="should handle array input" time="0.023">
+    </testcase>
+    <testcase classname="ConfigValidator › Edge Cases" name="should handle deeply nested invalid values" time="0.027">
+    </testcase>
+    <testcase classname="ConfigValidator › Additional Properties" name="should allow additional properties in config" time="0.027">
+    </testcase>
+    <testcase classname="ConfigValidator › Additional Properties" name="should allow additional properties in nested objects" time="0.033">
+    </testcase>
+  </testsuite>
+  <testsuite name="Critical Trinity Agents" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:33" time="1.281" tests="8">
+    <testcase classname="Critical Trinity Agents › TAN Agent (Structure Specialist)" name="should create TAN agent instance" time="0.003">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › TAN Agent (Structure Specialist)" name="should execute architecture analysis investigation" time="0.03">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › ZEN Agent (Documentation Specialist)" name="should create ZEN agent instance" time="0.001">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › ZEN Agent (Documentation Specialist)" name="should execute custom investigation" time="0.044">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › INO Agent (Context Specialist)" name="should create INO agent instance" time="0.001">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › INO Agent (Context Specialist)" name="should execute custom investigation" time="0.038">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › JUNO Agent (Quality Auditor)" name="should create JUNO agent instance" time="0">
+    </testcase>
+    <testcase classname="Critical Trinity Agents › JUNO Agent (Quality Auditor)" name="should execute code quality audit" time="0.022">
+    </testcase>
+  </testsuite>
+  <testsuite name="ConfigurationManager" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:28" time="6.678" tests="49">
+    <testcase classname="ConfigurationManager › Initialization" name="should load configuration from file" time="0.109">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should validate configuration on load by default" time="0.048">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should skip validation when validateOnLoad is false" time="0.039">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should throw error when config file not found" time="0.071">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should throw error for invalid JSON" time="0.037">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should determine environment from options" time="0.041">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should determine environment from TRINITY_ENV" time="0.029">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should determine environment from NODE_ENV" time="0.031">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should default to development environment" time="0.039">
+    </testcase>
+    <testcase classname="ConfigurationManager › Initialization" name="should normalize environment aliases" time="0.09">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Access" name="should get entire configuration" time="0.032">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Access" name="should return frozen configuration object" time="0.031">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Access" name="should get specific configuration section" time="0.034">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Access" name="should return frozen configuration section" time="0.035">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Access" name="should get all configuration sections" time="0.032">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override environment from env var" time="0.028">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override learning.enabled from env var" time="0.036">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override learning.confidenceThreshold from env var" time="0.027">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override cache.enabled from env var" time="0.032">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override cache.l1MaxSize from env var" time="0.027">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override coordination.enabled from env var" time="0.026">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override coordination.maxConcurrentTasks from env var" time="0.028">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override analytics.enabled from env var" time="0.029">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override logging.level from env var" time="0.024">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should create missing config sections when overriding" time="0.036">
+    </testcase>
+    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should handle multiple env var overrides" time="0.03">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Reload" name="should reload configuration from disk" time="0.16">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Reload" name="should validate on reload by default" time="0.057">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Reload" name="should skip validation when specified" time="0.044">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Reload" name="should notify listeners on reload" time="0.03">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Reload" name="should throw error on reload failure" time="0.037">
+    </testcase>
+    <testcase classname="ConfigurationManager › Configuration Reload" name="should measure reload performance" time="0.048">
+    </testcase>
+    <testcase classname="ConfigurationManager › Change Listeners" name="should add change listener" time="0.028">
+    </testcase>
+    <testcase classname="ConfigurationManager › Change Listeners" name="should notify listener on reload" time="0.047">
+    </testcase>
+    <testcase classname="ConfigurationManager › Change Listeners" name="should notify listener on in-memory update" time="0.07">
+    </testcase>
+    <testcase classname="ConfigurationManager › Change Listeners" name="should support multiple listeners" time="0.037">
+    </testcase>
+    <testcase classname="ConfigurationManager › Change Listeners" name="should unsubscribe listener" time="0.034">
+    </testcase>
+    <testcase classname="ConfigurationManager › Change Listeners" name="should support async listeners" time="0.053">
+    </testcase>
+    <testcase classname="ConfigurationManager › Change Listeners" name="should handle listener errors gracefully" time="0.044">
+    </testcase>
+    <testcase classname="ConfigurationManager › Change Listeners" name="should wait for all async listeners to complete" time="0.064">
+    </testcase>
+    <testcase classname="ConfigurationManager › In-Memory Updates" name="should update configuration in memory" time="0.029">
+    </testcase>
+    <testcase classname="ConfigurationManager › In-Memory Updates" name="should merge partial updates" time="0.029">
+    </testcase>
+    <testcase classname="ConfigurationManager › In-Memory Updates" name="should not persist to disk" time="0.028">
+    </testcase>
+    <testcase classname="ConfigurationManager › In-Memory Updates" name="should notify listeners on update" time="0.026">
+    </testcase>
+    <testcase classname="ConfigurationManager › Default Config Path" name="should use environment-specific default path" time="0.042">
+    </testcase>
+    <testcase classname="ConfigurationManager › Edge Cases" name="should handle empty config file" time="0.036">
+    </testcase>
+    <testcase classname="ConfigurationManager › Edge Cases" name="should handle config with extra fields" time="0.038">
+    </testcase>
+    <testcase classname="ConfigurationManager › Edge Cases" name="should freeze nested objects" time="0.026">
+    </testcase>
+    <testcase classname="ConfigurationManager › Edge Cases" name="should return new frozen object on each get call" time="0.029">
+    </testcase>
+  </testsuite>
+  <testsuite name="CacheKeyGenerator" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:34" time="2.198" tests="54">
     <testcase classname="CacheKeyGenerator › generateKey" name="should generate consistent keys for identical queries" time="0.003">
     </testcase>
-    <testcase classname="CacheKeyGenerator › generateKey" name="should generate different keys for different queries" time="0.001">
+    <testcase classname="CacheKeyGenerator › generateKey" name="should generate different keys for different queries" time="0">
     </testcase>
     <testcase classname="CacheKeyGenerator › generateKey" name="should generate different keys for different agents" time="0.001">
     </testcase>
     <testcase classname="CacheKeyGenerator › generateKey" name="should generate different keys for different query types" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › generateKey" name="should use default query type if not specified" time="0.001">
+    <testcase classname="CacheKeyGenerator › generateKey" name="should use default query type if not specified" time="0">
     </testcase>
     <testcase classname="CacheKeyGenerator › normalizeQuery" name="should convert to lowercase" time="0.001">
     </testcase>
@@ -313,23 +539,23 @@
     </testcase>
     <testcase classname="CacheKeyGenerator › normalizeQuery" name="should normalize code blocks" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should normalize inline code" time="0">
+    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should normalize inline code" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should normalize URLs" time="0">
+    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should normalize URLs" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should normalize file paths" time="0.001">
+    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should normalize file paths" time="0">
     </testcase>
     <testcase classname="CacheKeyGenerator › normalizeQuery" name="should normalize numbers" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should sort tokens alphabetically" time="0.001">
+    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should sort tokens alphabetically" time="0">
     </testcase>
-    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should produce same result for semantically similar queries" time="0.001">
+    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should produce same result for semantically similar queries" time="0">
     </testcase>
-    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should remove very short tokens" time="0">
+    <testcase classname="CacheKeyGenerator › normalizeQuery" name="should remove very short tokens" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › hashQuery" name="should generate SHA-256 hash" time="0">
+    <testcase classname="CacheKeyGenerator › hashQuery" name="should generate SHA-256 hash" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › hashQuery" name="should generate consistent hashes" time="0">
+    <testcase classname="CacheKeyGenerator › hashQuery" name="should generate consistent hashes" time="0.001">
     </testcase>
     <testcase classname="CacheKeyGenerator › hashQuery" name="should generate different hashes for different inputs" time="0.001">
     </testcase>
@@ -339,7 +565,7 @@
     </testcase>
     <testcase classname="CacheKeyGenerator › getBucketName" name="should generate consistent buckets for same key" time="0">
     </testcase>
-    <testcase classname="CacheKeyGenerator › getBucketName" name="should distribute keys across buckets" time="0.009">
+    <testcase classname="CacheKeyGenerator › getBucketName" name="should distribute keys across buckets" time="0.008">
     </testcase>
     <testcase classname="CacheKeyGenerator › getBucketName" name="should handle all agent types" time="0.001">
     </testcase>
@@ -347,17 +573,17 @@
     </testcase>
     <testcase classname="CacheKeyGenerator › extractTokens" name="should return sorted tokens" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › extractTokens" name="should remove stop words from tokens" time="0.001">
+    <testcase classname="CacheKeyGenerator › extractTokens" name="should remove stop words from tokens" time="0">
     </testcase>
-    <testcase classname="CacheKeyGenerator › extractTokens" name="should handle empty query" time="0">
+    <testcase classname="CacheKeyGenerator › extractTokens" name="should handle empty query" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › extractTokens" name="should handle query with only stop words" time="0.001">
+    <testcase classname="CacheKeyGenerator › extractTokens" name="should handle query with only stop words" time="0">
     </testcase>
     <testcase classname="CacheKeyGenerator › isValidKey" name="should validate correct key format" time="0.001">
     </testcase>
     <testcase classname="CacheKeyGenerator › isValidKey" name="should validate all agent types" time="0.002">
     </testcase>
-    <testcase classname="CacheKeyGenerator › isValidKey" name="should validate all query types" time="0.011">
+    <testcase classname="CacheKeyGenerator › isValidKey" name="should validate all query types" time="0.002">
     </testcase>
     <testcase classname="CacheKeyGenerator › isValidKey" name="should reject invalid agent ID" time="0.001">
     </testcase>
@@ -367,7 +593,7 @@
     </testcase>
     <testcase classname="CacheKeyGenerator › isValidKey" name="should reject non-hex characters in hash" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › isValidKey" name="should reject malformed keys" time="0.001">
+    <testcase classname="CacheKeyGenerator › isValidKey" name="should reject malformed keys" time="0">
     </testcase>
     <testcase classname="CacheKeyGenerator › parseKey" name="should parse valid key" time="0.001">
     </testcase>
@@ -389,338 +615,111 @@
     </testcase>
     <testcase classname="CacheKeyGenerator › generatePatternKey" name="should differ by agent" time="0">
     </testcase>
-    <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle very long queries" time="0.002">
+    <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle very long queries" time="0.001">
     </testcase>
     <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle queries with special characters" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle empty query" time="0">
+    <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle empty query" time="0.005">
     </testcase>
-    <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle query with only whitespace" time="0.001">
+    <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle query with only whitespace" time="0">
     </testcase>
-    <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle query with mixed case and punctuation" time="0">
+    <testcase classname="CacheKeyGenerator › Edge Cases" name="should handle query with mixed case and punctuation" time="0.001">
     </testcase>
-    <testcase classname="CacheKeyGenerator › Performance" name="should generate keys quickly" time="0.015">
+    <testcase classname="CacheKeyGenerator › Performance" name="should generate keys quickly" time="0.013">
     </testcase>
-    <testcase classname="CacheKeyGenerator › Performance" name="should normalize queries quickly" time="0.006">
-    </testcase>
-  </testsuite>
-  <testsuite name="ContextDetector" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:56:04" time="0.176" tests="7">
-    <testcase classname="ContextDetector › Framework Detection" name="should detect Next.js from package.json" time="0.004">
-    </testcase>
-    <testcase classname="ContextDetector › Framework Detection" name="should detect React from package.json" time="0.004">
-    </testcase>
-    <testcase classname="ContextDetector › Framework Detection" name="should return Unknown for unrecognized frameworks" time="0.008">
-    </testcase>
-    <testcase classname="ContextDetector › Language Detection" name="should detect TypeScript from tsconfig.json" time="0.008">
-    </testcase>
-    <testcase classname="ContextDetector › Language Detection" name="should detect JavaScript from .js files" time="0.006">
-    </testcase>
-    <testcase classname="ContextDetector › Testing Framework Detection" name="should detect Jest from package.json" time="0.002">
-    </testcase>
-    <testcase classname="ContextDetector › Context Detection" name="should detect complete context" time="0.009">
+    <testcase classname="CacheKeyGenerator › Performance" name="should normalize queries quickly" time="0.007">
     </testcase>
   </testsuite>
-  <testsuite name="ConfigValidator" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:55:59" time="5.594" tests="45">
-    <testcase classname="ConfigValidator › Valid Configuration" name="should validate valid configuration" time="0.107">
+  <testsuite name="Learning Flow Integration" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:28" time="9.554" tests="15">
+    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should execute complete investigation with learning" time="0.055">
     </testcase>
-    <testcase classname="ConfigValidator › Valid Configuration" name="should validate minimal valid configuration" time="0.038">
+    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should improve strategy selection over multiple investigations" time="0.063">
     </testcase>
-    <testcase classname="ConfigValidator › Valid Configuration" name="should validate all environment types" time="0.038">
+    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should track performance metrics accurately" time="0.021">
     </testcase>
-    <testcase classname="ConfigValidator › Valid Configuration" name="should validate all logging levels" time="0.04">
+    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should share high-confidence patterns between agents" time="0.083">
     </testcase>
-    <testcase classname="ConfigValidator › Valid Configuration" name="should validate configuration with optional fields" time="0.032">
+    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should validate patterns before sharing to specific agents" time="0.093">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject missing environment field" time="0.041">
+    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should accumulate patterns from multiple agents" time="0.106">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid environment value" time="0.03">
+    <testcase classname="Learning Flow Integration › Strategy Learning and Selection" name="should improve strategy confidence over time" time="0.275">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid logging level" time="0.028">
+    <testcase classname="Learning Flow Integration › Strategy Learning and Selection" name="should select appropriate strategy based on context" time="0.053">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject missing required learning fields" time="0.031">
+    <testcase classname="Learning Flow Integration › Data Persistence" name="should persist learning data across sessions" time="0.032">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid confidenceThreshold range" time="0.035">
+    <testcase classname="Learning Flow Integration › Data Persistence" name="should export and import learning data" time="0.097">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject negative cache sizes" time="0.032">
+    <testcase classname="Learning Flow Integration › Performance Optimization" name="should complete 100 investigations within performance targets" time="2.291">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject negative maxConcurrentTasks" time="0.026">
+    <testcase classname="Learning Flow Integration › Performance Optimization" name="should show performance improvement over time" time="0.501">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject negative retry attempts" time="0.027">
+    <testcase classname="Learning Flow Integration › Error Handling and Recovery" name="should recover from failed investigations" time="0.032">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid boolean values" time="0.027">
+    <testcase classname="Learning Flow Integration › Error Handling and Recovery" name="should handle concurrent investigations safely" time="0.532">
     </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject invalid array types" time="0.034">
-    </testcase>
-    <testcase classname="ConfigValidator › Invalid Configuration" name="should reject non-string array items" time="0.033">
-    </testcase>
-    <testcase classname="ConfigValidator › Type Validation" name="should validate string types" time="0.024">
-    </testcase>
-    <testcase classname="ConfigValidator › Type Validation" name="should validate number types" time="0.027">
-    </testcase>
-    <testcase classname="ConfigValidator › Type Validation" name="should validate boolean types" time="0.02">
-    </testcase>
-    <testcase classname="ConfigValidator › Type Validation" name="should validate object types" time="0.026">
-    </testcase>
-    <testcase classname="ConfigValidator › Type Validation" name="should validate nested object types" time="0.022">
-    </testcase>
-    <testcase classname="ConfigValidator › Error Reporting" name="should provide detailed error messages" time="0.033">
-    </testcase>
-    <testcase classname="ConfigValidator › Error Reporting" name="should report multiple errors" time="0.032">
-    </testcase>
-    <testcase classname="ConfigValidator › Error Reporting" name="should include field path in errors" time="0.025">
-    </testcase>
-    <testcase classname="ConfigValidator › Error Reporting" name="should include error information" time="0.029">
-    </testcase>
-    <testcase classname="ConfigValidator › validateOrThrow" name="should not throw for valid configuration" time="0.037">
-    </testcase>
-    <testcase classname="ConfigValidator › validateOrThrow" name="should throw for invalid configuration" time="0.067">
-    </testcase>
-    <testcase classname="ConfigValidator › validateOrThrow" name="should include all errors in throw message" time="0.061">
-    </testcase>
-    <testcase classname="ConfigValidator › validateOrThrow" name="should format errors with field and message" time="0.031">
-    </testcase>
-    <testcase classname="ConfigValidator › validateOrThrow" name="should assert type on successful validation" time="0.027">
-    </testcase>
-    <testcase classname="ConfigValidator › Boundary Values" name="should accept confidenceThreshold at minimum (0)" time="0.022">
-    </testcase>
-    <testcase classname="ConfigValidator › Boundary Values" name="should accept confidenceThreshold at maximum (1)" time="0.025">
-    </testcase>
-    <testcase classname="ConfigValidator › Boundary Values" name="should accept maxConcurrentTasks at minimum (1)" time="0.023">
-    </testcase>
-    <testcase classname="ConfigValidator › Boundary Values" name="should accept zero for optional numeric fields" time="0.026">
-    </testcase>
-    <testcase classname="ConfigValidator › Boundary Values" name="should accept empty array for enabledHooks" time="0.023">
-    </testcase>
-    <testcase classname="ConfigValidator › Schema Loading" name="should load schema on instantiation" time="0.058">
-    </testcase>
-    <testcase classname="ConfigValidator › Schema Loading" name="should compile schema successfully" time="0.049">
-    </testcase>
-    <testcase classname="ConfigValidator › Edge Cases" name="should handle null values" time="0.026">
-    </testcase>
-    <testcase classname="ConfigValidator › Edge Cases" name="should allow optional sections to be missing" time="0.033">
-    </testcase>
-    <testcase classname="ConfigValidator › Edge Cases" name="should handle empty object" time="0.026">
-    </testcase>
-    <testcase classname="ConfigValidator › Edge Cases" name="should handle non-object input" time="0.023">
-    </testcase>
-    <testcase classname="ConfigValidator › Edge Cases" name="should handle array input" time="0.027">
-    </testcase>
-    <testcase classname="ConfigValidator › Edge Cases" name="should handle deeply nested invalid values" time="0.023">
-    </testcase>
-    <testcase classname="ConfigValidator › Additional Properties" name="should allow additional properties in config" time="0.029">
-    </testcase>
-    <testcase classname="ConfigValidator › Additional Properties" name="should allow additional properties in nested objects" time="0.027">
+    <testcase classname="Learning Flow Integration › Multi-Agent Coordination" name="should coordinate investigations across multiple agents" time="0.039">
     </testcase>
   </testsuite>
-  <testsuite name="ConfigurationManager" errors="0" failures="1" skipped="0" timestamp="2025-10-06T04:55:59" time="6.305" tests="49">
-    <testcase classname="ConfigurationManager › Initialization" name="should load configuration from file" time="0.114">
+  <testsuite name="ConfigWatcher" errors="0" failures="0" skipped="0" timestamp="2025-10-06T06:39:28" time="14.107" tests="29">
+    <testcase classname="ConfigWatcher › Initialization" name="should create watcher instance" time="0.11">
     </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should validate configuration on load by default" time="0.054">
+    <testcase classname="ConfigWatcher › Initialization" name="should accept custom debounce delay" time="0.043">
     </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should skip validation when validateOnLoad is false" time="0.044">
+    <testcase classname="ConfigWatcher › Initialization" name="should use default debounce delay" time="0.049">
     </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should throw error when config file not found" time="0.072">
+    <testcase classname="ConfigWatcher › Initialization" name="should not start watching on creation" time="0.04">
     </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should throw error for invalid JSON" time="0.034">
+    <testcase classname="ConfigWatcher › Start Watching" name="should start watching configuration file" time="0.162">
     </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should determine environment from options" time="0.041">
-    </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should determine environment from TRINITY_ENV" time="0.038">
-    </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should determine environment from NODE_ENV" time="0.041">
-    </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should default to development environment" time="0.039">
-    </testcase>
-    <testcase classname="ConfigurationManager › Initialization" name="should normalize environment aliases" time="0.092">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Access" name="should get entire configuration" time="0.033">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Access" name="should return frozen configuration object" time="0.034">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Access" name="should get specific configuration section" time="0.031">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Access" name="should return frozen configuration section" time="0.033">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Access" name="should get all configuration sections" time="0.042">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override environment from env var" time="0.045">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override learning.enabled from env var" time="0.051">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override learning.confidenceThreshold from env var" time="0.04">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override cache.enabled from env var" time="0.041">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override cache.l1MaxSize from env var" time="0.044">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override coordination.enabled from env var" time="0.053">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override coordination.maxConcurrentTasks from env var" time="0.028">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override analytics.enabled from env var" time="0.035">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should override logging.level from env var" time="0.029">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should create missing config sections when overriding" time="0.035">
-    </testcase>
-    <testcase classname="ConfigurationManager › Environment Variable Overrides" name="should handle multiple env var overrides" time="0.038">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Reload" name="should reload configuration from disk" time="0.16">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Reload" name="should validate on reload by default" time="0.052">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Reload" name="should skip validation when specified" time="0.039">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Reload" name="should notify listeners on reload" time="0.03">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Reload" name="should throw error on reload failure" time="0.04">
-    </testcase>
-    <testcase classname="ConfigurationManager › Configuration Reload" name="should measure reload performance" time="0.034">
-    </testcase>
-    <testcase classname="ConfigurationManager › Change Listeners" name="should add change listener" time="0.026">
-    </testcase>
-    <testcase classname="ConfigurationManager › Change Listeners" name="should notify listener on reload" time="0.034">
-    </testcase>
-    <testcase classname="ConfigurationManager › Change Listeners" name="should notify listener on in-memory update" time="0.026">
-    </testcase>
-    <testcase classname="ConfigurationManager › Change Listeners" name="should support multiple listeners" time="0.029">
-    </testcase>
-    <testcase classname="ConfigurationManager › Change Listeners" name="should unsubscribe listener" time="0.027">
-    </testcase>
-    <testcase classname="ConfigurationManager › Change Listeners" name="should support async listeners" time="0.052">
-    </testcase>
-    <testcase classname="ConfigurationManager › Change Listeners" name="should handle listener errors gracefully" time="0.048">
-    </testcase>
-    <testcase classname="ConfigurationManager › Change Listeners" name="should wait for all async listeners to complete" time="0.061">
-    </testcase>
-    <testcase classname="ConfigurationManager › In-Memory Updates" name="should update configuration in memory" time="0.031">
-    </testcase>
-    <testcase classname="ConfigurationManager › In-Memory Updates" name="should merge partial updates" time="0.027">
-    </testcase>
-    <testcase classname="ConfigurationManager › In-Memory Updates" name="should not persist to disk" time="0.043">
-    </testcase>
-    <testcase classname="ConfigurationManager › In-Memory Updates" name="should notify listeners on update" time="0.035">
-    </testcase>
-    <testcase classname="ConfigurationManager › Default Config Path" name="should use environment-specific default path" time="0.044">
-      <failure>Error: ENOTEMPTY: directory not empty, rmdir &apos;C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\trinity\learning\test-integration&apos;</failure>
-    </testcase>
-    <testcase classname="ConfigurationManager › Edge Cases" name="should handle empty config file" time="0.039">
-    </testcase>
-    <testcase classname="ConfigurationManager › Edge Cases" name="should handle config with extra fields" time="0.038">
-    </testcase>
-    <testcase classname="ConfigurationManager › Edge Cases" name="should freeze nested objects" time="0.026">
-    </testcase>
-    <testcase classname="ConfigurationManager › Edge Cases" name="should return new frozen object on each get call" time="0.031">
-    </testcase>
-  </testsuite>
-  <testsuite name="InvestigationPlanner" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:56:04" time="1.8" tests="8">
-    <testcase classname="InvestigationPlanner › Plan Generation" name="should generate security audit plan" time="0.005">
-    </testcase>
-    <testcase classname="InvestigationPlanner › Plan Generation" name="should auto-detect investigation type from goal" time="0.002">
-    </testcase>
-    <testcase classname="InvestigationPlanner › Plan Generation" name="should generate phases with deliverables" time="0.002">
-    </testcase>
-    <testcase classname="InvestigationPlanner › Plan Generation" name="should estimate resources" time="0.001">
-    </testcase>
-    <testcase classname="InvestigationPlanner › Plan Generation" name="should identify risks" time="0.001">
-    </testcase>
-    <testcase classname="InvestigationPlanner › Plan Generation" name="should calculate quality and completeness scores" time="0.001">
-    </testcase>
-    <testcase classname="InvestigationPlanner › Planning Strategies" name="should apply comprehensive strategy" time="0">
-    </testcase>
-    <testcase classname="InvestigationPlanner › Planning Strategies" name="should apply rapid strategy" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Learning Flow Integration" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:55:59" time="8.31" tests="15">
-    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should execute complete investigation with learning" time="0.066">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should improve strategy selection over multiple investigations" time="0.07">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should track performance metrics accurately" time="0.02">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should share high-confidence patterns between agents" time="0.082">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should validate patterns before sharing to specific agents" time="0.077">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should accumulate patterns from multiple agents" time="0.125">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Strategy Learning and Selection" name="should improve strategy confidence over time" time="0.238">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Strategy Learning and Selection" name="should select appropriate strategy based on context" time="0.015">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Data Persistence" name="should persist learning data across sessions" time="0.023">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Data Persistence" name="should export and import learning data" time="0.023">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Performance Optimization" name="should complete 100 investigations within performance targets" time="2.316">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Performance Optimization" name="should show performance improvement over time" time="0.605">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Error Handling and Recovery" name="should recover from failed investigations" time="0.029">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Error Handling and Recovery" name="should handle concurrent investigations safely" time="0.548">
-    </testcase>
-    <testcase classname="Learning Flow Integration › Multi-Agent Coordination" name="should coordinate investigations across multiple agents" time="0.061">
-    </testcase>
-  </testsuite>
-  <testsuite name="ConfigWatcher" errors="0" failures="0" skipped="0" timestamp="2025-10-06T04:55:59" time="13.495" tests="29">
-    <testcase classname="ConfigWatcher › Initialization" name="should create watcher instance" time="0.124">
-    </testcase>
-    <testcase classname="ConfigWatcher › Initialization" name="should accept custom debounce delay" time="0.042">
-    </testcase>
-    <testcase classname="ConfigWatcher › Initialization" name="should use default debounce delay" time="0.037">
-    </testcase>
-    <testcase classname="ConfigWatcher › Initialization" name="should not start watching on creation" time="0.049">
-    </testcase>
-    <testcase classname="ConfigWatcher › Start Watching" name="should start watching configuration file" time="0.157">
-    </testcase>
-    <testcase classname="ConfigWatcher › Start Watching" name="should not throw when starting already running watcher" time="0.067">
+    <testcase classname="ConfigWatcher › Start Watching" name="should not throw when starting already running watcher" time="0.055">
     </testcase>
     <testcase classname="ConfigWatcher › Start Watching" name="should watch specified file path" time="0.04">
     </testcase>
-    <testcase classname="ConfigWatcher › Stop Watching" name="should stop watching configuration file" time="0.037">
+    <testcase classname="ConfigWatcher › Stop Watching" name="should stop watching configuration file" time="0.043">
     </testcase>
-    <testcase classname="ConfigWatcher › Stop Watching" name="should not throw when stopping already stopped watcher" time="0.046">
+    <testcase classname="ConfigWatcher › Stop Watching" name="should not throw when stopping already stopped watcher" time="0.036">
     </testcase>
-    <testcase classname="ConfigWatcher › Stop Watching" name="should clear reload timeout on stop" time="1.552">
+    <testcase classname="ConfigWatcher › Stop Watching" name="should clear reload timeout on stop" time="1.555">
     </testcase>
-    <testcase classname="ConfigWatcher › Stop Watching" name="should allow restart after stop" time="0.045">
+    <testcase classname="ConfigWatcher › Stop Watching" name="should allow restart after stop" time="0.058">
     </testcase>
-    <testcase classname="ConfigWatcher › Change Detection" name="should detect file changes" time="0.478">
+    <testcase classname="ConfigWatcher › Change Detection" name="should detect file changes" time="0.457">
     </testcase>
-    <testcase classname="ConfigWatcher › Change Detection" name="should reload configuration on change" time="0.454">
+    <testcase classname="ConfigWatcher › Change Detection" name="should reload configuration on change" time="0.46">
     </testcase>
-    <testcase classname="ConfigWatcher › Change Detection" name="should detect multiple changes" time="0.59">
+    <testcase classname="ConfigWatcher › Change Detection" name="should detect multiple changes" time="0.579">
     </testcase>
-    <testcase classname="ConfigWatcher › Debouncing" name="should debounce rapid changes" time="0.8">
+    <testcase classname="ConfigWatcher › Debouncing" name="should debounce rapid changes" time="0.769">
     </testcase>
-    <testcase classname="ConfigWatcher › Debouncing" name="should use custom debounce delay" time="0.946">
+    <testcase classname="ConfigWatcher › Debouncing" name="should use custom debounce delay" time="0.94">
     </testcase>
-    <testcase classname="ConfigWatcher › Debouncing" name="should reset debounce timer on new change" time="0.634">
+    <testcase classname="ConfigWatcher › Debouncing" name="should reset debounce timer on new change" time="0.632">
     </testcase>
-    <testcase classname="ConfigWatcher › Error Handling" name="should handle reload errors gracefully" time="0.341">
+    <testcase classname="ConfigWatcher › Error Handling" name="should handle reload errors gracefully" time="0.338">
     </testcase>
-    <testcase classname="ConfigWatcher › Error Handling" name="should continue watching after reload error" time="0.558">
+    <testcase classname="ConfigWatcher › Error Handling" name="should continue watching after reload error" time="0.555">
     </testcase>
-    <testcase classname="ConfigWatcher › Error Handling" name="should handle file deletion" time="0.324">
+    <testcase classname="ConfigWatcher › Error Handling" name="should handle file deletion" time="0.337">
     </testcase>
-    <testcase classname="ConfigWatcher › Error Handling" name="should handle watcher errors" time="0.127">
+    <testcase classname="ConfigWatcher › Error Handling" name="should handle watcher errors" time="0.124">
     </testcase>
-    <testcase classname="ConfigWatcher › Integration with ConfigurationManager" name="should trigger ConfigurationManager reload" time="0.324">
+    <testcase classname="ConfigWatcher › Integration with ConfigurationManager" name="should trigger ConfigurationManager reload" time="0.34">
     </testcase>
-    <testcase classname="ConfigWatcher › Integration with ConfigurationManager" name="should pass updated config to listeners" time="0.34">
+    <testcase classname="ConfigWatcher › Integration with ConfigurationManager" name="should pass updated config to listeners" time="0.339">
     </testcase>
-    <testcase classname="ConfigWatcher › Integration with ConfigurationManager" name="should maintain config consistency" time="0.325">
+    <testcase classname="ConfigWatcher › Integration with ConfigurationManager" name="should maintain config consistency" time="0.338">
     </testcase>
-    <testcase classname="ConfigWatcher › Performance" name="should handle file changes with minimal latency" time="0.434">
+    <testcase classname="ConfigWatcher › Performance" name="should handle file changes with minimal latency" time="0.432">
     </testcase>
-    <testcase classname="ConfigWatcher › Performance" name="should not block on file changes" time="0.126">
+    <testcase classname="ConfigWatcher › Performance" name="should not block on file changes" time="0.123">
     </testcase>
-    <testcase classname="ConfigWatcher › Cleanup" name="should clean up resources on stop" time="0.027">
+    <testcase classname="ConfigWatcher › Cleanup" name="should clean up resources on stop" time="0.018">
     </testcase>
-    <testcase classname="ConfigWatcher › Cleanup" name="should not leak memory on repeated start/stop" time="0.173">
+    <testcase classname="ConfigWatcher › Cleanup" name="should not leak memory on repeated start/stop" time="0.182">
     </testcase>
-    <testcase classname="ConfigWatcher › Cleanup" name="should clear all timers on stop" time="0.232">
+    <testcase classname="ConfigWatcher › Cleanup" name="should clear all timers on stop" time="0.231">
     </testcase>
   </testsuite>
 </testsuites>

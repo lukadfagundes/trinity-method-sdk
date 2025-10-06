@@ -2,6 +2,8 @@
   "name": "trinity-method-sdk",
   "version": "1.0.0",
   "description": "Trinity Method SDK - Investigation-first development methodology for any project",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "private": true,
   "workspaces": [
     "packages/*"

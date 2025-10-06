@@ -18,7 +18,7 @@ import {
   DependencyResolutionResult,
   AgentAssignmentResult,
   TaskExecutionError,
-} from '@shared/types';
+} from '../shared/types';
 
 import { AgentMatcher } from './AgentMatcher';
 import { DependencyResolver } from './DependencyResolver';

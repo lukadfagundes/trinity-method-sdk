@@ -8,7 +8,7 @@
  * @version 1.0.0
  */
 
-import { InvestigationType, SuccessCriterion } from '@shared/types';
+import { InvestigationType, SuccessCriterion } from '../../shared/types';
 
 import { InvestigationTemplate, TaskTemplate } from './InvestigationTemplate';
 

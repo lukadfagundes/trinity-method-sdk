@@ -11,7 +11,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-import { InvestigationContext } from '@shared/types';
+import { InvestigationContext } from '../shared/types';
 
 /**
  * Framework detection patterns

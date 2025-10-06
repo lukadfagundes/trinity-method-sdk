@@ -15,7 +15,7 @@ import {
   StrategyPerformance,
   ErrorResolution,
   AgentType,
-} from '@shared/types';
+} from '../shared/types';
 
 /**
  * Learning data structure for an agent

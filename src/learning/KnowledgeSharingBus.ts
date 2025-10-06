@@ -12,7 +12,7 @@ import {
   LearnedPattern,
   StrategyPerformance,
   AgentType,
-} from '@shared/types';
+} from '../shared/types';
 
 import { LearningDataStore } from './LearningDataStore';
 

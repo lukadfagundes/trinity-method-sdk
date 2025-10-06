@@ -30,7 +30,7 @@ import {
   AgentType,
   Risk,
   Timeline,
-} from '@shared/types';
+} from '../shared/types';
 
 /**
  * Input for investigation planning
