@@ -1,4 +1,6 @@
-export const lintingTools = {
+import { LintingTool, PostInstallInstruction } from '../types';
+
+export const lintingTools: Record<string, LintingTool[]> = {
   'Node.js': [
     {
       id: 'eslint',
@@ -31,7 +33,6 @@ export const lintingTools = {
       file: '.pre-commit-config.yaml',
       recommended: true,
       dependencies: [],
-      postInstall: 'pip install pre-commit && pre-commit install',
     },
     {
       id: 'typescript-eslint',
@@ -43,7 +44,6 @@ export const lintingTools = {
         '@typescript-eslint/parser@^6.7.0',
         '@typescript-eslint/eslint-plugin@^6.7.0',
       ],
-      requiresTypeScript: true,
     },
   ],
 
@@ -79,7 +79,6 @@ export const lintingTools = {
       file: '.pre-commit-config.yaml',
       recommended: true,
       dependencies: [],
-      postInstall: 'pip install pre-commit && pre-commit install',
     },
     {
       id: 'typescript-eslint',
@@ -91,7 +90,6 @@ export const lintingTools = {
         '@typescript-eslint/parser@^6.7.0',
         '@typescript-eslint/eslint-plugin@^6.7.0',
       ],
-      requiresTypeScript: true,
     },
   ],
 
@@ -127,7 +125,6 @@ export const lintingTools = {
       file: '.pre-commit-config.yaml',
       recommended: true,
       dependencies: ['pre-commit>=3.3.0'],
-      postInstall: 'pre-commit install',
     },
   ],
 
@@ -147,7 +144,6 @@ export const lintingTools = {
       file: '.pre-commit-config.yaml',
       recommended: true,
       dependencies: [],
-      postInstall: 'pip install pre-commit && pre-commit install',
     },
   ],
 
@@ -175,38 +171,37 @@ export const lintingTools = {
       file: '.pre-commit-config.yaml',
       recommended: true,
       dependencies: [],
-      postInstall: 'pip install pre-commit && pre-commit install',
     },
   ],
 };
 
-export function getToolsForFramework(framework, language) {
+export function getToolsForFramework(framework: string, language: string): LintingTool[] {
   // Special handling for TypeScript
   const tools = lintingTools[framework] || lintingTools['Node.js'] || [];
 
   if (language === 'TypeScript') {
     return tools.map((tool) => {
-      if (tool.requiresTypeScript) {
+      if ((tool as any).requiresTypeScript) {
         return { ...tool, recommended: true };
       }
       return tool;
     });
   }
 
-  return tools.filter((tool) => !tool.requiresTypeScript);
+  return tools.filter((tool) => !(tool as any).requiresTypeScript);
 }
 
-export function getRecommendedTools(framework, language) {
+export function getRecommendedTools(framework: string, language: string): LintingTool[] {
   const tools = getToolsForFramework(framework, language);
   return tools.filter((tool) => tool.recommended);
 }
 
-export function getDependenciesForTools(selectedTools) {
+export function getDependenciesForTools(selectedTools: LintingTool[]): string[] {
   return selectedTools.flatMap((tool) => tool.dependencies || []);
 }
 
-export function getScriptsForTools(selectedTools) {
-  const scripts = {};
+export function getScriptsForTools(selectedTools: LintingTool[]): Record<string, string> {
+  const scripts: Record<string, string> = {};
   selectedTools.forEach((tool) => {
     if (tool.scripts) {
       Object.assign(scripts, tool.scripts);
@@ -215,14 +210,15 @@ export function getScriptsForTools(selectedTools) {
   return scripts;
 }
 
-export function getPostInstallInstructions(selectedTools, framework) {
-  const instructions = [];
+export function getPostInstallInstructions(selectedTools: LintingTool[], framework: string): PostInstallInstruction[] {
+  const instructions: PostInstallInstruction[] = [];
 
   selectedTools.forEach((tool) => {
-    if (tool.postInstall) {
+    const postInstall = (tool as any).postInstall;
+    if (postInstall) {
       instructions.push({
-        tool: tool.name,
-        command: tool.postInstall,
+        command: postInstall,
+        description: `Setup ${tool.name}`
       });
     }
   });

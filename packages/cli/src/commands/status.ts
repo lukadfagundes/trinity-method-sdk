@@ -1,8 +1,7 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import path from 'path';
 
-export async function status(options) {
+export async function status(): Promise<void> {
   console.log(chalk.blue.bold('\n📊 Trinity Method Status\n'));
 
   // Check deployment

@@ -1,12 +1,20 @@
 import fs from 'fs-extra';
-import chalk from 'chalk';
+
+interface ReadmeInjectResult {
+  success: boolean;
+  message: string;
+  injected?: boolean;
+  skipped?: boolean;
+  created?: boolean;
+  error?: Error;
+}
 
 /**
  * Injects Trinity Method section into project README.md
- * @param {Object} variables - Template variables (PROJECT_NAME, FRAMEWORK, etc.)
- * @returns {Promise<Object>} - Result with success status and message
+ * @param variables - Template variables (PROJECT_NAME, FRAMEWORK, etc.)
+ * @returns Result with success status and message
  */
-export async function injectTrinityMethodSection(variables) {
+export async function injectTrinityMethodSection(variables: Record<string, any>): Promise<ReadmeInjectResult> {
   const readmePath = 'README.md';
 
   try {
@@ -44,7 +52,7 @@ export async function injectTrinityMethodSection(variables) {
       injected: true
     };
 
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       message: `Failed to inject Trinity Method section: ${error.message}`,
@@ -55,10 +63,10 @@ export async function injectTrinityMethodSection(variables) {
 
 /**
  * Generates Trinity Method section content
- * @param {Object} variables - Template variables
- * @returns {string} - Markdown content for Trinity Method section
+ * @param variables - Template variables
+ * @returns Markdown content for Trinity Method section
  */
-function generateTrinitySection(variables) {
+function generateTrinitySection(variables: Record<string, any>): string {
   const projectName = variables.PROJECT_NAME || 'this project';
   const framework = variables.FRAMEWORK || 'Unknown';
   const version = variables.TRINITY_VERSION || '1.0.0';

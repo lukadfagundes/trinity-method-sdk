@@ -5,6 +5,7 @@ import { join, resolve } from 'path';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
+import { InvestigateOptions } from '../types';
 
 /**
  * Trinity Investigate Command
@@ -12,7 +13,7 @@ import ora from 'ora';
  * Creates and executes investigations using the Trinity SDK agents
  */
 
-export async function investigate(options) {
+export async function investigate(options: InvestigateOptions): Promise<void> {
   console.log(chalk.cyan.bold('\n🔍 Trinity Investigation\n'));
 
   // Check if Trinity SDK is built
@@ -119,7 +120,7 @@ export async function investigate(options) {
     });
 
     // Initialize agents based on investigation type
-    const agents = [];
+    const agents: any[] = [];
     switch (answers.investigationType) {
       case 'security':
         agents.push(new SDK.JUNO()); // Quality Auditor for security
@@ -171,7 +172,7 @@ export async function investigate(options) {
     console.log(chalk.gray('  • Generate report: ') + chalk.yellow(`trinity report ${results.investigationId}`));
     console.log(chalk.gray('  • View all investigations: ') + chalk.yellow('trinity list'));
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('\n❌ Investigation failed:'), error.message);
     if (options.verbose) {
       console.error(error.stack);

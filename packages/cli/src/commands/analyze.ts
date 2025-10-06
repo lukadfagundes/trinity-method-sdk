@@ -4,6 +4,7 @@ import { join, resolve } from 'path';
 import { pathToFileURL } from 'url';
 import chalk from 'chalk';
 import ora from 'ora';
+import { AnalyzeOptions } from '../types';
 
 /**
  * Trinity Analyze Command
@@ -11,7 +12,7 @@ import ora from 'ora';
  * Quick code analysis using context detection and agents
  */
 
-export async function analyze(target, options) {
+export async function analyze(target: string | undefined, options: AnalyzeOptions): Promise<void> {
   console.log(chalk.cyan.bold('\n🔍 Trinity Quick Analysis\n'));
 
   // Check if Trinity SDK is built
@@ -58,7 +59,7 @@ export async function analyze(target, options) {
     console.log(chalk.cyan('\n💡 Recommended Investigations:'));
     console.log(chalk.gray('─'.repeat(60)));
 
-    const recommendations = [];
+    const recommendations: string[] = [];
 
     if (context.language === 'TypeScript' || context.language === 'JavaScript') {
       recommendations.push('🔒 Security Audit - Check for common vulnerabilities');
@@ -102,7 +103,7 @@ export async function analyze(target, options) {
     console.log(chalk.gray('  • View dashboard: ') + chalk.yellow('trinity dashboard'));
     console.log(chalk.gray('  • Check status: ') + chalk.yellow('trinity status'));
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('\n❌ Analysis failed:'), error.message);
     if (options.verbose) {
       console.error(error.stack);

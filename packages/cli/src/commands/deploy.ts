@@ -1,34 +1,35 @@
-import ora from 'ora';
+import ora, { Ora } from 'ora';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import fs from 'fs-extra';
 import path from 'path';
-import { detectStack } from '../utils/detect-stack.js';
-import { processTemplate, extractVariables, formatMetrics } from '../utils/template-processor.js';
-import { collectCodebaseMetrics } from '../utils/codebase-metrics.js';
+import { detectStack } from '../utils/detect-stack';
+import { processTemplate, formatMetrics } from '../utils/template-processor';
+import { collectCodebaseMetrics } from '../utils/codebase-metrics';
 import {
   getToolsForFramework,
   getRecommendedTools,
   getDependenciesForTools,
   getScriptsForTools,
   getPostInstallInstructions,
-} from '../utils/linting-tools.js';
-import { deployLintingTool } from '../utils/deploy-linting.js';
-import { injectLintingDependencies } from '../utils/inject-dependencies.js';
-import { deployCITemplates } from '../utils/deploy-ci.js';
-import { injectTrinityMethodSection } from '../utils/inject-readme.js';
+} from '../utils/linting-tools';
+import { deployLintingTool } from '../utils/deploy-linting';
+import { injectLintingDependencies } from '../utils/inject-dependencies';
+import { deployCITemplates } from '../utils/deploy-ci';
+import { injectTrinityMethodSection } from '../utils/inject-readme';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { readFileSync } from 'fs';
+import { DeployOptions, DeploymentStats, LintingTool, CodebaseMetrics } from '../types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export async function deploy(options) {
+export async function deploy(options: DeployOptions): Promise<void> {
   console.log(chalk.blue.bold('\n🔱 Trinity Method SDK - Deployment\n'));
 
-  let spinner;
-  let deploymentStats = {
+  let spinner: Ora | undefined;
+  const deploymentStats: DeploymentStats = {
     agents: 0,
     hooks: 0,
     templates: 0,
@@ -58,10 +59,10 @@ export async function deploy(options) {
 
     // STEP 3: Prompt for configuration
     let projectName = options.name || path.basename(process.cwd());
-    let selectedLintingTools = [];
-    let lintingDependencies = [];
-    let lintingScripts = {};
-    let postInstallInstructions = [];
+    let selectedLintingTools: LintingTool[] = [];
+    let lintingDependencies: string[] = [];
+    let lintingScripts: Record<string, string> = {};
+    let postInstallInstructions: any[] = [];
 
     if (!options.yes) {
       // Project name prompt
@@ -267,7 +268,13 @@ export async function deploy(options) {
     }
 
     // STEP 3.5: Collect codebase metrics (unless --skip-audit) [WO#009]
-    let metrics = {};
+    let metrics: CodebaseMetrics = {
+      totalFiles: 0,
+      todoCount: 0,
+      filesOver500: 0,
+      dependencyCount: 0
+    };
+
     if (!options.skipAudit) {
       spinner = ora('Analyzing codebase metrics...').start();
 
@@ -279,7 +286,7 @@ export async function deploy(options) {
         console.log(chalk.white(`   ${metrics.todoCount} TODO/FIXME/HACK comments found`));
         console.log(chalk.white(`   ${metrics.filesOver500} files over 500 lines`));
         console.log(chalk.white(`   ${metrics.dependencyCount} dependencies detected`));
-      } catch (error) {
+      } catch (error: any) {
         spinner.warn('Codebase analysis partial - some metrics unavailable');
         console.log(chalk.yellow(`   ${error.message}`));
       }
@@ -313,7 +320,7 @@ export async function deploy(options) {
     // Prepare template variables
     const templatesPath = path.join(__dirname, '../../templates');
     const pkg = JSON.parse(readFileSync(path.join(__dirname, '../../package.json'), 'utf8'));
-    const variables = {
+    const variables: Record<string, any> = {
       PROJECT_NAME: projectName,
       TECH_STACK: stack.language,
       FRAMEWORK: stack.framework,
@@ -397,7 +404,7 @@ export async function deploy(options) {
     // STEP 6.6: Deploy source directory CLAUDE.md [WO#008]
     spinner = ora(`Deploying ${stack.sourceDir}/CLAUDE.md...`).start();
 
-    const frameworkMap = {
+    const frameworkMap: Record<string, string> = {
       'Node.js': 'nodejs-CLAUDE.md.template',
       'Flutter': 'flutter-CLAUDE.md.template',
       'React': 'react-CLAUDE.md.template',
@@ -449,7 +456,7 @@ export async function deploy(options) {
     }
 
     spinner.succeed(`Agents deployed (${deploymentStats.agents} agents)`);
-    
+
     // STEP 8: Deploy hooks [WO#007]
     spinner = ora('Deploying hook scripts...').start();
 
@@ -523,8 +530,6 @@ export async function deploy(options) {
       spinner.warn('Employee Directory template not found');
     }
 
-    // STEP 9.7: Deploy linting configuration (if selected) [WO#011]
-
     // STEP 9.6: Deploy slash commands [WO#021]
     spinner = ora('Deploying Trinity slash commands...').start();
 
@@ -554,6 +559,8 @@ export async function deploy(options) {
     }
 
     spinner.succeed(`Slash commands deployed (${commands.length} commands)`);
+
+    // STEP 9.7: Deploy linting configuration (if selected) [WO#011]
     if (options.lintingTools && options.lintingTools.length > 0) {
       spinner = ora('Deploying linting configuration...').start();
 
@@ -564,7 +571,7 @@ export async function deploy(options) {
         }
 
         spinner.succeed(`Linting configuration deployed (${options.lintingTools.length} tools)`);
-      } catch (error) {
+      } catch (error: any) {
         spinner.fail('Linting configuration deployment failed');
         console.error(chalk.yellow(`   Warning: ${error.message}`));
       }
@@ -581,7 +588,7 @@ export async function deploy(options) {
           stack.framework
         );
         spinner.succeed('Linting dependencies added to project configuration');
-      } catch (error) {
+      } catch (error: any) {
         spinner.fail('Dependency injection failed');
         console.error(chalk.yellow(`   Warning: ${error.message}`));
       }
@@ -621,7 +628,7 @@ export async function deploy(options) {
 
         if (ciStats.deployed.length > 0) {
           spinner.succeed(`CI/CD templates deployed (${ciStats.deployed.length} files)`);
-          ciStats.deployed.forEach(file => {
+          ciStats.deployed.forEach((file: string) => {
             console.log(chalk.white(`   ✓ ${file}`));
           });
         } else {
@@ -630,20 +637,20 @@ export async function deploy(options) {
 
         if (ciStats.skipped.length > 0) {
           console.log(chalk.yellow('   Skipped:'));
-          ciStats.skipped.forEach(file => {
+          ciStats.skipped.forEach((file: string) => {
             console.log(chalk.yellow(`   - ${file}`));
           });
         }
 
         if (ciStats.errors.length > 0) {
           spinner.warn('Some CI/CD templates failed to deploy');
-          ciStats.errors.forEach(err => {
+          ciStats.errors.forEach((err: any) => {
             console.log(chalk.red(`   ✗ ${err.file || 'Error'}: ${err.error}`));
           });
         }
 
         deploymentStats.files += ciStats.deployed.length;
-      } catch (error) {
+      } catch (error: any) {
         spinner.fail('CI/CD template deployment failed');
         console.error(chalk.yellow(`   Warning: ${error.message}`));
       }
@@ -684,7 +691,7 @@ export async function deploy(options) {
       } else {
         spinner.info('.gitignore already contains Trinity exclusions');
       }
-    } catch (error) {
+    } catch (error: any) {
       spinner.warn('.gitignore update failed');
       console.error(chalk.yellow(`   Warning: ${error.message}`));
     }
@@ -709,9 +716,54 @@ export async function deploy(options) {
         spinner.warn('README.md injection skipped');
         console.log(chalk.yellow(`   ${readmeResult.message}`));
       }
-    } catch (error) {
+    } catch (error: any) {
       spinner.warn('README.md injection failed');
       console.error(chalk.yellow(`   Warning: ${error.message}`));
+    }
+
+    // STEP 13: Install Trinity Method SDK to project
+    spinner = ora('Installing Trinity Method SDK...').start();
+
+    try {
+      const { execSync } = await import('child_process');
+      const packageJsonPath = 'package.json';
+
+      if (await fs.pathExists(packageJsonPath)) {
+        // Check if SDK is already installed
+        const packageJson = await fs.readJson(packageJsonPath);
+        const hasSDK = packageJson.dependencies?.['trinity-method-sdk'] ||
+                      packageJson.devDependencies?.['trinity-method-sdk'];
+
+        if (!hasSDK) {
+          // Add SDK to package.json dependencies
+          if (!packageJson.dependencies) {
+            packageJson.dependencies = {};
+          }
+          packageJson.dependencies['trinity-method-sdk'] = '^1.0.0';
+
+          await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 });
+
+          spinner.text = 'Installing Trinity Method SDK (this may take a moment)...';
+
+          // Install dependencies
+          execSync('npm install', {
+            stdio: 'pipe',
+            cwd: process.cwd()
+          });
+
+          spinner.succeed('Trinity Method SDK installed successfully');
+          deploymentStats.files++; // Count package.json modification
+        } else {
+          spinner.info('Trinity Method SDK already installed');
+        }
+      } else {
+        spinner.warn('No package.json found - SDK not installed');
+        console.log(chalk.yellow('   Run: npm init -y && npm install trinity-method-sdk'));
+      }
+    } catch (error: any) {
+      spinner.warn('SDK installation skipped');
+      console.log(chalk.yellow(`   Install manually: npm install trinity-method-sdk`));
+      console.log(chalk.gray(`   Error: ${error.message}`));
     }
 
     // SUCCESS: Display deployment summary
@@ -777,7 +829,7 @@ export async function deploy(options) {
     // Pre-commit hooks setup [WO#011]
     if (options.postInstallInstructions && options.postInstallInstructions.length > 0) {
       console.log(chalk.white(`   ${step}. Setup pre-commit hooks (one-time):`));
-      options.postInstallInstructions.forEach((instruction) => {
+      options.postInstallInstructions.forEach((instruction: any) => {
         console.log(chalk.yellow(`      ${instruction.command}`));
       });
       console.log('');
@@ -801,7 +853,7 @@ export async function deploy(options) {
       console.log('');
     }
 
-  } catch (error) {
+  } catch (error: any) {
     if (spinner) spinner.fail();
     console.error(chalk.red('\n❌ Deployment failed:'), error.message);
     throw error;

@@ -6,15 +6,27 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+interface CIDeploymentStats {
+  deployed: string[];
+  skipped: string[];
+  errors: Array<{ file?: string; error?: string; general?: string }>;
+}
+
+interface CIDeployOptions {
+  yes?: boolean;
+  force?: boolean;
+}
+
+type GitPlatform = 'github' | 'gitlab' | 'unknown';
+
 /**
  * Deploy CI/CD workflow templates based on detected Git platform
  *
- * @param {Object} options - Deployment options
- * @param {boolean} options.yes - Skip confirmation prompts
- * @returns {Promise<Object>} Deployment results with statistics
+ * @param options - Deployment options
+ * @returns Deployment results with statistics
  */
-export async function deployCITemplates(options = {}) {
-  const stats = {
+export async function deployCITemplates(options: CIDeployOptions = {}): Promise<CIDeploymentStats> {
+  const stats: CIDeploymentStats = {
     deployed: [],
     skipped: [],
     errors: []
@@ -37,7 +49,7 @@ export async function deployCITemplates(options = {}) {
           await fs.writeFile('.github/workflows/trinity-ci.yml', content);
           stats.deployed.push('.github/workflows/trinity-ci.yml');
         }
-      } catch (error) {
+      } catch (error: any) {
         stats.errors.push({ file: '.github/workflows/trinity-ci.yml', error: error.message });
       }
     }
@@ -60,7 +72,7 @@ export async function deployCITemplates(options = {}) {
             stats.deployed.push('.gitlab-ci.yml');
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         stats.errors.push({ file: '.gitlab-ci.yml', error: error.message });
       }
     }
@@ -75,12 +87,12 @@ export async function deployCITemplates(options = {}) {
         await fs.writeFile('trinity/templates/ci/generic-ci.yml', content);
         stats.deployed.push('trinity/templates/ci/generic-ci.yml');
       }
-    } catch (error) {
+    } catch (error: any) {
       stats.errors.push({ file: 'trinity/templates/ci/generic-ci.yml', error: error.message });
     }
 
     return stats;
-  } catch (error) {
+  } catch (error: any) {
     stats.errors.push({ general: error.message });
     return stats;
   }
@@ -89,9 +101,9 @@ export async function deployCITemplates(options = {}) {
 /**
  * Detect Git platform (GitHub, GitLab, or unknown)
  *
- * @returns {Promise<string>} Platform name: 'github', 'gitlab', or 'unknown'
+ * @returns Platform name: 'github', 'gitlab', or 'unknown'
  */
-async function detectGitPlatform() {
+async function detectGitPlatform(): Promise<GitPlatform> {
   try {
     // Check .git/config for remote origin
     const gitConfigPath = '.git/config';

@@ -1,8 +1,14 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { processTemplate } from './template-processor.js';
+import { processTemplate } from './template-processor';
+import { LintingTool, Stack } from '../types';
 
-export async function deployLintingTool(tool, stack, templatesPath, variables) {
+export async function deployLintingTool(
+  tool: LintingTool,
+  stack: Stack,
+  templatesPath: string,
+  variables: Record<string, any>
+): Promise<void> {
   const frameworkDir = getFrameworkDirectory(stack.framework);
   const templateDir = path.join(templatesPath, 'linting', frameworkDir);
 
@@ -36,8 +42,8 @@ export async function deployLintingTool(tool, stack, templatesPath, variables) {
   }
 }
 
-function getFrameworkDirectory(framework) {
-  const frameworkMap = {
+function getFrameworkDirectory(framework: string): string {
+  const frameworkMap: Record<string, string> = {
     'Node.js': 'nodejs',
     'React': 'nodejs',
     'Next.js': 'nodejs',
@@ -48,12 +54,17 @@ function getFrameworkDirectory(framework) {
   return frameworkMap[framework] || 'nodejs';
 }
 
-async function deployESLint(tool, stack, templateDir, variables) {
-  let templateFile;
+async function deployESLint(
+  tool: LintingTool,
+  stack: Stack,
+  templateDir: string,
+  variables: Record<string, any>
+): Promise<void> {
+  let templateFile: string;
 
   if (stack.language === 'TypeScript') {
     templateFile = '.eslintrc-typescript.json.template';
-  } else if (stack.moduleType === 'esm') {
+  } else if ((stack as any).moduleType === 'esm') {
     templateFile = '.eslintrc-esm.json.template';
   } else {
     templateFile = '.eslintrc-commonjs.json.template';
@@ -65,21 +76,34 @@ async function deployESLint(tool, stack, templateDir, variables) {
   await fs.writeFile('.eslintrc.json', processed);
 }
 
-async function deployPrettier(tool, templateDir, variables) {
+async function deployPrettier(
+  tool: LintingTool,
+  templateDir: string,
+  variables: Record<string, any>
+): Promise<void> {
   const templatePath = path.join(templateDir, '.prettierrc.json.template');
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
   await fs.writeFile('.prettierrc.json', processed);
 }
 
-async function deployPreCommit(tool, templateDir, variables) {
+async function deployPreCommit(
+  tool: LintingTool,
+  templateDir: string,
+  variables: Record<string, any>
+): Promise<void> {
   const templatePath = path.join(templateDir, '.pre-commit-config.yaml.template');
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
   await fs.writeFile('.pre-commit-config.yaml', processed);
 }
 
-async function deployTypeScriptESLint(tool, stack, templateDir, variables) {
+async function deployTypeScriptESLint(
+  tool: LintingTool,
+  stack: Stack,
+  templateDir: string,
+  variables: Record<string, any>
+): Promise<void> {
   // Modify existing .eslintrc.json to add TypeScript support
   const eslintPath = '.eslintrc.json';
   if (await fs.pathExists(eslintPath)) {
@@ -97,7 +121,11 @@ async function deployTypeScriptESLint(tool, stack, templateDir, variables) {
   }
 }
 
-async function deployPythonTool(tool, templateDir, variables) {
+async function deployPythonTool(
+  tool: LintingTool,
+  templateDir: string,
+  variables: Record<string, any>
+): Promise<void> {
   if (tool.id === 'black' || tool.id === 'isort') {
     // Both go in pyproject.toml
     const templatePath = path.join(templateDir, 'pyproject.toml.template');
@@ -112,14 +140,22 @@ async function deployPythonTool(tool, templateDir, variables) {
   }
 }
 
-async function deployDartAnalyzer(tool, templateDir, variables) {
+async function deployDartAnalyzer(
+  tool: LintingTool,
+  templateDir: string,
+  variables: Record<string, any>
+): Promise<void> {
   const templatePath = path.join(templateDir, 'analysis_options.yaml.template');
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
   await fs.writeFile('analysis_options.yaml', processed);
 }
 
-async function deployRustTool(tool, templateDir, variables) {
+async function deployRustTool(
+  tool: LintingTool,
+  templateDir: string,
+  variables: Record<string, any>
+): Promise<void> {
   const filename = tool.id === 'clippy' ? 'clippy.toml' : 'rustfmt.toml';
   const templatePath = path.join(templateDir, `${filename}.template`);
   const content = await fs.readFile(templatePath, 'utf8');

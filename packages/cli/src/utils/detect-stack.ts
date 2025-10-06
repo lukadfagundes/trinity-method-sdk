@@ -1,8 +1,9 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { Stack } from '../types';
 
-export async function detectStack(targetDir = process.cwd()) {
-  const result = {
+export async function detectStack(targetDir: string = process.cwd()): Promise<Stack> {
+  const result: Stack = {
     language: 'Unknown',
     framework: 'Generic',
     sourceDir: 'src',
@@ -13,7 +14,7 @@ export async function detectStack(targetDir = process.cwd()) {
     // Check for Node.js/JavaScript
     if (await exists(path.join(targetDir, 'package.json'))) {
       result.language = 'JavaScript/TypeScript';
-      
+
       const pkgPath = path.join(targetDir, 'package.json');
       const pkgContent = await fs.readFile(pkgPath, 'utf8');
       const pkg = JSON.parse(pkgContent);
@@ -80,14 +81,14 @@ export async function detectStack(targetDir = process.cwd()) {
       result.framework = 'Generic';
       result.sourceDir = '.';
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error detecting stack:', error.message);
   }
 
   return result;
 }
 
-async function exists(filePath) {
+async function exists(filePath: string): Promise<boolean> {
   try {
     await fs.access(filePath);
     return true;

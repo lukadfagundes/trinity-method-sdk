@@ -16,7 +16,8 @@
     "fs-extra": "^11.1.1",
     "glob": "^10.3.0",
     "inquirer": "^9.2.0",
-    "ora": "^7.0.1"
+    "ora": "^7.0.1",
+    "trinity-method-sdk": "file:../../trinity-method-sdk-1.0.0.tgz"
   },
   "keywords": [
     "trinity-method",

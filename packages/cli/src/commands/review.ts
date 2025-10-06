@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
+import { ReviewOptions } from '../types';
 
-export async function review(options) {
+export async function review(options: ReviewOptions): Promise<void> {
   console.log(chalk.blue.bold('\n🔍 Trinity Method Session Review\n'));
 
   // Check sessions directory
@@ -26,7 +27,7 @@ export async function review(options) {
   for (const session of sessions) {
     const sessionPath = path.join(sessionsDir, session);
     const stats = await fs.stat(sessionPath);
-    
+
     console.log(chalk.cyan(`📁 ${session}`));
     console.log(chalk.gray(`   Date: ${stats.mtime.toLocaleDateString()}`));
 
@@ -36,7 +37,7 @@ export async function review(options) {
         const investigations = await fs.readdir(path.join(sessionPath, 'investigations'));
         console.log(chalk.gray(`   Investigations: ${investigations.length}`));
       }
-      
+
       if (await fs.pathExists(path.join(sessionPath, 'work-orders'))) {
         const workOrders = await fs.readdir(path.join(sessionPath, 'work-orders'));
         console.log(chalk.gray(`   Work Orders: ${workOrders.length}`));

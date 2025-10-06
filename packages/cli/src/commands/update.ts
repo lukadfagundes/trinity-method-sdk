@@ -5,11 +5,12 @@ import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { UpdateOptions } from '../types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export async function update(options) {
+export async function update(options: UpdateOptions): Promise<void> {
   console.log(chalk.blue.bold('\n🔄 Trinity Method SDK - Update\n'));
 
   // Check if Trinity exists
@@ -125,7 +126,7 @@ export async function update(options) {
     console.log();
     console.log(chalk.green(`✅ Updated from ${currentVersion} to ${latestVersion}\n`));
 
-  } catch (error) {
+  } catch (error: any) {
     spinner.fail('Update failed');
     console.error(chalk.red(`\nError: ${error.message}\n`));
     throw error;

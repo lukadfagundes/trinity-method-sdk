@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import { deploy } from './commands/deploy.js';
-import { update } from './commands/update.js';
-import { status } from './commands/status.js';
-import { review } from './commands/review.js';
-import { investigate } from './commands/investigate.js';
-import { dashboard } from './commands/dashboard.js';
-import { analyze } from './commands/analyze.js';
+import { deploy } from './commands/deploy';
+import { update } from './commands/update';
+import { status } from './commands/status';
+import { review } from './commands/review';
+import { investigate } from './commands/investigate';
+import { dashboard } from './commands/dashboard';
+import { analyze } from './commands/analyze';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';

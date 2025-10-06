@@ -1,7 +1,11 @@
 import fs from 'fs-extra';
 import chalk from 'chalk';
 
-export async function injectLintingDependencies(dependencies, scripts, framework) {
+export async function injectLintingDependencies(
+  dependencies: string[],
+  scripts: Record<string, string>,
+  framework: string
+): Promise<void> {
   if (framework === 'Node.js' || framework === 'React' || framework === 'Next.js') {
     await injectNodeDependencies(dependencies, scripts);
   } else if (framework === 'Python') {
@@ -10,7 +14,10 @@ export async function injectLintingDependencies(dependencies, scripts, framework
   // Rust and Flutter have built-in tools, no injection needed
 }
 
-async function injectNodeDependencies(dependencies, scripts) {
+async function injectNodeDependencies(
+  dependencies: string[],
+  scripts: Record<string, string>
+): Promise<void> {
   const packageJsonPath = 'package.json';
 
   if (!(await fs.pathExists(packageJsonPath))) {
@@ -32,7 +39,7 @@ async function injectNodeDependencies(dependencies, scripts) {
     const version = dep.substring(lastAtIndex + 1);
     packageJson.devDependencies[name] = version;
   });
-  
+
   // Add Scripts
   packageJson.scripts = packageJson.scripts || {};
   Object.entries(scripts).forEach(([name, command]) => {
@@ -45,7 +52,7 @@ async function injectNodeDependencies(dependencies, scripts) {
   await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 });
 }
 
-async function injectPythonDependencies(dependencies) {
+async function injectPythonDependencies(dependencies: string[]): Promise<void> {
   const requirementsPath = 'requirements-dev.txt';
 
   // Create or append to requirements-dev.txt

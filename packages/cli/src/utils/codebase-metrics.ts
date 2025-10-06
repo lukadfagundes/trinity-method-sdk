@@ -10,17 +10,34 @@ import fs from 'fs-extra';
 import path from 'path';
 import { execSync } from 'child_process';
 import { glob } from 'glob';
+import { CodebaseMetrics } from '../types';
+
+interface FileComplexityMetrics {
+  totalFiles: number;
+  filesOver500: number;
+  filesOver1000: number;
+  filesOver3000: number;
+  avgFileLength: number;
+  largestFiles: Array<{ file: string; lines: number }>;
+}
+
+interface DependencyMetrics {
+  dependencies: Record<string, string>;
+  dependencyCount: number;
+  devDependencies: Record<string, string>;
+  devDependencyCount: number;
+}
 
 /**
  * Main entry point for metrics collection
- * @param {string} sourceDir - Source code directory (src/, lib/, app/)
- * @param {string} framework - Detected framework (Node.js, Flutter, React, Python, Rust)
- * @returns {Object} Collected metrics
+ * @param sourceDir - Source code directory (src/, lib/, app/)
+ * @param framework - Detected framework (Node.js, Flutter, React, Python, Rust)
+ * @returns Collected metrics
  */
-async function collectCodebaseMetrics(sourceDir, framework) {
+async function collectCodebaseMetrics(sourceDir: string, framework: string): Promise<CodebaseMetrics> {
   console.log(`   Collecting metrics from ${sourceDir} (${framework})...`);
 
-  const metrics = {
+  const metrics: any = {
     // Code Quality Metrics
     todoCount: 0,
     todoComments: 0,
@@ -93,7 +110,7 @@ async function collectCodebaseMetrics(sourceDir, framework) {
     metrics.frameworkVersion = await detectFrameworkVersion(framework);
     metrics.packageManager = await detectPackageManager();
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('   Error collecting metrics:', error.message);
     throw error;
   }
@@ -103,11 +120,11 @@ async function collectCodebaseMetrics(sourceDir, framework) {
 
 /**
  * Count occurrences of a pattern in source files
- * @param {string} dir - Directory to search
- * @param {RegExp} pattern - Pattern to match
- * @returns {number} Count of matches
+ * @param dir - Directory to search
+ * @param pattern - Pattern to match
+ * @returns Count of matches
  */
-async function countPattern(dir, pattern) {
+async function countPattern(dir: string, pattern: RegExp): Promise<number> {
   if (!await fs.pathExists(dir)) {
     return 0;
   }
@@ -128,7 +145,7 @@ async function countPattern(dir, pattern) {
     }
 
     return count;
-  } catch (error) {
+  } catch (error: any) {
     console.error(`   Error counting pattern: ${error.message}`);
     return 0;
   }
@@ -136,10 +153,10 @@ async function countPattern(dir, pattern) {
 
 /**
  * Count commented code blocks (heuristic: 3+ consecutive comment lines)
- * @param {string} dir - Directory to search
- * @returns {number} Estimated count of commented code blocks
+ * @param dir - Directory to search
+ * @returns Estimated count of commented code blocks
  */
-async function countCommentedCode(dir) {
+async function countCommentedCode(dir: string): Promise<number> {
   if (!await fs.pathExists(dir)) {
     return 0;
   }
@@ -169,7 +186,7 @@ async function countCommentedCode(dir) {
     }
 
     return blockCount;
-  } catch (error) {
+  } catch (error: any) {
     console.error(`   Error counting commented code: ${error.message}`);
     return 0;
   }
@@ -177,10 +194,10 @@ async function countCommentedCode(dir) {
 
 /**
  * Analyze file complexity metrics
- * @param {string} dir - Directory to analyze
- * @returns {Object} File complexity metrics
+ * @param dir - Directory to analyze
+ * @returns File complexity metrics
  */
-async function analyzeFileComplexity(dir) {
+async function analyzeFileComplexity(dir: string): Promise<FileComplexityMetrics> {
   if (!await fs.pathExists(dir)) {
     return {
       totalFiles: 0,
@@ -197,7 +214,7 @@ async function analyzeFileComplexity(dir) {
       ignore: ['**/node_modules/**', '**/build/**', '**/.dart_tool/**', '**/dist/**', '**/__pycache__/**']
     });
 
-    const fileSizes = [];
+    const fileSizes: Array<{ file: string; lines: number }> = [];
     let filesOver500 = 0;
     let filesOver1000 = 0;
     let filesOver3000 = 0;
@@ -227,7 +244,7 @@ async function analyzeFileComplexity(dir) {
       avgFileLength: files.length > 0 ? Math.round(totalLines / files.length) : 0,
       largestFiles
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(`   Error analyzing file complexity: ${error.message}`);
     return {
       totalFiles: 0,
@@ -242,11 +259,11 @@ async function analyzeFileComplexity(dir) {
 
 /**
  * Parse dependencies from framework-specific files
- * @param {string} framework - Framework name
- * @returns {Object} Dependencies and counts
+ * @param framework - Framework name
+ * @returns Dependencies and counts
  */
-async function parseDependencies(framework) {
-  const result = {
+async function parseDependencies(framework: string): Promise<DependencyMetrics> {
+  const result: DependencyMetrics = {
     dependencies: {},
     dependencyCount: 0,
     devDependencies: {},
@@ -271,18 +288,18 @@ async function parseDependencies(framework) {
         const devDepMatch = yaml.match(/dev_dependencies:\s*\n((?:  \w+:.*\n)*)/);
 
         if (depMatch) {
-          const deps = depMatch[1].split('\n').filter(line => line.trim().length > 0);
+          const deps = depMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
           result.dependencyCount = deps.length;
-          deps.forEach(dep => {
+          deps.forEach((dep: string) => {
             const [name] = dep.trim().split(':');
             result.dependencies[name] = 'latest';
           });
         }
 
         if (devDepMatch) {
-          const devDeps = devDepMatch[1].split('\n').filter(line => line.trim().length > 0);
+          const devDeps = devDepMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
           result.devDependencyCount = devDeps.length;
-          devDeps.forEach(dep => {
+          devDeps.forEach((dep: string) => {
             const [name] = dep.trim().split(':');
             result.devDependencies[name] = 'latest';
           });
@@ -292,9 +309,9 @@ async function parseDependencies(framework) {
       // Parse requirements.txt
       if (await fs.pathExists('requirements.txt')) {
         const reqs = await fs.readFile('requirements.txt', 'utf8');
-        const deps = reqs.split('\n').filter(line => line.trim().length > 0 && !line.startsWith('#'));
+        const deps = reqs.split('\n').filter((line: string) => line.trim().length > 0 && !line.startsWith('#'));
         result.dependencyCount = deps.length;
-        deps.forEach(dep => {
+        deps.forEach((dep: string) => {
           const [name] = dep.split(/[=<>]/);
           result.dependencies[name.trim()] = 'latest';
         });
@@ -307,25 +324,25 @@ async function parseDependencies(framework) {
         const devDepMatch = toml.match(/\[dev-dependencies\]\s*\n((?:\w+\s*=.*\n)*)/);
 
         if (depMatch) {
-          const deps = depMatch[1].split('\n').filter(line => line.trim().length > 0);
+          const deps = depMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
           result.dependencyCount = deps.length;
-          deps.forEach(dep => {
+          deps.forEach((dep: string) => {
             const [name] = dep.trim().split(/\s*=/);
             result.dependencies[name] = 'latest';
           });
         }
 
         if (devDepMatch) {
-          const devDeps = devDepMatch[1].split('\n').filter(line => line.trim().length > 0);
+          const devDeps = devDepMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
           result.devDependencyCount = devDeps.length;
-          devDeps.forEach(dep => {
+          devDeps.forEach((dep: string) => {
             const [name] = dep.trim().split(/\s*=/);
             result.devDependencies[name] = 'latest';
           });
         }
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(`   Error parsing dependencies: ${error.message}`);
   }
 
@@ -334,9 +351,9 @@ async function parseDependencies(framework) {
 
 /**
  * Get total commit count
- * @returns {number} Commit count
+ * @returns Commit count
  */
-async function getCommitCount() {
+async function getCommitCount(): Promise<number> {
   try {
     const count = execSync('git rev-list --count HEAD', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
     return parseInt(count.trim(), 10);
@@ -347,9 +364,9 @@ async function getCommitCount() {
 
 /**
  * Get contributor count
- * @returns {number} Contributor count
+ * @returns Contributor count
  */
-async function getContributorCount() {
+async function getContributorCount(): Promise<number> {
   try {
     const output = execSync('git shortlog -sn --all', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
     const lines = output.trim().split('\n').filter(line => line.length > 0);
@@ -361,9 +378,9 @@ async function getContributorCount() {
 
 /**
  * Get last commit date
- * @returns {string} Last commit date (ISO format)
+ * @returns Last commit date (ISO format)
  */
-async function getLastCommitDate() {
+async function getLastCommitDate(): Promise<string> {
   try {
     const date = execSync('git log -1 --format=%cI', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
     return date.trim();
@@ -374,10 +391,10 @@ async function getLastCommitDate() {
 
 /**
  * Detect framework version
- * @param {string} framework - Framework name
- * @returns {string} Version string
+ * @param framework - Framework name
+ * @returns Version string
  */
-async function detectFrameworkVersion(framework) {
+async function detectFrameworkVersion(framework: string): Promise<string> {
   try {
     if (framework === 'Node.js' || framework === 'React' || framework === 'Next.js') {
       if (await fs.pathExists('package.json')) {
@@ -417,9 +434,9 @@ async function detectFrameworkVersion(framework) {
 
 /**
  * Detect package manager
- * @returns {string} Package manager name
+ * @returns Package manager name
  */
-async function detectPackageManager() {
+async function detectPackageManager(): Promise<string> {
   if (await fs.pathExists('package-lock.json')) return 'npm';
   if (await fs.pathExists('yarn.lock')) return 'yarn';
   if (await fs.pathExists('pnpm-lock.yaml')) return 'pnpm';

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-import { existsSync } from 'fs';
+import { existsSync, writeFileSync } from 'fs';
 import { pathToFileURL } from 'url';
 import { join, resolve } from 'path';
 import chalk from 'chalk';
+import { DashboardOptions } from '../types';
 
 /**
  * Trinity Dashboard Command
@@ -10,7 +11,7 @@ import chalk from 'chalk';
  * Launches interactive dashboards for monitoring cache, learning, and investigations
  */
 
-export async function dashboard(options) {
+export async function dashboard(options: DashboardOptions): Promise<void> {
   console.log(chalk.cyan.bold('\n📊 Trinity Dashboard\n'));
 
   // Check if Trinity SDK is built
@@ -51,7 +52,6 @@ export async function dashboard(options) {
         const html = await registryDashboard.generateDashboard();
 
         // Save to file
-        const { writeFileSync } = await import('fs');
         const outputPath = options.output || './trinity-dashboard.html';
         writeFileSync(outputPath, html);
 
@@ -65,7 +65,6 @@ export async function dashboard(options) {
         const benchmarkDashboard = new SDK.BenchmarkDashboard();
         const html = await benchmarkDashboard.generateDashboard();
 
-        const { writeFileSync } = await import('fs');
         const outputPath = options.output || './benchmark-dashboard.html';
         writeFileSync(outputPath, html);
 
@@ -85,7 +84,7 @@ export async function dashboard(options) {
         process.exit(1);
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('\n❌ Dashboard failed:'), error.message);
     if (options.verbose) {
       console.error(error.stack);
