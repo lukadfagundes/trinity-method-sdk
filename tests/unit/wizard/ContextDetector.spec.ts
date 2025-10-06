@@ -66,6 +66,13 @@ describe('ContextDetector', () => {
     });
 
     it('should detect JavaScript from .js files', async () => {
+      // Remove tsconfig.json from previous test to avoid TypeScript detection
+      try {
+        await fs.unlink(path.join(testDir, 'tsconfig.json'));
+      } catch (error) {
+        // File may not exist, that's okay
+      }
+
       await fs.writeFile(path.join(testDir, 'index.js'), '');
 
       const language = await detector.detectLanguage();

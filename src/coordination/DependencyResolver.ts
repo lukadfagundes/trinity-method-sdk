@@ -77,17 +77,18 @@ export class DependencyResolver {
       stack.push(taskId);
       onStack.add(taskId);
 
-      // Visit dependencies
+      // Visit tasks that depend on this task (successors)
+      // For cycle detection, we need to follow the dependency direction
       const dependencies = graph.edges.get(taskId) || [];
       for (const dep of dependencies) {
         if (!index.has(dep)) {
           strongConnect(dep);
           lowlink.set(
             taskId,
-            Math.min(lowlink.get(taskId), lowlink.get(dep))
+            Math.min(lowlink.get(taskId)!, lowlink.get(dep)!)
           );
         } else if (onStack.has(dep)) {
-          lowlink.set(taskId, Math.min(lowlink.get(taskId), index.get(dep)));
+          lowlink.set(taskId, Math.min(lowlink.get(taskId)!, index.get(dep)!));
         }
       }
 
@@ -139,18 +140,13 @@ export class DependencyResolver {
     const queue: string[] = [];
 
     // Calculate in-degree for each node
+    // In-degree = number of tasks that must complete before this task can run
     for (const taskId of graph.nodes.keys()) {
-      inDegree.set(taskId, 0);
+      const dependencies = graph.edges.get(taskId) || [];
+      inDegree.set(taskId, dependencies.length);
     }
 
-    for (const [taskId, dependencies] of graph.edges.entries()) {
-      for (const dep of dependencies) {
-        const current = inDegree.get(dep) || 0;
-        inDegree.set(dep, current + 1);
-      }
-    }
-
-    // Add nodes with in-degree 0 to queue
+    // Add nodes with in-degree 0 to queue (no dependencies)
     for (const [taskId, degree] of inDegree.entries()) {
       if (degree === 0) {
         queue.push(taskId);
@@ -162,14 +158,15 @@ export class DependencyResolver {
       const taskId = queue.shift();
       executionOrder.push(taskId);
 
-      // Reduce in-degree of dependent tasks
-      const dependencies = graph.edges.get(taskId) || [];
-      for (const dep of dependencies) {
-        const current = inDegree.get(dep);
-        inDegree.set(dep, current - 1);
+      // Find tasks that depend on this task and reduce their in-degree
+      for (const [candidateId, dependencies] of graph.edges.entries()) {
+        if (dependencies.includes(taskId)) {
+          const current = inDegree.get(candidateId);
+          inDegree.set(candidateId, current - 1);
 
-        if (current - 1 === 0) {
-          queue.push(dep);
+          if (current - 1 === 0) {
+            queue.push(candidateId);
+          }
         }
       }
     }

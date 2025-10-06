@@ -39,6 +39,8 @@ export interface LearningMetadata {
   totalStrategies: number;
   lastUpdated: Date;
   agentId: AgentType;
+  successfulInvestigations?: number;
+  failedInvestigations?: number;
 }
 
 /**
@@ -75,8 +77,8 @@ export class LearningDataStore {
         errors,
         metadata,
         totalInvestigations: metadata.totalInvestigations ?? 0,
-        successfulInvestigations: 0,
-        failedInvestigations: 0,
+        successfulInvestigations: metadata.successfulInvestigations ?? 0,
+        failedInvestigations: metadata.failedInvestigations ?? 0,
       };
     } catch (error) {
       // If no existing data, return empty structure
@@ -100,6 +102,8 @@ export class LearningDataStore {
     data.metadata.lastUpdated = new Date();
     data.metadata.totalPatterns = data.patterns.size;
     data.metadata.totalStrategies = data.strategies.size;
+    data.metadata.successfulInvestigations = data.successfulInvestigations ?? 0;
+    data.metadata.failedInvestigations = data.failedInvestigations ?? 0;
 
     // Save each data type atomically
     await Promise.all([
@@ -155,11 +159,11 @@ export class LearningDataStore {
    */
   async importLearningData(importPath: string): Promise<void> {
     const content = await fs.readFile(importPath, 'utf8');
-    const imported = JSON.parse(content);
+    const imported = JSON.parse(content) as Record<string, unknown>;
 
     // Deserialize and save for each agent
     for (const [agentId, data] of Object.entries(imported)) {
-      const learningData = this.deserializeFromImport(data as any);
+      const learningData = this.deserializeFromImport(data as Record<string, unknown>);
       await this.saveLearningData(agentId as AgentType, learningData);
     }
   }
@@ -196,7 +200,7 @@ export class LearningDataStore {
   private async loadPatterns(agentId: AgentType): Promise<Map<string, LearnedPattern>> {
     const filePath = path.join(this.baseDir, agentId, 'patterns.json');
     const content = await fs.readFile(filePath, 'utf8');
-    const data = JSON.parse(content);
+    const data = JSON.parse(content) as Record<string, LearnedPattern>;
 
     return new Map(Object.entries(data));
   }
@@ -204,7 +208,7 @@ export class LearningDataStore {
   private async loadStrategies(agentId: AgentType): Promise<Map<string, StrategyPerformance>> {
     const filePath = path.join(this.baseDir, agentId, 'strategies.json');
     const content = await fs.readFile(filePath, 'utf8');
-    const data = JSON.parse(content);
+    const data = JSON.parse(content) as Record<string, StrategyPerformance>;
 
     return new Map(Object.entries(data));
   }
@@ -212,7 +216,7 @@ export class LearningDataStore {
   private async loadErrors(agentId: AgentType): Promise<Map<string, ErrorResolution>> {
     const filePath = path.join(this.baseDir, agentId, 'errors.json');
     const content = await fs.readFile(filePath, 'utf8');
-    const data = JSON.parse(content);
+    const data = JSON.parse(content) as Record<string, ErrorResolution>;
 
     return new Map(Object.entries(data));
   }
@@ -220,7 +224,7 @@ export class LearningDataStore {
   private async loadMetadata(agentId: AgentType): Promise<LearningMetadata> {
     const filePath = path.join(this.baseDir, agentId, 'metadata.json');
     const content = await fs.readFile(filePath, 'utf8');
-    return JSON.parse(content);
+    return JSON.parse(content) as LearningMetadata;
   }
 
   private async savePatterns(agentId: AgentType, patterns: Map<string, LearnedPattern>): Promise<void> {
@@ -252,34 +256,42 @@ export class LearningDataStore {
    */
   private async atomicWrite(filePath: string, data: any): Promise<void> {
     const tempPath = `${filePath}.tmp`;
+    const serialized = JSON.stringify(data, null, 2);
+    const dir = path.dirname(filePath);
 
-    try {
-      // Ensure parent directory exists
-      const dir = path.dirname(filePath);
-      await fs.mkdir(dir, { recursive: true });
+    // Retry entire operation for Windows file locking issues
+    let mainRetries = 10;
+    while (mainRetries > 0) {
+      try {
+        // Ensure parent directory exists
+        await fs.mkdir(dir, { recursive: true });
 
-      // Write to temp file
-      await fs.writeFile(tempPath, JSON.stringify(data, null, 2), 'utf8');
+        // Write to temp file
+        await fs.writeFile(tempPath, serialized, 'utf8');
 
-      // Atomic rename with retry for race conditions
-      let retries = 5;
-      while (retries > 0) {
-        try {
-          await fs.rename(tempPath, filePath);
-          return; // Success
-        } catch (renameError) {
-          retries--;
-          if (retries === 0) throw renameError;
-          // Ensure directory still exists (might have been cleaned up by another process)
-          await fs.mkdir(dir, { recursive: true });
-          // Exponential backoff: wait longer on each retry
-          await new Promise(resolve => setTimeout(resolve, (6 - retries) * 20));
+        // Verify temp file exists before rename
+        await fs.access(tempPath);
+
+        // Ensure directory still exists
+        await fs.mkdir(dir, { recursive: true });
+
+        // Atomic rename
+        await fs.rename(tempPath, filePath);
+
+        return; // Success!
+      } catch (error) {
+        mainRetries--;
+
+        // Cleanup temp file
+        await fs.unlink(tempPath).catch(() => {});
+
+        if (mainRetries === 0) {
+          throw new Error(`Atomic write failed for ${filePath}: ${(error as Error).message}`);
         }
+
+        // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, (11 - mainRetries) * 10));
       }
-    } catch (error) {
-      // Cleanup temp file on failure
-      await fs.unlink(tempPath).catch(() => {});
-      throw new Error(`Atomic write failed for ${filePath}: ${(error as Error).message}`);
     }
   }
 
@@ -302,8 +314,8 @@ export class LearningDataStore {
     };
   }
 
-  private serializeForExport(data: Record<string, LearningData>): any {
-    const result: any = {};
+  private serializeForExport(data: Record<string, LearningData>): Record<string, unknown> {
+    const result: Record<string, unknown> = {};
 
     for (const [agentId, learningData] of Object.entries(data)) {
       result[agentId] = {
@@ -317,12 +329,19 @@ export class LearningDataStore {
     return result;
   }
 
-  private deserializeFromImport(data: any): LearningData {
+  private deserializeFromImport(data: Record<string, unknown>): LearningData {
+    const typedData = data as {
+      patterns?: Record<string, LearnedPattern>;
+      strategies?: Record<string, StrategyPerformance>;
+      errors?: Record<string, ErrorResolution>;
+      metadata: LearningMetadata;
+    };
+
     return {
-      patterns: new Map(Object.entries(data.patterns || {})),
-      strategies: new Map(Object.entries(data.strategies || {})),
-      errors: new Map(Object.entries(data.errors || {})),
-      metadata: data.metadata,
+      patterns: new Map(Object.entries(typedData.patterns || {})),
+      strategies: new Map(Object.entries(typedData.strategies || {})),
+      errors: new Map(Object.entries(typedData.errors || {})),
+      metadata: typedData.metadata,
     };
   }
 }

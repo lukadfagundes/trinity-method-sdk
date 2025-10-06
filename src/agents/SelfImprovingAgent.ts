@@ -13,7 +13,6 @@ import {
   StrategyPerformance,
   LearningMetrics,
   AgentType,
-  InvestigationType,
 } from '@shared/types';
 
 import { KnowledgeSharingBus, PatternBroadcast } from '../learning/KnowledgeSharingBus';
@@ -79,7 +78,14 @@ export abstract class SelfImprovingAgent {
       // Learn error resolutions
       for (const error of result.errors) {
         if (typeof error !== 'string' && error.resolved && error.resolution) {
-          await this.learnErrorResolution(error, error.resolution);
+          // Convert ErrorResolution to Error for learning
+          const errorObj: Error & { type?: string; context?: { investigationId?: string } } = {
+            name: error.errorType || 'Error',
+            message: error.errorMessage,
+            type: error.errorType,
+            context: { investigationId: result.id }
+          };
+          await this.learnErrorResolution(errorObj, error.resolution);
         }
       }
 
@@ -292,17 +298,19 @@ export abstract class SelfImprovingAgent {
    * @param resolution - How it was resolved
    * @returns Promise resolving when learned
    */
-  protected async learnErrorResolution(error: any, resolution: string): Promise<void> {
+  protected async learnErrorResolution(error: Error & { type?: string; context?: { investigationId?: string } }, resolution: string): Promise<void> {
     const learningInfo = await this.learningData.loadLearningData(this.agentId);
 
-    const errorId = `${error.type}-${error.message}`;
+    const errorType = error.type || error.name || 'Error';
+    const errorMessage = error.message;
+    const errorId = `${errorType}-${errorMessage}`;
     let errorResolution = learningInfo.errors.get(errorId);
 
     if (!errorResolution) {
       errorResolution = {
         errorId,
-        errorType: error.type,
-        errorMessage: error.message,
+        errorType,
+        errorMessage,
         resolution,
         successRate: 1.0,
         confidence: 0.1,
@@ -333,13 +341,14 @@ export abstract class SelfImprovingAgent {
    * @param error - Error to resolve
    * @returns Promise resolving to error resolution or null
    */
-  protected async getErrorResolution(error: any): Promise<string | null> {
+  protected async getErrorResolution(error: Error & { type?: string }): Promise<string | null> {
     const learningInfo = await this.learningData.loadLearningData(this.agentId);
 
-    const errorId = `${error.type}-${error.message}`;
+    const errorType = error.type || error.name || 'Error';
+    const errorId = `${errorType}-${error.message}`;
     const errorResolution = learningInfo.errors.get(errorId);
 
-    if (errorResolution && errorResolution.confidence >= 0.7) {
+    if (errorResolution && (errorResolution.confidence ?? 0) >= 0.7) {
       return errorResolution.resolution;
     }
 
@@ -354,12 +363,17 @@ export abstract class SelfImprovingAgent {
    * Subscribe to knowledge sharing from other agents
    */
   private subscribeToKnowledgeSharing(): void {
-    this.knowledgeBus.subscribeToPatterns(
+    void this.knowledgeBus.subscribeToPatterns(
       this.agentId,
       async (broadcast: PatternBroadcast) => {
-        // Validate pattern for this agent
-        if (this.knowledgeBus.validatePattern(broadcast.pattern, this.agentId)) {
-          await this.knowledgeBus.acceptSharedPattern(broadcast.pattern, this.agentId);
+        try {
+          // Validate pattern for this agent
+          if (this.knowledgeBus.validatePattern(broadcast.pattern, this.agentId)) {
+            await this.knowledgeBus.acceptSharedPattern(broadcast.pattern, this.agentId);
+          }
+        } catch (error) {
+          // Log error but don't throw in subscription callback
+          console.error('Error accepting shared pattern:', error);
         }
       }
     );

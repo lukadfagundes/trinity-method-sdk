@@ -154,7 +154,7 @@ export class UserPreferencesManager {
 
     try {
       const data = await fs.readFile(this.preferencesPath, 'utf-8');
-      this.preferences = JSON.parse(data);
+      this.preferences = JSON.parse(data) as UserPreferences;
       this.loaded = true;
       return this.preferences;
     } catch (error) {
@@ -431,7 +431,7 @@ export class UserPreferencesManager {
    */
   async import(json: string): Promise<void> {
     try {
-      const imported = JSON.parse(json);
+      const imported = JSON.parse(json) as UserPreferences;
       this.preferences = imported;
       this.loaded = true;
       await this.save();

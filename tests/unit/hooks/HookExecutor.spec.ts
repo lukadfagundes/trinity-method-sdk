@@ -5,14 +5,16 @@
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { HookExecutor } from '../../../src/hooks/HookExecutor';
 import { HookValidator } from '../../../src/hooks/HookValidator';
-import type { TrinityHook } from '../../../src/shared/types';
+import type { TrinityHook } from '../../../src/hooks/TrinityHookLibrary';
 
 describe('HookExecutor', () => {
   let executor: HookExecutor;
   let validator: HookValidator;
 
   beforeEach(() => {
-    validator = new HookValidator();
+    validator = new HookValidator({
+      allowedCommands: ['git', 'npm', 'node', 'tsc', 'eslint', 'prettier', 'jest', 'echo', 'ls', 'pwd', 'mkdir', 'cat', 'exit', 'sleep', 'touch']
+    });
     executor = new HookExecutor(validator);
   });
 
@@ -23,13 +25,13 @@ describe('HookExecutor', () => {
         name: 'Simple Hook',
         description: 'Simple echo command',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Hello World"',
+          type: 'command-run', parameters: { command: 'echo "Hello World"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -45,13 +47,13 @@ describe('HookExecutor', () => {
         name: 'Exit 0 Hook',
         description: 'Exits with 0',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'exit 0',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'exit 0' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -66,13 +68,13 @@ describe('HookExecutor', () => {
         name: 'Fail Hook',
         description: 'Exits with error',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'exit 1',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'exit 1' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -90,17 +92,17 @@ describe('HookExecutor', () => {
         name: 'Variable Hook',
         description: 'Uses variables',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Investigation: {{investigationId}}"',
+          type: 'command-run', parameters: { command: 'echo "Investigation: {{investigationId}}"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {
-        investigationId: 'inv-123',
+        investigationId: 'inv-123'
       });
 
       expect(result.success).toBe(true);
@@ -113,19 +115,19 @@ describe('HookExecutor', () => {
         name: 'Multi Variable Hook',
         description: 'Multiple variables',
         category: 'investigation-lifecycle',
-        triggerEvent: 'task_complete',
+        trigger: { event: 'task_complete' },
         action: {
-          type: 'bash',
-          command: 'echo "Task {{taskId}} in {{investigationId}}: {{status}}"',
+          type: 'command-run', parameters: { command: 'echo "Task {{taskId}} in {{investigationId}}: {{status}}"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {
         taskId: 'task-1',
         investigationId: 'inv-123',
-        status: 'completed',
+        status: 'completed'
       });
 
       expect(result.success).toBe(true);
@@ -140,13 +142,13 @@ describe('HookExecutor', () => {
         name: 'Missing Variable Hook',
         description: 'Missing variable',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Value: {{undefinedVar}}"',
+          type: 'command-run', parameters: { command: 'echo "Value: {{undefinedVar}}"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -163,14 +165,16 @@ describe('HookExecutor', () => {
         name: 'Timeout Hook',
         description: 'Should timeout',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'sleep 10',
+          type: 'command-run', parameters: { command: 'sleep 10' },
           timeout: 1000, // 1 second
         },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -186,14 +190,14 @@ describe('HookExecutor', () => {
         name: 'Quick Hook',
         description: 'Completes quickly',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Quick"',
-          timeout: 5000,
+          type: 'command-run', parameters: { command: 'echo "Quick"' },
+          timeout: 5000
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -208,13 +212,13 @@ describe('HookExecutor', () => {
         name: 'Default Timeout Hook',
         description: 'Uses default timeout',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Default"',
+          type: 'command-run', parameters: { command: 'echo "Default"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -230,13 +234,13 @@ describe('HookExecutor', () => {
         name: 'Dry Run Hook',
         description: 'Dry run test',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Should not execute"',
+          type: 'command-run', parameters: { command: 'echo "Should not execute"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {}, { dryRun: true });
@@ -252,13 +256,13 @@ describe('HookExecutor', () => {
         name: 'File Hook',
         description: 'Creates file',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'touch /tmp/test-file.txt',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'touch /tmp/test-file.txt' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {}, { dryRun: true });
@@ -276,13 +280,13 @@ describe('HookExecutor', () => {
         name: 'Dangerous Hook',
         description: 'Dangerous command',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'rm -rf /',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'rm -rf /' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(dangerousHook, {});
@@ -297,13 +301,13 @@ describe('HookExecutor', () => {
         name: 'No Validation Hook',
         description: 'Skip validation',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "test"',
+          type: 'command-run', parameters: { command: 'echo "test"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {}, { skipValidation: true });
@@ -319,13 +323,13 @@ describe('HookExecutor', () => {
         name: 'Stderr Hook',
         description: 'Outputs to stderr',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Error message" >&2',
+          type: 'command-run', parameters: { command: 'echo "Error message" >&2' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -341,13 +345,13 @@ describe('HookExecutor', () => {
         name: 'Not Found Hook',
         description: 'Command not found',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'invalid-command-xyz',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'invalid-command-xyz' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -362,13 +366,13 @@ describe('HookExecutor', () => {
         name: 'Syntax Error Hook',
         description: 'Syntax error',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'if [ 1 -eq 1 ] then echo "missing fi"',
+          type: 'command-run', parameters: { command: 'if [ 1 -eq 1 ] then echo " }missing fi"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -384,16 +388,16 @@ describe('HookExecutor', () => {
         name: 'Memory Hook',
         description: 'Memory limit test',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Memory test"',
+          type: 'command-run', parameters: { command: 'echo "Memory test"' },
           resourceLimits: {
-            maxMemoryMB: 100,
-          },
+            maxMemoryMB: 100
+          }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -408,16 +412,16 @@ describe('HookExecutor', () => {
         name: 'CPU Hook',
         description: 'CPU limit test',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "CPU test"',
+          type: 'command-run', parameters: { command: 'echo "CPU test"' },
           resourceLimits: {
-            maxCPUPercent: 50,
-          },
+            maxCPUPercent: 50
+          }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -433,17 +437,17 @@ describe('HookExecutor', () => {
         name: 'PWD Hook',
         description: 'Check working directory',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'pwd',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'pwd' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {}, {
-        workingDirectory: './trinity',
+        workingDirectory: './trinity'
       });
 
       expect(result.success).toBe(true);
@@ -456,19 +460,19 @@ describe('HookExecutor', () => {
         name: 'Environment Hook',
         description: 'Check env vars',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'echo $CUSTOM_VAR',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'echo $CUSTOM_VAR' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {}, {
         environment: {
-          CUSTOM_VAR: 'test-value',
-        },
+          CUSTOM_VAR: 'test-value'
+      }
       });
 
       expect(result.success).toBe(true);
@@ -483,13 +487,13 @@ describe('HookExecutor', () => {
         name: 'Performance Hook',
         description: 'Track performance',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
-        action: {
-          type: 'bash',
-          command: 'sleep 0.1',
-        },
+        trigger: { event: 'investigation_start' },
+        action: { type: 'command-run', parameters: { command: 'sleep 0.1' } },
         enabled: true,
-        createdAt: new Date(),
+
+        safetyLevel: 'safe' as const,
+
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {});
@@ -504,17 +508,17 @@ describe('HookExecutor', () => {
         name: 'Resource Hook',
         description: 'Track resources',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: { event: 'investigation_start' },
         action: {
-          type: 'bash',
-          command: 'echo "Resource test"',
+          type: 'command-run', parameters: { command: 'echo "Resource test"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {}, {
-        trackResourceUsage: true,
+        trackResourceUsage: true
       });
 
       expect(result.success).toBe(true);
@@ -529,18 +533,18 @@ describe('HookExecutor', () => {
         name: 'Conditional Hook',
         description: 'Conditional execution',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_complete',
+        trigger: { event: 'investigation_complete' },
         condition: '{{status}} === "completed"',
         action: {
-          type: 'bash',
-          command: 'echo "Executed"',
+          type: 'command-run', parameters: { command: 'echo "Executed"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {
-        status: 'completed',
+        status: 'completed'
       });
 
       expect(result.success).toBe(true);
@@ -553,18 +557,18 @@ describe('HookExecutor', () => {
         name: 'Skip Hook',
         description: 'Should skip',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_complete',
+        trigger: { event: 'investigation_complete' },
         condition: '{{status}} === "completed"',
         action: {
-          type: 'bash',
-          command: 'echo "Should not execute"',
+          type: 'command-run', parameters: { command: 'echo "Should not execute"' }
         },
         enabled: true,
-        createdAt: new Date(),
+        safetyLevel: 'safe' as const,
+        version: '1.0.0'
       };
 
       const result = await executor.execute(hook, {
-        status: 'failed',
+        status: 'failed'
       });
 
       expect(result.skipped).toBe(true);
@@ -580,30 +584,33 @@ describe('HookExecutor', () => {
           name: 'Concurrent Hook 1',
           description: 'First',
           category: 'investigation-lifecycle',
-          triggerEvent: 'investigation_start',
-          action: { type: 'bash', command: 'echo "1"' },
+          trigger: { event: 'investigation_start' },
+          action: { type: 'command-run', parameters: { command: 'echo "1"' } },
           enabled: true,
-          createdAt: new Date(),
+          safetyLevel: 'safe' as const,
+          version: '1.0.0'
         },
         {
           id: 'concurrent-2',
           name: 'Concurrent Hook 2',
           description: 'Second',
           category: 'investigation-lifecycle',
-          triggerEvent: 'investigation_start',
-          action: { type: 'bash', command: 'echo "2"' },
+          trigger: { event: 'investigation_start' },
+          action: { type: 'command-run', parameters: { command: 'echo "2"' } },
           enabled: true,
-          createdAt: new Date(),
+          safetyLevel: 'safe' as const,
+          version: '1.0.0'
         },
         {
           id: 'concurrent-3',
           name: 'Concurrent Hook 3',
           description: 'Third',
           category: 'investigation-lifecycle',
-          triggerEvent: 'investigation_start',
-          action: { type: 'bash', command: 'echo "3"' },
+          trigger: { event: 'investigation_start' },
+          action: { type: 'command-run', parameters: { command: 'echo "3"' } },
           enabled: true,
-          createdAt: new Date(),
+          safetyLevel: 'safe' as const,
+          version: '1.0.0'
         },
       ];
 
@@ -620,20 +627,22 @@ describe('HookExecutor', () => {
           name: 'Success Hook',
           description: 'Success',
           category: 'investigation-lifecycle',
-          triggerEvent: 'investigation_start',
-          action: { type: 'bash', command: 'echo "success"' },
+          trigger: { event: 'investigation_start' },
+          action: { type: 'command-run', parameters: { command: 'echo "success"' } },
           enabled: true,
-          createdAt: new Date(),
+          safetyLevel: 'safe' as const,
+          version: '1.0.0'
         },
         {
           id: 'fail-hook',
           name: 'Fail Hook',
           description: 'Fail',
           category: 'investigation-lifecycle',
-          triggerEvent: 'investigation_start',
-          action: { type: 'bash', command: 'exit 1' },
+          trigger: { event: 'investigation_start' },
+          action: { type: 'command-run', parameters: { command: 'exit 1' } },
           enabled: true,
-          createdAt: new Date(),
+          safetyLevel: 'safe' as const,
+          version: '1.0.0'
         },
       ];
 

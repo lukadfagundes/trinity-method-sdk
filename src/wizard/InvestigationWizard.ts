@@ -8,8 +8,6 @@
  * @version 1.0.0
  */
 
-import * as path from 'path';
-
 import {
   InvestigationType,
   InvestigationTask,
@@ -415,7 +413,7 @@ export class InvestigationWizard {
    * Get context for current codebase
    * @returns Investigation context
    */
-  async getContext() {
+  async getContext(): Promise<ReturnType<typeof this.contextDetector.detectContext>> {
     return await this.contextDetector.detectContext();
   }
 

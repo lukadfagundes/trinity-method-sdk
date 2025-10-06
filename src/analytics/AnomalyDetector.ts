@@ -14,7 +14,7 @@
  * @version 1.0.0
  */
 
-import { AnalyticsEngine } from './AnalyticsEngine';
+import { AnalyticsEngine, SystemMetrics } from './AnalyticsEngine';
 import { InvestigationMetrics } from './MetricsCollector';
 
 /**
@@ -166,7 +166,7 @@ export class AnomalyDetector {
    */
   private detectPerformanceAnomaly(
     inv: InvestigationMetrics,
-    systemMetrics: any
+    systemMetrics: SystemMetrics
   ): Anomaly | null {
     const avgDuration = systemMetrics.averageDuration;
     const zScore = this.calculateZScore(inv.duration, avgDuration, avgDuration * 0.3);
@@ -197,7 +197,7 @@ export class AnomalyDetector {
    */
   private detectTokenAnomaly(
     inv: InvestigationMetrics,
-    systemMetrics: any
+    systemMetrics: SystemMetrics
   ): Anomaly | null {
     const avgTokens = systemMetrics.averageTokensPerInvestigation;
     const zScore = this.calculateZScore(inv.tokensUsed, avgTokens, avgTokens * 0.4);
@@ -226,7 +226,7 @@ export class AnomalyDetector {
    */
   private detectErrorAnomaly(
     inv: InvestigationMetrics,
-    systemMetrics: any
+    systemMetrics: SystemMetrics
   ): Anomaly | null {
     const avgErrorRate = systemMetrics.averageErrorRate;
 
@@ -253,7 +253,7 @@ export class AnomalyDetector {
    */
   private detectQualityAnomaly(
     inv: InvestigationMetrics,
-    systemMetrics: any
+    systemMetrics: SystemMetrics
   ): Anomaly | null {
     const avgQuality = systemMetrics.averageQualityScore;
     const zScore = this.calculateZScore(inv.qualityScore, avgQuality, avgQuality * 0.2);
@@ -282,7 +282,7 @@ export class AnomalyDetector {
    */
   private detectCacheAnomaly(
     inv: InvestigationMetrics,
-    systemMetrics: any
+    systemMetrics: SystemMetrics
   ): Anomaly | null {
     const avgCacheHitRate = systemMetrics.averageCacheHitRate;
 

@@ -304,7 +304,7 @@ export class L3Cache {
   getStats(): CacheStats {
     const totalRequests = this.stats.hits + this.stats.misses;
     const hitRate = totalRequests > 0 ? this.stats.hits / totalRequests : 0;
-    const compressionRatio = this.stats.totalCompressedBytes > 0
+    const _compressionRatio = this.stats.totalCompressedBytes > 0
       ? this.stats.totalUncompressedBytes / this.stats.totalCompressedBytes
       : 1;
 

@@ -284,7 +284,7 @@ export class L2Cache {
   getStats(): CacheStats {
     const totalRequests = this.stats.hits + this.stats.misses;
     const hitRate = totalRequests > 0 ? this.stats.hits / totalRequests : 0;
-    const maxSizeBytes = this.config.maxSizeMB * 1024 * 1024;
+    const _maxSizeBytes = this.config.maxSizeMB * 1024 * 1024;
 
     return {
       totalEntries: 0, // Will be calculated if needed

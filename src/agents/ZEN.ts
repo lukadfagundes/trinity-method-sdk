@@ -52,7 +52,7 @@ export class ZENAgent extends SelfImprovingAgent {
       const relevantPatterns = await this.getRelevantPatterns(context);
 
       // Execute investigation
-      const findings = await this.analyzeDocumentation(context, relevantPatterns);
+      const findings = this.analyzeDocumentation(context, relevantPatterns);
 
       // Extract new patterns
       const patterns = this.extractDocumentationPatterns(findings);
@@ -68,7 +68,7 @@ export class ZENAgent extends SelfImprovingAgent {
         duration: Date.now() - startTime.getTime(),
         findings,
         patterns,
-        metrics: await this.collectMetrics(investigationId),
+        metrics: this.collectMetrics(investigationId),
         errors: [],
         recommendations: this.generateRecommendations(findings),
         artifacts: [],
@@ -81,10 +81,15 @@ export class ZENAgent extends SelfImprovingAgent {
 
       return result;
     } catch (error) {
-      this.performanceTracker.trackInvestigationFailure(investigationId, error as Error);
+      // Convert unknown error to Error type with type guard
+      const errorObj: Error = error instanceof Error
+        ? error
+        : new Error(String(error));
+
+      this.performanceTracker.trackInvestigationFailure(investigationId, errorObj);
 
       // Check for learned error resolution
-      const resolution = await this.getErrorResolution(error);
+      const _resolution = await this.getErrorResolution(errorObj as Error & { type?: string });
 
       throw error;
     }
@@ -93,24 +98,24 @@ export class ZENAgent extends SelfImprovingAgent {
   /**
    * Analyze documentation
    */
-  private async analyzeDocumentation(
+  private analyzeDocumentation(
     context: InvestigationContext,
     learnedPatterns: LearnedPattern[]
-  ): Promise<Finding[]> {
+  ): Finding[] {
     const findings: Finding[] = [];
 
     // Use learned patterns
     for (const pattern of learnedPatterns) {
       if (pattern.patternType === 'research-source' || pattern.patternType === 'validation-rule') {
-        const patternFindings = await this.detectDocumentationPattern(pattern, context);
+        const patternFindings = this.detectDocumentationPattern(pattern, context);
         findings.push(...patternFindings);
       }
     }
 
     // Standard documentation analysis
-    findings.push(...await this.analyzeReadme(context));
-    findings.push(...await this.analyzeApiDocumentation(context));
-    findings.push(...await this.analyzeCodeComments(context));
+    findings.push(...this.analyzeReadme(context));
+    findings.push(...this.analyzeApiDocumentation(context));
+    findings.push(...this.analyzeCodeComments(context));
 
     return findings;
   }
@@ -118,13 +123,13 @@ export class ZENAgent extends SelfImprovingAgent {
   /**
    * Detect documentation pattern
    */
-  private async detectDocumentationPattern(
+  private detectDocumentationPattern(
     pattern: LearnedPattern,
-    context: InvestigationContext
-  ): Promise<Finding[]> {
+    _context: InvestigationContext
+  ): Finding[] {
     const findings: Finding[] = [];
 
-    if (pattern.confidence >= 0.7) {
+    if ((pattern.confidence ?? 0) >= 0.7) {
       findings.push({
         id: `zen-pattern-${pattern.patternId}`,
         type: 'observation',
@@ -143,7 +148,7 @@ export class ZENAgent extends SelfImprovingAgent {
   /**
    * Analyze README
    */
-  private async analyzeReadme(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeReadme(_context: InvestigationContext): Finding[] {
     return [
       {
         id: 'readme-1',
@@ -160,7 +165,7 @@ export class ZENAgent extends SelfImprovingAgent {
   /**
    * Analyze API documentation
    */
-  private async analyzeApiDocumentation(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeApiDocumentation(_context: InvestigationContext): Finding[] {
     return [
       {
         id: 'api-docs-1',
@@ -177,7 +182,7 @@ export class ZENAgent extends SelfImprovingAgent {
   /**
    * Analyze code comments
    */
-  private async analyzeCodeComments(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeCodeComments(_context: InvestigationContext): Finding[] {
     return [
       {
         id: 'comments-1',
@@ -224,26 +229,16 @@ export class ZENAgent extends SelfImprovingAgent {
   /**
    * Generate recommendations
    */
-  private generateRecommendations(findings: Finding[]): any[] {
+  private generateRecommendations(findings: Finding[]): string[] {
     return findings
       .filter(f => f.severity === 'high' || f.severity === 'critical')
-      .map(f => ({
-        id: `rec-${f.id}`,
-        type: 'document',
-        priority: f.severity,
-        title: `Improve: ${f.title}`,
-        description: f.recommendation || f.description,
-        rationale: 'Enhance documentation quality and completeness',
-        effort: 'low',
-        impact: 'medium',
-        location: f.location,
-      }));
+      .map(f => `Improve: ${f.title} - ${f.recommendation || f.description}`);
   }
 
   /**
    * Collect metrics
    */
-  private async collectMetrics(investigationId: string): Promise<PerformanceMetrics> {
+  private collectMetrics(_investigationId: string): PerformanceMetrics {
     return {
       duration: 0,
       tokensUsed: 0,

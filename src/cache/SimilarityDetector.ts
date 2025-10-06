@@ -79,7 +79,7 @@ export class SimilarityDetector {
     threshold: number = this.defaultThreshold
   ): SimilarQuery<T>[] {
     const results: SimilarQuery<T>[] = [];
-    const queryTokens = this.tokenize(query);
+    const _queryTokens = this.tokenize(query);
 
     for (const candidate of candidates) {
       // Extract original query from cache entry if available
@@ -313,7 +313,7 @@ export class SimilarityDetector {
     // Create 2D array
     const dp: number[][] = Array(m + 1)
       .fill(null)
-      .map(() => Array(n + 1).fill(0));
+      .map(() => Array(n + 1).fill(0) as number[]);
 
     // Initialize first row and column
     for (let i = 0; i <= m; i++) dp[i][0] = i;

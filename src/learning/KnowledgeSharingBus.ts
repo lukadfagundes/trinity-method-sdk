@@ -49,6 +49,15 @@ export class KnowledgeSharingBus {
   private subscribers: Map<AgentType, Set<PatternCallback>>;
   private sharingThreshold: number = 0.8; // Minimum confidence to share
 
+  // Pattern type filters for each agent
+  private agentPatternFilters: Map<AgentType, string[]> = new Map([
+    ['TAN', ['code-structure']], // TAN only accepts code structure patterns
+    ['ZEN', ['research-source', 'documentation']], // ZEN accepts research and docs
+    ['INO', []], // INO accepts all pattern types (empty array means no filter)
+    ['JUNO', ['validation-rule', 'anti-pattern']], // JUNO accepts validation and anti-patterns
+    ['AJ', ['code-structure', 'debugging-strategy']], // AJ accepts code structure and debugging
+  ]);
+
   constructor(learningDataStore: LearningDataStore) {
     this.learningDataStore = learningDataStore;
     this.subscribers = new Map();
@@ -83,6 +92,11 @@ export class KnowledgeSharingBus {
     for (const agentId of allAgents) {
       if (agentId === sourceAgent) continue; // Don't broadcast to self
 
+      // Check if agent should receive this pattern type
+      if (!this.shouldReceivePattern(agentId, pattern)) {
+        continue;
+      }
+
       const callbacks = this.subscribers.get(agentId);
       if (callbacks) {
         // Execute all callbacks for this agent
@@ -105,15 +119,15 @@ export class KnowledgeSharingBus {
    * @param callback - Callback function to receive broadcasts
    * @returns Promise resolving when subscription active
    */
-  async subscribeToPatterns(
+  subscribeToPatterns(
     agentId: AgentType,
     callback: PatternCallback
-  ): Promise<void> {
+  ): void {
     if (!this.subscribers.has(agentId)) {
       this.subscribers.set(agentId, new Set());
     }
 
-    this.subscribers.get(agentId).add(callback);
+    this.subscribers.get(agentId)!.add(callback);
   }
 
   /**
@@ -233,6 +247,24 @@ export class KnowledgeSharingBus {
     }
 
     return sharedKnowledge;
+  }
+
+  /**
+   * Check if agent should receive this pattern type
+   * @param agentId - Agent to check
+   * @param pattern - Pattern to check
+   * @returns True if agent should receive this pattern
+   */
+  private shouldReceivePattern(agentId: AgentType, pattern: LearnedPattern): boolean {
+    const acceptedTypes = this.agentPatternFilters.get(agentId) || [];
+
+    // Empty array means accept all types
+    if (acceptedTypes.length === 0) {
+      return true;
+    }
+
+    // Check if pattern type is in accepted types
+    return acceptedTypes.includes(pattern.patternType);
   }
 
   /**

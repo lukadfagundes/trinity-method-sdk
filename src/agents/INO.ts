@@ -52,7 +52,7 @@ export class INOAgent extends SelfImprovingAgent {
       const relevantPatterns = await this.getRelevantPatterns(context);
 
       // Execute investigation
-      const findings = await this.analyzeContext(context, relevantPatterns);
+      const findings = this.analyzeContext(context, relevantPatterns);
 
       // Extract patterns
       const patterns = this.extractContextPatterns(findings);
@@ -68,7 +68,7 @@ export class INOAgent extends SelfImprovingAgent {
         duration: Date.now() - startTime.getTime(),
         findings,
         patterns,
-        metrics: await this.collectMetrics(investigationId),
+        metrics: this.collectMetrics(investigationId),
         errors: [],
         recommendations: this.generateRecommendations(findings),
         artifacts: [],
@@ -89,22 +89,22 @@ export class INOAgent extends SelfImprovingAgent {
   /**
    * Analyze context
    */
-  private async analyzeContext(
+  private analyzeContext(
     context: InvestigationContext,
     learnedPatterns: LearnedPattern[]
-  ): Promise<Finding[]> {
+  ): Finding[] {
     const findings: Finding[] = [];
 
     // Use learned patterns (INO accepts all pattern types)
     for (const pattern of learnedPatterns) {
-      const patternFindings = await this.detectContextPattern(pattern, context);
+      const patternFindings = this.detectContextPattern(pattern, context);
       findings.push(...patternFindings);
     }
 
     // Standard context analysis
-    findings.push(...await this.analyzeClaudeMd(context));
-    findings.push(...await this.analyzeInvestigationScope(context));
-    findings.push(...await this.analyzeContextBoundaries(context));
+    findings.push(...this.analyzeClaudeMd(context));
+    findings.push(...this.analyzeInvestigationScope(context));
+    findings.push(...this.analyzeContextBoundaries(context));
 
     return findings;
   }
@@ -112,13 +112,13 @@ export class INOAgent extends SelfImprovingAgent {
   /**
    * Detect context pattern
    */
-  private async detectContextPattern(
+  private detectContextPattern(
     pattern: LearnedPattern,
-    context: InvestigationContext
-  ): Promise<Finding[]> {
+    _context: InvestigationContext
+  ): Finding[] {
     const findings: Finding[] = [];
 
-    if (pattern.confidence >= 0.7) {
+    if ((pattern.confidence ?? 0) >= 0.7) {
       findings.push({
         id: `ino-pattern-${pattern.patternId}`,
         type: 'observation',
@@ -136,7 +136,7 @@ export class INOAgent extends SelfImprovingAgent {
   /**
    * Analyze CLAUDE.md
    */
-  private async analyzeClaudeMd(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeClaudeMd(_context: InvestigationContext): Finding[] {
     return [
       {
         id: 'claude-md-1',
@@ -153,7 +153,7 @@ export class INOAgent extends SelfImprovingAgent {
   /**
    * Analyze investigation scope
    */
-  private async analyzeInvestigationScope(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeInvestigationScope(context: InvestigationContext): Finding[] {
     return [
       {
         id: 'scope-1',
@@ -170,7 +170,7 @@ export class INOAgent extends SelfImprovingAgent {
   /**
    * Analyze context boundaries
    */
-  private async analyzeContextBoundaries(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeContextBoundaries(_context: InvestigationContext): Finding[] {
     return [
       {
         id: 'boundaries-1',
@@ -211,22 +211,13 @@ export class INOAgent extends SelfImprovingAgent {
   /**
    * Generate recommendations
    */
-  private generateRecommendations(findings: Finding[]): any[] {
+  private generateRecommendations(findings: Finding[]): string[] {
     return findings
       .filter(f => f.severity === 'high' || f.severity === 'critical')
-      .map(f => ({
-        id: `rec-${f.id}`,
-        type: 'optimize',
-        priority: f.severity,
-        title: f.title,
-        description: f.recommendation || f.description,
-        rationale: 'Improve investigation context management',
-        effort: 'low',
-        impact: 'high',
-      }));
+      .map(f => f.recommendation || f.description);
   }
 
-  private async collectMetrics(investigationId: string): Promise<PerformanceMetrics> {
+  private collectMetrics(_investigationId: string): PerformanceMetrics {
     return {
       duration: 0,
       tokensUsed: 0,

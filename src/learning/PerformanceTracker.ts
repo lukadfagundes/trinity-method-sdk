@@ -130,7 +130,13 @@ export class PerformanceTracker {
     }
 
     // Update agent metrics
-    await this.updateAgentMetrics(tracking.agentId, duration, tokensUsed, result.errors.length);
+    await this.updateAgentMetrics(
+      tracking.agentId,
+      duration,
+      tokensUsed,
+      result.errors.length,
+      result.status === 'completed'
+    );
 
     // Cleanup
     this.activeInvestigations.delete(investigationId);
@@ -141,7 +147,7 @@ export class PerformanceTracker {
    * @param investigationId - Investigation identifier
    * @param error - Error that occurred
    */
-  trackInvestigationFailure(investigationId: string, error: Error): void {
+  trackInvestigationFailure(investigationId: string, _error: Error): void {
     const tracking = this.activeInvestigations.get(investigationId);
     if (tracking) {
       tracking.errors++;
@@ -168,7 +174,7 @@ export class PerformanceTracker {
    * @param timeRange - Time range (milliseconds back from now)
    * @returns Promise resolving to learning metrics
    */
-  async getPerformanceTrends(agentId: AgentType, timeRange?: number): Promise<LearningMetrics> {
+  async getPerformanceTrends(agentId: AgentType, _timeRange?: number): Promise<LearningMetrics> {
     const learningData = await this.learningDataStore.loadLearningData(agentId);
 
     // Calculate overall metrics
@@ -178,7 +184,7 @@ export class PerformanceTracker {
     // Calculate averages
     let totalDuration = 0;
     let totalTokens = 0;
-    const totalErrors = 0;
+    const _totalErrors = 0;
     let successfulStrategies = 0;
 
     for (const strategy of strategies) {
@@ -300,14 +306,19 @@ export class PerformanceTracker {
    */
   private async updateAgentMetrics(
     agentId: AgentType,
-    duration: number,
-    tokens: number,
-    errors: number
+    _duration: number,
+    _tokens: number,
+    _errors: number,
+    success: boolean
   ): Promise<void> {
     const learningData = await this.learningDataStore.loadLearningData(agentId);
 
     learningData.metadata.totalInvestigations = (learningData.metadata.totalInvestigations ?? 0) + 1;
     learningData.totalInvestigations = learningData.metadata.totalInvestigations;
+
+    // Track successful and failed investigations
+    learningData.successfulInvestigations = (learningData.successfulInvestigations ?? 0) + (success ? 1 : 0);
+    learningData.failedInvestigations = (learningData.failedInvestigations ?? 0) + (success ? 0 : 1);
 
     await this.learningDataStore.saveLearningData(agentId, learningData);
   }

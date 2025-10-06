@@ -182,9 +182,30 @@ export class StrategySelectionEngine {
     }
 
     // Check if any applicable context matches investigation type
-    const investigationTypeMatch = strategy.applicableContexts.some(
-      ctx => ctx.toLowerCase().includes(context.type.toLowerCase())
-    );
+    // Support both exact matches and word-based partial matches
+    const investigationTypeMatch = strategy.applicableContexts.some(ctx => {
+      const ctxLower = ctx.toLowerCase();
+      const typeLower = context.type.toLowerCase();
+
+      // Exact match
+      if (ctxLower === typeLower) return true;
+
+      // Substring match (either direction)
+      if (ctxLower.includes(typeLower) || typeLower.includes(ctxLower)) return true;
+
+      // Word-based match (e.g., 'bug-fix' matches 'bug-investigation')
+      const ctxWords = ctxLower.split(/[-_\s]+/);
+      const typeWords = typeLower.split(/[-_\s]+/);
+
+      // Check if they share significant words (not common words like 'the', 'a')
+      const sharedWords = ctxWords.filter(word =>
+        word.length > 2 && typeWords.includes(word)
+      );
+
+      if (sharedWords.length > 0) return true;
+
+      return false;
+    });
 
     if (investigationTypeMatch) {
       return true;

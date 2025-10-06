@@ -217,22 +217,14 @@ export class HookExecutor {
     const { command } = parameters;
 
     if (dryRun) {
-      return {
-        action: 'command-run',
-        command,
-        dryRun: true,
-      };
+      return 'DRY RUN: Would execute: ' + command;
     }
 
     const { stdout, stderr } = await execAsync(command);
 
-    return {
-      action: 'command-run',
-      command,
-      stdout,
-      stderr,
-      success: true,
-    };
+    // Return stdout as the output (tests expect a string)
+    // stderr is available in the full execution result
+    return stdout.trim() || stderr.trim();
   }
 
   /**

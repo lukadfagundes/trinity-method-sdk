@@ -571,17 +571,17 @@ export class MetricsCollector {
       // Load events
       const eventsPath = path.join(this.storageDir, 'events.json');
       const eventsData = await fs.readFile(eventsPath, 'utf-8');
-      this.events = this.deserializeEvents(JSON.parse(eventsData));
+      this.events = this.deserializeEvents(JSON.parse(eventsData) as MetricEvent[]);
 
       // Load investigation metrics
       const metricsPath = path.join(this.storageDir, 'investigations.json');
       const metricsData = await fs.readFile(metricsPath, 'utf-8');
-      this.investigations = this.deserializeInvestigations(JSON.parse(metricsData));
+      this.investigations = this.deserializeInvestigations(JSON.parse(metricsData) as InvestigationMetrics[]);
 
       // Load time series
       const timeSeriesPath = path.join(this.storageDir, 'timeseries.json');
       const timeSeriesData = await fs.readFile(timeSeriesPath, 'utf-8');
-      this.timeSeriesData = JSON.parse(timeSeriesData);
+      this.timeSeriesData = JSON.parse(timeSeriesData) as MetricDataPoint[];
     } catch (error) {
       // Files don't exist yet - that's okay
     }
@@ -599,7 +599,7 @@ export class MetricsCollector {
   /**
    * Update investigation metrics from event
    */
-  private updateInvestigationMetrics(event: MetricEvent): void {
+  private updateInvestigationMetrics(_event: MetricEvent): void {
     // Real-time metric updates handled in specific record methods
   }
 
@@ -717,7 +717,7 @@ export class MetricsCollector {
   /**
    * Serialize events for JSON storage
    */
-  private serializeEvents(): any[] {
+  private serializeEvents(): Array<Omit<MetricEvent, 'timestamp'> & { timestamp: string }> {
     return this.events.map((e) => ({
       ...e,
       timestamp: e.timestamp.toISOString(),
@@ -727,17 +727,21 @@ export class MetricsCollector {
   /**
    * Deserialize events from JSON
    */
-  private deserializeEvents(data: any[]): MetricEvent[] {
+  private deserializeEvents(data: MetricEvent[]): MetricEvent[] {
     return data.map((e) => ({
       ...e,
-      timestamp: new Date(e.timestamp),
+      timestamp: new Date((e as unknown as { timestamp: string }).timestamp),
     }));
   }
 
   /**
    * Serialize investigations for JSON storage
    */
-  private serializeInvestigations(): any[] {
+  private serializeInvestigations(): Array<Omit<InvestigationMetrics, 'startTime' | 'endTime' | 'agentUtilization'> & {
+    startTime: string;
+    endTime?: string;
+    agentUtilization: Record<string, AgentMetrics>;
+  }> {
     return Array.from(this.investigations.values()).map((inv) => ({
       ...inv,
       startTime: inv.startTime.toISOString(),
@@ -749,15 +753,22 @@ export class MetricsCollector {
   /**
    * Deserialize investigations from JSON
    */
-  private deserializeInvestigations(data: any[]): Map<string, InvestigationMetrics> {
+  private deserializeInvestigations(data: InvestigationMetrics[]): Map<string, InvestigationMetrics> {
     const map = new Map<string, InvestigationMetrics>();
 
     for (const inv of data) {
-      map.set(inv.investigationId, {
+      const serialized = inv as unknown as {
+        investigationId: string;
+        startTime: string;
+        endTime?: string;
+        agentUtilization: Record<string, AgentMetrics>;
+      };
+
+      map.set(serialized.investigationId, {
         ...inv,
-        startTime: new Date(inv.startTime),
-        endTime: inv.endTime ? new Date(inv.endTime) : undefined,
-        agentUtilization: new Map(Object.entries(inv.agentUtilization)),
+        startTime: new Date(serialized.startTime),
+        endTime: serialized.endTime ? new Date(serialized.endTime) : undefined,
+        agentUtilization: new Map(Object.entries(serialized.agentUtilization)),
       });
     }
 

@@ -58,18 +58,18 @@ export class CacheKeyGenerator {
     let normalized = query.toLowerCase();
 
     // Remove code blocks and markdown (they vary in formatting)
-    normalized = normalized.replace(/```[\s\S]*?```/g, 'CODE_BLOCK');
-    normalized = normalized.replace(/`[^`]+`/g, 'CODE');
+    normalized = normalized.replace(/```[\s\S]*?```/g, 'code_block');
+    normalized = normalized.replace(/`[^`]+`/g, 'code');
 
     // Remove URLs (vary by protocol/subdomain but same content)
-    normalized = normalized.replace(/https?:\/\/[^\s]+/g, 'URL');
+    normalized = normalized.replace(/https?:\/\/[^\s]+/g, 'url');
 
     // Remove file paths (normalize paths)
-    normalized = normalized.replace(/[a-zA-Z]:[\\\/][^\s]+/g, 'FILEPATH');
-    normalized = normalized.replace(/\/[a-zA-Z0-9_\-\/\.]+/g, 'FILEPATH');
+    normalized = normalized.replace(/[a-zA-Z]:[\\\/][^\s]+/g, 'filepath');
+    normalized = normalized.replace(/\/[a-zA-Z0-9_\-\/\.]+/g, 'filepath');
 
     // Remove numbers (often vary but same query)
-    normalized = normalized.replace(/\d+/g, 'NUM');
+    normalized = normalized.replace(/\d+/g, 'num');
 
     // Remove punctuation except hyphens in compound words
     normalized = normalized.replace(/[^\w\s-]/g, ' ');

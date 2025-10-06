@@ -30,7 +30,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 
 import { HookExecutor } from './HookExecutor';
-import { HookValidator } from './HookValidator';
+import { HookValidator, ValidationRules } from './HookValidator';
 
 /**
  * Hook category
@@ -185,9 +185,9 @@ export class TrinityHookLibrary {
   private trinityRoot: string;
   private executionHistory: HookExecutionResult[] = [];
 
-  constructor(trinityRoot: string = './trinity') {
+  constructor(trinityRoot: string = './trinity', validatorRules?: Partial<ValidationRules>) {
     this.trinityRoot = trinityRoot;
-    this.validator = new HookValidator();
+    this.validator = new HookValidator(validatorRules);
     this.executor = new HookExecutor(this.validator);
   }
 
@@ -196,6 +196,11 @@ export class TrinityHookLibrary {
    * @param hook - Hook definition
    */
   registerHook(hook: TrinityHook): void {
+    // Check for duplicates
+    if (this.hooks.has(hook.id)) {
+      throw new Error(`Hook with ID '${hook.id}' is already registered`);
+    }
+
     // Validate hook safety
     const validation = this.validator.validateHook(hook);
 
@@ -466,8 +471,16 @@ export class TrinityHookLibrary {
     const configDir = path.join(this.trinityRoot, 'config');
     await fs.mkdir(configDir, { recursive: true });
 
+    // Save both config and hook definitions
     const configPath = path.join(configDir, 'hooks.json');
+    const hooksPath = path.join(configDir, 'hook-definitions.json');
+
+    // Save configuration
     await fs.writeFile(configPath, JSON.stringify(this.config, null, 2));
+
+    // Save hook definitions
+    const hookDefinitions = Array.from(this.hooks.values());
+    await fs.writeFile(hooksPath, JSON.stringify(hookDefinitions, null, 2));
   }
 
   /**
@@ -476,8 +489,25 @@ export class TrinityHookLibrary {
   async loadConfiguration(): Promise<void> {
     try {
       const configPath = path.join(this.trinityRoot, 'config', 'hooks.json');
-      const data = await fs.readFile(configPath, 'utf-8');
-      this.config = JSON.parse(data);
+      const hooksPath = path.join(this.trinityRoot, 'config', 'hook-definitions.json');
+
+      // Load configuration
+      const configData = await fs.readFile(configPath, 'utf-8');
+      this.config = JSON.parse(configData);
+
+      // Load hook definitions
+      try {
+        const hooksData = await fs.readFile(hooksPath, 'utf-8');
+        const hookDefinitions = JSON.parse(hooksData) as TrinityHook[];
+
+        // Clear existing hooks and load from file
+        this.hooks.clear();
+        for (const hook of hookDefinitions) {
+          this.hooks.set(hook.id, hook);
+        }
+      } catch (error) {
+        // Hook definitions file doesn't exist - that's okay
+      }
 
       // Apply configuration to hooks
       for (const hookId of this.config.enabled) {

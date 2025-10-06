@@ -20,17 +20,24 @@ import { TrinityHook, HookAction } from './TrinityHookLibrary';
  * Validation result
  */
 export interface ValidationResult {
-  /** Is safe */
+  /** Is safe (alias: valid) */
   safe: boolean;
+  /** Alias for safe */
+  valid?: boolean;
 
-  /** Safety issues */
+  /** Safety issues (alias: errors) */
   issues: string[];
+  /** Alias for issues */
+  errors?: string[];
 
   /** Warnings */
   warnings: string[];
 
   /** Recommendations */
   recommendations?: string[];
+
+  /** Validation report */
+  report?: string;
 }
 
 /**
@@ -103,6 +110,89 @@ export class HookValidator {
   /**
    * Validate hook safety
    * @param hook - Hook to validate
+   * @param options - Validation options
+   * @returns Validation result
+   */
+  validate(hook: TrinityHook, options?: { checkVariables?: boolean; availableVariables?: string[]; generateReport?: boolean }): ValidationResult {
+    const result = this.validateHook(hook);
+
+    // Add aliases for backward compatibility
+    result.valid = result.safe;
+    result.errors = result.issues;
+
+    // Check variables if requested
+    if (options?.checkVariables && options?.availableVariables) {
+      const varWarnings = this.checkVariables(hook, options.availableVariables);
+      result.warnings.push(...varWarnings);
+    }
+
+    // Generate report if requested
+    if (options?.generateReport) {
+      result.report = this.generateReport(hook, result);
+    }
+
+    return result;
+  }
+
+  /**
+   * Check for undefined variables in hook
+   */
+  private checkVariables(hook: TrinityHook, availableVariables: string[]): string[] {
+    const warnings: string[] = [];
+    const command = hook.action.parameters?.command || '';
+    const varPattern = /\{\{(\w+)\}\}/g;
+    let match;
+
+    while ((match = varPattern.exec(command)) !== null) {
+      const varName = match[1];
+      if (!availableVariables.includes(varName)) {
+        warnings.push(`Variable {{${varName}}} is undefined in available variables`);
+      }
+    }
+
+    return warnings;
+  }
+
+  /**
+   * Generate validation report
+   */
+  private generateReport(hook: TrinityHook, result: ValidationResult): string {
+    let report = `Validation Report for Hook: ${hook.id}\n`;
+    report += `${'='.repeat(50)}\n\n`;
+    report += `Name: ${hook.name}\n`;
+    report += `Category: ${hook.category}\n`;
+    report += `Safety Level: ${hook.safetyLevel}\n`;
+    report += `Status: ${result.safe ? 'SAFE' : 'UNSAFE'}\n\n`;
+
+    if (result.issues.length > 0) {
+      report += `Issues:\n`;
+      result.issues.forEach((issue, i) => {
+        report += `  ${i + 1}. ${issue}\n`;
+      });
+      report += '\n';
+    }
+
+    if (result.warnings.length > 0) {
+      report += `Warnings:\n`;
+      result.warnings.forEach((warning, i) => {
+        report += `  ${i + 1}. ${warning}\n`;
+      });
+      report += '\n';
+    }
+
+    if (result.recommendations && result.recommendations.length > 0) {
+      report += `Recommendations:\n`;
+      result.recommendations.forEach((rec, i) => {
+        report += `  ${i + 1}. ${rec}\n`;
+      });
+    }
+
+    return report;
+  }
+
+  /**
+   * Validate hook safety
+   * @param hook - Hook to validate
    * @returns Validation result
    */
   validateHook(hook: TrinityHook): ValidationResult {
@@ -114,6 +204,10 @@ export class HookValidator {
     const actionValidation = this.validateAction(hook.action);
     issues.push(...actionValidation.issues);
     warnings.push(...actionValidation.warnings);
+
+    // Apply custom rules
+    const customIssues = this.applyCustomRules(hook);
+    issues.push(...customIssues);
 
     // Check safety level
     if (hook.safetyLevel === 'caution') {
@@ -274,5 +368,125 @@ export class HookValidator {
       issues,
       warnings,
     };
+  }
+
+  /**
+   * Validate file path
+   * @param filePath - File path to validate
+   * @returns Validation result
+   */
+  validateFilePath(filePath: string): ValidationResult {
+    const issues: string[] = [];
+    const warnings: string[] = [];
+
+    // Check forbidden paths
+    for (const pattern of this.rules.forbiddenFilePaths) {
+      if (pattern.test(filePath)) {
+        issues.push(`File path matches forbidden pattern: ${filePath}`);
+        return { safe: false, issues, warnings };
+      }
+    }
+
+    // Check if it's an absolute path outside project
+    if (filePath.startsWith('/') || /^[A-Z]:\\/.test(filePath)) {
+      // Absolute paths are not allowed unless in project
+      if (!filePath.includes('trinity') && !filePath.includes('project')) {
+        issues.push(`Absolute paths outside project are not allowed: ${filePath}`);
+        return { safe: false, issues, warnings };
+      }
+    }
+
+    // Check allowed paths
+    let allowed = false;
+    for (const pattern of this.rules.allowedFilePaths) {
+      if (pattern.test(filePath)) {
+        allowed = true;
+        break;
+      }
+    }
+
+    if (!allowed && !filePath.startsWith('./trinity') && !filePath.startsWith('trinity')) {
+      issues.push(`File path not in allowed list: ${filePath}`);
+    }
+
+    return {
+      safe: issues.length === 0,
+      issues,
+      warnings,
+    };
+  }
+
+  /**
+   * Custom validation rules
+   */
+  private customRules: Map<string, (hook: TrinityHook) => { valid: boolean; error?: string }> = new Map();
+
+  /**
+   * Add custom validation rule
+   * @param name - Rule name
+   * @param rule - Rule function
+   */
+  addCustomRule(name: string, rule: (hook: TrinityHook) => { valid: boolean; error?: string }): void {
+    this.customRules.set(name, rule);
+  }
+
+  /**
+   * Apply custom validation rules
+   * @param hook - Hook to validate
+   * @returns Issues from custom rules
+   */
+  private applyCustomRules(hook: TrinityHook): string[] {
+    const issues: string[] = [];
+
+    for (const [name, rule] of this.customRules.entries()) {
+      const result = rule(hook);
+      if (!result.valid && result.error) {
+        issues.push(result.error);
+      }
+    }
+
+    return issues;
+  }
+
+  /**
+   * Calculate safety score for hook (0-1, higher is safer)
+   * @param hook - Hook to score
+   * @returns Safety score
+   */
+  calculateSafetyScore(hook: TrinityHook): number {
+    let score = 1.0;
+
+    // Check validation result
+    const validation = this.validateHook(hook);
+
+    // Deduct for each issue
+    score -= validation.issues.length * 0.3;
+
+    // Deduct for warnings
+    score -= validation.warnings.length * 0.1;
+
+    // Deduct for safety level
+    if (hook.safetyLevel === 'moderate') {
+      score -= 0.2;
+    } else if (hook.safetyLevel === 'caution') {
+      score -= 0.4;
+    }
+
+    // Deduct for dangerous patterns in command
+    if (hook.action.type === 'command-run' && hook.action.parameters.command) {
+      const command = hook.action.parameters.command.toLowerCase();
+      if (command.includes('curl') || command.includes('wget')) {
+        score -= 0.2;
+      }
+      if (command.includes('bash') || command.includes('sh')) {
+        score -= 0.3;
+      }
+      if (command.includes('eval')) {
+        score -= 0.5;
+      }
+    }
+
+    // Ensure score is between 0 and 1
+    return Math.max(0, Math.min(1, score));
   }
 }

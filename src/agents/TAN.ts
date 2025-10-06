@@ -14,7 +14,6 @@
 
 import {
   InvestigationResult,
-  InvestigationStatus,
   Finding,
   LearnedPattern,
   PerformanceMetrics,
@@ -53,7 +52,7 @@ export class TANAgent extends SelfImprovingAgent {
       const relevantPatterns = await this.getRelevantPatterns(context);
 
       // Execute investigation using selected strategy
-      const findings = await this.analyzeStructure(context, relevantPatterns);
+      const findings = this.analyzeStructure(context, relevantPatterns);
 
       // Extract new patterns from findings
       const patterns = this.extractStructurePatterns(findings);
@@ -69,7 +68,7 @@ export class TANAgent extends SelfImprovingAgent {
         duration: Date.now() - startTime.getTime(),
         findings,
         patterns,
-        metrics: await this.collectMetrics(investigationId),
+        metrics: this.collectMetrics(investigationId),
         errors: [],
         recommendations: this.generateRecommendations(findings),
         artifacts: [],
@@ -82,11 +81,16 @@ export class TANAgent extends SelfImprovingAgent {
 
       return result;
     } catch (error) {
+      // Convert unknown error to Error type with type guard
+      const errorObj: Error = error instanceof Error
+        ? error
+        : new Error(String(error));
+
       // Track failure
-      this.performanceTracker.trackInvestigationFailure(investigationId, error as Error);
+      this.performanceTracker.trackInvestigationFailure(investigationId, errorObj);
 
       // Check if we have a learned resolution for this error
-      const resolution = await this.getErrorResolution(error);
+      const _resolution = await this.getErrorResolution(errorObj as Error & { type?: string });
 
       throw error;
     }
@@ -96,27 +100,27 @@ export class TANAgent extends SelfImprovingAgent {
    * Analyze codebase structure
    * @param context - Investigation context
    * @param learnedPatterns - Patterns learned from previous investigations
-   * @returns Promise resolving to findings
+   * @returns Findings from structure analysis
    */
-  private async analyzeStructure(
+  private analyzeStructure(
     context: InvestigationContext,
     learnedPatterns: LearnedPattern[]
-  ): Promise<Finding[]> {
+  ): Finding[] {
     const findings: Finding[] = [];
 
     // Use learned patterns to guide analysis
     for (const pattern of learnedPatterns) {
       if (pattern.patternType === 'code-structure') {
         // Apply learned pattern detection
-        const patternFindings = await this.detectStructurePattern(pattern, context);
+        const patternFindings = this.detectStructurePattern(pattern, context);
         findings.push(...patternFindings);
       }
     }
 
     // Perform standard structure analysis
-    findings.push(...await this.analyzeDirectoryStructure(context));
-    findings.push(...await this.analyzeDependencies(context));
-    findings.push(...await this.analyzeModuleOrganization(context));
+    findings.push(...this.analyzeDirectoryStructure(context));
+    findings.push(...this.analyzeDependencies(context));
+    findings.push(...this.analyzeModuleOrganization(context));
 
     return findings;
   }
@@ -124,16 +128,16 @@ export class TANAgent extends SelfImprovingAgent {
   /**
    * Detect structure pattern from learned knowledge
    */
-  private async detectStructurePattern(
+  private detectStructurePattern(
     pattern: LearnedPattern,
-    context: InvestigationContext
-  ): Promise<Finding[]> {
+    _context: InvestigationContext
+  ): Finding[] {
     const findings: Finding[] = [];
 
     // Apply pattern detection criteria
     // This is a simplified implementation - real version would analyze actual files
 
-    if (pattern.confidence >= 0.8) {
+    if ((pattern.confidence ?? 0) >= 0.8) {
       findings.push({
         id: `pattern-${pattern.patternId}`,
         type: 'observation',
@@ -152,7 +156,7 @@ export class TANAgent extends SelfImprovingAgent {
   /**
    * Analyze directory structure
    */
-  private async analyzeDirectoryStructure(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeDirectoryStructure(_context: InvestigationContext): Finding[] {
     // Simplified implementation
     return [
       {
@@ -170,7 +174,7 @@ export class TANAgent extends SelfImprovingAgent {
   /**
    * Analyze dependencies
    */
-  private async analyzeDependencies(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeDependencies(_context: InvestigationContext): Finding[] {
     // Simplified implementation
     return [
       {
@@ -188,7 +192,7 @@ export class TANAgent extends SelfImprovingAgent {
   /**
    * Analyze module organization
    */
-  private async analyzeModuleOrganization(context: InvestigationContext): Promise<Finding[]> {
+  private analyzeModuleOrganization(_context: InvestigationContext): Finding[] {
     // Simplified implementation
     return [
       {
@@ -239,26 +243,16 @@ export class TANAgent extends SelfImprovingAgent {
   /**
    * Generate recommendations based on findings
    */
-  private generateRecommendations(findings: Finding[]): any[] {
+  private generateRecommendations(findings: Finding[]): string[] {
     return findings
       .filter(f => f.severity === 'high' || f.severity === 'critical')
-      .map(f => ({
-        id: `rec-${f.id}`,
-        type: 'refactor',
-        priority: f.severity,
-        title: `Address: ${f.title}`,
-        description: f.recommendation || f.description,
-        rationale: 'Improve code structure and maintainability',
-        effort: 'medium',
-        impact: 'high',
-        location: f.location,
-      }));
+      .map(f => `Address: ${f.title} - ${f.recommendation || f.description}`);
   }
 
   /**
    * Collect performance metrics
    */
-  private async collectMetrics(investigationId: string): Promise<PerformanceMetrics> {
+  private collectMetrics(_investigationId: string): PerformanceMetrics {
     return {
       duration: 0, // Will be set by tracker
       tokensUsed: 0,

@@ -142,24 +142,24 @@ export class TaskPoolManager {
     tasks: InvestigationTask[],
     investigationId: string
   ): Promise<DependencyResolutionResult> {
-    // Validate graph
-    const validation = this.dependencyResolver.validateGraph(tasks);
-
-    if (!validation.valid) {
-      return {
-        success: false,
-        executionOrder: [],
-        cycles: [],
-        blockedTasks: [],
-        errors: validation.errors,
-      };
-    }
-
-    // Resolve dependencies
+    // Resolve dependencies (includes validation)
     const resolution = this.dependencyResolver.resolveDependencies(tasks);
 
     if (!resolution.success) {
       return resolution;
+    }
+
+    // Update task metadata with correct investigation ID
+    for (const task of tasks) {
+      if (!task.metadata) {
+        task.metadata = {
+          investigationId,
+          canRetry: true,
+          maxRetries: 3,
+        };
+      } else {
+        task.metadata.investigationId = investigationId;
+      }
     }
 
     // Build dependency graph
@@ -191,6 +191,7 @@ export class TaskPoolManager {
     // Get ready tasks (dependencies satisfied)
     const readyTasks: InvestigationTask[] = [];
 
+    // Check investigation tasks
     for (const [investigationId, graph] of this.investigations.entries()) {
       const ready = this.dependencyResolver.getNextReadyTasks(graph);
 
@@ -198,6 +199,31 @@ export class TaskPoolManager {
         const task = this.statusTracker.getTask(taskId);
         if (task && task.status === 'pending') {
           readyTasks.push(task);
+        }
+      }
+    }
+
+    // Also check standalone tasks (not part of an investigation)
+    const allPending = this.statusTracker.getTasksByStatus('pending');
+    for (const task of allPending) {
+      // Only add if not already in ready tasks and has no investigation
+      const isInInvestigation = Array.from(this.investigations.values()).some(
+        graph => graph.nodes.has(task.id)
+      );
+
+      if (!isInInvestigation && !readyTasks.some(t => t.id === task.id)) {
+        // For standalone tasks, check if dependencies are satisfied
+        if (!task.dependencies || task.dependencies.length === 0) {
+          readyTasks.push(task);
+        } else {
+          // Check if all dependencies are completed
+          const depsComplete = task.dependencies.every(depId => {
+            const depTask = this.statusTracker.getTask(depId);
+            return depTask && depTask.status === 'completed';
+          });
+          if (depsComplete) {
+            readyTasks.push(task);
+          }
         }
       }
     }
@@ -234,6 +260,9 @@ export class TaskPoolManager {
     // Mark task as in-progress
     await this.statusTracker.startTask(task.id, agentId);
 
+    // Get updated task with assignedTo field
+    const updatedTask = this.statusTracker.getTask(task.id)!;
+
     // Update agent status
     const agent = this.agents.get(agentId);
     if (agent) {
@@ -241,15 +270,20 @@ export class TaskPoolManager {
       agent.currentTask = task.id;
     }
 
-    // Update graph
-    const investigationId = task.metadata.investigationId;
-    const graph = this.investigations.get(investigationId);
-
-    if (graph) {
-      graph.nodes.get(task.id).status = 'in-progress';
+    // Update graph (if task is part of an investigation)
+    const investigationId = task.metadata?.investigationId;
+    if (investigationId) {
+      const graph = this.investigations.get(investigationId);
+      if (graph) {
+        const graphNode = graph.nodes.get(task.id);
+        if (graphNode) {
+          graphNode.status = 'in-progress';
+          graphNode.assignedTo = agentId;
+        }
+      }
     }
 
-    return task;
+    return updatedTask;
   }
 
   /**
@@ -291,19 +325,20 @@ export class TaskPoolManager {
       }
     }
 
-    // Update graph
-    const investigationId = task.metadata.investigationId;
-    const graph = this.investigations.get(investigationId);
+    // Update graph (if task is part of an investigation)
+    const investigationId = task.metadata?.investigationId;
+    if (investigationId) {
+      const graph = this.investigations.get(investigationId);
+      if (graph) {
+        const graphTask = graph.nodes.get(taskId);
+        if (graphTask) {
+          graphTask.status = 'completed';
+          graphTask.result = result;
 
-    if (graph) {
-      const graphTask = graph.nodes.get(taskId);
-      if (graphTask) {
-        graphTask.status = 'completed';
-        graphTask.result = result;
-
-        // Update ready queue
-        const readyTasks = this.dependencyResolver.getNextReadyTasks(graph);
-        graph.readyQueue = readyTasks;
+          // Update ready queue
+          const readyTasks = this.dependencyResolver.getNextReadyTasks(graph);
+          graph.readyQueue = readyTasks;
+        }
       }
     }
   }

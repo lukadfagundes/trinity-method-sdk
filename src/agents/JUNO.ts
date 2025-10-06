@@ -52,7 +52,7 @@ export class JUNOAgent extends SelfImprovingAgent {
       const relevantPatterns = await this.getRelevantPatterns(context);
 
       // Execute quality audit
-      const findings = await this.performQualityAudit(context, relevantPatterns);
+      const findings = this.performQualityAudit(context, relevantPatterns);
 
       // Extract patterns
       const patterns = this.extractQualityPatterns(findings);
@@ -68,7 +68,7 @@ export class JUNOAgent extends SelfImprovingAgent {
         duration: Date.now() - startTime.getTime(),
         findings,
         patterns,
-        metrics: await this.collectMetrics(investigationId),
+        metrics: this.collectMetrics(investigationId),
         errors: [],
         recommendations: this.generateRecommendations(findings),
         artifacts: [],
@@ -89,24 +89,24 @@ export class JUNOAgent extends SelfImprovingAgent {
   /**
    * Perform quality audit
    */
-  private async performQualityAudit(
+  private performQualityAudit(
     context: InvestigationContext,
     learnedPatterns: LearnedPattern[]
-  ): Promise<Finding[]> {
+  ): Finding[] {
     const findings: Finding[] = [];
 
     // Use learned patterns (JUNO accepts validation rules and anti-patterns)
     for (const pattern of learnedPatterns) {
       if (pattern.patternType === 'validation-rule' || pattern.patternType === 'anti-pattern') {
-        const patternFindings = await this.detectQualityPattern(pattern, context);
+        const patternFindings = this.detectQualityPattern(pattern, context);
         findings.push(...patternFindings);
       }
     }
 
     // Standard quality audits
-    findings.push(...await this.auditCodeQuality(context));
-    findings.push(...await this.auditTestCoverage(context));
-    findings.push(...await this.auditBestPractices(context));
+    findings.push(...this.auditCodeQuality(context));
+    findings.push(...this.auditTestCoverage(context));
+    findings.push(...this.auditBestPractices(context));
 
     return findings;
   }
@@ -114,13 +114,13 @@ export class JUNOAgent extends SelfImprovingAgent {
   /**
    * Detect quality pattern
    */
-  private async detectQualityPattern(
+  private detectQualityPattern(
     pattern: LearnedPattern,
-    context: InvestigationContext
-  ): Promise<Finding[]> {
+    _context: InvestigationContext
+  ): Finding[] {
     const findings: Finding[] = [];
 
-    if (pattern.confidence >= 0.7) {
+    if ((pattern.confidence ?? 0) >= 0.7) {
       const severity = pattern.patternType === 'anti-pattern' ? 'high' : 'medium';
 
       findings.push({
@@ -141,7 +141,7 @@ export class JUNOAgent extends SelfImprovingAgent {
   /**
    * Audit code quality
    */
-  private async auditCodeQuality(context: InvestigationContext): Promise<Finding[]> {
+  private auditCodeQuality(_context: InvestigationContext): Finding[] {
     return [
       {
         id: 'quality-1',
@@ -158,7 +158,7 @@ export class JUNOAgent extends SelfImprovingAgent {
   /**
    * Audit test coverage
    */
-  private async auditTestCoverage(context: InvestigationContext): Promise<Finding[]> {
+  private auditTestCoverage(_context: InvestigationContext): Finding[] {
     return [
       {
         id: 'coverage-1',
@@ -175,7 +175,7 @@ export class JUNOAgent extends SelfImprovingAgent {
   /**
    * Audit best practices
    */
-  private async auditBestPractices(context: InvestigationContext): Promise<Finding[]> {
+  private auditBestPractices(_context: InvestigationContext): Finding[] {
     return [
       {
         id: 'best-practices-1',
@@ -216,23 +216,13 @@ export class JUNOAgent extends SelfImprovingAgent {
   /**
    * Generate recommendations
    */
-  private generateRecommendations(findings: Finding[]): any[] {
+  private generateRecommendations(findings: Finding[]): string[] {
     return findings
       .filter(f => f.severity === 'high' || f.severity === 'critical')
-      .map(f => ({
-        id: `rec-${f.id}`,
-        type: 'fix',
-        priority: f.severity,
-        title: `Fix: ${f.title}`,
-        description: f.recommendation || f.description,
-        rationale: 'Improve code quality and maintainability',
-        effort: 'medium',
-        impact: 'high',
-        location: f.location,
-      }));
+      .map(f => `Fix: ${f.title} - ${f.recommendation || f.description}`);
   }
 
-  private async collectMetrics(investigationId: string): Promise<PerformanceMetrics> {
+  private collectMetrics(_investigationId: string): PerformanceMetrics {
     return {
       duration: 0,
       tokensUsed: 0,

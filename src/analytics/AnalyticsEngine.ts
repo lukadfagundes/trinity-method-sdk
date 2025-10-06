@@ -14,7 +14,7 @@
 
 import { AgentType } from '@shared/types';
 
-import { MetricsCollector, InvestigationMetrics, AgentMetrics, MetricDataPoint } from './MetricsCollector';
+import { MetricsCollector, InvestigationMetrics } from './MetricsCollector';
 
 /**
  * System-wide metrics
@@ -319,10 +319,11 @@ export class AnalyticsEngine {
           return b.qualityScore - a.qualityScore;
         case 'speed':
           return a.duration - b.duration;
-        case 'efficiency':
+        case 'efficiency': {
           const aEfficiency = a.tokensUsed / Math.max(a.duration, 1);
           const bEfficiency = b.tokensUsed / Math.max(b.duration, 1);
           return aEfficiency - bEfficiency;
+        }
         default:
           return 0;
       }
@@ -525,7 +526,7 @@ export class AnalyticsEngine {
     for (const inv of investigations) {
       totalDuration += inv.duration;
 
-      for (const [agentId, agentMetrics] of inv.agentUtilization) {
+      for (const [_agentId, agentMetrics] of inv.agentUtilization) {
         const summary = utilization.get(agentMetrics.agentType);
 
         summary.totalTasks += agentMetrics.tasksAssigned;

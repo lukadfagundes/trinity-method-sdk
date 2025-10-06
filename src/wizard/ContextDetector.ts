@@ -166,9 +166,18 @@ export class ContextDetector {
       let score = 0;
 
       for (const pattern of patterns) {
-        const exists = await this.fileExists(pattern);
-        if (exists) {
-          score += pattern.includes('*') ? 10 : 50; // Config files score higher
+        if (pattern.includes('*')) {
+          // For glob patterns, check if any matching files exist
+          const hasMatchingFiles = await this.hasFilesMatchingPattern(pattern);
+          if (hasMatchingFiles) {
+            score += 10; // Wildcard patterns score lower
+          }
+        } else {
+          // For specific files, check exact existence
+          const exists = await this.fileExists(pattern);
+          if (exists) {
+            score += 50; // Config files score higher
+          }
         }
       }
 
@@ -225,11 +234,14 @@ export class ContextDetector {
     if (await this.fileExists('package.json')) {
       try {
         const content = await fs.readFile(packageJsonPath, 'utf8');
-        const packageJson = JSON.parse(content);
+        const packageJson = JSON.parse(content) as {
+          dependencies?: Record<string, string>;
+          devDependencies?: Record<string, string>;
+        };
 
         const allDeps = {
-          ...packageJson.dependencies,
-          ...packageJson.devDependencies,
+          ...(packageJson.dependencies || {}),
+          ...(packageJson.devDependencies || {}),
         };
 
         dependencies.push(...Object.keys(allDeps));
@@ -406,6 +418,59 @@ export class ContextDetector {
   }
 
   /**
+   * Check if any files match a glob pattern
+   * @param pattern - Glob pattern (e.g., "**\/*.js")
+   * @returns True if any matching files exist
+   */
+  private async hasFilesMatchingPattern(pattern: string): Promise<boolean> {
+    try {
+      // Extract extension from pattern (e.g., "**\/*.js" -> ".js")
+      const extensionMatch = pattern.match(/\*\.(\w+)$/);
+      if (!extensionMatch) {
+        return false;
+      }
+
+      const extension = '.' + extensionMatch[1];
+
+      // Check if any files in the codebase have this extension
+      const hasFiles = await this.hasFilesWithExtension(this.codebasePath, extension);
+      return hasFiles;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Check if directory contains files with given extension
+   * @param dir - Directory to search
+   * @param extension - File extension to find
+   * @returns True if any files with extension exist
+   */
+  private async hasFilesWithExtension(dir: string, extension: string): Promise<boolean> {
+    try {
+      const entries = await fs.readdir(dir, { withFileTypes: true });
+
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+
+        // Skip common ignore directories
+        if (entry.isDirectory() && !['node_modules', '.git', 'dist', 'build', '.next'].includes(entry.name)) {
+          const found = await this.hasFilesWithExtension(fullPath, extension);
+          if (found) {
+            return true;
+          }
+        } else if (entry.isFile() && entry.name.endsWith(extension)) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Check if dependencies exist in package.json
    * @param deps - Dependencies to check
    * @returns True if any dependency exists
@@ -414,11 +479,14 @@ export class ContextDetector {
     try {
       const packageJsonPath = path.join(this.codebasePath, 'package.json');
       const content = await fs.readFile(packageJsonPath, 'utf8');
-      const packageJson = JSON.parse(content);
+      const packageJson = JSON.parse(content) as {
+        dependencies?: Record<string, string>;
+        devDependencies?: Record<string, string>;
+      };
 
       const allDeps = {
-        ...packageJson.dependencies,
-        ...packageJson.devDependencies,
+        ...(packageJson.dependencies || {}),
+        ...(packageJson.devDependencies || {}),
       };
 
       return deps.some((dep) => dep in allDeps);
