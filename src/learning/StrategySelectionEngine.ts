@@ -13,6 +13,7 @@ import {
   AgentType,
   InvestigationType,
 } from '@shared/types';
+
 import { LearningDataStore } from './LearningDataStore';
 import { PerformanceTracker } from './PerformanceTracker';
 
@@ -192,14 +193,14 @@ export class StrategySelectionEngine {
     // Check for framework/language match
     if (context.framework) {
       const frameworkMatch = strategy.applicableContexts.some(
-        ctx => ctx.toLowerCase().includes(context.framework!.toLowerCase())
+        ctx => ctx.toLowerCase().includes(context.framework.toLowerCase())
       );
       if (frameworkMatch) return true;
     }
 
     if (context.language) {
       const languageMatch = strategy.applicableContexts.some(
-        ctx => ctx.toLowerCase().includes(context.language!.toLowerCase())
+        ctx => ctx.toLowerCase().includes(context.language.toLowerCase())
       );
       if (languageMatch) return true;
     }
@@ -290,6 +291,27 @@ export class StrategySelectionEngine {
       name: 'Code Quality Assessment',
       description: 'Evaluate code quality, maintainability, test coverage, and technical debt',
       applicableTypes: ['code-quality'],
+    });
+
+    strategies.set('bug-investigation', {
+      id: 'default-bug-investigation',
+      name: 'Bug Investigation & Root Cause Analysis',
+      description: 'Systematic investigation of bugs, error reproduction, and root cause identification',
+      applicableTypes: ['bug-investigation'],
+    });
+
+    strategies.set('feature-planning', {
+      id: 'default-feature-planning',
+      name: 'Feature Planning & Design',
+      description: 'Analyze requirements, design architecture, and plan implementation for new features',
+      applicableTypes: ['feature-planning'],
+    });
+
+    strategies.set('refactoring-plan', {
+      id: 'default-refactoring-plan',
+      name: 'Refactoring Strategy',
+      description: 'Identify technical debt, plan refactoring approach, and minimize risk',
+      applicableTypes: ['refactoring-plan'],
     });
 
     strategies.set('custom', {

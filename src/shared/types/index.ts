@@ -104,7 +104,7 @@ export interface InvestigationResult {
   recommendations?: string[];
 
   /** Investigation metadata */
-  metadata?: InvestigationMetadata | LearningMetadata;
+  metadata?: InvestigationMetadata  ;
 }
 
 /**

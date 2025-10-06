@@ -9,8 +9,9 @@
  * @version 1.0.0
  */
 
-import { InvestigationTemplate, TaskTemplate } from './InvestigationTemplate';
 import { InvestigationType, SuccessCriterion } from '@shared/types';
+
+import { InvestigationTemplate, TaskTemplate } from './InvestigationTemplate';
 
 export class ArchitectureAnalysisTemplate extends InvestigationTemplate {
   readonly id = 'architecture-review';

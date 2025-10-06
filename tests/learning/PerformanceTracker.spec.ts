@@ -57,7 +57,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'bug-fix',
+        type: 'bug-investigation',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -163,7 +163,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'bug-fix',
+        type: 'bug-investigation',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -278,7 +278,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'audit',
+        type: 'security-audit',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -351,7 +351,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'documentation',
+        type: 'custom',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -423,7 +423,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'bug-fix',
+        type: 'bug-investigation',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -475,7 +475,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'refactor',
+        type: 'refactoring-plan',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -543,7 +543,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'context-analysis',
+        type: 'custom',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -596,7 +596,7 @@ describe('PerformanceTracker', () => {
 
         const result: InvestigationResult = {
           id: inv.id,
-          type: 'audit',
+          type: 'security-audit',
           status: 'completed',
           agent: agentId,
           startTime: new Date(),
@@ -648,7 +648,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'documentation',
+        type: 'custom',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -704,7 +704,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'bug-fix',
+        type: 'bug-investigation',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),
@@ -753,7 +753,7 @@ describe('PerformanceTracker', () => {
 
       const result: InvestigationResult = {
         id: investigationId,
-        type: 'refactor',
+        type: 'refactoring-plan',
         status: 'completed',
         agent: agentId,
         startTime: new Date(),

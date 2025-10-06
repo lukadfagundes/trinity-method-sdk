@@ -4,10 +4,11 @@
  * CLI dashboard for viewing investigation history and statistics.
  */
 
+import { createLogger } from '../utils/Logger';
+
 import { InvestigationRegistry } from './InvestigationRegistry';
 import { RegistryQueryAPI } from './RegistryQueryAPI';
 import { InvestigationRecord, RegistryQuery } from './types';
-import { createLogger } from '../utils/Logger';
 
 const logger = createLogger('RegistryDashboard');
 
@@ -170,7 +171,7 @@ export class RegistryDashboard {
       logger.info(`${similarity}% Match - ${record.name}`);
       logger.info(`   Type: ${record.type}`);
       logger.info(`   Started: ${record.startTime.toLocaleString()}`);
-      logger.info(`   Duration: ${record.duration ? (record.duration / 1000).toFixed(1) + 's' : 'N/A'}`);
+      logger.info(`   Duration: ${record.duration ? `${(record.duration / 1000).toFixed(1)  }s` : 'N/A'}`);
       logger.info(`   Quality: ${record.qualityScore?.toFixed(1) || 'N/A'}/100`);
       logger.info(`   Reasons: ${reasons.join(', ')}`);
       logger.info('');

@@ -28,6 +28,7 @@ module.exports = {
       testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
       moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
+        '^@shared/types$': '<rootDir>/src/shared/types/index.ts',
       },
       globals: {
         'ts-jest': {
@@ -45,6 +46,7 @@ module.exports = {
       testMatch: ['<rootDir>/tests/integration/**/*.spec.ts'],
       moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
+        '^@shared/types$': '<rootDir>/src/shared/types/index.ts',
       },
       globals: {
         'ts-jest': {
@@ -62,6 +64,7 @@ module.exports = {
       testMatch: ['<rootDir>/tests/e2e/**/*.spec.ts'],
       moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
+        '^@shared/types$': '<rootDir>/src/shared/types/index.ts',
       },
       globals: {
         'ts-jest': {
@@ -79,6 +82,7 @@ module.exports = {
       testMatch: ['<rootDir>/tests/performance/**/*.spec.ts'],
       moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
+        '^@shared/types$': '<rootDir>/src/shared/types/index.ts',
       },
       globals: {
         'ts-jest': {
@@ -115,6 +119,7 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@shared/types$': '<rootDir>/src/shared/types/index.ts',
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   verbose: true,

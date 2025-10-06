@@ -19,8 +19,10 @@ import {
   PerformanceMetrics,
   InvestigationMetadata,
 } from '@shared/types';
-import { SelfImprovingAgent } from './SelfImprovingAgent';
+
 import { InvestigationContext } from '../learning/StrategySelectionEngine';
+
+import { SelfImprovingAgent } from './SelfImprovingAgent';
 
 /**
  * ZEN Agent - Knowledge Extraction Navigator

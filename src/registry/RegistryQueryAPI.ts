@@ -5,6 +5,7 @@
  */
 
 import Database from 'better-sqlite3';
+
 import { InvestigationRegistry } from './InvestigationRegistry';
 import {
   InvestigationRecord,

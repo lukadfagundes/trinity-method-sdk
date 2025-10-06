@@ -12,8 +12,9 @@
  * @version 1.0.0
  */
 
-import { MetricsCollector, InvestigationMetrics, AgentMetrics, MetricDataPoint } from './MetricsCollector';
 import { AgentType } from '@shared/types';
+
+import { MetricsCollector, InvestigationMetrics, AgentMetrics, MetricDataPoint } from './MetricsCollector';
 
 /**
  * System-wide metrics
@@ -406,19 +407,19 @@ export class AnalyticsEngine {
     }
 
     if (filter.startDate) {
-      investigations = investigations.filter((inv) => inv.startTime >= filter.startDate!);
+      investigations = investigations.filter((inv) => inv.startTime >= filter.startDate);
     }
 
     if (filter.endDate) {
-      investigations = investigations.filter((inv) => inv.startTime <= filter.endDate!);
+      investigations = investigations.filter((inv) => inv.startTime <= filter.endDate);
     }
 
     if (filter.minQuality !== undefined) {
-      investigations = investigations.filter((inv) => inv.qualityScore >= filter.minQuality!);
+      investigations = investigations.filter((inv) => inv.qualityScore >= filter.minQuality);
     }
 
     if (filter.maxQuality !== undefined) {
-      investigations = investigations.filter((inv) => inv.qualityScore <= filter.maxQuality!);
+      investigations = investigations.filter((inv) => inv.qualityScore <= filter.maxQuality);
     }
 
     return investigations;
@@ -447,7 +448,7 @@ export class AnalyticsEngine {
         periods.set(periodKey, []);
       }
 
-      periods.get(periodKey)!.push(inv);
+      periods.get(periodKey).push(inv);
     }
 
     // Calculate trends for each period
@@ -456,7 +457,7 @@ export class AnalyticsEngine {
 
     for (let i = 0; i < periodKeys.length; i++) {
       const periodKey = periodKeys[i];
-      const periodInvestigations = periods.get(periodKey)!;
+      const periodInvestigations = periods.get(periodKey);
 
       const averageDuration =
         periodInvestigations.reduce((sum, inv) => sum + inv.duration, 0) / periodInvestigations.length;
@@ -525,7 +526,7 @@ export class AnalyticsEngine {
       totalDuration += inv.duration;
 
       for (const [agentId, agentMetrics] of inv.agentUtilization) {
-        const summary = utilization.get(agentMetrics.agentType)!;
+        const summary = utilization.get(agentMetrics.agentType);
 
         summary.totalTasks += agentMetrics.tasksAssigned;
         summary.completedTasks += agentMetrics.tasksCompleted;

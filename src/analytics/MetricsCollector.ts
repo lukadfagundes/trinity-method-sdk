@@ -24,9 +24,10 @@
  * @version 1.0.0
  */
 
-import { AgentType } from '@shared/types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+
+import { AgentType } from '@shared/types';
 
 /**
  * Investigation metrics

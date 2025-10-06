@@ -122,7 +122,7 @@ export class HookValidator {
 
     // Validate timeout
     const timeout = hook.action.timeout || 10000;
-    if (timeout > this.rules.maxTimeout!) {
+    if (timeout > this.rules.maxTimeout) {
       issues.push(`Timeout ${timeout}ms exceeds maximum ${this.rules.maxTimeout}ms`);
     }
 
@@ -190,7 +190,7 @@ export class HookValidator {
     }
 
     // Check forbidden paths
-    for (const pattern of this.rules.forbiddenFilePaths!) {
+    for (const pattern of this.rules.forbiddenFilePaths) {
       if (pattern.test(filePath)) {
         issues.push(`File path matches forbidden pattern: ${filePath}`);
         return;
@@ -199,7 +199,7 @@ export class HookValidator {
 
     // Check allowed paths
     let allowed = false;
-    for (const pattern of this.rules.allowedFilePaths!) {
+    for (const pattern of this.rules.allowedFilePaths) {
       if (pattern.test(filePath)) {
         allowed = true;
         break;
@@ -228,7 +228,7 @@ export class HookValidator {
     }
 
     // Check forbidden commands
-    for (const forbidden of this.rules.forbiddenCommands!) {
+    for (const forbidden of this.rules.forbiddenCommands) {
       if (command.toLowerCase().includes(forbidden.toLowerCase())) {
         issues.push(`Command contains forbidden pattern: ${forbidden}`);
         return;
@@ -237,7 +237,7 @@ export class HookValidator {
 
     // Check allowed commands
     const baseCommand = command.split(' ')[0];
-    if (!this.rules.allowedCommands!.includes(baseCommand)) {
+    if (!this.rules.allowedCommands.includes(baseCommand)) {
       issues.push(`Command not in allowed list: ${baseCommand}`);
     }
 

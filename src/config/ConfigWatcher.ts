@@ -5,8 +5,10 @@
  */
 
 import { watch, FSWatcher } from 'chokidar';
-import { ConfigurationManager } from './ConfigurationManager';
+
 import { createLogger } from '../utils/Logger';
+
+import { ConfigurationManager } from './ConfigurationManager';
 
 const logger = createLogger('ConfigWatcher');
 

@@ -19,8 +19,9 @@ import {
   AgentAssignmentResult,
   TaskExecutionError,
 } from '@shared/types';
-import { DependencyResolver } from './DependencyResolver';
+
 import { AgentMatcher } from './AgentMatcher';
+import { DependencyResolver } from './DependencyResolver';
 import { TaskStatusTracker } from './TaskStatusTracker';
 
 /**
@@ -245,7 +246,7 @@ export class TaskPoolManager {
     const graph = this.investigations.get(investigationId);
 
     if (graph) {
-      graph.nodes.get(task.id)!.status = 'in-progress';
+      graph.nodes.get(task.id).status = 'in-progress';
     }
 
     return task;

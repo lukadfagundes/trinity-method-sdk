@@ -3,12 +3,13 @@
  * Orchestrates 3-tier caching system (L1, L2, L3) with similarity detection
  */
 
+import { CacheEntry, CacheStats } from '../shared/types';
+
+import { CacheKeyGenerator } from './CacheKeyGenerator';
 import { L1Cache, L1CacheConfig } from './L1Cache';
 import { L2Cache, L2CacheConfig } from './L2Cache';
 import { L3Cache, L3CacheConfig } from './L3Cache';
 import { SimilarityDetector, SimilarQuery } from './SimilarityDetector';
-import { CacheKeyGenerator } from './CacheKeyGenerator';
-import { CacheEntry, CacheStats } from '../shared/types';
 
 export interface AdvancedCacheConfig {
   l1: Partial<L1CacheConfig>;

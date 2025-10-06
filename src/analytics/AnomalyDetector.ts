@@ -14,8 +14,8 @@
  * @version 1.0.0
  */
 
-import { InvestigationMetrics } from './MetricsCollector';
 import { AnalyticsEngine } from './AnalyticsEngine';
+import { InvestigationMetrics } from './MetricsCollector';
 
 /**
  * Anomaly

@@ -152,7 +152,7 @@ describe('SelfImprovingAgent', () => {
       const newPattern: LearnedPattern = { ...pattern, patternId: 'test-2' };
 
       const relevantPatterns = await agent.getRelevantPatterns({
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/'],
         estimatedComplexity: 'medium',
         tags: ['structure'],
@@ -196,7 +196,7 @@ describe('SelfImprovingAgent', () => {
       mockDataStore.loadLearningData.mockResolvedValue(learningData);
 
       const context: InvestigationContext = {
-        type: 'refactor',
+        type: 'refactoring-plan',
         scope: ['/src/a.ts'],
         estimatedComplexity: 'medium',
         tags: ['structure', 'architecture'],
@@ -246,7 +246,7 @@ describe('SelfImprovingAgent', () => {
       mockDataStore.loadLearningData.mockResolvedValue(learningData);
 
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['/src/backend/'],
         estimatedComplexity: 'high',
         tags: ['api', 'database'],
@@ -265,7 +265,7 @@ describe('SelfImprovingAgent', () => {
   describe('Strategy Selection', () => {
     it('should select best strategy for investigation context', async () => {
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/'],
         estimatedComplexity: 'medium',
         tags: ['structure'],
@@ -300,7 +300,7 @@ describe('SelfImprovingAgent', () => {
 
     it('should handle strategy selection failure gracefully', async () => {
       const context: InvestigationContext = {
-        type: 'feature',
+        type: 'feature-planning',
         scope: ['src/'],
         estimatedComplexity: 'high',
         tags: [],
@@ -317,7 +317,7 @@ describe('SelfImprovingAgent', () => {
     it('should learn from successful investigation', async () => {
       const result: InvestigationResult = {
         id: 'learn-test',
-        type: 'bug-fix',
+        type: 'bug-investigation',
         status: 'completed',
         agent: 'TAN',
         startTime: new Date(),
@@ -388,7 +388,7 @@ describe('SelfImprovingAgent', () => {
     it('should broadcast high-confidence patterns', async () => {
       const result: InvestigationResult = {
         id: 'broadcast-test',
-        type: 'refactor',
+        type: 'refactoring-plan',
         status: 'completed',
         agent: 'TAN',
         startTime: new Date(),
@@ -448,7 +448,7 @@ describe('SelfImprovingAgent', () => {
     it('should not broadcast low-confidence patterns', async () => {
       const result: InvestigationResult = {
         id: 'no-broadcast-test',
-        type: 'feature',
+        type: 'feature-planning',
         status: 'completed',
         agent: 'TAN',
         startTime: new Date(),
@@ -613,7 +613,7 @@ describe('SelfImprovingAgent', () => {
   describe('Investigation Execution', () => {
     it('should execute investigation successfully', async () => {
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/'],
         estimatedComplexity: 'medium',
         tags: [],
@@ -635,7 +635,7 @@ describe('SelfImprovingAgent', () => {
       })(mockDataStore, mockPerformanceTracker, mockStrategyEngine, mockKnowledgeBus, 'TAN');
 
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/'],
         estimatedComplexity: 'medium',
         tags: [],
@@ -649,7 +649,7 @@ describe('SelfImprovingAgent', () => {
   describe('Integration with Learning Components', () => {
     it('should integrate all learning components correctly', async () => {
       const context: InvestigationContext = {
-        type: 'refactor',
+        type: 'refactoring-plan',
         scope: ['src/'],
         estimatedComplexity: 'high',
         tags: ['architecture'],

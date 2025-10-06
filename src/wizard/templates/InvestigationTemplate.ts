@@ -290,7 +290,7 @@ export abstract class InvestigationTemplate {
 
     const calculateEarliest = (taskId: string): number => {
       if (earliestStart.has(taskId)) {
-        return earliestStart.get(taskId)!;
+        return earliestStart.get(taskId);
       }
 
       if (visited.has(taskId)) {

@@ -8,16 +8,18 @@
  * @version 1.0.0
  */
 
-import { ContextDetector } from './ContextDetector';
-import { InvestigationTemplate } from './templates/InvestigationTemplate';
-import { UserPreferencesManager, PreferenceProfile } from './UserPreferencesManager';
+import * as path from 'path';
+
 import {
   InvestigationType,
   InvestigationTask,
   AgentType,
   InvestigationResult,
 } from '@shared/types';
-import * as path from 'path';
+
+import { ContextDetector } from './ContextDetector';
+import { InvestigationTemplate } from './templates/InvestigationTemplate';
+import { UserPreferencesManager, PreferenceProfile } from './UserPreferencesManager';
 
 /**
  * Wizard configuration options
@@ -243,7 +245,7 @@ export class InvestigationWizard {
         },
         resources: {
           files: [],
-          agents: agents,
+          agents,
           tools: mergedOptions.preferredTools || [],
           externalDependencies: context.dependencies,
         },

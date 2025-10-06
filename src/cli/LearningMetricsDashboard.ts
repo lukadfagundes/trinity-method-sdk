@@ -435,7 +435,7 @@ export class LearningMetricsDashboard {
       if (!patternsByDate.has(dateKey)) {
         patternsByDate.set(dateKey, []);
       }
-      patternsByDate.get(dateKey)!.push(pattern);
+      patternsByDate.get(dateKey).push(pattern);
     }
 
     // Calculate trends

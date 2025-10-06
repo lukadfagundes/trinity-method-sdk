@@ -12,11 +12,12 @@
  * @version 1.0.0
  */
 
-import { TrinityHook, HookAction, HookExecutionResult } from './TrinityHookLibrary';
-import { HookValidator } from './HookValidator';
-import * as fs from 'fs/promises';
 import { exec } from 'child_process';
+import * as fs from 'fs/promises';
 import { promisify } from 'util';
+
+import { HookValidator } from './HookValidator';
+import { TrinityHook, HookAction, HookExecutionResult } from './TrinityHookLibrary';
 
 const execAsync = promisify(exec);
 

@@ -5,9 +5,11 @@
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import * as zlib from 'zlib';
 import { promisify } from 'util';
+import * as zlib from 'zlib';
+
 import { CacheEntry, CacheStats } from '../shared/types';
+
 import { CacheKeyGenerator } from './CacheKeyGenerator';
 
 const gzip = promisify(zlib.gzip);

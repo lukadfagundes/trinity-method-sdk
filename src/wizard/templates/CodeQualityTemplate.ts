@@ -8,8 +8,9 @@
  * @version 1.0.0
  */
 
-import { InvestigationTemplate, TaskTemplate } from './InvestigationTemplate';
 import { InvestigationType, SuccessCriterion } from '@shared/types';
+
+import { InvestigationTemplate, TaskTemplate } from './InvestigationTemplate';
 
 export class CodeQualityTemplate extends InvestigationTemplate {
   readonly id = 'code-quality';

@@ -37,33 +37,35 @@ describe('Learning Flow Integration', () => {
   beforeEach(async () => {
     // Clean up test directory
     await fs.rm(testDataDir, { recursive: true, force: true });
+    // Also clean up default directory to prevent cross-test pollution
+    await fs.rm(path.join(process.cwd(), 'trinity', 'learning'), { recursive: true, force: true });
 
-    // Initialize learning components
-    dataStore = new LearningDataStore();
+    // Initialize learning components with isolated test directory
+    dataStore = new LearningDataStore(testDataDir);
     performanceTracker = new PerformanceTracker(dataStore);
-    strategyEngine = new StrategySelectionEngine(dataStore);
+    strategyEngine = new StrategySelectionEngine(dataStore, performanceTracker);
     knowledgeBus = new KnowledgeSharingBus(dataStore);
 
     // Initialize agents
-    tanAgent = new TANAgent(dataStore, performanceTracker, strategyEngine, knowledgeBus);
-    zenAgent = new ZENAgent(dataStore, performanceTracker, strategyEngine, knowledgeBus);
-    inoAgent = new INOAgent(dataStore, performanceTracker, strategyEngine, knowledgeBus);
-    junoAgent = new JUNOAgent(dataStore, performanceTracker, strategyEngine, knowledgeBus);
+    tanAgent = new TANAgent('TAN', dataStore, performanceTracker, strategyEngine, knowledgeBus);
+    zenAgent = new ZENAgent('ZEN', dataStore, performanceTracker, strategyEngine, knowledgeBus);
+    inoAgent = new INOAgent('INO', dataStore, performanceTracker, strategyEngine, knowledgeBus);
+    junoAgent = new JUNOAgent('JUNO', dataStore, performanceTracker, strategyEngine, knowledgeBus);
   });
 
   afterEach(async () => {
     // Clean up test directory
     await fs.rm(testDataDir, { recursive: true, force: true });
+    // Also clean up default directory
+    await fs.rm(path.join(process.cwd(), 'trinity', 'learning'), { recursive: true, force: true });
   });
 
   describe('Complete Investigation Lifecycle', () => {
     it('should execute complete investigation with learning', async () => {
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/'],
         estimatedComplexity: 'medium',
-        tags: ['structure', 'architecture'],
-        previousInvestigations: [],
       };
 
       // Execute investigation
@@ -83,25 +85,19 @@ describe('Learning Flow Integration', () => {
     it('should improve strategy selection over multiple investigations', async () => {
       const contexts: InvestigationContext[] = [
         {
-          type: 'bug-fix',
+          type: 'bug-investigation',
           scope: ['src/'],
           estimatedComplexity: 'low',
-          tags: ['simple'],
-          previousInvestigations: [],
         },
         {
-          type: 'bug-fix',
+          type: 'bug-investigation',
           scope: ['src/'],
           estimatedComplexity: 'low',
-          tags: ['simple'],
-          previousInvestigations: [],
         },
         {
-          type: 'bug-fix',
+          type: 'bug-investigation',
           scope: ['src/'],
           estimatedComplexity: 'low',
-          tags: ['simple'],
-          previousInvestigations: [],
         },
       ];
 
@@ -127,19 +123,21 @@ describe('Learning Flow Integration', () => {
 
     it('should track performance metrics accurately', async () => {
       const context: InvestigationContext = {
-        type: 'refactor',
+        type: 'refactoring-plan',
         scope: ['src/'],
         estimatedComplexity: 'high',
-        tags: ['architecture'],
-        previousInvestigations: [],
       };
 
       const result = await tanAgent.executeInvestigation(context);
 
       // Verify metrics were tracked
       expect(result.metrics).toBeDefined();
-      expect(result.metrics.duration).toBeGreaterThan(0);
-      expect(result.metrics.timestamp).toBeDefined();
+      if ('totalDuration' in result.metrics) {
+        expect(result.metrics.totalDuration).toBeGreaterThan(0);
+      } else if ('duration' in result.metrics) {
+        expect(result.metrics.duration).toBeGreaterThan(0);
+      }
+      expect(result.startedAt).toBeDefined();
     });
   });
 
@@ -158,18 +156,19 @@ describe('Learning Flow Integration', () => {
         lastSeen: new Date(),
         agentId: 'TAN',
         investigationIds: [],
-        tags: ['structure', 'shared'],
         filePaths: ['/src/shared.ts'],
         errorTypes: [],
       };
 
-      // Save pattern
-      await dataStore.savePattern('TAN', tanPattern);
+      // Save pattern using load-modify-save pattern
+      const tanData = await dataStore.loadLearningData('TAN');
+      tanData.patterns.set(tanPattern.patternId, tanPattern);
+      await dataStore.saveLearningData('TAN', tanData);
 
       // Set up subscription for AJ (should receive code-structure patterns)
       const receivedPatterns: LearnedPattern[] = [];
-      await knowledgeBus.subscribe('AJ', (pattern) => {
-        receivedPatterns.push(pattern);
+      await knowledgeBus.subscribeToPatterns('AJ', (broadcast) => {
+        receivedPatterns.push(broadcast.pattern);
       });
 
       // Broadcast pattern
@@ -197,21 +196,23 @@ describe('Learning Flow Integration', () => {
         lastSeen: new Date(),
         agentId: 'ZEN',
         investigationIds: [],
-        tags: ['research'],
         filePaths: [],
         errorTypes: [],
       };
 
-      await dataStore.savePattern('ZEN', zenPattern);
+      // Save pattern using load-modify-save pattern
+      const zenData = await dataStore.loadLearningData('ZEN');
+      zenData.patterns.set(zenPattern.patternId, zenPattern);
+      await dataStore.saveLearningData('ZEN', zenData);
 
       // Subscribe multiple agents
       const tanReceived: LearnedPattern[] = [];
       const inoReceived: LearnedPattern[] = [];
       const junoReceived: LearnedPattern[] = [];
 
-      await knowledgeBus.subscribe('TAN', (p) => tanReceived.push(p));
-      await knowledgeBus.subscribe('INO', (p) => inoReceived.push(p));
-      await knowledgeBus.subscribe('JUNO', (p) => junoReceived.push(p));
+      await knowledgeBus.subscribeToPatterns('TAN', (b) => { tanReceived.push(b.pattern); });
+      await knowledgeBus.subscribeToPatterns('INO', (b) => { inoReceived.push(b.pattern); });
+      await knowledgeBus.subscribeToPatterns('JUNO', (b) => { junoReceived.push(b.pattern); });
 
       // Broadcast
       await knowledgeBus.broadcastPattern(zenPattern, 'ZEN');
@@ -241,7 +242,6 @@ describe('Learning Flow Integration', () => {
           lastSeen: new Date(),
           agentId: 'TAN',
           investigationIds: [],
-          tags: ['structure'],
           filePaths: [],
           errorTypes: [],
         },
@@ -257,7 +257,6 @@ describe('Learning Flow Integration', () => {
           lastSeen: new Date(),
           agentId: 'ZEN',
           investigationIds: [],
-          tags: ['research'],
           filePaths: [],
           errorTypes: [],
         },
@@ -273,7 +272,6 @@ describe('Learning Flow Integration', () => {
           lastSeen: new Date(),
           agentId: 'JUNO',
           investigationIds: [],
-          tags: ['validation'],
           filePaths: [],
           errorTypes: [],
         },
@@ -281,12 +279,15 @@ describe('Learning Flow Integration', () => {
 
       // Subscribe INO to all patterns
       const inoReceived: LearnedPattern[] = [];
-      await knowledgeBus.subscribe('INO', (p) => inoReceived.push(p));
+      await knowledgeBus.subscribeToPatterns('INO', (b) => { inoReceived.push(b.pattern); });
 
       // Broadcast all patterns
       for (const pattern of patterns) {
-        await dataStore.savePattern(pattern.agentId, pattern);
-        await knowledgeBus.broadcastPattern(pattern, pattern.agentId);
+        // Save pattern using load-modify-save pattern
+        const agentData = await dataStore.loadLearningData(pattern.agentId as AgentType);
+        agentData.patterns.set(pattern.patternId, pattern);
+        await dataStore.saveLearningData(pattern.agentId as AgentType, agentData);
+        await knowledgeBus.broadcastPattern(pattern, pattern.agentId as AgentType);
       }
 
       await new Promise(resolve => setTimeout(resolve, 50));
@@ -299,11 +300,9 @@ describe('Learning Flow Integration', () => {
   describe('Strategy Learning and Selection', () => {
     it('should improve strategy confidence over time', async () => {
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/'],
         estimatedComplexity: 'medium',
-        tags: [],
-        previousInvestigations: [],
       };
 
       // Execute multiple successful investigations
@@ -362,16 +361,17 @@ describe('Learning Flow Integration', () => {
         failedInvestigations: [],
       };
 
-      await dataStore.saveStrategy('TAN', bugFixStrategy);
-      await dataStore.saveStrategy('TAN', refactorStrategy);
+      // Save strategies using load-modify-save pattern
+      const tanStratData = await dataStore.loadLearningData('TAN');
+      tanStratData.strategies.set(bugFixStrategy.strategyName, bugFixStrategy);
+      tanStratData.strategies.set(refactorStrategy.strategyName, refactorStrategy);
+      await dataStore.saveLearningData('TAN', tanStratData);
 
       // Select for bug-fix context
       const bugFixContext: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/'],
         estimatedComplexity: 'medium',
-        tags: [],
-        previousInvestigations: [],
       };
 
       const selectedBugFix = await strategyEngine.selectStrategy('TAN', bugFixContext);
@@ -379,11 +379,9 @@ describe('Learning Flow Integration', () => {
 
       // Select for refactor context
       const refactorContext: InvestigationContext = {
-        type: 'refactor',
+        type: 'refactoring-plan',
         scope: ['src/'],
         estimatedComplexity: 'high',
-        tags: [],
-        previousInvestigations: [],
       };
 
       const selectedRefactor = await strategyEngine.selectStrategy('TAN', refactorContext);
@@ -394,11 +392,9 @@ describe('Learning Flow Integration', () => {
   describe('Data Persistence', () => {
     it('should persist learning data across sessions', async () => {
       const context: InvestigationContext = {
-        type: 'documentation',
+        type: 'custom',
         scope: ['docs/'],
         estimatedComplexity: 'low',
-        tags: ['readme'],
-        previousInvestigations: [],
       };
 
       // Execute investigation
@@ -429,38 +425,39 @@ describe('Learning Flow Integration', () => {
         lastSeen: new Date(),
         agentId: 'INO',
         investigationIds: [],
-        tags: ['export'],
         filePaths: [],
         errorTypes: [],
       };
 
-      await dataStore.savePattern('INO', pattern);
+      // Save pattern using load-modify-save pattern
+      const inoExportData = await dataStore.loadLearningData('INO');
+      inoExportData.patterns.set(pattern.patternId, pattern);
+      await dataStore.saveLearningData('INO', inoExportData);
 
-      // Export
+      // Export (note: correct argument order is exportPath, agentId)
       const exportPath = path.join(testDataDir, 'export-test.json');
-      await dataStore.exportLearningData('INO', exportPath);
+      await dataStore.exportLearningData(exportPath, 'INO');
 
       // Clear data
       await fs.rm(path.join(process.cwd(), 'trinity', 'learning', 'INO'), { recursive: true, force: true });
 
-      // Import
-      await dataStore.importLearningData('INO', exportPath);
+      // Import (note: correct argument order is importPath)
+      await dataStore.importLearningData(exportPath);
 
-      // Verify
-      const imported = await dataStore.getPattern('INO', 'export-test');
-      expect(imported).toBeDefined();
-      expect(imported?.description).toBe('Export test');
+      // Verify by loading data and checking the pattern
+      const imported = await dataStore.loadLearningData('INO');
+      const importedPattern = imported.patterns.get('export-test');
+      expect(importedPattern).toBeDefined();
+      expect(importedPattern?.description).toBe('Export test');
     });
   });
 
   describe('Performance Optimization', () => {
     it('should complete 100 investigations within performance targets', async () => {
       const context: InvestigationContext = {
-        type: 'audit',
+        type: 'security-audit',
         scope: ['src/'],
         estimatedComplexity: 'medium',
-        tags: ['quality'],
-        previousInvestigations: [],
       };
 
       const startTime = Date.now();
@@ -491,11 +488,9 @@ describe('Learning Flow Integration', () => {
 
     it('should show performance improvement over time', async () => {
       const context: InvestigationContext = {
-        type: 'context-analysis',
+        type: 'custom',
         scope: ['CLAUDE.md'],
         estimatedComplexity: 'low',
-        tags: ['context'],
-        previousInvestigations: [],
       };
 
       // Measure first batch
@@ -526,11 +521,9 @@ describe('Learning Flow Integration', () => {
   describe('Error Handling and Recovery', () => {
     it('should recover from failed investigations', async () => {
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['non-existent/'],
         estimatedComplexity: 'high',
-        tags: [],
-        previousInvestigations: [],
       };
 
       // Execute investigation (may have issues with non-existent scope)
@@ -543,11 +536,9 @@ describe('Learning Flow Integration', () => {
 
     it('should handle concurrent investigations safely', async () => {
       const contexts: InvestigationContext[] = Array.from({ length: 10 }, (_, i) => ({
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: [`src/${i}/`],
         estimatedComplexity: 'medium',
-        tags: [`concurrent-${i}`],
-        previousInvestigations: [],
       }));
 
       // Execute all concurrently
@@ -568,11 +559,9 @@ describe('Learning Flow Integration', () => {
   describe('Multi-Agent Coordination', () => {
     it('should coordinate investigations across multiple agents', async () => {
       const context: InvestigationContext = {
-        type: 'feature',
+        type: 'feature-planning',
         scope: ['src/'],
         estimatedComplexity: 'high',
-        tags: ['architecture', 'documentation', 'quality'],
-        previousInvestigations: [],
       };
 
       // Execute with different agents

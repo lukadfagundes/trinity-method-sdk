@@ -13,10 +13,12 @@
  * @version 1.0.0
  */
 
-import { InvestigationPhase, Timeline, Risk } from '@shared/types';
-import { InvestigationPlan, ResourceEstimate } from './InvestigationPlanner';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+
+import { InvestigationPhase, Timeline, Risk } from '@shared/types';
+
+import { InvestigationPlan, ResourceEstimate } from './InvestigationPlanner';
 
 /**
  * Visualization output format
@@ -196,7 +198,7 @@ export class PlanVisualizer {
 
     for (let i = 0; i < plan.phases.length; i++) {
       lines.push(`    class P${i + 1} phaseStyle`);
-      if (plan.phases[i].deliverables && plan.phases[i].deliverables!.length > 0) {
+      if (plan.phases[i].deliverables && plan.phases[i].deliverables.length > 0) {
         lines.push(`    class D${i + 1} delivStyle`);
       }
     }
@@ -236,7 +238,7 @@ export class PlanVisualizer {
       if (!eventsByDate.has(date)) {
         eventsByDate.set(date, []);
       }
-      eventsByDate.get(date)!.push(event);
+      eventsByDate.get(date).push(event);
     }
 
     // Generate timeline entries
@@ -259,23 +261,23 @@ export class PlanVisualizer {
     // Gantt chart
     const gantt = this.generateGanttChart(plan);
     diagrams.set('gantt', gantt);
-    sections.push('# Investigation Timeline (Gantt Chart)\n\n```mermaid\n' + gantt + '\n```\n');
+    sections.push(`# Investigation Timeline (Gantt Chart)\n\n\`\`\`mermaid\n${  gantt  }\n\`\`\`\n`);
 
     // Flowchart
     const flowchart = this.generateFlowchart(plan);
     diagrams.set('flowchart', flowchart);
-    sections.push('# Investigation Flow\n\n```mermaid\n' + flowchart + '\n```\n');
+    sections.push(`# Investigation Flow\n\n\`\`\`mermaid\n${  flowchart  }\n\`\`\`\n`);
 
     // Resource distribution
     const resourcePie = this.generateResourcePieChart(plan.resourceEstimate);
     diagrams.set('resources', resourcePie);
-    sections.push('# Resource Distribution\n\n```mermaid\n' + resourcePie + '\n```\n');
+    sections.push(`# Resource Distribution\n\n\`\`\`mermaid\n${  resourcePie  }\n\`\`\`\n`);
 
     // Timeline
     if (plan.timeline.events.length > 0) {
       const timelineDiagram = this.generateTimelineDiagram(plan.timeline);
       diagrams.set('timeline', timelineDiagram);
-      sections.push('# Timeline\n\n```mermaid\n' + timelineDiagram + '\n```\n');
+      sections.push(`# Timeline\n\n\`\`\`mermaid\n${  timelineDiagram  }\n\`\`\`\n`);
     }
 
     return sections.join('\n');

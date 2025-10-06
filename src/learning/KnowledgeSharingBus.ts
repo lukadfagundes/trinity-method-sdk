@@ -13,6 +13,7 @@ import {
   StrategyPerformance,
   AgentType,
 } from '@shared/types';
+
 import { LearningDataStore } from './LearningDataStore';
 
 /**
@@ -112,7 +113,7 @@ export class KnowledgeSharingBus {
       this.subscribers.set(agentId, new Set());
     }
 
-    this.subscribers.get(agentId)!.add(callback);
+    this.subscribers.get(agentId).add(callback);
   }
 
   /**
@@ -124,7 +125,7 @@ export class KnowledgeSharingBus {
     if (!this.subscribers.has(agentId)) return;
 
     if (callback) {
-      this.subscribers.get(agentId)!.delete(callback);
+      this.subscribers.get(agentId).delete(callback);
     } else {
       this.subscribers.delete(agentId);
     }
@@ -159,7 +160,7 @@ export class KnowledgeSharingBus {
       // Check if agent already has this strategy
       if (learningData.strategies.has(strategy.strategyId)) {
         // Strategy exists - merge data if shared version is better
-        const existingStrategy = learningData.strategies.get(strategy.strategyId)!;
+        const existingStrategy = learningData.strategies.get(strategy.strategyId);
 
         if (strategy.confidence > existingStrategy.confidence) {
           // Shared strategy is better - update

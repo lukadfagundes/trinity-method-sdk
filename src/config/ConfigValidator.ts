@@ -4,9 +4,11 @@
  * Validates Trinity Method configuration against JSON schema.
  */
 
-import Ajv, { ValidateFunction } from 'ajv';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+
+import Ajv, { ValidateFunction } from 'ajv';
+
 import {
   TrinityConfiguration,
   ConfigValidationError,

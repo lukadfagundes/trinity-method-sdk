@@ -13,6 +13,7 @@ import {
   LearningMetrics,
   AgentType,
 } from '@shared/types';
+
 import { LearningDataStore } from './LearningDataStore';
 
 /**
@@ -171,13 +172,13 @@ export class PerformanceTracker {
     const learningData = await this.learningDataStore.loadLearningData(agentId);
 
     // Calculate overall metrics
-    const totalInvestigations = learningData.metadata.totalInvestigations;
+    const totalInvestigations = learningData.metadata.totalInvestigations ?? 0;
     const strategies = Array.from(learningData.strategies.values());
 
     // Calculate averages
     let totalDuration = 0;
     let totalTokens = 0;
-    let totalErrors = 0;
+    const totalErrors = 0;
     let successfulStrategies = 0;
 
     for (const strategy of strategies) {
@@ -305,7 +306,8 @@ export class PerformanceTracker {
   ): Promise<void> {
     const learningData = await this.learningDataStore.loadLearningData(agentId);
 
-    learningData.metadata.totalInvestigations++;
+    learningData.metadata.totalInvestigations = (learningData.metadata.totalInvestigations ?? 0) + 1;
+    learningData.totalInvestigations = learningData.metadata.totalInvestigations;
 
     await this.learningDataStore.saveLearningData(agentId, learningData);
   }

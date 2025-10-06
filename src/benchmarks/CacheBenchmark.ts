@@ -4,8 +4,9 @@
  * Measures cache hit rates and lookup times across L1/L2/L3 tiers.
  */
 
-import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
 import { createLogger } from '../utils/Logger';
+
+import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
 
 const logger = createLogger('CacheBenchmark');
 

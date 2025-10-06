@@ -15,6 +15,7 @@
  */
 
 import { InvestigationPhase, InvestigationScope, AgentType } from '@shared/types';
+
 import { ResourceEstimate } from './InvestigationPlanner';
 
 /**

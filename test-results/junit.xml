@@ -1,21 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="8" failures="0" errors="0" time="2.647">
-  <testsuite name="Critical Trinity Agents" errors="0" failures="0" skipped="0" timestamp="2025-10-05T22:40:33" time="2.262" tests="8">
-    <testcase classname="Critical Trinity Agents › TAN Agent (Structure Specialist)" name="should create TAN agent instance" time="0.004">
+<testsuites name="jest tests" tests="15" failures="7" errors="0" time="4.572">
+  <testsuite name="Learning Flow Integration" errors="0" failures="7" skipped="0" timestamp="2025-10-06T00:16:11" time="4.2" tests="15">
+    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should execute complete investigation with learning" time="0.024">
     </testcase>
-    <testcase classname="Critical Trinity Agents › TAN Agent (Structure Specialist)" name="should execute architecture analysis investigation" time="0.019">
+    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should improve strategy selection over multiple investigations" time="0.042">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 3
+Received: 0
+    at Object.&lt;anonymous&gt; (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\tests\integration\learning-flow.spec.ts:121:53)</failure>
     </testcase>
-    <testcase classname="Critical Trinity Agents › ZEN Agent (Documentation Specialist)" name="should create ZEN agent instance" time="0.001">
+    <testcase classname="Learning Flow Integration › Complete Investigation Lifecycle" name="should track performance metrics accurately" time="0.014">
+      <failure>Error: expect(received).toBeGreaterThan(expected)
+
+Expected: &gt; 0
+Received:   0
+    at Object.&lt;anonymous&gt; (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\tests\integration\learning-flow.spec.ts:138:41)</failure>
     </testcase>
-    <testcase classname="Critical Trinity Agents › ZEN Agent (Documentation Specialist)" name="should execute custom investigation" time="0.014">
+    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should share high-confidence patterns between agents" time="0.062">
     </testcase>
-    <testcase classname="Critical Trinity Agents › INO Agent (Context Specialist)" name="should create INO agent instance" time="0.001">
+    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should validate patterns before sharing to specific agents" time="0.062">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 0
+Received: 1
+    at Object.&lt;anonymous&gt; (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\tests\integration\learning-flow.spec.ts:222:34)</failure>
     </testcase>
-    <testcase classname="Critical Trinity Agents › INO Agent (Context Specialist)" name="should execute custom investigation" time="0.013">
+    <testcase classname="Learning Flow Integration › Cross-Agent Knowledge Sharing" name="should accumulate patterns from multiple agents" time="0.093">
     </testcase>
-    <testcase classname="Critical Trinity Agents › JUNO Agent (Quality Auditor)" name="should create JUNO agent instance" time="0.001">
+    <testcase classname="Learning Flow Integration › Strategy Learning and Selection" name="should improve strategy confidence over time" time="0.102">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+    at Object.&lt;anonymous&gt; (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\tests\integration\learning-flow.spec.ts:323:33)</failure>
     </testcase>
-    <testcase classname="Critical Trinity Agents › JUNO Agent (Quality Auditor)" name="should execute code quality audit" time="0.013">
+    <testcase classname="Learning Flow Integration › Strategy Learning and Selection" name="should select appropriate strategy based on context" time="0.009">
+      <failure>Error: expect(received).toContain(expected) // indexOf
+
+Expected value: &quot;bug-fix&quot;
+Received array: [&quot;bug-investigation&quot;]
+    at Object.&lt;anonymous&gt; (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\tests\integration\learning-flow.spec.ts:378:49)</failure>
+    </testcase>
+    <testcase classname="Learning Flow Integration › Data Persistence" name="should persist learning data across sessions" time="0.014">
+      <failure>Error: expect(received).toBeGreaterThan(expected)
+
+Expected: &gt; 0
+Received:   0
+    at Object.&lt;anonymous&gt; (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\tests\integration\learning-flow.spec.ts:411:46)</failure>
+    </testcase>
+    <testcase classname="Learning Flow Integration › Data Persistence" name="should export and import learning data" time="0.014">
+    </testcase>
+    <testcase classname="Learning Flow Integration › Performance Optimization" name="should complete 100 investigations within performance targets" time="1.029">
+    </testcase>
+    <testcase classname="Learning Flow Integration › Performance Optimization" name="should show performance improvement over time" time="0.212">
+    </testcase>
+    <testcase classname="Learning Flow Integration › Error Handling and Recovery" name="should recover from failed investigations" time="0.014">
+    </testcase>
+    <testcase classname="Learning Flow Integration › Error Handling and Recovery" name="should handle concurrent investigations safely" time="0.346">
+      <failure>Error: Atomic write failed for c:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\trinity\learning\test-integration\TAN\errors.json: ENOENT: no such file or directory, rename &apos;c:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\trinity\learning\test-integration\TAN\errors.json.tmp&apos; -&gt; &apos;c:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\trinity\learning\test-integration\TAN\errors.json&apos;
+    at LearningDataStore.atomicWrite (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\src\learning\LearningDataStore.ts:282:13)
+    at LearningDataStore.saveErrors (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\src\learning\LearningDataStore.ts:241:5)
+    at async Promise.all (index 2)
+    at LearningDataStore.saveLearningData (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\src\learning\LearningDataStore.ts:105:5)
+    at PerformanceTracker.updateStrategyPerformance (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\src\learning\PerformanceTracker.ts:295:5)
+    at PerformanceTracker.trackInvestigationComplete (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\src\learning\PerformanceTracker.ts:122:7)
+    at TANAgent.executeInvestigation (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\src\agents\TAN.ts:80:7)
+    at async Promise.all (index 3)
+    at Object.&lt;anonymous&gt; (C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\tests\integration\learning-flow.spec.ts:545:23)</failure>
+    </testcase>
+    <testcase classname="Learning Flow Integration › Multi-Agent Coordination" name="should coordinate investigations across multiple agents" time="0.043">
     </testcase>
   </testsuite>
 </testsuites>

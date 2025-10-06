@@ -4,8 +4,9 @@
  * Orchestrates benchmark execution, collects results, and generates reports.
  */
 
-import { Benchmark, BenchmarkResult, BenchmarkSuite, BenchmarkComparison } from './types';
 import { createLogger } from '../utils/Logger';
+
+import { Benchmark, BenchmarkResult, BenchmarkSuite, BenchmarkComparison } from './types';
 
 const logger = createLogger('BenchmarkHarness');
 

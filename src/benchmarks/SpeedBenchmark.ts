@@ -4,8 +4,9 @@
  * Measures investigation execution speed comparing sequential vs coordinated multi-agent.
  */
 
-import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
 import { createLogger } from '../utils/Logger';
+
+import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
 
 const logger = createLogger('SpeedBenchmark');
 

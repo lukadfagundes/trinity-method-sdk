@@ -9,6 +9,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
+
 import {
   LearnedPattern,
   StrategyPerformance,
@@ -73,6 +74,9 @@ export class LearningDataStore {
         strategies,
         errors,
         metadata,
+        totalInvestigations: metadata.totalInvestigations ?? 0,
+        successfulInvestigations: 0,
+        failedInvestigations: 0,
       };
     } catch (error) {
       // If no existing data, return empty structure
@@ -135,6 +139,10 @@ export class LearningDataStore {
 
     // Convert Maps to objects for JSON serialization
     const serializable = this.serializeForExport(exportData);
+
+    // Ensure export directory exists
+    const exportDir = path.dirname(exportPath);
+    await fs.mkdir(exportDir, { recursive: true });
 
     // Write to file
     await fs.writeFile(exportPath, JSON.stringify(serializable, null, 2), 'utf8');
@@ -246,11 +254,28 @@ export class LearningDataStore {
     const tempPath = `${filePath}.tmp`;
 
     try {
+      // Ensure parent directory exists
+      const dir = path.dirname(filePath);
+      await fs.mkdir(dir, { recursive: true });
+
       // Write to temp file
       await fs.writeFile(tempPath, JSON.stringify(data, null, 2), 'utf8');
 
-      // Atomic rename
-      await fs.rename(tempPath, filePath);
+      // Atomic rename with retry for race conditions
+      let retries = 5;
+      while (retries > 0) {
+        try {
+          await fs.rename(tempPath, filePath);
+          return; // Success
+        } catch (renameError) {
+          retries--;
+          if (retries === 0) throw renameError;
+          // Ensure directory still exists (might have been cleaned up by another process)
+          await fs.mkdir(dir, { recursive: true });
+          // Exponential backoff: wait longer on each retry
+          await new Promise(resolve => setTimeout(resolve, (6 - retries) * 20));
+        }
+      }
     } catch (error) {
       // Cleanup temp file on failure
       await fs.unlink(tempPath).catch(() => {});
@@ -271,6 +296,9 @@ export class LearningDataStore {
         lastUpdated: new Date(),
         agentId,
       },
+      totalInvestigations: 0,
+      successfulInvestigations: 0,
+      failedInvestigations: 0,
     };
   }
 

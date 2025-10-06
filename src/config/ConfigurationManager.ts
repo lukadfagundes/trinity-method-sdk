@@ -6,6 +6,9 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+
+import { createLogger } from '../utils/Logger';
+
 import { ConfigValidator } from './ConfigValidator';
 import {
   TrinityConfiguration,
@@ -13,7 +16,6 @@ import {
   ConfigurationOptions,
   ConfigChangeListener,
 } from './types';
-import { createLogger } from '../utils/Logger';
 
 const logger = createLogger('ConfigurationManager');
 

@@ -4,6 +4,7 @@
  */
 
 import { CacheEntry } from '../shared/types';
+
 import { CacheKeyGenerator } from './CacheKeyGenerator';
 
 export interface SimilarQuery<T = any> {

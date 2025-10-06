@@ -26,10 +26,11 @@
  * @version 1.0.0
  */
 
-import { HookValidator } from './HookValidator';
-import { HookExecutor } from './HookExecutor';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+
+import { HookExecutor } from './HookExecutor';
+import { HookValidator } from './HookValidator';
 
 /**
  * Hook category

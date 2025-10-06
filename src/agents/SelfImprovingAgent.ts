@@ -15,10 +15,11 @@ import {
   AgentType,
   InvestigationType,
 } from '@shared/types';
+
+import { KnowledgeSharingBus, PatternBroadcast } from '../learning/KnowledgeSharingBus';
 import { LearningDataStore } from '../learning/LearningDataStore';
 import { PerformanceTracker } from '../learning/PerformanceTracker';
 import { StrategySelectionEngine, InvestigationContext } from '../learning/StrategySelectionEngine';
-import { KnowledgeSharingBus, PatternBroadcast } from '../learning/KnowledgeSharingBus';
 
 /**
  * Abstract base class for self-improving agents
@@ -276,8 +277,8 @@ export abstract class SelfImprovingAgent {
     // Filter by investigation type and confidence
     return patterns.filter(
       pattern =>
-        pattern.confidence >= 0.7 &&
-        pattern.tags.some(tag => tag.toLowerCase().includes(context.type.toLowerCase()))
+        (pattern.confidence ?? 0) >= 0.7 &&
+        (pattern.tags?.some(tag => tag.toLowerCase().includes(context.type.toLowerCase())) ?? false)
     );
   }
 

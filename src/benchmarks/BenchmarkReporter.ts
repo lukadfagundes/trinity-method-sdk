@@ -6,8 +6,10 @@
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
-import { BenchmarkSuite, BenchmarkResult, BenchmarkComparison } from './types';
+
 import { createLogger } from '../utils/Logger';
+
+import { BenchmarkSuite, BenchmarkResult, BenchmarkComparison } from './types';
 
 const logger = createLogger('BenchmarkReporter');
 

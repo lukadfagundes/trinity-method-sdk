@@ -412,7 +412,7 @@ export class CacheStatsDashboard {
    */
   private truncateKey(key: string, maxLength: number = 50): string {
     if (key.length <= maxLength) return key;
-    return key.substring(0, maxLength - 3) + '...';
+    return `${key.substring(0, maxLength - 3)  }...`;
   }
 
   /**

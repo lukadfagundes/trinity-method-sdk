@@ -4,8 +4,9 @@
  * Measures learning system effectiveness by comparing performance before and after learning.
  */
 
-import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
 import { createLogger } from '../utils/Logger';
+
+import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
 
 const logger = createLogger('LearningBenchmark');
 

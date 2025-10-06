@@ -37,7 +37,7 @@ describe('StrategySelectionEngine', () => {
     it('should select best strategy based on weighted score', async () => {
       const agentId: AgentType = 'TAN';
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/', 'tests/'],
         estimatedComplexity: 'medium',
         tags: ['structure', 'refactor'],
@@ -106,7 +106,7 @@ describe('StrategySelectionEngine', () => {
     it('should use default strategy when confidence below threshold', async () => {
       const agentId: AgentType = 'ZEN';
       const context: InvestigationContext = {
-        type: 'documentation',
+        type: 'custom',
         scope: ['docs/'],
         estimatedComplexity: 'low',
         tags: ['docs', 'readme'],
@@ -155,7 +155,7 @@ describe('StrategySelectionEngine', () => {
     it('should filter strategies by applicable contexts', async () => {
       const agentId: AgentType = 'INO';
       const context: InvestigationContext = {
-        type: 'context-analysis',
+        type: 'custom',
         scope: ['CLAUDE.md'],
         estimatedComplexity: 'medium',
         tags: ['context', 'scope'],
@@ -221,7 +221,7 @@ describe('StrategySelectionEngine', () => {
     it('should handle empty strategy list', async () => {
       const agentId: AgentType = 'JUNO';
       const context: InvestigationContext = {
-        type: 'audit',
+        type: 'security-audit',
         scope: ['src/'],
         estimatedComplexity: 'high',
         tags: ['quality', 'audit'],
@@ -252,7 +252,7 @@ describe('StrategySelectionEngine', () => {
     it('should match context by investigation type', async () => {
       const agentId: AgentType = 'AJ';
       const context: InvestigationContext = {
-        type: 'feature',
+        type: 'feature-planning',
         scope: ['src/features/'],
         estimatedComplexity: 'high',
         tags: ['new-feature'],
@@ -316,7 +316,7 @@ describe('StrategySelectionEngine', () => {
     it('should match context by complexity', async () => {
       const agentId: AgentType = 'TAN';
       const context: InvestigationContext = {
-        type: 'refactor',
+        type: 'refactoring-plan',
         scope: ['src/'],
         estimatedComplexity: 'high',
         tags: ['refactor', 'architecture'],
@@ -384,7 +384,7 @@ describe('StrategySelectionEngine', () => {
     it('should match context by tags', async () => {
       const agentId: AgentType = 'ZEN';
       const context: InvestigationContext = {
-        type: 'documentation',
+        type: 'custom',
         scope: ['docs/', 'README.md'],
         estimatedComplexity: 'low',
         tags: ['api-docs', 'typescript'],
@@ -454,7 +454,7 @@ describe('StrategySelectionEngine', () => {
     it('should calculate weighted score correctly', async () => {
       const agentId: AgentType = 'JUNO';
       const context: InvestigationContext = {
-        type: 'audit',
+        type: 'security-audit',
         scope: ['src/'],
         estimatedComplexity: 'medium',
         tags: ['quality'],
@@ -540,7 +540,7 @@ describe('StrategySelectionEngine', () => {
     it('should prefer confidence over success rate with 60/40 weighting', async () => {
       const agentId: AgentType = 'INO';
       const context: InvestigationContext = {
-        type: 'context-analysis',
+        type: 'custom',
         scope: ['CLAUDE.md'],
         estimatedComplexity: 'low',
         tags: ['context'],
@@ -612,7 +612,7 @@ describe('StrategySelectionEngine', () => {
 
       for (const agentId of agents) {
         const context: InvestigationContext = {
-          type: 'bug-fix',
+          type: 'bug-investigation',
           scope: ['src/'],
           estimatedComplexity: 'medium',
           tags: [],
@@ -643,7 +643,7 @@ describe('StrategySelectionEngine', () => {
     it('should set appropriate contexts for default strategies', async () => {
       const agentId: AgentType = 'TAN';
       const context: InvestigationContext = {
-        type: 'refactor',
+        type: 'refactoring-plan',
         scope: ['src/'],
         estimatedComplexity: 'high',
         tags: ['architecture'],
@@ -674,7 +674,7 @@ describe('StrategySelectionEngine', () => {
     it('should handle strategies with identical scores', async () => {
       const agentId: AgentType = 'AJ';
       const context: InvestigationContext = {
-        type: 'bug-fix',
+        type: 'bug-investigation',
         scope: ['src/'],
         estimatedComplexity: 'medium',
         tags: [],
@@ -740,7 +740,7 @@ describe('StrategySelectionEngine', () => {
     it('should handle very low confidence threshold edge case', async () => {
       const agentId: AgentType = 'ZEN';
       const context: InvestigationContext = {
-        type: 'documentation',
+        type: 'custom',
         scope: ['docs/'],
         estimatedComplexity: 'low',
         tags: [],

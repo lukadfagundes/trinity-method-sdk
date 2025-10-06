@@ -4,13 +4,14 @@
  * CLI entry point for running benchmarks.
  */
 
+import { createLogger } from '../utils/Logger';
+
 import { BenchmarkHarness } from './BenchmarkHarness';
 import { BenchmarkReporter } from './BenchmarkReporter';
-import { TokenBenchmark } from './TokenBenchmark';
 import { CacheBenchmark } from './CacheBenchmark';
-import { SpeedBenchmark } from './SpeedBenchmark';
 import { LearningBenchmark } from './LearningBenchmark';
-import { createLogger } from '../utils/Logger';
+import { SpeedBenchmark } from './SpeedBenchmark';
+import { TokenBenchmark } from './TokenBenchmark';
 
 const logger = createLogger('BenchmarkRunner');
 

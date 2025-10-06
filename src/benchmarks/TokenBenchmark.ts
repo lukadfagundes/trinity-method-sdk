@@ -4,8 +4,9 @@
  * Measures token usage with and without caching to validate optimization claims.
  */
 
-import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
 import { createLogger } from '../utils/Logger';
+
+import { Benchmark, BenchmarkConfig, BenchmarkResult } from './types';
 
 const logger = createLogger('TokenBenchmark');
 

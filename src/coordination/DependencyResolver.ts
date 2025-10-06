@@ -84,10 +84,10 @@ export class DependencyResolver {
           strongConnect(dep);
           lowlink.set(
             taskId,
-            Math.min(lowlink.get(taskId)!, lowlink.get(dep)!)
+            Math.min(lowlink.get(taskId), lowlink.get(dep))
           );
         } else if (onStack.has(dep)) {
-          lowlink.set(taskId, Math.min(lowlink.get(taskId)!, index.get(dep)!));
+          lowlink.set(taskId, Math.min(lowlink.get(taskId), index.get(dep)));
         }
       }
 
@@ -159,13 +159,13 @@ export class DependencyResolver {
 
     // Process queue
     while (queue.length > 0) {
-      const taskId = queue.shift()!;
+      const taskId = queue.shift();
       executionOrder.push(taskId);
 
       // Reduce in-degree of dependent tasks
       const dependencies = graph.edges.get(taskId) || [];
       for (const dep of dependencies) {
-        const current = inDegree.get(dep)!;
+        const current = inDegree.get(dep);
         inDegree.set(dep, current - 1);
 
         if (current - 1 === 0) {
@@ -384,7 +384,7 @@ export class DependencyResolver {
     const queue = [fromId];
 
     while (queue.length > 0) {
-      const current = queue.shift()!;
+      const current = queue.shift();
 
       if (current === toId) {
         return true;

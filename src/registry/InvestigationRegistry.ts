@@ -4,9 +4,11 @@
  * SQLite-based registry for tracking and querying investigation history.
  */
 
-import Database from 'better-sqlite3';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+
+import Database from 'better-sqlite3';
+
 import {
   InvestigationRecord,
   InvestigationStatus,
