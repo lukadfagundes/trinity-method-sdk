@@ -9,8 +9,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { execSync } from 'child_process';
-import pkg from 'glob';
-const { globSync } = pkg;
+import { globSync } from 'glob';
 import { CodebaseMetrics } from '../types.js';
 
 interface FileComplexityMetrics {
