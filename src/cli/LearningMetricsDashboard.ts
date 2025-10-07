@@ -3,14 +3,14 @@
  * CLI dashboard for visualizing learning system performance and metrics
  */
 
-import { LearningDataStore, LearningData as LearningDataStoreType } from '../learning/LearningDataStore';
-import { PerformanceTracker } from '../learning/PerformanceTracker';
+import { LearningDataStore, LearningData as LearningDataStoreType } from '../learning/LearningDataStore.js';
+import { PerformanceTracker } from '../learning/PerformanceTracker.js';
 import {
   AgentType,
   LearningData,
   LearnedPattern,
   StrategyPerformance,
-} from '../shared/types';
+} from '../shared/types/index.js';
 
 export interface DashboardMetrics {
   agentId: AgentType;

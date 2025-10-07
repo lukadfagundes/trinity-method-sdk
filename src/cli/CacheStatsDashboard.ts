@@ -3,7 +3,7 @@
  * CLI dashboard for visualizing cache performance and metrics
  */
 
-import { AdvancedCacheManager, TieredCacheStats } from '../cache/AdvancedCacheManager';
+import { AdvancedCacheManager, TieredCacheStats } from '../cache/AdvancedCacheManager.js';
 
 export interface DashboardOptions {
   showDetailed?: boolean; // Show detailed per-tier stats

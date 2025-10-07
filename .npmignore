@@ -1,0 +1,32 @@
+# Source files
+src/
+tests/
+test-results/
+
+# Build configs
+tsconfig.json
+jest.config.js
+.eslintrc.js
+.prettierrc
+
+# Development files
+*.md
+!README.md
+!CHANGELOG.md
+!LICENSE
+!CONTRIBUTING.md
+
+# CI/CD
+.github/
+
+# Trinity deployment
+.claude/
+trinity/
+trinity-hooks/
+CLAUDE.md
+TRINITY.md
+
+# Misc
+.editorconfig
+.markdownlint.json
+fix-test-signatures.*

@@ -19,6 +19,7 @@ import { SecurityAuditTemplate } from '../../../src/wizard/templates/SecurityAud
 import { PerformanceReviewTemplate } from '../../../src/wizard/templates/PerformanceReviewTemplate';
 import { ArchitectureAnalysisTemplate } from '../../../src/wizard/templates/ArchitectureAnalysisTemplate';
 import { CodeQualityTemplate } from '../../../src/wizard/templates/CodeQualityTemplate';
+import { CustomInvestigationTemplate } from '../../../src/wizard/templates/CustomInvestigationTemplate';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -35,6 +36,7 @@ describe('InvestigationWizard', () => {
     wizard.registerTemplate(new PerformanceReviewTemplate());
     wizard.registerTemplate(new ArchitectureAnalysisTemplate());
     wizard.registerTemplate(new CodeQualityTemplate());
+    wizard.registerTemplate(new CustomInvestigationTemplate());
 
     // Create test directory structure
     await fs.mkdir(testTrinityRoot, { recursive: true });
@@ -80,11 +82,12 @@ describe('InvestigationWizard', () => {
     it('should register templates correctly', () => {
       const templates = wizard.getAvailableTemplates();
 
-      expect(templates).toHaveLength(4);
+      expect(templates).toHaveLength(5);
       expect(templates.map((t) => t.id)).toContain('security-audit');
       expect(templates.map((t) => t.id)).toContain('performance-review');
       expect(templates.map((t) => t.id)).toContain('architecture-review');
       expect(templates.map((t) => t.id)).toContain('code-quality');
+      expect(templates.map((t) => t.id)).toContain('custom');
     });
 
     it('should retrieve template metadata', () => {
@@ -94,7 +97,7 @@ describe('InvestigationWizard', () => {
       expect(securityTemplate).toBeDefined();
       expect(securityTemplate?.name).toBe('Security Audit');
       expect(securityTemplate?.description).toContain('security');
-      expect(securityTemplate?.estimatedDuration).toBeGreaterThan(0);
+      // Note: estimatedDuration removed as it's not in the current type definition
     });
   });
 
@@ -369,7 +372,7 @@ describe('InvestigationWizard', () => {
     it('should return wizard statistics', () => {
       const stats = wizard.getStatistics();
 
-      expect(stats.totalTemplates).toBe(4);
+      expect(stats.totalTemplates).toBe(5);
       expect(stats.averageSetupTime).toBeDefined();
       expect(stats.averageSetupTime).toBeLessThan(10000); // Target under 10 seconds
     });
@@ -391,7 +394,7 @@ describe('InvestigationWizard', () => {
       expect(task.agentType).toBeDefined();
       expect(task.priority).toBeDefined();
       expect(task.dependencies).toBeDefined();
-      expect(task.estimatedDuration).toBeDefined();
+      // Note: estimatedDuration not in current InvestigationTask type
     });
 
     it('should generate tasks with valid dependencies', async () => {

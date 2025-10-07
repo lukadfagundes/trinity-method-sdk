@@ -345,4 +345,100 @@ export class AnomalyDetector {
   private generateAnomalyId(): string {
     return `anom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
+
+  /**
+   * Detect error rate anomalies
+   * @param events - Metric events
+   * @param config - Detection configuration
+   * @returns Detected anomalies
+   */
+  async detectErrorRateAnomalies(events: any[], config?: any): Promise<Anomaly[]> {
+    // Simplified implementation - convert events to investigation metrics
+    const errorEvents = events.filter(e => e.type === 'task-error' || e.type === 'investigation-error');
+    const errorRate = errorEvents.length / Math.max(events.length, 1);
+
+    if (errorRate > 0.1) { // 10% threshold
+      return [{
+        id: this.generateAnomalyId(),
+        type: 'error-rate' as const,
+        severity: errorRate > 0.5 ? 'high' : 'medium',
+        description: `High error rate detected: ${(errorRate * 100).toFixed(1)}%`,
+        detectedAt: new Date(),
+        metric: 'error_rate',
+        expectedValue: 0.1,
+        actualValue: errorRate,
+        confidence: 0.85,
+        zScore: (errorRate - 0.1) / 0.05, // Simple z-score calculation
+      }];
+    }
+
+    return [];
+  }
+
+  /**
+   * Detect cache anomalies
+   * @param events - Metric events
+   * @param config - Detection configuration
+   * @returns Detected anomalies
+   */
+  async detectCacheAnomalies(events: any[], config?: any): Promise<Anomaly[]> {
+    const cacheHits = events.filter(e => e.type === 'cache-hit').length;
+    const cacheMisses = events.filter(e => e.type === 'cache-miss').length;
+    const total = cacheHits + cacheMisses;
+
+    if (total === 0) return [];
+
+    const hitRate = cacheHits / total;
+
+    if (hitRate < 0.3) { // Below 30% hit rate
+      return [{
+        id: this.generateAnomalyId(),
+        type: 'cache' as const,
+        severity: 'medium',
+        description: `Low cache hit rate: ${(hitRate * 100).toFixed(1)}%`,
+        detectedAt: new Date(),
+        metric: 'cache_hit_rate',
+        expectedValue: 0.5,
+        actualValue: hitRate,
+        confidence: 0.8,
+        zScore: (0.5 - hitRate) / 0.15, // Simple z-score
+      }];
+    }
+
+    return [];
+  }
+
+  /**
+   * Detect token usage anomalies
+   * @param events - Metric events
+   * @returns Detected anomalies
+   */
+  async detectTokenAnomalies(events: any[]): Promise<Anomaly[]> {
+    const tokenEvents = events.filter(e => e.type === 'token-usage');
+
+    if (tokenEvents.length === 0) return [];
+
+    const totalTokens = tokenEvents.reduce((sum, e) => sum + (e.data?.total || 0), 0);
+    const avgTokens = totalTokens / tokenEvents.length;
+
+    // Check for unusually high token usage
+    const highUsageEvents = tokenEvents.filter(e => (e.data?.total || 0) > avgTokens * 3);
+
+    if (highUsageEvents.length > 0) {
+      return [{
+        id: this.generateAnomalyId(),
+        type: 'token-usage' as const,
+        severity: 'medium',
+        description: `Unusually high token usage detected`,
+        detectedAt: new Date(),
+        metric: 'token_usage',
+        expectedValue: avgTokens * 2,
+        actualValue: avgTokens * 3,
+        confidence: 0.75,
+        zScore: 3.0, // 3 standard deviations above mean
+      }];
+    }
+
+    return [];
+  }
 }

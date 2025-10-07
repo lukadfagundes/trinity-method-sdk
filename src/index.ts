@@ -54,6 +54,12 @@ export { ResourceEstimator } from './planning/ResourceEstimator';
 export { ContextDetector } from './wizard/ContextDetector';
 export { InvestigationWizard } from './wizard/InvestigationWizard';
 export { UserPreferencesManager } from './wizard/UserPreferencesManager';
+export { InvestigationTemplate } from './wizard/templates/InvestigationTemplate';
+export { SecurityAuditTemplate } from './wizard/templates/SecurityAuditTemplate';
+export { PerformanceReviewTemplate } from './wizard/templates/PerformanceReviewTemplate';
+export { ArchitectureAnalysisTemplate } from './wizard/templates/ArchitectureAnalysisTemplate';
+export { CodeQualityTemplate } from './wizard/templates/CodeQualityTemplate';
+export { CustomInvestigationTemplate } from './wizard/templates/CustomInvestigationTemplate';
 
 // ========================================
 // REGISTRY
@@ -103,3 +109,8 @@ export { Logger } from './utils/Logger';
 // ========================================
 export { CacheStatsDashboard } from './cli/CacheStatsDashboard';
 export { LearningMetricsDashboard } from './cli/LearningMetricsDashboard';
+
+// ========================================
+// SHARED TYPES
+// ========================================
+export * from './shared/types';

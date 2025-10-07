@@ -23,6 +23,9 @@ export interface SystemMetrics {
   /** Total investigations */
   totalInvestigations: number;
 
+  /** Total tasks */
+  totalTasks?: number;
+
   /** Average duration (ms) */
   averageDuration: number;
 
@@ -630,6 +633,7 @@ export class AnalyticsEngine {
   private getEmptySystemMetrics(): SystemMetrics {
     return {
       totalInvestigations: 0,
+      totalTasks: 0,
       averageDuration: 0,
       totalTokensUsed: 0,
       averageTokensPerInvestigation: 0,
@@ -642,5 +646,103 @@ export class AnalyticsEngine {
       performanceTrends: [],
       agentUtilizationSummary: new Map(),
     };
+  }
+
+  /**
+   * Export analytics data in specified format
+   * @param format - Export format (csv or json)
+   * @returns Exported data as string
+   */
+  exportData(format: 'csv' | 'json'): string {
+    const metrics = this.collector.getAllEvents();
+
+    if (format === 'json') {
+      return JSON.stringify(metrics, null, 2);
+    }
+
+    // CSV format
+    if (metrics.length === 0) return '';
+
+    const headers = Object.keys(metrics[0]).join(',');
+    const rows = metrics.map(m => Object.values(m).join(','));
+    return [headers, ...rows].join('\n');
+  }
+
+  /**
+   * Get agent performance metrics
+   * @returns Agent performance summary
+   */
+  getAgentPerformance(): Map<string, any> {
+    return this.getAgentUtilization();
+  }
+
+  /**
+   * Get cache performance for investigation
+   * @param investigationId - Investigation ID
+   * @returns Cache performance metrics
+   */
+  getCachePerformance(investigationId: string): any {
+    const insights = this.getInvestigationInsights(investigationId);
+    if (!insights) return null;
+
+    return {
+      hitRate: insights.metrics.cacheHitRate,
+      recommendations: insights.recommendations.filter(r => r.toLowerCase().includes('cache')),
+    };
+  }
+
+  /**
+   * Generate report for investigation
+   * @param investigationId - Investigation ID
+   * @returns Investigation report
+   */
+  generateReport(investigationId: string): any {
+    return this.getInvestigationInsights(investigationId);
+  }
+
+  /**
+   * Get agent rankings by performance
+   * @returns Ranked agents
+   */
+  getAgentRankings(): Array<{ agent: string; score: number }> {
+    const utilization = this.getAgentUtilization();
+    return Array.from(utilization.entries()).map(([agent, stats]) => ({
+      agent,
+      score: stats.successRate,
+    })).sort((a, b) => b.score - a.score);
+  }
+
+  /**
+   * Get token usage analysis
+   * @param investigationId - Investigation ID
+   * @returns Token usage analysis
+   */
+  getTokenUsageAnalysis(investigationId: string): any {
+    const insights = this.getInvestigationInsights(investigationId);
+    if (!insights) return null;
+
+    return {
+      total: insights.metrics.tokensUsed,
+      efficiency: insights.metrics.tokensUsed / Math.max(insights.metrics.duration, 1),
+    };
+  }
+
+  /**
+   * Compare multiple investigations
+   * @param investigationIds - Array of investigation IDs
+   * @returns Comparison results
+   */
+  compareInvestigations(investigationIds: string[]): any {
+    return investigationIds.map(id => this.getInvestigationInsights(id));
+  }
+
+  /**
+   * Register custom metric
+   * @param name - Metric name
+   * @param calculator - Metric calculation function
+   */
+  registerCustomMetric(name: string, calculator: () => number): void {
+    // Store custom metric (simplified implementation)
+    (this as any)[`customMetric_${name}`] = calculator;
   }
 }

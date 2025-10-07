@@ -669,6 +669,7 @@ describe('ConfigurationManager', () => {
   describe('Default Config Path', () => {
     it('should use environment-specific default path', async () => {
       const devPath = path.join(process.cwd(), 'trinity', 'config', 'development.json');
+      const trinityDir = path.join(process.cwd(), 'trinity');
 
       // Create directory and file
       await fs.mkdir(path.dirname(devPath), { recursive: true });
@@ -682,8 +683,27 @@ describe('ConfigurationManager', () => {
 
         expect(manager.getConfig()).toBeDefined();
       } finally {
-        // Clean up
-        await fs.rm(path.join(process.cwd(), 'trinity'), { recursive: true, force: true });
+        // Clean up - remove file first, then directories
+        try {
+          if (fsSync.existsSync(devPath)) {
+            await fs.unlink(devPath);
+          }
+          // Remove config dir
+          const configDir = path.join(trinityDir, 'config');
+          if (fsSync.existsSync(configDir)) {
+            await fs.rmdir(configDir);
+          }
+          // Remove trinity dir only if empty
+          if (fsSync.existsSync(trinityDir)) {
+            const entries = await fs.readdir(trinityDir);
+            if (entries.length === 0) {
+              await fs.rmdir(trinityDir);
+            }
+          }
+        } catch (cleanupError) {
+          // Ignore cleanup errors in tests
+          console.warn('Cleanup warning:', cleanupError);
+        }
       }
     });
   });

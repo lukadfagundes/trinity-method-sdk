@@ -297,7 +297,7 @@ describe('Performance Benchmarks', () => {
         name: 'Performance Hook',
         description: 'Performance test',
         category: 'investigation-lifecycle',
-        triggerEvent: 'investigation_start',
+        trigger: 'investigation_start',
         action: {
           type: 'command-run',
           parameters: {

@@ -520,6 +520,37 @@ export class MetricsCollector {
   }
 
   /**
+   * Get events for investigation (alias for getInvestigationEvents)
+   * @param investigationId - Investigation ID
+   * @returns Events for investigation
+   */
+  getEvents(investigationId: string): MetricEvent[] {
+    return this.getInvestigationEvents(investigationId);
+  }
+
+  /**
+   * Get investigation summary
+   * @param investigationId - Investigation ID
+   * @returns Investigation summary with metrics
+   */
+  getInvestigationSummary(investigationId: string): InvestigationMetrics | undefined {
+    return this.investigations.get(investigationId);
+  }
+
+  /**
+   * Record status change for investigation
+   * @param investigationId - Investigation ID
+   * @param status - New status
+   */
+  async recordStatusChange(investigationId: string, status: string): Promise<void> {
+    await this.recordEvent({
+      type: 'phase-start' as MetricEventType,
+      investigationId,
+      data: { status },
+    });
+  }
+
+  /**
    * Get time series data
    * @param metric - Metric name (optional)
    * @param startTime - Start time filter (optional)
