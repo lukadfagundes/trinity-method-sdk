@@ -52,6 +52,7 @@ trinity/
 trinity-hooks/
 CLAUDE.md
 TRINITY.md
+SDK Testing Temp/
 
 # Package manager lock files (allow for monorepo)
 # Uncomment if you want to ignore specific lock files

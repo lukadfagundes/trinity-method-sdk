@@ -85,6 +85,7 @@
     "fs-extra": "^11.2.0",
     "inquirer": "^9.2.0",
     "lru-cache": "^11.2.2",
-    "ora": "^7.0.1"
+    "ora": "^7.0.1",
+    "trinity-method-sdk": "file:trinity-method-sdk-1.0.0.tgz"
   }
 }

@@ -308,26 +308,26 @@ export class UnifiedDashboard {
         return;
       }
 
-      const documents = [
-        'ARCHITECTURE.md',
-        'ISSUES.md',
-        'METHODOLOGY.md',
-        'Technical-Debt.md',
-        'To-do.md'
-      ];
+      // DYNAMIC DISCOVERY - scan directory for all .md files
+      const files = await fs.readdir(knowledgeBasePath);
+      const mdFiles = files.filter(f => f.endsWith('.md'));
 
+      // Read each markdown file
       const knowledgeBase = [];
-      for (const doc of documents) {
-        const docPath = path.join(knowledgeBasePath, doc);
+      for (const filename of mdFiles) {
+        const docPath = path.join(knowledgeBasePath, filename);
         if (await fs.pathExists(docPath)) {
           const content = await fs.readFile(docPath, 'utf-8');
           knowledgeBase.push({
-            name: doc.replace('.md', '').replace(/-/g, ' '),
-            filename: doc,
+            name: filename.replace('.md', '').replace(/-/g, ' '),
+            filename: filename,
             content
           });
         }
       }
+
+      // Sort alphabetically for consistent display
+      knowledgeBase.sort((a, b) => a.filename.localeCompare(b.filename));
 
       res.json({ documents: knowledgeBase });
     } catch (error: any) {
@@ -1165,6 +1165,13 @@ export class UnifiedDashboard {
     const closeBtn = document.getElementById('close-modal-btn');
     const kbContent = document.getElementById('knowledge-base-content');
 
+    // HTML escape function to prevent content from breaking template literals
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     kbBtn.addEventListener('click', async () => {
       modal.style.display = 'block';
       kbContent.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading knowledge base...</p></div>';
@@ -1177,11 +1184,11 @@ export class UnifiedDashboard {
           kbContent.innerHTML = data.documents.map((doc, index) => \`
             <div class="kb-document" style="margin-bottom: 1rem;">
               <div class="kb-header" onclick="toggleKbDoc(\${index})" style="background: #0f172a; padding: 1rem 1.5rem; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
-                <h3 style="font-size: 1.125rem; color: #667eea; margin: 0;">\${doc.name}</h3>
+                <h3 style="font-size: 1.125rem; color: #667eea; margin: 0;">\${escapeHtml(doc.name)}</h3>
                 <span id="kb-toggle-\${index}" style="color: #94a3b8; font-size: 1.25rem;">▼</span>
               </div>
               <div id="kb-content-\${index}" class="kb-content" style="display: none; background: #0f172a; padding: 1.5rem; margin-top: 0.5rem; border-radius: 8px; border: 1px solid #334155; max-height: 500px; overflow-y: auto;">
-                <pre style="white-space: pre-wrap; color: #e4e4e7; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5;">\${doc.content}</pre>
+                <pre style="white-space: pre-wrap; color: #e4e4e7; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5;">\${escapeHtml(doc.content)}</pre>
               </div>
             </div>
           \`).join('');
@@ -1223,13 +1230,13 @@ export class UnifiedDashboard {
             <div class="kb-document" style="margin-bottom: 1rem;">
               <div class="kb-header" onclick="toggleTrinityDoc(\${index})" style="background: #0f172a; padding: 1rem 1.5rem; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
                 <div>
-                  <h3 style="font-size: 1.125rem; color: #f093fb; margin: 0;">\${doc.name}</h3>
-                  <p style="font-size: 0.75rem; color: #64748b; margin: 0.25rem 0 0 0;">\${doc.path}</p>
+                  <h3 style="font-size: 1.125rem; color: #f093fb; margin: 0;">\${escapeHtml(doc.name)}</h3>
+                  <p style="font-size: 0.75rem; color: #64748b; margin: 0.25rem 0 0 0;">\${escapeHtml(doc.path)}</p>
                 </div>
                 <span id="trinity-toggle-\${index}" style="color: #94a3b8; font-size: 1.25rem;">▼</span>
               </div>
               <div id="trinity-content-\${index}" class="kb-content" style="display: none; background: #0f172a; padding: 1.5rem; margin-top: 0.5rem; border-radius: 8px; border: 1px solid #334155; max-height: 500px; overflow-y: auto;">
-                <pre style="white-space: pre-wrap; color: #e4e4e7; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5;">\${doc.content}</pre>
+                <pre style="white-space: pre-wrap; color: #e4e4e7; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5;">\${escapeHtml(doc.content)}</pre>
               </div>
             </div>
           \`).join('');
@@ -1299,13 +1306,13 @@ export class UnifiedDashboard {
             <div class="kb-document" style="margin-bottom: 1rem;">
               <div class="kb-header" onclick="toggleAnalyticsReport(\${index})" style="background: #0f172a; padding: 1rem 1.5rem; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
                 <div>
-                  <h3 style="font-size: 1.125rem; color: #4facfe; margin: 0;">\${report.name}</h3>
+                  <h3 style="font-size: 1.125rem; color: #4facfe; margin: 0;">\${escapeHtml(report.name)}</h3>
                   <p style="font-size: 0.75rem; color: #64748b; margin: 0.25rem 0 0 0;">\${new Date(report.modified).toLocaleString()}</p>
                 </div>
                 <span id="analytics-toggle-\${index}" style="color: #94a3b8; font-size: 1.25rem;">▼</span>
               </div>
               <div id="analytics-content-\${index}" class="kb-content" style="display: none; background: #0f172a; padding: 1.5rem; margin-top: 0.5rem; border-radius: 8px; border: 1px solid #334155; max-height: 500px; overflow-y: auto;">
-                <pre style="white-space: pre-wrap; color: #e4e4e7; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5;">\${report.content}</pre>
+                <pre style="white-space: pre-wrap; color: #e4e4e7; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5;">\${escapeHtml(report.content)}</pre>
               </div>
             </div>
           \`).join('');
@@ -1358,13 +1365,13 @@ export class UnifiedDashboard {
             <div class="kb-document" style="margin-bottom: 1rem;">
               <div class="kb-header" onclick="toggleLearningExport(\${index})" style="background: #0f172a; padding: 1rem 1.5rem; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
                 <div>
-                  <h3 style="font-size: 1.125rem; color: #43e97b; margin: 0;">\${exp.name}</h3>
+                  <h3 style="font-size: 1.125rem; color: #43e97b; margin: 0;">\${escapeHtml(exp.name)}</h3>
                   <p style="font-size: 0.75rem; color: #64748b; margin: 0.25rem 0 0 0;">\${new Date(exp.modified).toLocaleString()}</p>
                 </div>
                 <span id="learning-toggle-\${index}" style="color: #94a3b8; font-size: 1.25rem;">▼</span>
               </div>
               <div id="learning-content-\${index}" class="kb-content" style="display: none; background: #0f172a; padding: 1.5rem; margin-top: 0.5rem; border-radius: 8px; border: 1px solid #334155; max-height: 500px; overflow-y: auto;">
-                <pre style="white-space: pre-wrap; color: #e4e4e7; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5;">\${exp.content}</pre>
+                <pre style="white-space: pre-wrap; color: #e4e4e7; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.5;">\${escapeHtml(exp.content)}</pre>
               </div>
             </div>
           \`).join('');
