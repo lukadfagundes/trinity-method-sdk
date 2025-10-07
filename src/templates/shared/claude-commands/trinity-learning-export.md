@@ -66,7 +66,7 @@ Export learned patterns and insights from the Trinity Method learning system.
 
 4. Generate export file
 
-5. Save to: `trinity/exports/learning-export-{date}.{format}`
+5. Save to: `trinity/metrics/learning/learning-export-{date}.{format}`
 
 6. Display summary:
    - Patterns exported: X

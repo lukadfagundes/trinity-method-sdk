@@ -35,9 +35,11 @@ Execute Trinity Method performance benchmarks to establish baselines and detect 
 
 2. Run selected benchmarks using BenchmarkHarness
 
-3. Compare results against baselines (stored in trinity/analytics/baselines/)
+3. Compare results against baselines (stored in trinity/metrics/baselines/)
 
-4. Report findings:
+4. Save benchmark results to `trinity/metrics/benchmarks/benchmark-{timestamp}.json`
+
+5. Report findings:
    - Performance metrics
    - Regression warnings (> 10% slower)
    - Improvements (> 10% faster)

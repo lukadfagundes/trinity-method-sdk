@@ -9,8 +9,8 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { execSync } from 'child_process';
-import globPkg from 'glob';
-const { glob } = globPkg;
+import pkg from 'glob';
+const { globSync } = pkg;
 import { CodebaseMetrics } from '../types.js';
 
 interface FileComplexityMetrics {
@@ -132,7 +132,7 @@ async function countPattern(dir: string, pattern: RegExp): Promise<number> {
 
   try {
     // Get all source files
-    const files = glob.sync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
+    const files = globSync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
       ignore: ['**/node_modules/**', '**/build/**', '**/.dart_tool/**', '**/dist/**', '**/__pycache__/**']
     });
 
@@ -163,7 +163,7 @@ async function countCommentedCode(dir: string): Promise<number> {
   }
 
   try {
-    const files = glob.sync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
+    const files = globSync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
       ignore: ['**/node_modules/**', '**/build/**', '**/.dart_tool/**', '**/dist/**', '**/__pycache__/**']
     });
 
@@ -211,7 +211,7 @@ async function analyzeFileComplexity(dir: string): Promise<FileComplexityMetrics
   }
 
   try {
-    const files = glob.sync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
+    const files = globSync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
       ignore: ['**/node_modules/**', '**/build/**', '**/.dart_tool/**', '**/dist/**', '**/__pycache__/**']
     });
 

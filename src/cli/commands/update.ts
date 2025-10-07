@@ -29,7 +29,7 @@ export async function update(options: UpdateOptions): Promise<void> {
   }
 
   // Read latest version from SDK package.json
-  const sdkPkgPath = path.join(__dirname, '../../package.json');
+  const sdkPkgPath = path.join(__dirname, '../../../package.json');
   const sdkPkg = JSON.parse(await fs.readFile(sdkPkgPath, 'utf8'));
   const latestVersion = sdkPkg.version;
 
@@ -76,7 +76,7 @@ export async function update(options: UpdateOptions): Promise<void> {
     }
 
     // Update SDK-managed files
-    const sdkPath = path.join(__dirname, '../../');
+    const sdkPath = path.join(__dirname, '../../../');
 
     // Update templates
     const woDir = path.join(sdkPath, 'templates/work-orders');

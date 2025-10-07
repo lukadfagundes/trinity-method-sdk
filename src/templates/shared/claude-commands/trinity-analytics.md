@@ -41,7 +41,7 @@ Display the Trinity Method analytics dashboard with comprehensive performance me
 
 **Interactive Options:**
 Ask user if they want to:
-- Export metrics to JSON/CSV
+- Export metrics to JSON/CSV (saves to `trinity/metrics/analytics/`)
 - View detailed breakdown of specific metric
 - Clear anomaly alerts
-- Generate performance report
+- Generate performance report (saves to `trinity/metrics/analytics/reports/`)
