@@ -64,7 +64,6 @@
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jest": "^28.14.0",
-    "glob": "^11.0.3",
     "jest": "^29.0.0",
     "jest-html-reporters": "^3.1.0",
     "jest-junit": "^16.0.0",
@@ -83,9 +82,9 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "fs-extra": "^11.2.0",
+    "glob": "^11.0.3",
     "inquirer": "^9.2.0",
     "lru-cache": "^11.2.2",
-    "ora": "^7.0.1",
-    "trinity-method-sdk": "file:trinity-method-sdk-1.0.0.tgz"
+    "ora": "^7.0.1"
   }
 }
