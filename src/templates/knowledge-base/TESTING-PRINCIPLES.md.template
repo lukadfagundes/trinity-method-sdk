@@ -1,0 +1,867 @@
+# Testing Principles
+
+**Version**: 1.0.0
+**Last Updated**: {{date}}
+**Project**: {{projectName}}
+
+---
+
+## Purpose
+
+This document establishes testing standards and best practices for {{projectName}}. All code must meet these testing requirements to ensure reliability, maintainability, and confidence in changes.
+
+## 1. Test-Driven Development (TDD)
+
+### 1.1 RED-GREEN-REFACTOR Cycle
+
+**Rule**: All new features must follow the TDD cycle.
+
+**The TDD Cycle**:
+
+```
+🔴 RED: Write a failing test first
+    ↓
+🟢 GREEN: Write minimal code to make it pass
+    ↓
+🔵 REFACTOR: Improve code while keeping tests green
+    ↓
+    [Repeat]
+```
+
+**✅ Good Example**:
+
+```javascript
+// STEP 1: RED - Write failing test
+describe('calculateTax', () => {
+  test('should calculate 10% tax on $100', () => {
+    expect(calculateTax(100, 0.10)).toBe(10);
+  });
+});
+
+// Run test → FAILS (calculateTax doesn't exist yet)
+
+// STEP 2: GREEN - Minimal implementation
+function calculateTax(amount, rate) {
+  return amount * rate;
+}
+
+// Run test → PASSES
+
+// STEP 3: REFACTOR - Improve (add validation)
+function calculateTax(amount, rate) {
+  if (typeof amount !== 'number' || amount < 0) {
+    throw new Error('Amount must be a positive number');
+  }
+  if (typeof rate !== 'number' || rate < 0 || rate > 1) {
+    throw new Error('Rate must be between 0 and 1');
+  }
+  return amount * rate;
+}
+
+// Add test for validation
+test('should throw error for negative amount', () => {
+  expect(() => calculateTax(-100, 0.10)).toThrow('Amount must be');
+});
+
+// Run tests → STILL PASSES
+```
+
+**❌ Bad Example (No TDD)**:
+
+```javascript
+// Write implementation first
+function calculateTax(amount, rate) {
+  // 50 lines of complex logic
+  // No tests, no confidence
+}
+
+// Write tests later (or never)
+```
+
+### 1.2 When to Use TDD
+
+**Always TDD**:
+- ✅ New features
+- ✅ Bug fixes (write test that reproduces bug, then fix)
+- ✅ Refactoring (tests ensure behavior unchanged)
+
+**TDD Optional** (but still test):
+- ⚠️ Exploratory prototypes (test after proving concept)
+- ⚠️ UI components (harder to TDD, but test after)
+- ⚠️ Glue code (thin integration layers)
+
+---
+
+## 2. Test Coverage
+
+### 2.1 Coverage Requirements
+
+**Rule**: Minimum 80% code coverage required.
+
+**Coverage Metrics**:
+- **Line Coverage**: ≥80% of lines executed
+- **Branch Coverage**: ≥80% of branches (if/else) tested
+- **Function Coverage**: ≥80% of functions called
+- **Statement Coverage**: ≥80% of statements executed
+
+**✅ Good Coverage Example**:
+
+```javascript
+// Function with good coverage
+function validateUser(user) {
+  if (!user) {
+    throw new Error('User required');
+  }
+
+  if (!user.email) {
+    throw new Error('Email required');
+  }
+
+  if (!isValidEmail(user.email)) {
+    throw new Error('Invalid email');
+  }
+
+  return true;
+}
+
+// Tests covering all branches
+describe('validateUser', () => {
+  test('throws error when user is null', () => {
+    expect(() => validateUser(null)).toThrow('User required');
+  });
+
+  test('throws error when email is missing', () => {
+    expect(() => validateUser({})).toThrow('Email required');
+  });
+
+  test('throws error when email is invalid', () => {
+    expect(() => validateUser({ email: 'invalid' })).toThrow('Invalid email');
+  });
+
+  test('returns true for valid user', () => {
+    expect(validateUser({ email: 'test@example.com' })).toBe(true);
+  });
+});
+
+// Coverage: 100% lines, 100% branches ✅
+```
+
+**❌ Poor Coverage Example**:
+
+```javascript
+// Same function, inadequate tests
+describe('validateUser', () => {
+  test('works with valid user', () => {
+    expect(validateUser({ email: 'test@example.com' })).toBe(true);
+  });
+});
+
+// Coverage: 40% lines, 25% branches ❌
+// Error paths not tested!
+```
+
+### 2.2 Coverage Exceptions
+
+**When <80% is Acceptable**:
+- Configuration files
+- Type definitions
+- Simple getters/setters
+- Deprecated code marked for removal
+
+**Mark exceptions explicitly**:
+
+```javascript
+/* istanbul ignore next */
+function legacyFunction() {
+  // Deprecated, will be removed in v3.0
+}
+```
+
+### 2.3 Coverage Enforcement
+
+**BAS Quality Gate Phase 5** enforces 80% coverage:
+
+```bash
+# Coverage check
+npm run test:coverage
+
+# Must meet threshold to pass quality gate
+{
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "lines": 80,
+        "branches": 80,
+        "functions": 80,
+        "statements": 80
+      }
+    }
+  }
+}
+```
+
+---
+
+## 3. Test Structure
+
+### 3.1 AAA Pattern (Arrange-Act-Assert)
+
+**Rule**: Structure tests using the AAA pattern for clarity.
+
+**The Pattern**:
+1. **Arrange**: Set up test data and preconditions
+2. **Act**: Execute the code under test
+3. **Assert**: Verify the expected outcome
+
+**✅ Good Example**:
+
+```javascript
+test('should calculate order total correctly', () => {
+  // ARRANGE: Set up test data
+  const order = {
+    items: [
+      { price: 10, quantity: 2 }, // $20
+      { price: 15, quantity: 1 }  // $15
+    ],
+    taxRate: 0.10,
+    shippingCost: 5
+  };
+
+  // ACT: Execute function
+  const total = calculateOrderTotal(order);
+
+  // ASSERT: Verify result
+  expect(total).toBe(42.5); // (20 + 15) * 1.10 + 5 = 42.5
+});
+```
+
+**❌ Bad Example**:
+
+```javascript
+test('calculates total', () => {
+  // Everything mixed together - hard to understand
+  expect(calculateOrderTotal({
+    items: [{ price: 10, quantity: 2 }, { price: 15, quantity: 1 }],
+    taxRate: 0.10,
+    shippingCost: 5
+  })).toBe(42.5);
+});
+```
+
+### 3.2 One Assertion Per Test (Guideline)
+
+**Rule**: Prefer one logical assertion per test (but multiple expects are OK if testing same concept).
+
+**✅ Good Examples**:
+
+```javascript
+// Single assertion - clear
+test('should return user with correct ID', () => {
+  const user = findUserById('123');
+  expect(user.id).toBe('123');
+});
+
+test('should return user with correct name', () => {
+  const user = findUserById('123');
+  expect(user.name).toBe('John Doe');
+});
+
+// Multiple asserts OK when testing same concept
+test('should return complete user object', () => {
+  const user = findUserById('123');
+  expect(user).toEqual({
+    id: '123',
+    name: 'John Doe',
+    email: 'john@example.com'
+  });
+});
+```
+
+**⚠️ Acceptable (Multiple related assertions)**:
+
+```javascript
+test('should validate user object structure', () => {
+  const user = createUser('John', 'john@example.com');
+  expect(user).toHaveProperty('id');
+  expect(user).toHaveProperty('name');
+  expect(user).toHaveProperty('email');
+  expect(user).toHaveProperty('createdAt');
+});
+```
+
+**❌ Bad Example (Unrelated assertions)**:
+
+```javascript
+test('user functions', () => {
+  expect(createUser('John')).toBeDefined(); // Test 1
+  expect(deleteUser('123')).toBe(true); // Test 2 - unrelated!
+  expect(findUsers()).toHaveLength(5); // Test 3 - unrelated!
+});
+// Split into 3 separate tests
+```
+
+### 3.3 Descriptive Test Names
+
+**Rule**: Test names should describe what they test and expected outcome.
+
+**✅ Good Names**:
+
+```javascript
+describe('UserService', () => {
+  describe('createUser', () => {
+    test('should create user with valid data', () => { /* ... */ });
+
+    test('should throw error when email is missing', () => { /* ... */ });
+
+    test('should throw error when email format is invalid', () => { /* ... */ });
+
+    test('should hash password before saving', () => { /* ... */ });
+
+    test('should set createdAt timestamp', () => { /* ... */ });
+  });
+});
+```
+
+**❌ Bad Names**:
+
+```javascript
+describe('UserService', () => {
+  test('test1', () => { /* ... */ }); // What does this test?
+  test('works', () => { /* ... */ }); // What works?
+  test('user', () => { /* ... */ }); // Tests what about user?
+  test('should pass', () => { /* ... */ }); // Useless
+});
+```
+
+---
+
+## 4. Mocking & Stubbing
+
+### 4.1 When to Mock
+
+**Mock External Dependencies**:
+- ✅ Database calls
+- ✅ API requests
+- ✅ File system operations
+- ✅ Third-party services
+- ✅ Time-dependent operations (Date.now, setTimeout)
+
+**Don't Mock**:
+- ❌ Internal business logic (test the real thing)
+- ❌ Simple utilities (they're fast, test real)
+- ❌ Everything (over-mocking = brittle tests)
+
+**✅ Good Mocking Example**:
+
+```javascript
+// Mock external API
+jest.mock('../services/api');
+const api = require('../services/api');
+
+test('should fetch and return user data', async () => {
+  // ARRANGE: Mock API response
+  api.get.mockResolvedValue({
+    data: { id: '123', name: 'John' }
+  });
+
+  // ACT: Call function that uses API
+  const user = await getUserData('123');
+
+  // ASSERT: Verify behavior
+  expect(api.get).toHaveBeenCalledWith('/users/123');
+  expect(user).toEqual({ id: '123', name: 'John' });
+});
+```
+
+### 4.2 Mock Implementation Strategies
+
+**Strategy 1: Jest Mock Functions**:
+
+```javascript
+const mockFn = jest.fn();
+mockFn.mockReturnValue(42);
+mockFn.mockResolvedValue('async result');
+mockFn.mockRejectedValue(new Error('failure'));
+```
+
+**Strategy 2: Manual Mocks**:
+
+```javascript
+// __mocks__/database.js
+module.exports = {
+  users: {
+    findOne: jest.fn(),
+    insert: jest.fn(),
+    delete: jest.fn()
+  }
+};
+```
+
+**Strategy 3: Dependency Injection** (Recommended):
+
+```javascript
+// Production code
+function createUserService(database) {
+  return {
+    async getUser(id) {
+      return await database.users.findOne({ id });
+    }
+  };
+}
+
+// Test code
+test('should get user from database', async () => {
+  const mockDb = {
+    users: {
+      findOne: jest.fn().mockResolvedValue({ id: '123', name: 'John' })
+    }
+  };
+
+  const service = createUserService(mockDb);
+  const user = await service.getUser('123');
+
+  expect(user).toEqual({ id: '123', name: 'John' });
+});
+```
+
+### 4.3 Verify Mock Interactions
+
+**✅ Good Verification**:
+
+```javascript
+test('should call emailService.send with correct params', async () => {
+  const mockEmailService = { send: jest.fn() };
+
+  await sendWelcomeEmail('user@example.com', mockEmailService);
+
+  expect(mockEmailService.send).toHaveBeenCalledWith({
+    to: 'user@example.com',
+    subject: 'Welcome!',
+    body: expect.stringContaining('Welcome to our platform')
+  });
+
+  expect(mockEmailService.send).toHaveBeenCalledTimes(1);
+});
+```
+
+---
+
+## 5. Test Types
+
+### 5.1 Unit Tests (60% of test suite)
+
+**Purpose**: Test individual functions/modules in isolation.
+
+**Characteristics**:
+- Fast (milliseconds)
+- Isolated (no external dependencies)
+- Focused (one function/module)
+
+**✅ Good Unit Test**:
+
+```javascript
+describe('formatCurrency', () => {
+  test('should format USD correctly', () => {
+    expect(formatCurrency(1234.56, 'USD')).toBe('$1,234.56');
+  });
+
+  test('should format EUR correctly', () => {
+    expect(formatCurrency(1234.56, 'EUR')).toBe('€1,234.56');
+  });
+
+  test('should round to 2 decimal places', () => {
+    expect(formatCurrency(1234.567, 'USD')).toBe('$1,234.57');
+  });
+});
+```
+
+### 5.2 Integration Tests (30% of test suite)
+
+**Purpose**: Test how multiple modules work together.
+
+**Characteristics**:
+- Slower (seconds)
+- Tests interactions between modules
+- May use real database (test DB) or API
+
+**✅ Good Integration Test**:
+
+```javascript
+describe('User Registration Flow', () => {
+  test('should create user and send welcome email', async () => {
+    // Uses real userService + emailService (mocked SMTP)
+    const result = await registerUser({
+      email: 'test@example.com',
+      password: 'secure123'
+    });
+
+    // Verify user created
+    const user = await db.users.findOne({ email: 'test@example.com' });
+    expect(user).toBeDefined();
+    expect(user.email).toBe('test@example.com');
+
+    // Verify email sent
+    expect(emailService.lastSentEmail).toMatchObject({
+      to: 'test@example.com',
+      subject: 'Welcome!'
+    });
+  });
+});
+```
+
+### 5.3 End-to-End Tests (10% of test suite)
+
+**Purpose**: Test complete user flows through the entire system.
+
+**Characteristics**:
+- Slowest (minutes)
+- Tests real scenarios
+- May use real browser (Puppeteer, Playwright)
+
+**✅ Good E2E Test**:
+
+```javascript
+describe('E2E: User Login', () => {
+  test('user can log in and see dashboard', async () => {
+    // Open browser
+    await page.goto('http://localhost:3000');
+
+    // Fill login form
+    await page.fill('input[name="email"]', 'test@example.com');
+    await page.fill('input[name="password"]', 'password123');
+    await page.click('button[type="submit"]');
+
+    // Verify redirected to dashboard
+    await page.waitForURL('http://localhost:3000/dashboard');
+
+    // Verify user name displayed
+    const userName = await page.textContent('.user-name');
+    expect(userName).toBe('Test User');
+  });
+});
+```
+
+### 5.4 Test Pyramid
+
+```
+        /\
+       /E2E\      10% - End-to-End (slow, comprehensive)
+      /______\
+     /        \
+    /Integration\  30% - Integration (medium speed)
+   /____________\
+  /              \
+ /   Unit Tests   \ 60% - Unit (fast, focused)
+/__________________\
+```
+
+**Balance** (Total: 100%):
+- **60% Unit Tests**: Fast feedback, test individual functions
+- **30% Integration Tests**: Test module interactions
+- **10% E2E Tests**: Test critical user flows
+
+---
+
+## 6. Test Organization
+
+### 6.1 File Structure
+
+**Rule**: Mirror source directory structure in test directory.
+
+**✅ Good Structure**:
+
+```
+src/
+  services/
+    userService.js
+    emailService.js
+  utils/
+    validation.js
+
+tests/
+  services/
+    userService.test.js
+    emailService.test.js
+  utils/
+    validation.test.js
+```
+
+**Alternative** (Co-located):
+
+```
+src/
+  services/
+    userService.js
+    userService.test.js
+    emailService.js
+    emailService.test.js
+```
+
+### 6.2 Test Naming Convention
+
+**Rule**: Test files end with `.test.js` or `.spec.js`.
+
+```
+✅ userService.test.js
+✅ userService.spec.js
+❌ userService-test.js
+❌ test_userService.js
+```
+
+### 6.3 Setup and Teardown
+
+**Use beforeEach/afterEach for common setup**:
+
+```javascript
+describe('UserService', () => {
+  let db;
+  let userService;
+
+  beforeEach(() => {
+    // Setup: Create fresh test database
+    db = createTestDatabase();
+    userService = createUserService(db);
+  });
+
+  afterEach(() => {
+    // Teardown: Clean up
+    db.close();
+  });
+
+  test('should create user', async () => {
+    const user = await userService.createUser({ email: 'test@example.com' });
+    expect(user).toBeDefined();
+  });
+
+  test('should delete user', async () => {
+    const user = await userService.createUser({ email: 'test@example.com' });
+    const result = await userService.deleteUser(user.id);
+    expect(result).toBe(true);
+  });
+});
+```
+
+---
+
+## 7. Test Quality
+
+### 7.1 Avoid Flaky Tests
+
+**Flaky Test**: Test that sometimes passes, sometimes fails (unreliable).
+
+**Common Causes**:
+- ❌ Timing issues (async operations, timeouts)
+- ❌ Shared state between tests
+- ❌ Dependency on external services
+- ❌ Test order dependencies
+
+**✅ Fixes**:
+
+```javascript
+// BAD: Flaky due to timing
+test('should update after 100ms', async () => {
+  updateAfterDelay();
+  await sleep(100);
+  expect(value).toBe('updated'); // Might fail if delay varies
+});
+
+// GOOD: Wait for actual condition
+test('should update after delay', async () => {
+  updateAfterDelay();
+  await waitFor(() => expect(value).toBe('updated'), { timeout: 1000 });
+});
+
+// BAD: Shared state (tests affect each other)
+let counter = 0;
+test('increments counter', () => {
+  counter++;
+  expect(counter).toBe(1); // Fails if run after other tests
+});
+
+// GOOD: Isolated state
+test('increments counter', () => {
+  let counter = 0;
+  counter++;
+  expect(counter).toBe(1);
+});
+```
+
+### 7.2 Test Independence
+
+**Rule**: Tests must not depend on each other. Each test should pass in isolation.
+
+```javascript
+// ❌ BAD: Tests depend on order
+let user;
+
+test('creates user', () => {
+  user = createUser('John');
+  expect(user).toBeDefined();
+});
+
+test('deletes user', () => {
+  deleteUser(user.id); // Fails if run alone!
+  expect(findUser(user.id)).toBeUndefined();
+});
+
+// ✅ GOOD: Each test independent
+test('creates user', () => {
+  const user = createUser('John');
+  expect(user).toBeDefined();
+});
+
+test('deletes user', () => {
+  const user = createUser('John'); // Create own test data
+  deleteUser(user.id);
+  expect(findUser(user.id)).toBeUndefined();
+});
+```
+
+### 7.3 Avoid Test Logic
+
+**Rule**: Tests should not contain complex logic (loops, conditionals).
+
+```javascript
+// ❌ BAD: Logic in test (hard to debug)
+test('validates all users', () => {
+  const users = getUsers();
+  for (const user of users) {
+    if (user.email) {
+      expect(isValidEmail(user.email)).toBe(true);
+    }
+  }
+});
+
+// ✅ GOOD: Explicit tests
+test('validates user with email', () => {
+  const user = { email: 'test@example.com' };
+  expect(isValidEmail(user.email)).toBe(true);
+});
+
+test('handles user without email', () => {
+  const user = {};
+  expect(user.email).toBeUndefined();
+});
+```
+
+---
+
+## 8. Testing Best Practices
+
+### 8.1 Fast Tests
+
+**Rule**: Unit tests should run in <1 second each.
+
+**Tips**:
+- Mock slow operations (DB, API, file I/O)
+- Use in-memory databases for integration tests
+- Parallelize test execution
+- Limit E2E tests to critical paths
+
+### 8.2 Readable Tests
+
+**Rule**: Tests are documentation. Write them for humans.
+
+```javascript
+// ✅ GOOD: Readable
+test('should reject password shorter than 8 characters', () => {
+  expect(() => validatePassword('short')).toThrow('at least 8 characters');
+});
+
+// ❌ BAD: Cryptic
+test('pwd val', () => {
+  expect(() => v('x')).toThrow();
+});
+```
+
+### 8.3 Don't Test Implementation Details
+
+**Rule**: Test behavior, not implementation.
+
+```javascript
+// ❌ BAD: Testing implementation (brittle)
+test('should call _internalHelper', () => {
+  const spy = jest.spyOn(service, '_internalHelper');
+  service.publicMethod();
+  expect(spy).toHaveBeenCalled();
+});
+
+// ✅ GOOD: Testing behavior (stable)
+test('should return formatted user data', () => {
+  const result = service.publicMethod();
+  expect(result).toEqual({ id: '123', name: 'John Doe' });
+});
+```
+
+---
+
+## 9. Continuous Testing
+
+### 9.1 Watch Mode
+
+**Rule**: Run tests automatically on file changes during development.
+
+```bash
+npm run test:watch
+```
+
+### 9.2 Pre-Commit Hook
+
+**Rule**: All tests must pass before committing.
+
+```bash
+# .husky/pre-commit
+npm test || exit 1
+```
+
+### 9.3 CI/CD Integration
+
+**Rule**: All tests must pass in CI before merging.
+
+```yaml
+# .github/workflows/test.yml
+- name: Run Tests
+  run: npm test
+
+- name: Check Coverage
+  run: npm run test:coverage
+```
+
+---
+
+## 10. Enforcement
+
+### BAS Quality Gate (Phase 4 & 5)
+
+**Phase 4: Testing**
+- All tests must pass
+- Failing tests block commit
+
+**Phase 5: Coverage**
+- Coverage must be ≥80%
+- Blocks commit if below threshold
+
+### Code Review Checklist
+
+- [ ] New code has tests (TDD followed)
+- [ ] Tests follow AAA pattern
+- [ ] Test names are descriptive
+- [ ] Coverage ≥80%
+- [ ] No flaky tests
+- [ ] Tests are fast (<1s unit, <10s integration)
+- [ ] Mocks used appropriately
+- [ ] Tests are independent
+
+---
+
+## References
+
+- Test Driven Development by Kent Beck
+- Growing Object-Oriented Software, Guided by Tests by Steve Freeman
+- xUnit Test Patterns by Gerard Meszaros
+
+---
+
+**Document maintained by**: ZEN (Documentation Specialist)
+**Enforced by**: KIL (Task Executor - TDD), BAS (Quality Fixer - Coverage), APO (Acceptance Test Generator)
+**Last reviewed**: {{date}}

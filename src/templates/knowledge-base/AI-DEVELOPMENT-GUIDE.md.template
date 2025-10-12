@@ -1,0 +1,930 @@
+# AI Development Guide
+
+**Version**: 1.0.0
+**Last Updated**: {{date}}
+**Project**: {{projectName}}
+
+---
+
+## Purpose
+
+This document establishes AI-assisted development workflows, quality gates, and agent coordination protocols for Trinity Method SDK v2.0. All AI-driven implementations must follow these guidelines.
+
+## 1. Scale-Based Workflows
+
+### 1.1 Scale Determination
+
+**Rule**: MON (Requirement Analyzer) determines scale based on file count and complexity.
+
+**Scale Categories**:
+
+| Scale | File Count | Complexity | Duration | Stop Points | Documentation |
+|-------|------------|------------|----------|-------------|---------------|
+| **Small** | 1-2 files | Low | ~30 min | 0 | Inline comments only |
+| **Medium** | 3-5 files | Medium | 2-6 hours | 2 | Design doc + Work plan |
+| **Large** | 6+ files | High | 1-2 days | 4 | PRD + ADR + Design + Plan |
+
+**Complexity Factors** (in addition to file count):
+- Integration points (external APIs, databases)
+- New architectural patterns
+- Cross-cutting concerns
+- Performance requirements
+- Security implications
+
+**Scale Examples**:
+
+```javascript
+// SMALL: Utility function
+Requirement: "Add formatCurrency utility to src/utils/currency.js"
+Files: 1 (currency.js) + 1 (currency.test.js) = 2 files
+Scale: SMALL
+Workflow: MON → KIL → BAS (autonomous, no stops)
+
+// MEDIUM: Feature module
+Requirement: "Implement user profile edit module"
+Files: 4 (profileService.js, profileController.js, profileRoutes.js, tests)
+Scale: MEDIUM
+Workflow: MON → ROR → (stop) → TRA → EUS → (stop) → KIL → BAS → DRA
+
+// LARGE: System component
+Requirement: "Build multi-channel notification system (email, SMS, push)"
+Files: 10+ (services, controllers, models, adapters, config, tests)
+Scale: LARGE
+Workflow: CAP → MON → ROR → (stops at PRD, ADR, design, plan) → EUS → KIL → BAS → APO → DRA
+```
+
+### 1.2 Small Workflow (Autonomous)
+
+**Trigger**: 1-2 files, simple task, no architectural decisions
+
+**Agents**: MON → KIL → BAS
+
+**Stop Points**: 0 (autonomous execution)
+
+**Duration**: ≤30 minutes
+
+**Documentation**: Inline comments only
+
+**Workflow Diagram**:
+
+```
+[User Request] → MON (analyze) → KIL (implement with TDD) → BAS (6-phase QA) → [Commit]
+                     ↓
+                 (scale: small)
+                     ↓
+              No user approval needed
+```
+
+**Use Cases**:
+- Add utility function
+- Fix simple bug
+- Add validation
+- Update configuration
+- Add simple test
+
+**Quality Gate**: BAS auto-fixes and validates, commits if all pass
+
+---
+
+### 1.3 Medium Workflow (2 Stop Points)
+
+**Trigger**: 3-5 files, moderate complexity, some design decisions
+
+**Agents**: MON → ROR → TRA → EUS → KIL → BAS → DRA
+
+**Stop Points**: 2
+1. **After ROR** (Design Review): User approves technical design
+2. **After EUS** (Plan Review): User approves work plan and tasks
+
+**Duration**: 2-6 hours
+
+**Documentation**: Design document + Work plan
+
+**Workflow Diagram**:
+
+```
+[User Request] → MON (analyze scale + requirements)
+                      ↓
+                  ROR (technical design)
+                      ↓
+                 🛑 STOP 1: Design Review
+                      ↓ (user approves)
+                  TRA (work plan with phases)
+                      ↓
+                  EUS (decompose to atomic tasks)
+                      ↓
+                 🛑 STOP 2: Plan Review
+                      ↓ (user approves)
+                  KIL (implement with TDD)
+                      ↓
+                  BAS (6-phase quality gate)
+                      ↓
+                  DRA (code review)
+                      ↓
+                  [Commit]
+```
+
+**Use Cases**:
+- New feature module
+- Refactor existing module
+- Add API endpoints
+- Implement integration
+- Add complex business logic
+
+**Stop Point 1 (Design Review)**:
+- User reviews ROR's technical design
+- Approves architecture decisions
+- Suggests changes if needed
+- ROR iterates if rejected
+
+**Stop Point 2 (Plan Review)**:
+- User reviews TRA's work plan and EUS's task breakdown
+- Approves implementation approach
+- Suggests changes if needed
+- TRA/EUS iterate if rejected
+
+**After Approval**: KIL executes autonomously through commit
+
+---
+
+### 1.4 Large Workflow (4 Stop Points)
+
+**Trigger**: 6+ files, high complexity, significant architectural decisions
+
+**Agents**: CAP → MON → ROR → TRA → EUS → KIL → BAS → APO → DRA
+
+**Stop Points**: 4
+1. **After CAP** (PRD Review): User approves product requirements
+2. **After ROR ADR** (Architecture Review): User approves ADR
+3. **After ROR Design** (Design Review): User approves technical design
+4. **After EUS** (Plan Review): User approves work plan and tasks
+
+**Duration**: 1-2 days
+
+**Documentation**: PRD + ADR + Design document + Work plan + Task breakdown
+
+**Workflow Diagram**:
+
+```
+[Investigation] → CAP (create PRD from investigation)
+                      ↓
+                 🛑 STOP 1: PRD Review
+                      ↓ (user approves)
+                  MON (analyze requirements from PRD)
+                      ↓
+                  ROR (create ADR for major decisions)
+                      ↓
+                 🛑 STOP 2: ADR Review
+                      ↓ (user approves)
+                  ROR (detailed technical design)
+                      ↓
+                 🛑 STOP 3: Design Review
+                      ↓ (user approves)
+                  TRA (work plan)
+                      ↓
+                  EUS (task decomposition)
+                      ↓
+                 🛑 STOP 4: Plan Review
+                      ↓ (user approves)
+                  KIL (implement with TDD)
+                      ↓
+                  BAS (6-phase quality gate)
+                      ↓
+                  APO (generate E2E acceptance tests)
+                      ↓
+                  DRA (comprehensive code review)
+                      ↓
+                  [Commit]
+```
+
+**Use Cases**:
+- New system component
+- Major refactoring
+- Complex integration (multi-service)
+- New architectural pattern
+- Performance-critical feature
+
+**Stop Point 1 (PRD Review)**:
+- User reviews CAP's product requirements document
+- Validates requirements completeness
+- Approves scope and success criteria
+
+**Stop Point 2 (ADR Review)**:
+- User reviews ROR's architecture decision record
+- Approves architectural approach
+- Validates tradeoffs and alternatives considered
+
+**Stop Point 3 (Design Review)**:
+- User reviews ROR's detailed technical design
+- Approves component interactions
+- Validates verification levels (L1/L2/L3)
+
+**Stop Point 4 (Plan Review)**:
+- User reviews TRA's work plan and EUS's tasks
+- Approves implementation strategy
+- Validates task breakdown and dependencies
+
+**After All Approvals**: KIL executes autonomously through commit
+
+---
+
+## 2. BAS 6-Phase Quality Gate
+
+### 2.1 Quality Gate Overview
+
+**Purpose**: Ensure zero-error commits with 90%+ auto-fix rate
+
+**Enforcer**: BAS (Quality Fixer)
+
+**Execution**: Sequential phases, blocks commit if any phase fails
+
+**Phases**:
+
+```
+Phase 1: Linting        → AUTO-FIX
+Phase 2: Structure      → AUTO-FIX
+Phase 3: Build          → VALIDATE
+Phase 4: Testing        → VALIDATE
+Phase 5: Coverage       → VALIDATE (≥80%)
+Phase 6: Final Review   → VALIDATE/ESCALATE
+```
+
+### 2.2 Phase 1: Linting
+
+**Purpose**: Enforce code style and catch syntax errors
+
+**Tools**: ESLint, Prettier
+
+**Auto-Fix**: Yes (90%+ of issues)
+
+**Execution**:
+
+```bash
+# Run linter
+eslint src/**/*.js --fix
+
+# Run formatter
+prettier src/**/*.js --write
+```
+
+**Fixable Issues**:
+- Indentation
+- Semicolons
+- Quotes (single vs double)
+- Trailing whitespace
+- Missing newlines
+- Unused variables (safe removals)
+
+**Non-Fixable Issues** (Escalate):
+- Undefined variables
+- Complex logic errors
+- Missing imports
+
+**Result**:
+- ✅ Pass: All issues fixed or none found
+- ⚠️ Escalate: Non-fixable issues require user intervention
+
+---
+
+### 2.3 Phase 2: Structure Validation
+
+**Purpose**: Ensure proper code organization and imports
+
+**Auto-Fix**: Yes (import ordering, file organization)
+
+**Checks**:
+- Import organization (external → internal → relative)
+- Unused imports (remove)
+- File placement (correct directory)
+- Module exports
+
+**Auto-Fix Actions**:
+
+```javascript
+// BEFORE: Messy imports
+const config = require('./config');
+const express = require('express');
+const userService = require('../services/userService');
+const jwt = require('jsonwebtoken');
+
+// AFTER: Organized imports
+// External dependencies
+const express = require('express');
+const jwt = require('jsonwebtoken');
+
+// Internal modules
+const userService = require('../services/userService');
+
+// Relative imports
+const config = require('./config');
+```
+
+**Result**:
+- ✅ Pass: Structure validated, imports organized
+- ⚠️ Warning: File in wrong directory (suggest move)
+
+---
+
+### 2.4 Phase 3: Build Validation
+
+**Purpose**: Ensure code compiles/builds successfully
+
+**Tools**: TypeScript (if used), Babel, Webpack
+
+**Auto-Fix**: No (build errors require code changes)
+
+**Execution**:
+
+```bash
+npm run build
+```
+
+**Success Criteria**:
+- Exit code 0
+- No compilation errors
+- Output files generated
+
+**Result**:
+- ✅ Pass: Build successful
+- ❌ Fail: Build errors, escalate to user (show errors)
+
+---
+
+### 2.5 Phase 4: Testing
+
+**Purpose**: Ensure all tests pass
+
+**Tools**: Jest, Mocha, or configured test runner
+
+**Auto-Fix**: No (test failures require code/test changes)
+
+**Execution**:
+
+```bash
+npm test
+```
+
+**Success Criteria**:
+- All tests pass
+- No test errors
+- No flaky tests
+
+**Result**:
+- ✅ Pass: All tests passing
+- ❌ Fail: Test failures, escalate with details
+
+**Escalation Info**:
+```
+❌ Quality Gate Phase 4 Failed: 3 tests failing
+
+Failed Tests:
+1. UserService › createUser › should hash password
+   Expected: hash(password)
+   Received: plaintext password
+
+2. UserService › deleteUser › should remove user from database
+   Error: Database connection timeout
+
+3. AuthService › login › should return JWT token
+   Expected: valid JWT
+   Received: undefined
+
+💡 Fix failing tests and re-run quality gate
+```
+
+---
+
+### 2.6 Phase 5: Coverage Validation
+
+**Purpose**: Ensure adequate test coverage (≥80%)
+
+**Tools**: Istanbul/NYC (Jest built-in coverage)
+
+**Auto-Fix**: No (low coverage requires more tests)
+
+**Execution**:
+
+```bash
+npm run test:coverage
+```
+
+**Success Criteria**:
+- Line coverage ≥80%
+- Branch coverage ≥80%
+- Function coverage ≥80%
+- Statement coverage ≥80%
+
+**Result**:
+- ✅ Pass: Coverage ≥80%
+- ❌ Fail: Coverage <80%, escalate with details
+
+**Escalation Info**:
+```
+❌ Quality Gate Phase 5 Failed: Coverage below threshold
+
+Coverage Report:
+- Lines: 72% (target: 80%)
+- Branches: 68% (target: 80%)
+- Functions: 75% (target: 80%)
+- Statements: 73% (target: 80%)
+
+Uncovered Files:
+- src/services/userService.js (45% coverage)
+- src/utils/validation.js (60% coverage)
+
+💡 Add tests to increase coverage
+```
+
+---
+
+### 2.7 Phase 6: Final Review (Compliance)
+
+**Purpose**: Validate compliance with CODING-PRINCIPLES and TESTING-PRINCIPLES
+
+**Auto-Fix**: Yes (for simple violations)
+
+**Checks**:
+- Function parameter count (≤2)
+- Function length (<50 lines)
+- Error handling (try-catch for async)
+- Test structure (AAA pattern)
+- Naming conventions
+
+**Auto-Fix Examples**:
+
+```javascript
+// BEFORE: 3 parameters (violation)
+function createUser(email, password, name) {
+  // ...
+}
+
+// AFTER: Auto-refactor to config object
+function createUser(config) {
+  const { email, password, name } = config;
+  // ...
+}
+```
+
+**Escalate When**:
+- Ambiguous violation (unclear how to fix)
+- Business logic decision needed
+- Specification ambiguity
+- Complex refactoring required
+
+**Result**:
+- ✅ Pass: All compliance checks pass
+- ⚠️ Warning: Minor violations auto-fixed
+- ❌ Escalate: Ambiguous violations require user decision
+
+---
+
+### 2.8 Quality Gate Summary
+
+**Success Flow**:
+```
+Phase 1 (Lint) → auto-fix → pass
+Phase 2 (Structure) → auto-fix → pass
+Phase 3 (Build) → validate → pass
+Phase 4 (Test) → validate → pass
+Phase 5 (Coverage) → validate → pass
+Phase 6 (Compliance) → auto-fix → pass
+→ ✅ COMMIT APPROVED
+```
+
+**Failure Flow**:
+```
+Phase 1-6 → any failure → ❌ BLOCK COMMIT
+                       → 🔄 ROLLBACK changes
+                       → 📝 LOG failure details
+                       → 💡 NOTIFY user with actionable error
+```
+
+**Auto-Fix Rate Target**: >90%
+
+**Zero-Error Enforcement**: 100% (no commits with errors)
+
+---
+
+## 3. Agent Communication Protocol
+
+### 3.1 JSON Handoff Format
+
+**Rule**: All agents communicate via structured JSON handoff
+
+**Standard Format**:
+
+```json
+{
+  "agent": "MON",
+  "status": "success",
+  "scale": "medium",
+  "data": {
+    "requirements": [
+      "User can edit profile information",
+      "Changes save to database",
+      "Email notification on profile update"
+    ],
+    "fileCount": 4,
+    "complexity": "medium",
+    "integrations": ["database", "email-service"]
+  },
+  "nextAgent": "ROR",
+  "stopPointRequired": false,
+  "artifacts": {
+    "requirements": "docs/plans/requirements-001.md"
+  },
+  "errors": []
+}
+```
+
+**Required Fields**:
+- `agent`: Current agent name
+- `status`: "success" | "failed" | "escalated"
+- `data`: Agent-specific output
+- `nextAgent`: Next agent in workflow or null if complete
+- `errors`: Array of error objects (empty if success)
+
+**Optional Fields**:
+- `scale`: "small" | "medium" | "large" (from MON)
+- `stopPointRequired`: boolean (if user approval needed)
+- `artifacts`: File paths to generated documents
+- `metadata`: Additional context
+
+### 3.2 Agent Responsibilities
+
+**MON (Requirement Analyzer)**:
+- Input: User requirement (text)
+- Output: Scale, requirements list, file count, next agent
+- Stop Point: No
+
+**ROR (Technical Designer)**:
+- Input: Requirements from MON
+- Output: Design document, ADR (if large), verification level
+- Stop Point: Yes (design review)
+
+**TRA (Work Planner)**:
+- Input: Design from ROR
+- Output: Work plan with phases, stop point placement
+- Stop Point: No
+
+**EUS (Task Decomposer)**:
+- Input: Work plan from TRA
+- Output: Atomic tasks (1-commit each), dependencies
+- Stop Point: Yes (plan review)
+
+**KIL (Task Executor)**:
+- Input: Tasks from EUS
+- Output: Implementation (TDD), commits
+- Stop Point: No (executes autonomously post-approval)
+
+**BAS (Quality Fixer)**:
+- Input: Code changes from KIL
+- Output: Quality gate results, auto-fixed code
+- Stop Point: No (blocks commit on failure)
+
+**DRA (Code Reviewer)**:
+- Input: Code from BAS
+- Output: Code review approval/feedback
+- Stop Point: No
+
+### 3.3 Error Handling
+
+**Agent Failure**:
+
+```json
+{
+  "agent": "KIL",
+  "status": "failed",
+  "data": null,
+  "nextAgent": null,
+  "errors": [
+    {
+      "type": "implementation-error",
+      "message": "Cannot determine how to implement getUsersByRole",
+      "context": "Ambiguous requirement: 'by role' not defined",
+      "suggestion": "Clarify: Does role refer to user.role field or user.permissions?"
+    }
+  ]
+}
+```
+
+**Escalation**:
+
+```json
+{
+  "agent": "BAS",
+  "status": "escalated",
+  "data": {
+    "phase": 6,
+    "issue": "compliance-violation"
+  },
+  "nextAgent": "ALY",
+  "errors": [
+    {
+      "type": "ambiguous-violation",
+      "message": "Function processOrder has 3 parameters but unclear how to refactor",
+      "context": "Parameters: order, user, options - all seem necessary",
+      "suggestion": "Should we use config object or separate into multiple functions?"
+    }
+  ]
+}
+```
+
+**Retry Logic**:
+- Auto-retry on transient failures (network, timeout): max 3 attempts
+- Escalate to ALY on repeated failures
+- Escalate immediately on ambiguity
+
+---
+
+## 4. Escalation Protocols
+
+### 4.1 When to Escalate to ALY
+
+**Escalate When**:
+- Ambiguous requirements (unclear what to implement)
+- Conflicting requirements
+- Missing information (user input needed)
+- Specification ambiguity (multiple valid interpretations)
+- Technical decision outside agent expertise
+- Quality gate failures after auto-fix attempts (ambiguous fixes)
+
+**Don't Escalate When**:
+- Clear error messages (user can fix)
+- Auto-fixable issues (BAS handles)
+- Known patterns (agent follows established approach)
+
+### 4.2 Escalation Format
+
+```json
+{
+  "from": "KIL",
+  "to": "ALY",
+  "reason": "ambiguous-requirement",
+  "context": {
+    "requirement": "Add user filtering by 'status'",
+    "ambiguity": "Multiple status fields found: user.accountStatus, user.subscriptionStatus, user.verificationStatus",
+    "question": "Which status field should be used for filtering?"
+  },
+  "options": [
+    "user.accountStatus (active/inactive/suspended)",
+    "user.subscriptionStatus (free/premium/enterprise)",
+    "user.verificationStatus (verified/unverified)"
+  ],
+  "recommendation": "user.accountStatus (most commonly used in similar features)"
+}
+```
+
+### 4.3 ALY Investigation
+
+**ALY's Role**:
+1. Receive escalation from agent
+2. Investigate context and gather information
+3. Clarify ambiguity with user (if needed)
+4. Provide clear guidance back to agent
+5. Update requirements/design if needed
+
+**ALY Response**:
+
+```json
+{
+  "investigationId": "INV-2025-042",
+  "clarification": "Use user.accountStatus for filtering",
+  "rationale": "Matches existing user management UI patterns",
+  "guidance": {
+    "filterField": "accountStatus",
+    "validValues": ["active", "inactive", "suspended"],
+    "apiEndpoint": "/users?status=active"
+  },
+  "resumeAgent": "KIL",
+  "updatedRequirements": "docs/plans/requirements-001-updated.md"
+}
+```
+
+---
+
+## 5. Autonomous Mode
+
+### 5.1 Post-Approval Execution
+
+**Rule**: After user approves at stop points, remaining workflow executes autonomously
+
+**Medium Workflow Example**:
+
+```
+User Request → MON → ROR → 🛑 STOP (user approves design)
+                           ↓
+                        TRA → EUS → 🛑 STOP (user approves plan)
+                                   ↓
+                    [AUTONOMOUS EXECUTION BEGINS]
+                                   ↓
+                             KIL (implement)
+                                   ↓
+                             BAS (quality gate)
+                                   ↓
+                             DRA (code review)
+                                   ↓
+                             [COMMIT]
+```
+
+**No User Interaction Required**:
+- KIL implements all tasks sequentially
+- BAS auto-fixes issues
+- DRA reviews and approves
+- Commits created automatically
+
+**User Notified**:
+- Progress updates (optional, non-blocking)
+- Completion notification
+- Escalation if issues arise
+
+### 5.2 Rollback on Failure
+
+**Rule**: If quality gate fails, rollback entire workflow
+
+```bash
+# Automatic rollback
+git reset --hard HEAD~N  # N = commits in this workflow
+
+# Log failure
+logger.error({
+  workflowId: 'wf-123',
+  failedAt: 'BAS-Phase-4',
+  reason: 'Test failures',
+  rollbackCommits: 3
+});
+
+# Notify user
+console.error('❌ Workflow failed at quality gate');
+console.log('💡 Fix issues and re-run /trinity-orchestrate');
+```
+
+---
+
+## 6. Configuration
+
+### 6.1 Workflow Configuration
+
+**File**: `trinity.config.js`
+
+```javascript
+module.exports = {
+  // Workflow settings
+  workflows: {
+    enableStopPoints: true, // false = fully autonomous (risky)
+    autonomousMode: false, // true = auto-proceed at stop points (risky)
+    scaleOverride: null // 'small'|'medium'|'large' to override MON
+  },
+
+  // Quality gate settings
+  qualityGate: {
+    enabled: true,
+    coverage: {
+      threshold: 80,
+      enforceOnCommit: true
+    },
+    linting: {
+      autoFix: true,
+      failOnError: true
+    },
+    buildValidation: {
+      enabled: true
+    }
+  },
+
+  // Agent settings
+  agents: {
+    timeout: 300000, // 5 minutes per agent
+    maxRetries: 3,
+    escalateToALY: true
+  }
+};
+```
+
+### 6.2 Per-Project Customization
+
+```javascript
+// Override for specific project needs
+module.exports = {
+  workflows: {
+    enableStopPoints: {
+      small: false, // No stops for small
+      medium: true, // 2 stops for medium
+      large: true // 4 stops for large
+    }
+  },
+
+  qualityGate: {
+    coverage: {
+      threshold: 85, // Higher than default 80%
+      excludePatterns: ['src/legacy/**'] // Exclude legacy code
+    }
+  }
+};
+```
+
+---
+
+## 7. Monitoring & Metrics
+
+### 7.1 Workflow Metrics
+
+**Track**:
+- Workflow duration (by scale)
+- Stop point approval time
+- Auto-fix success rate
+- Escalation rate
+- Commit success rate
+
+**Dashboard**:
+
+```
+Trinity Workflow Metrics (Last 30 Days)
+
+Small Workflows:
+- Total: 142
+- Avg Duration: 28 min (target: ≤30 min) ✅
+- Success Rate: 98% ✅
+
+Medium Workflows:
+- Total: 67
+- Avg Duration: 2.8 hours (target: ≤3 hours) ✅
+- Stop Points: 2 (avg approval time: 12 min)
+- Success Rate: 95% ✅
+
+Large Workflows:
+- Total: 18
+- Avg Duration: 1.3 days (target: ≤1.5 days) ✅
+- Stop Points: 4 (avg approval time: 45 min)
+- Success Rate: 94% ✅
+
+Quality Gate:
+- Auto-Fix Rate: 92% (target: ≥90%) ✅
+- Escalation Rate: 8%
+- Zero-Error Commits: 100% ✅
+```
+
+### 7.2 Agent Performance
+
+**Track**:
+- Agent execution time
+- Agent failure rate
+- Agent escalation rate
+
+**Alerts**:
+- Agent timeout (>5 min)
+- High failure rate (>10%)
+- Escalation spike (>15%)
+
+---
+
+## 8. Best Practices
+
+### 8.1 Clear Requirements
+
+**✅ Good Requirements**:
+- "Add user profile edit endpoint: PATCH /users/:id/profile, accepts name/email/avatar, validates email format, returns updated user"
+
+**❌ Vague Requirements**:
+- "Make user profile editable"
+
+### 8.2 Trust the Process
+
+**Do**:
+- Trust MON's scale determination
+- Review designs/plans at stop points
+- Let BAS handle quality (don't bypass)
+- Allow autonomous execution post-approval
+
+**Don't**:
+- Override scale without good reason
+- Skip stop points (unless small scale)
+- Bypass quality gate (emergency only)
+- Micromanage agent execution
+
+### 8.3 Iterate on Feedback
+
+**If design rejected**:
+- ROR incorporates feedback
+- Re-submits for approval
+- May require multiple iterations
+
+**If quality gate fails**:
+- Fix issues flagged by BAS
+- Re-run quality gate
+- May require code/test changes
+
+---
+
+## References
+
+- Trinity Method SDK v2.0 Architecture
+- CODING-PRINCIPLES.md
+- TESTING-PRINCIPLES.md
+- DOCUMENTATION-CRITERIA.md
+
+---
+
+**Document maintained by**: ZEN (Documentation Specialist)
+**Used by**: All 18 agents, AJ MAESTRO orchestration
+**Last reviewed**: {{date}}

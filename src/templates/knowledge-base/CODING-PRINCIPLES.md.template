@@ -1,0 +1,724 @@
+# Coding Principles
+
+**Version**: 1.0.0
+**Last Updated**: {{date}}
+**Project**: {{projectName}}
+
+---
+
+## Purpose
+
+This document establishes coding standards and best practices for {{projectName}}. All code must adhere to these principles to ensure consistency, maintainability, and quality.
+
+## 1. Function Design
+
+### 1.1 Parameter Limit
+
+**Rule**: Functions should have 0-2 parameters maximum.
+
+**Rationale**: Functions with many parameters are difficult to understand, test, and maintain. They often indicate the function is doing too much.
+
+**✅ Good Examples**:
+
+```javascript
+// 0 parameters - ideal for queries/getters
+function getCurrentUser() {
+  return auth.user;
+}
+
+// 1 parameter - common and clear
+function formatDate(date) {
+  return date.toISOString();
+}
+
+// 2 parameters - acceptable, still manageable
+function createUser(email, password) {
+  return { email, password, createdAt: Date.now() };
+}
+```
+
+**❌ Bad Examples**:
+
+```javascript
+// 4 parameters - too many, hard to remember order
+function createAccount(email, password, firstName, lastName) {
+  // ...
+}
+
+// 6 parameters - terrible, impossible to use correctly
+function processPayment(amount, currency, userId, cardNumber, cvv, expiry) {
+  // ...
+}
+```
+
+**✅ Refactoring Strategy - Use Configuration Objects**:
+
+```javascript
+// Refactor: Use config object for 3+ parameters
+function createAccount(config) {
+  const { email, password, firstName, lastName } = config;
+  // ...
+}
+
+// Usage
+createAccount({
+  email: 'user@example.com',
+  password: 'secure123',
+  firstName: 'John',
+  lastName: 'Doe'
+});
+
+// Alternative: Use builder pattern for complex objects
+const payment = new PaymentBuilder()
+  .amount(100)
+  .currency('USD')
+  .user(userId)
+  .card(cardDetails)
+  .build();
+```
+
+### 1.2 Function Length
+
+**Rule**: Functions should be 20-50 lines maximum, ideally <30 lines.
+
+**Rationale**: Long functions are hard to understand, test, and maintain. They often do too much.
+
+**✅ Good Example**:
+
+```javascript
+function validateUser(user) {
+  if (!user.email) {
+    throw new Error('Email required');
+  }
+
+  if (!isValidEmail(user.email)) {
+    throw new Error('Invalid email format');
+  }
+
+  if (!user.password || user.password.length < 8) {
+    throw new Error('Password must be at least 8 characters');
+  }
+
+  return true;
+}
+```
+
+**❌ Bad Example**:
+
+```javascript
+function processOrder(order) {
+  // 150 lines of validation, calculation, database calls, email sending...
+  // Impossible to understand or test
+}
+```
+
+**✅ Refactoring Strategy - Extract Methods**:
+
+```javascript
+function processOrder(order) {
+  validateOrder(order);
+  const total = calculateTotal(order);
+  const payment = processPayment(order, total);
+  saveOrder(order, payment);
+  sendConfirmationEmail(order);
+  return { orderId: order.id, status: 'completed' };
+}
+
+// Each extracted function is focused and testable
+function validateOrder(order) { /* ... */ }
+function calculateTotal(order) { /* ... */ }
+function processPayment(order, total) { /* ... */ }
+```
+
+### 1.3 Single Responsibility Principle (SRP)
+
+**Rule**: Each function should do one thing and do it well.
+
+**✅ Good Examples**:
+
+```javascript
+// Focused: only validates email format
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Focused: only fetches user
+async function getUserById(id) {
+  return await db.users.findOne({ id });
+}
+
+// Focused: only formats display name
+function formatUserName(user) {
+  return `${user.firstName} ${user.lastName}`;
+}
+```
+
+**❌ Bad Examples**:
+
+```javascript
+// Does too much: validates, saves, sends email, logs
+async function registerUser(userData) {
+  // Validation
+  if (!isValidEmail(userData.email)) throw new Error('Invalid email');
+
+  // Database
+  const user = await db.users.create(userData);
+
+  // Email
+  await sendWelcomeEmail(user.email);
+
+  // Logging
+  logger.info(`User registered: ${user.id}`);
+
+  // Returns
+  return user;
+}
+```
+
+**✅ Refactoring Strategy - Compose Functions**:
+
+```javascript
+async function registerUser(userData) {
+  validateUserData(userData);
+  const user = await createUser(userData);
+  await sendWelcomeEmail(user);
+  logUserRegistration(user);
+  return user;
+}
+
+// Each function has a single responsibility
+function validateUserData(data) { /* ... */ }
+async function createUser(data) { /* ... */ }
+async function sendWelcomeEmail(user) { /* ... */ }
+function logUserRegistration(user) { /* ... */ }
+```
+
+---
+
+## 2. Error Handling
+
+### 2.1 Always Use Try-Catch for Async Operations
+
+**Rule**: All async operations must be wrapped in try-catch blocks.
+
+**Rationale**: Unhandled promise rejections crash applications. Explicit error handling makes code robust.
+
+**✅ Good Examples**:
+
+```javascript
+async function fetchUserData(userId) {
+  try {
+    const response = await api.get(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    logger.error('Failed to fetch user:', error);
+    throw new Error(`User fetch failed: ${error.message}`);
+  }
+}
+
+async function saveDocument(doc) {
+  try {
+    await db.documents.insert(doc);
+    return { success: true };
+  } catch (error) {
+    if (error.code === 'DUPLICATE_KEY') {
+      throw new Error('Document already exists');
+    }
+    throw error; // Re-throw unknown errors
+  }
+}
+```
+
+**❌ Bad Examples**:
+
+```javascript
+// Missing try-catch - will crash on error
+async function fetchUserData(userId) {
+  const response = await api.get(`/users/${userId}`);
+  return response.data;
+}
+
+// Silent failure - errors swallowed
+async function saveDocument(doc) {
+  try {
+    await db.documents.insert(doc);
+  } catch (error) {
+    // Empty catch - error disappears
+  }
+}
+```
+
+### 2.2 Meaningful Error Messages
+
+**Rule**: Error messages must be descriptive and actionable.
+
+**✅ Good Examples**:
+
+```javascript
+if (!user.email) {
+  throw new Error('Email is required for user registration');
+}
+
+if (age < 18) {
+  throw new Error('User must be at least 18 years old to register');
+}
+
+if (!fs.existsSync(filePath)) {
+  throw new Error(`File not found: ${filePath}. Please check the path and try again.`);
+}
+```
+
+**❌ Bad Examples**:
+
+```javascript
+if (!user.email) {
+  throw new Error('Invalid'); // What's invalid?
+}
+
+if (age < 18) {
+  throw new Error('Error'); // Useless
+}
+
+if (!fs.existsSync(filePath)) {
+  throw new Error('Failed'); // No context
+}
+```
+
+### 2.3 Custom Error Classes
+
+**Rule**: Use custom error classes for domain-specific errors.
+
+**✅ Good Example**:
+
+```javascript
+class ValidationError extends Error {
+  constructor(field, message) {
+    super(message);
+    this.name = 'ValidationError';
+    this.field = field;
+  }
+}
+
+class NotFoundError extends Error {
+  constructor(resource, id) {
+    super(`${resource} not found: ${id}`);
+    this.name = 'NotFoundError';
+    this.resource = resource;
+    this.id = id;
+  }
+}
+
+// Usage
+if (!user) {
+  throw new NotFoundError('User', userId);
+}
+
+// Catching specific errors
+try {
+  await registerUser(data);
+} catch (error) {
+  if (error instanceof ValidationError) {
+    return { error: error.message, field: error.field };
+  }
+  throw error;
+}
+```
+
+---
+
+## 3. Code Organization
+
+### 3.1 DRY Principle (Don't Repeat Yourself)
+
+**Rule**: Avoid code duplication. Extract common logic into reusable functions.
+
+**❌ Bad Example**:
+
+```javascript
+function processAdminUser(user) {
+  if (!user.email) throw new Error('Email required');
+  if (!isValidEmail(user.email)) throw new Error('Invalid email');
+  if (!user.password || user.password.length < 8) throw new Error('Password too short');
+  // Admin-specific logic
+  user.role = 'admin';
+  return user;
+}
+
+function processRegularUser(user) {
+  if (!user.email) throw new Error('Email required');
+  if (!isValidEmail(user.email)) throw new Error('Invalid email');
+  if (!user.password || user.password.length < 8) throw new Error('Password too short');
+  // Regular user logic
+  user.role = 'user';
+  return user;
+}
+```
+
+**✅ Good Example**:
+
+```javascript
+function validateUser(user) {
+  if (!user.email) throw new Error('Email required');
+  if (!isValidEmail(user.email)) throw new Error('Invalid email');
+  if (!user.password || user.password.length < 8) throw new Error('Password too short');
+}
+
+function processAdminUser(user) {
+  validateUser(user);
+  user.role = 'admin';
+  return user;
+}
+
+function processRegularUser(user) {
+  validateUser(user);
+  user.role = 'user';
+  return user;
+}
+```
+
+### 3.2 File Organization
+
+**Rule**: Group related functionality, limit file size to 200-300 lines.
+
+**✅ Good Structure**:
+
+```
+src/
+  services/
+    userService.js          # User CRUD operations
+    authService.js          # Authentication logic
+    emailService.js         # Email sending
+  utils/
+    validation.js           # Validation helpers
+    formatting.js           # Formatting utilities
+  models/
+    User.js                 # User model
+    Post.js                 # Post model
+```
+
+**❌ Bad Structure**:
+
+```
+src/
+  utils.js                  # 2000 lines, everything mixed
+  helpers.js                # 1500 lines, random functions
+  index.js                  # 3000 lines, all logic here
+```
+
+### 3.3 Import Organization
+
+**Rule**: Organize imports in logical groups: external, internal, relative.
+
+**✅ Good Example**:
+
+```javascript
+// External dependencies
+const express = require('express');
+const jwt = require('jsonwebtoken');
+
+// Internal modules
+const userService = require('../services/userService');
+const authMiddleware = require('../middleware/auth');
+
+// Relative imports
+const config = require('./config');
+const helpers = require('./helpers');
+```
+
+**❌ Bad Example**:
+
+```javascript
+// Random order, hard to scan
+const helpers = require('./helpers');
+const express = require('express');
+const config = require('./config');
+const jwt = require('jsonwebtoken');
+const userService = require('../services/userService');
+```
+
+---
+
+## 4. Naming Conventions
+
+### 4.1 Descriptive Names
+
+**Rule**: Names should reveal intent without needing comments.
+
+**✅ Good Examples**:
+
+```javascript
+const activeUsers = users.filter(u => u.isActive);
+const formattedDate = formatDate(date);
+function calculateOrderTotal(order) { /* ... */ }
+function sendWelcomeEmail(user) { /* ... */ }
+```
+
+**❌ Bad Examples**:
+
+```javascript
+const x = users.filter(u => u.isActive); // What is x?
+const temp = formatDate(date); // Temporary what?
+function calc(o) { /* ... */ } // Calculate what?
+function send(u) { /* ... */ } // Send what?
+```
+
+### 4.2 Naming Patterns
+
+**Rule**: Follow consistent naming patterns.
+
+- **Variables/Functions**: camelCase (`getUserName`, `totalPrice`)
+- **Classes**: PascalCase (`UserService`, `PaymentProcessor`)
+- **Constants**: UPPER_SNAKE_CASE (`MAX_RETRY_ATTEMPTS`, `API_BASE_URL`)
+- **Private**: prefix with `_` (`_internalHelper`, `_validateInput`)
+- **Booleans**: use `is/has/should` prefixes (`isActive`, `hasPermission`, `shouldRetry`)
+
+**✅ Good Examples**:
+
+```javascript
+const MAX_LOGIN_ATTEMPTS = 3;
+const isAuthenticated = checkAuth();
+const hasPermission = user.permissions.includes('admin');
+
+class UserService {
+  _internalCache = new Map();
+
+  async getUser(id) { /* ... */ }
+
+  _validateUser(user) { /* ... */ }
+}
+```
+
+---
+
+## 5. Comments & Documentation
+
+### 5.1 Self-Documenting Code
+
+**Rule**: Code should be self-explanatory. Use comments only for "why", not "what".
+
+**✅ Good Examples**:
+
+```javascript
+// Good: Clear code, no comment needed
+function calculateDiscountedPrice(price, discountPercent) {
+  return price * (1 - discountPercent / 100);
+}
+
+// Good: Comment explains "why" a non-obvious decision was made
+function processLargeDataset(data) {
+  // Using chunking to avoid memory overflow on datasets >10MB
+  const chunkSize = 1000;
+  for (let i = 0; i < data.length; i += chunkSize) {
+    processChunk(data.slice(i, i + chunkSize));
+  }
+}
+
+// Good: Comment explains business rule
+function calculateShipping(weight) {
+  // Free shipping for orders over 50 lbs per marketing policy
+  if (weight > 50) return 0;
+  return weight * 0.5;
+}
+```
+
+**❌ Bad Examples**:
+
+```javascript
+// Bad: Comment states the obvious
+// Add 1 to i
+i = i + 1;
+
+// Bad: Comment describes what code already shows
+// Loop through users
+users.forEach(user => {
+  // Print user name
+  console.log(user.name);
+});
+```
+
+### 5.2 JSDoc for Public APIs
+
+**Rule**: Document public functions with JSDoc.
+
+**✅ Good Example**:
+
+```javascript
+/**
+ * Retrieves user by ID from the database
+ * @param {string} userId - The unique user identifier
+ * @returns {Promise<User>} User object
+ * @throws {NotFoundError} If user doesn't exist
+ * @example
+ * const user = await getUserById('123');
+ */
+async function getUserById(userId) {
+  const user = await db.users.findOne({ id: userId });
+  if (!user) {
+    throw new NotFoundError('User', userId);
+  }
+  return user;
+}
+```
+
+---
+
+## 6. Performance Considerations
+
+### 6.1 Avoid Premature Optimization
+
+**Rule**: Write clear code first, optimize only when needed (with profiling data).
+
+**✅ Good Approach**:
+
+```javascript
+// Clear, readable, probably fast enough
+function findUser(users, id) {
+  return users.find(u => u.id === id);
+}
+
+// Only optimize if profiling shows this is a bottleneck:
+// Map for O(1) lookup if findUser is called frequently
+const userMap = new Map(users.map(u => [u.id, u]));
+function findUserOptimized(id) {
+  return userMap.get(id);
+}
+```
+
+### 6.2 Avoid N+1 Queries
+
+**Rule**: Batch database queries when possible.
+
+**❌ Bad Example (N+1)**:
+
+```javascript
+async function getUsersWithPosts(userIds) {
+  const users = await db.users.find({ id: { $in: userIds } });
+
+  // N+1: Separate query for each user
+  for (const user of users) {
+    user.posts = await db.posts.find({ userId: user.id });
+  }
+
+  return users;
+}
+```
+
+**✅ Good Example (Batched)**:
+
+```javascript
+async function getUsersWithPosts(userIds) {
+  const users = await db.users.find({ id: { $in: userIds } });
+
+  // Single query for all posts
+  const allPosts = await db.posts.find({
+    userId: { $in: users.map(u => u.id) }
+  });
+
+  // Group posts by user
+  const postsByUser = allPosts.reduce((acc, post) => {
+    if (!acc[post.userId]) acc[post.userId] = [];
+    acc[post.userId].push(post);
+    return acc;
+  }, {});
+
+  // Attach posts to users
+  users.forEach(user => {
+    user.posts = postsByUser[user.id] || [];
+  });
+
+  return users;
+}
+```
+
+---
+
+## 7. Testing Considerations
+
+### 7.1 Write Testable Code
+
+**Rule**: Design functions to be easy to test (pure functions, dependency injection).
+
+**✅ Good Examples**:
+
+```javascript
+// Pure function - easy to test
+function calculateTax(amount, rate) {
+  return amount * rate;
+}
+
+// Dependency injection - mockable
+function createUserService(database) {
+  return {
+    async getUser(id) {
+      return await database.users.findOne({ id });
+    }
+  };
+}
+
+// Usage in tests
+const mockDb = { users: { findOne: jest.fn() } };
+const service = createUserService(mockDb);
+```
+
+**❌ Bad Examples**:
+
+```javascript
+// Hard to test - uses global state
+function calculateTax(amount) {
+  return amount * window.TAX_RATE; // Coupled to window
+}
+
+// Hard to test - hardcoded dependency
+function createUserService() {
+  return {
+    async getUser(id) {
+      return await realDatabase.users.findOne({ id }); // Can't mock
+    }
+  };
+}
+```
+
+---
+
+## Enforcement
+
+### Automated Tools
+
+- **ESLint**: Configured to enforce style rules
+- **Prettier**: Auto-format code
+- **BAS Quality Gate**: Phase 6 validates compliance with these principles
+
+### Code Review Checklist
+
+During code review, verify:
+- [ ] Functions have 0-2 parameters (or use config objects)
+- [ ] Functions are <50 lines (ideally <30)
+- [ ] Each function has single responsibility
+- [ ] Async operations use try-catch
+- [ ] Error messages are descriptive
+- [ ] No code duplication (DRY)
+- [ ] Names are descriptive and follow conventions
+- [ ] Comments explain "why", not "what"
+- [ ] Code is testable
+
+### Compliance Scoring
+
+ZEN analyzes code against these principles and calculates compliance score:
+- **90-100**: Excellent - fully compliant
+- **80-89**: Good - minor issues
+- **70-79**: Acceptable - some violations
+- **<70**: Needs improvement - significant violations
+
+---
+
+## References
+
+- Clean Code by Robert C. Martin
+- JavaScript: The Good Parts by Douglas Crockford
+- Effective JavaScript by David Herman
+
+---
+
+**Document maintained by**: ZEN (Documentation Specialist)
+**Enforced by**: BAS (Quality Fixer), DRA (Code Reviewer)
+**Last reviewed**: {{date}}

@@ -1,0 +1,1091 @@
+# Documentation Criteria
+
+**Version**: 1.0.0
+**Last Updated**: {{date}}
+**Project**: {{projectName}}
+
+---
+
+## Purpose
+
+This document establishes documentation standards based on implementation scale. All implementations must create appropriate documentation according to their scale determination.
+
+## 1. Scale-Based Documentation Requirements
+
+### 1.1 Documentation Matrix
+
+| Scale | Files | PRD | ADR | Design Doc | Work Plan | Task Breakdown | Inline Docs |
+|-------|-------|-----|-----|------------|-----------|----------------|-------------|
+| **Small** | 1-2 | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ Required |
+| **Medium** | 3-5 | ❌ | ❌ | ✅ Required | ✅ Required | ✅ Required | ✅ Required |
+| **Large** | 6+ | ✅ Required | ✅ Required | ✅ Required | ✅ Required | ✅ Required | ✅ Required |
+
+### 1.2 Scale Determination Rules
+
+**Small Scale** (1-2 files):
+- Single utility function
+- Simple bug fix
+- Configuration change
+- Small refactoring
+- Basic validation
+
+**Medium Scale** (3-5 files):
+- Feature module
+- API endpoint group
+- Service implementation
+- Integration component
+- Moderate refactoring
+
+**Large Scale** (6+ files):
+- System component
+- Multi-service integration
+- Architectural change
+- Complex feature
+- Major refactoring
+
+---
+
+## 2. Document Templates
+
+### 2.1 PRD (Product Requirements Document)
+
+**Required For**: Large scale only
+**Creator**: CAP (PRD Creator)
+**Location**: `docs/plans/requirements/`
+**Filename Pattern**: `PRD-{feature-name}-{date}.md`
+
+**Template Structure**:
+
+```markdown
+# Product Requirements Document: {Feature Name}
+
+**PRD ID**: PRD-{YYYY}-{NNN}
+**Created**: {date}
+**Author**: CAP (from ALY investigation)
+**Status**: Draft | Approved | Implemented
+
+---
+
+## 1. Executive Summary
+
+[2-3 sentences describing the feature and its value]
+
+## 2. Background
+
+### 2.1 Problem Statement
+[What problem are we solving?]
+
+### 2.2 User Impact
+[Who is affected and how?]
+
+### 2.3 Business Value
+[Why build this now?]
+
+## 3. Requirements
+
+### 3.1 Functional Requirements
+
+#### FR-1: {Requirement Title}
+**Description**: [What the system must do]
+**Priority**: Critical | High | Medium | Low
+**Acceptance Criteria**:
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+[Repeat for FR-2, FR-3, etc.]
+
+### 3.2 Non-Functional Requirements
+
+#### NFR-1: Performance
+[Performance requirements]
+
+#### NFR-2: Security
+[Security requirements]
+
+#### NFR-3: Usability
+[Usability requirements]
+
+## 4. User Stories
+
+**As a** [user type]
+**I want** [goal]
+**So that** [benefit]
+
+**Acceptance Criteria**:
+- [ ] Criteria 1
+- [ ] Criteria 2
+
+[Repeat for multiple user stories]
+
+## 5. Success Metrics
+
+**Metric 1**: {Name}
+- **Target**: {Value}
+- **Measurement**: {How to measure}
+
+## 6. Out of Scope
+
+[What we're explicitly NOT doing in this iteration]
+
+## 7. Dependencies
+
+- Dependency 1: {Description}
+- Dependency 2: {Description}
+
+## 8. Timeline
+
+- **Design**: {duration}
+- **Implementation**: {duration}
+- **Testing**: {duration}
+- **Total**: {duration}
+
+## 9. Risks
+
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+| Risk 1 | High | Medium | Mitigation strategy |
+
+---
+
+**Review History**:
+- {date}: Created by CAP
+- {date}: Reviewed and approved by {user}
+```
+
+**Example PRD**:
+
+```markdown
+# Product Requirements Document: Multi-Channel Notification System
+
+**PRD ID**: PRD-2025-001
+**Created**: 2025-10-11
+**Author**: CAP
+**Status**: Approved
+
+---
+
+## 1. Executive Summary
+
+Build a notification system that sends messages via email, SMS, and push notifications, with centralized queue management, retry logic, and delivery tracking.
+
+## 2. Background
+
+### 2.1 Problem Statement
+Users currently receive notifications only via email, missing time-sensitive alerts when not checking email.
+
+### 2.2 User Impact
+All 10,000+ users will receive faster, more reliable notifications through their preferred channels.
+
+### 2.3 Business Value
+- Increase user engagement by 30% (based on similar implementations)
+- Reduce missed notification rate from 25% to <5%
+- Enable future features requiring real-time alerts
+
+## 3. Requirements
+
+### 3.1 Functional Requirements
+
+#### FR-1: Email Notification Support
+**Description**: System sends HTML/text emails via SMTP
+**Priority**: Critical
+**Acceptance Criteria**:
+- [ ] Supports HTML and plain text formats
+- [ ] Includes unsubscribe link in all emails
+- [ ] Tracks open rates and click rates
+- [ ] Handles bounces and failures gracefully
+
+#### FR-2: SMS Notification Support
+**Description**: System sends SMS via Twilio API
+**Priority**: High
+**Acceptance Criteria**:
+- [ ] Supports international phone numbers
+- [ ] Limits message length to 160 characters
+- [ ] Tracks delivery status
+- [ ] Respects user opt-out preferences
+
+[... continues with remaining requirements]
+```
+
+---
+
+### 2.2 ADR (Architecture Decision Record)
+
+**Required For**: Large scale only (for major architectural decisions)
+**Creator**: ROR (Technical Designer)
+**Location**: `docs/plans/adrs/`
+**Filename Pattern**: `ADR-{NNN}-{decision-title}.md`
+
+**Template Structure**:
+
+```markdown
+# ADR-{NNN}: {Decision Title}
+
+**Status**: Proposed | Accepted | Deprecated | Superseded by ADR-XXX
+**Date**: {date}
+**Deciders**: {who made the decision}
+**Context**: {related to which feature/component}
+
+---
+
+## Context
+
+[What is the issue we're seeing that is motivating this decision or change?]
+
+## Decision
+
+[What is the change that we're proposing and/or doing?]
+
+## Consequences
+
+### Positive
+
+- [Consequence 1]
+- [Consequence 2]
+
+### Negative
+
+- [Consequence 1]
+- [Consequence 2]
+
+### Neutral
+
+- [Consequence 1]
+
+## Alternatives Considered
+
+### Alternative 1: {Name}
+
+**Description**: [What is this alternative?]
+
+**Pros**:
+- Pro 1
+- Pro 2
+
+**Cons**:
+- Con 1
+- Con 2
+
+**Why Rejected**: [Reasoning]
+
+### Alternative 2: {Name}
+
+[Same structure as Alternative 1]
+
+## Implementation Notes
+
+[Technical details, gotchas, migration path, etc.]
+
+## References
+
+- [Link to related PRD]
+- [Link to external documentation]
+- [Link to proof of concept]
+
+---
+
+**Review History**:
+- {date}: Proposed by ROR
+- {date}: Discussed with team
+- {date}: Accepted by {user}
+```
+
+**Example ADR**:
+
+```markdown
+# ADR-002: Use Message Queue for Notification System
+
+**Status**: Accepted
+**Date**: 2025-10-11
+**Deciders**: ROR, User
+**Context**: Multi-channel notification system (PRD-2025-001)
+
+---
+
+## Context
+
+The notification system must handle 10,000+ notifications daily across email, SMS, and push channels. Peak load can reach 500 notifications/minute during system events.
+
+Current approach (direct sending) would:
+- Block request threads during sending
+- Fail silently on third-party API outages
+- Provide no retry mechanism
+- Make it hard to add new channels
+
+## Decision
+
+Implement message queue architecture using RabbitMQ with:
+- Separate queues per channel (email-queue, sms-queue, push-queue)
+- Worker processes consuming from queues
+- Dead letter queue (DLQ) for failed messages
+- Retry logic with exponential backoff
+
+## Consequences
+
+### Positive
+
+- **Async Processing**: Request threads don't block on notification sending
+- **Reliability**: Failed messages retry automatically (up to 3 attempts)
+- **Scalability**: Can add more workers to handle load
+- **Observability**: Queue depth shows system health
+- **Flexibility**: Easy to add new channels (new queue + worker)
+
+### Negative
+
+- **Complexity**: Requires RabbitMQ infrastructure
+- **Eventual Consistency**: Notifications sent eventually, not immediately
+- **Operational Overhead**: Monitor queue health, manage workers
+- **Cost**: Additional infrastructure (RabbitMQ server, worker instances)
+
+### Neutral
+
+- **Learning Curve**: Team needs to learn RabbitMQ patterns
+- **Message Format**: Need to standardize message schema
+
+## Alternatives Considered
+
+### Alternative 1: Direct Sending (Status Quo)
+
+**Description**: Send notifications directly from API endpoints
+
+**Pros**:
+- Simple implementation
+- No additional infrastructure
+- Immediate sending (not async)
+
+**Cons**:
+- Blocks request threads (slow API responses)
+- No retry on failure
+- Hard to scale
+- Tight coupling to third-party APIs
+
+**Why Rejected**: Doesn't meet reliability and scalability requirements
+
+### Alternative 2: Database-Based Queue
+
+**Description**: Use database table as queue (job_queue table), polled by workers
+
+**Pros**:
+- No new infrastructure (use existing DB)
+- Simple to implement
+- ACID guarantees
+
+**Cons**:
+- DB becomes bottleneck at scale
+- Polling creates DB load
+- Lacks queue-specific features (DLQ, routing)
+- Not designed for high-throughput queuing
+
+**Why Rejected**: Won't scale to peak load (500/min), creates DB performance issues
+
+### Alternative 3: AWS SQS
+
+**Description**: Use managed message queue service (AWS SQS)
+
+**Pros**:
+- Fully managed (no infrastructure to maintain)
+- Highly scalable
+- Pay-per-use pricing
+
+**Cons**:
+- Vendor lock-in (AWS only)
+- Higher latency than self-hosted (network)
+- Additional AWS cost
+- Requires AWS account setup
+
+**Why Rejected**: We're infrastructure-agnostic, prefer self-hosted solutions
+
+## Implementation Notes
+
+**RabbitMQ Setup**:
+- Use Docker Compose for local development
+- Production: dedicated RabbitMQ cluster (3 nodes for HA)
+- Enable management plugin for monitoring
+
+**Message Schema**:
+```json
+{
+  "id": "notif-123",
+  "channel": "email",
+  "recipient": "user@example.com",
+  "template": "welcome-email",
+  "data": { "userName": "John" },
+  "priority": 1,
+  "createdAt": "2025-10-11T10:00:00Z"
+}
+```
+
+**Worker Implementation**:
+- Node.js workers using `amqplib`
+- One worker process per channel initially
+- Scale horizontally based on queue depth
+
+## References
+
+- [PRD-2025-001: Multi-Channel Notification System](./requirements/PRD-2025-001.md)
+- [RabbitMQ Documentation](https://www.rabbitmq.com/documentation.html)
+- [Message Queue Patterns](https://www.enterpriseintegrationpatterns.com/)
+
+---
+
+**Review History**:
+- 2025-10-11: Proposed by ROR
+- 2025-10-11: Discussed alternatives with team
+- 2025-10-11: Accepted by user
+```
+
+---
+
+### 2.3 Design Document
+
+**Required For**: Medium and Large scale
+**Creator**: ROR (Technical Designer)
+**Location**: `docs/plans/design/`
+**Filename Pattern**: `DESIGN-{feature-name}-{date}.md`
+
+**Template Structure**:
+
+```markdown
+# Design Document: {Feature Name}
+
+**Design ID**: DESIGN-{YYYY}-{NNN}
+**Created**: {date}
+**Author**: ROR
+**Related**: PRD-{NNN} (if large scale)
+**Status**: Draft | Approved | Implemented
+
+---
+
+## 1. Overview
+
+[Brief description of what we're designing]
+
+## 2. Goals
+
+- Goal 1
+- Goal 2
+- Goal 3
+
+## 3. Non-Goals
+
+- Non-goal 1 (what we're explicitly NOT doing)
+- Non-goal 2
+
+## 4. Architecture
+
+### 4.1 High-Level Design
+
+[Diagram showing components and interactions]
+
+```mermaid
+graph TD
+    A[Component A] --> B[Component B]
+    B --> C[Component C]
+    B --> D[Component D]
+```
+
+### 4.2 Component Descriptions
+
+#### Component A: {Name}
+**Responsibility**: [What does this component do?]
+**Interface**: [API, functions, events]
+**Dependencies**: [What does it depend on?]
+
+[Repeat for each component]
+
+### 4.3 Data Flow
+
+[Describe how data flows through the system]
+
+```
+User Request
+    ↓
+API Controller
+    ↓
+Service Layer
+    ↓
+Database
+```
+
+## 5. Detailed Design
+
+### 5.1 API Endpoints
+
+#### POST /api/users
+**Description**: Create new user
+**Request**:
+```json
+{
+  "email": "user@example.com",
+  "password": "secure123",
+  "name": "John Doe"
+}
+```
+
+**Response** (201 Created):
+```json
+{
+  "id": "user-123",
+  "email": "user@example.com",
+  "name": "John Doe",
+  "createdAt": "2025-10-11T10:00:00Z"
+}
+```
+
+**Errors**:
+- 400: Invalid email format
+- 409: Email already exists
+
+[Repeat for each endpoint]
+
+### 5.2 Database Schema
+
+```sql
+CREATE TABLE users (
+  id VARCHAR(36) PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  name VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_email (email)
+);
+```
+
+### 5.3 Core Algorithms
+
+#### User Validation Algorithm
+
+```
+function validateUser(user):
+  if not user.email:
+    throw Error("Email required")
+
+  if not isValidEmail(user.email):
+    throw Error("Invalid email format")
+
+  if not user.password or user.password.length < 8:
+    throw Error("Password must be at least 8 characters")
+
+  return true
+```
+
+## 6. Error Handling
+
+| Error | Cause | Response | User Message |
+|-------|-------|----------|--------------|
+| EmailExistsError | Duplicate email | 409 Conflict | "Email already registered" |
+| ValidationError | Invalid input | 400 Bad Request | "Invalid email format" |
+
+## 7. Security Considerations
+
+- Passwords hashed using bcrypt (cost factor: 12)
+- JWT tokens for authentication (expiry: 7 days)
+- Rate limiting: 5 requests/second per IP
+- Input sanitization to prevent SQL injection
+
+## 8. Performance Considerations
+
+- Database indexes on `email` field
+- Connection pooling (max: 20 connections)
+- Response caching for GET requests (TTL: 5 min)
+- Target response time: <200ms (p95)
+
+## 9. Testing Strategy
+
+### 9.1 Unit Tests
+- Test each service method independently
+- Mock database and external APIs
+- Target: 80%+ coverage
+
+### 9.2 Integration Tests
+- Test API endpoints end-to-end
+- Use test database
+- Verify database state changes
+
+### 9.3 E2E Tests (if large scale)
+- Test complete user flows
+- Use real browser/API client
+- Cover critical paths only
+
+## 10. Verification Levels
+
+**This design is**: Level 2 (L2)
+
+- **L1 (Low)**: Simple CRUD, no external dependencies
+- **L2 (Medium)**: Moderate complexity, <5 dependencies → **This design**
+- **L3 (High)**: Complex, >5 dependencies, critical path
+
+**Verification Requirements** (L2):
+- Unit tests required
+- Integration tests required
+- Code review by DRA
+
+## 11. Open Questions
+
+- [ ] Question 1: How should we handle password reset flow?
+- [ ] Question 2: Should we support OAuth login?
+
+---
+
+**Review History**:
+- {date}: Created by ROR
+- {date}: Reviewed and approved by {user}
+```
+
+---
+
+### 2.4 Work Plan
+
+**Required For**: Medium and Large scale
+**Creator**: TRA (Work Planner)
+**Location**: `docs/plans/plans/`
+**Filename Pattern**: `PLAN-{feature-name}-{date}.md`
+
+**Template Structure**:
+
+```markdown
+# Work Plan: {Feature Name}
+
+**Plan ID**: PLAN-{YYYY}-{NNN}
+**Created**: {date}
+**Author**: TRA
+**Related**: DESIGN-{NNN}
+**Estimated Duration**: {X} hours/days
+
+---
+
+## 1. Overview
+
+[Brief description of implementation plan]
+
+## 2. Implementation Phases
+
+### Phase 1: {Phase Name}
+
+**Duration**: {X} hours
+**Deliverables**: {List of deliverables}
+
+**Tasks**:
+1. Task 1 description
+2. Task 2 description
+3. Task 3 description
+
+**Dependencies**: None | Phase X
+
+**Quality Gate**: BAS 6-phase after phase completion
+
+### Phase 2: {Phase Name}
+
+[Same structure as Phase 1]
+
+### Phase 3: {Phase Name}
+
+[Same structure as Phase 1]
+
+## 3. Task Dependencies
+
+```mermaid
+graph LR
+    P1[Phase 1] --> P2[Phase 2]
+    P2 --> P3[Phase 3]
+    P1 --> P3
+```
+
+## 4. Stop Points
+
+**Stop Point 1**: After Phase X
+- User reviews {deliverable}
+- Approves before proceeding to Phase Y
+
+[Repeat for each stop point based on scale]
+
+## 5. Quality Gates
+
+**Integration Points**:
+- After each phase: BAS 6-phase quality gate
+- After all phases: Full regression testing
+- Before commit: DRA code review
+
+## 6. Risks
+
+| Risk | Mitigation |
+|------|------------|
+| Risk 1: External API downtime | Use mock API for development |
+| Risk 2: Database migration complexity | Test on copy of production data |
+
+## 7. Rollback Plan
+
+If implementation fails:
+1. Revert commits: `git reset --hard HEAD~N`
+2. Restore database: Use backup from before start
+3. Notify team: Via Slack/Email
+
+---
+
+**Review History**:
+- {date}: Created by TRA
+- {date}: Reviewed and approved by {user}
+```
+
+---
+
+### 2.5 Task Breakdown
+
+**Required For**: Medium and Large scale
+**Creator**: EUS (Task Decomposer)
+**Location**: `docs/plans/tasks/`
+**Filename Pattern**: `TASKS-{feature-name}-{date}.md`
+
+**Template Structure**:
+
+```markdown
+# Task Breakdown: {Feature Name}
+
+**Task List ID**: TASKS-{YYYY}-{NNN}
+**Created**: {date}
+**Author**: EUS
+**Related**: PLAN-{NNN}
+**Total Tasks**: {N}
+
+---
+
+## Task List
+
+### Task 1: {Task Name}
+
+**ID**: T-001
+**Phase**: RED (Test) | GREEN (Implementation) | REFACTOR
+**Estimated**: {X} minutes
+**Dependencies**: None | T-XXX, T-YYY
+**Granularity**: 1 commit
+
+**Description**:
+[What this task accomplishes]
+
+**Acceptance Criteria**:
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+**Files Modified**:
+- `src/file1.js`
+- `tests/file1.test.js`
+
+**Test Strategy**:
+- Write failing test for {functionality}
+- Implement {functionality}
+- Ensure test passes
+
+---
+
+### Task 2: {Task Name}
+
+[Same structure as Task 1]
+
+[Repeat for all tasks]
+
+---
+
+## Task Summary
+
+**Total Tasks**: {N}
+**Estimated Duration**: {X} hours
+**Parallel Tasks**: {N} (tasks with no dependencies)
+**Sequential Tasks**: {N} (tasks with dependencies)
+
+## Dependency Graph
+
+```mermaid
+graph TD
+    T1[Task 1] --> T3[Task 3]
+    T2[Task 2] --> T3
+    T3 --> T4[Task 4]
+```
+
+**Critical Path**: T1 → T3 → T4 ({X} hours)
+
+**Max Dependency Depth**: 2 levels ✅
+
+---
+
+**Review History**:
+- {date}: Created by EUS
+- {date}: Reviewed and approved by {user}
+```
+
+---
+
+### 2.6 Inline Documentation
+
+**Required For**: All scales
+**Creator**: KIL (Task Executor) during implementation
+**Location**: Within source code files
+
+**Requirements**:
+
+**1. Function Documentation (JSDoc)**:
+
+```javascript
+/**
+ * Calculates the total price including tax and shipping
+ * @param {Object} order - The order object
+ * @param {number} order.subtotal - Order subtotal
+ * @param {number} order.taxRate - Tax rate (0-1)
+ * @param {number} order.shippingCost - Shipping cost
+ * @returns {number} Total price
+ * @throws {ValidationError} If order is invalid
+ * @example
+ * const total = calculateTotal({
+ *   subtotal: 100,
+ *   taxRate: 0.10,
+ *   shippingCost: 5
+ * });
+ * // Returns: 115
+ */
+function calculateTotal(order) {
+  // Implementation
+}
+```
+
+**2. Complex Logic Comments**:
+
+```javascript
+function processPayment(payment) {
+  // Use exponential backoff for retries to avoid overwhelming payment gateway
+  // Formula: delay = baseDelay * 2^retryAttempt
+  // Max retries: 3 (delays: 1s, 2s, 4s)
+  const delay = baseDelay * Math.pow(2, retryAttempt);
+
+  // Business rule: Payments over $1000 require additional verification
+  // per compliance requirement SEC-042
+  if (payment.amount > 1000) {
+    requireAdditionalVerification(payment);
+  }
+}
+```
+
+**3. File Headers** (for large scale):
+
+```javascript
+/**
+ * User Service
+ *
+ * Handles user CRUD operations and authentication.
+ *
+ * Architecture:
+ * - Uses UserRepository for database access
+ * - Emits events via EventEmitter for user lifecycle
+ * - Integrates with EmailService for welcome emails
+ *
+ * Related:
+ * - PRD-2025-001: User Management System
+ * - DESIGN-2025-005: User Service Architecture
+ *
+ * @module services/userService
+ */
+```
+
+**4. TODOs** (temporary, should be resolved):
+
+```javascript
+// TODO: Add rate limiting to prevent abuse (see ISSUE-123)
+// TODO: Implement caching for frequently accessed users (PERF-045)
+// FIXME: This fails for users with special characters in name (BUG-078)
+```
+
+---
+
+## 3. Documentation Quality Standards
+
+### 3.1 Completeness
+
+**All documents must include**:
+- Clear title and metadata (ID, date, author)
+- Purpose/overview section
+- All required sections per template
+- Review history
+
+**BON (Document Reviewer) validates**:
+- All required sections present
+- No placeholder text (e.g., "{TODO}", "TBD")
+- Examples provided where helpful
+- Cross-references to related docs
+
+### 3.2 Clarity
+
+**Documentation must be**:
+- Understandable by team members unfamiliar with the feature
+- Free of jargon (or jargon explained)
+- Consistent terminology throughout
+- Well-structured (headings, lists, tables)
+
+**BON checks for**:
+- Readability (clear sentences, logical flow)
+- Consistent terminology (e.g., "user" vs "account holder")
+- Proper formatting (markdown syntax)
+- Diagrams where helpful (architecture, flow)
+
+### 3.3 Accuracy
+
+**Documentation must**:
+- Match implementation (or vice versa)
+- Be updated when code changes
+- Contain no outdated information
+- Reference correct file paths and IDs
+
+**BON validates**:
+- Cross-references are valid (PRD IDs, design IDs exist)
+- Code examples are syntactically correct
+- File paths are accurate
+- Dates and version numbers consistent
+
+### 3.4 Maintainability
+
+**Documentation should**:
+- Use templates consistently
+- Be version controlled (git)
+- Have clear review history
+- Be updated as part of feature changes
+
+**BON ensures**:
+- Templates followed correctly
+- Review history populated
+- Status updated (Draft → Approved → Implemented)
+- Related docs linked
+
+---
+
+## 4. Documentation Workflow
+
+### 4.1 Small Scale Workflow
+
+```
+User Request → MON (analyze)
+                 ↓
+            KIL (implement with inline docs)
+                 ↓
+            BAS (quality gate)
+                 ↓
+            [Commit with inline docs only]
+```
+
+**No separate documents created** - inline documentation sufficient.
+
+### 4.2 Medium Scale Workflow
+
+```
+User Request → MON (analyze)
+                 ↓
+            ROR (create design doc)
+                 ↓
+            🛑 STOP: User reviews DESIGN doc
+                 ↓
+            TRA (create work plan)
+                 ↓
+            EUS (create task breakdown)
+                 ↓
+            🛑 STOP: User reviews PLAN + TASKS
+                 ↓
+            KIL (implement with inline docs)
+                 ↓
+            BAS (quality gate)
+                 ↓
+            DRA (review code + docs)
+                 ↓
+            [Commit with DESIGN, PLAN, TASKS, inline docs]
+```
+
+**Documents created**: Design Doc, Work Plan, Task Breakdown
+
+### 4.3 Large Scale Workflow
+
+```
+Investigation → CAP (create PRD)
+                   ↓
+               🛑 STOP: User reviews PRD
+                   ↓
+            MON (analyze PRD)
+                   ↓
+            ROR (create ADR for major decisions)
+                   ↓
+               🛑 STOP: User reviews ADR
+                   ↓
+            ROR (create design doc)
+                   ↓
+               🛑 STOP: User reviews DESIGN
+                   ↓
+            TRA (create work plan)
+                   ↓
+            EUS (create task breakdown)
+                   ↓
+               🛑 STOP: User reviews PLAN + TASKS
+                   ↓
+            KIL (implement with inline docs)
+                   ↓
+            BAS (quality gate)
+                   ↓
+            APO (create E2E acceptance tests)
+                   ↓
+            DRA (review code + docs)
+                   ↓
+            BON (review all documentation)
+                   ↓
+            [Commit with PRD, ADR, DESIGN, PLAN, TASKS, inline docs]
+```
+
+**Documents created**: PRD, ADR, Design Doc, Work Plan, Task Breakdown, E2E Tests
+
+---
+
+## 5. Enforcement
+
+### 5.1 BON (Document Reviewer)
+
+**Reviews**:
+- PRD completeness (large scale)
+- ADR completeness (large scale)
+- Design doc completeness (medium/large)
+- Work plan completeness (medium/large)
+- Task breakdown completeness (medium/large)
+- Documentation consistency across all docs
+
+**Scores**:
+- 90-100: Excellent
+- 80-89: Good
+- 70-79: Acceptable
+- <70: Needs improvement
+
+**Blocks commit if**: Documentation score <70 (large scale only)
+
+### 5.2 DRA (Code Reviewer)
+
+**Reviews**:
+- Inline documentation quality
+- JSDoc completeness
+- Comment clarity
+- Code-documentation match
+
+**Provides feedback if**: Inline docs insufficient or outdated
+
+### 5.3 ZEN (Documentation Specialist)
+
+**Maintains**:
+- This document (DOCUMENTATION-CRITERIA.md)
+- ARCHITECTURE.md
+- ISSUES.md
+- Technical-Debt.md
+
+**Ensures**: Project-level documentation stays up-to-date
+
+---
+
+## References
+
+- AI-DEVELOPMENT-GUIDE.md (scale-based workflows)
+- CODING-PRINCIPLES.md (inline doc standards)
+- TESTING-PRINCIPLES.md (test documentation)
+
+---
+
+**Document maintained by**: ZEN (Documentation Specialist)
+**Enforced by**: BON (Document Reviewer), ROR (Design Creator), CAP (PRD Creator)
+**Last reviewed**: {{date}}
