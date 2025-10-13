@@ -8,37 +8,49 @@
 
 ## 👥 LEADERSHIP TEAM
 
-### Aly (Chief Technology Officer)
+### ALY (Chief Technology Officer)
 **File:** [.claude/agents/leadership/aly-cto.md](.claude/agents/leadership/aly-cto.md)
-**Role:** Strategic leadership and investigation orchestration
-**Specialization:** Trinity Method v7.0 architecture, investigation-first methodology
+**Role:** Strategic leadership, scale determination, and AJ MAESTRO coordination
+**Specialization:** Trinity Method v2.0 architecture, scale-based workflows, stop point management
 
 **When to Deploy:**
+- All implementation requests (ALY determines scale)
 - Complex architectural decisions
-- Investigation planning and work order creation
+- Medium/Large scale projects (stop point reviews)
 - Strategic refactoring initiatives
-- Quality assurance reviews
 
 **To invoke ALY:**
 - Reference: "Please review `.claude/agents/leadership/aly-cto.md` for strategic guidance"
-- ALY provides strategic planning, architecture decisions, and investigation orchestration
+- ALY determines scale (Small/Medium/Large) and coordinates AJ MAESTRO for implementation
 
 ---
 
-### AJ (Implementation Lead)
-**File:** [.claude/agents/leadership/aj-cc.md](.claude/agents/leadership/aj-cc.md)
-**Role:** Tactical implementation and code execution
-**Specialization:** Work order execution, code implementation, testing
+### AJ MAESTRO (Implementation Orchestrator)
+**File:** [.claude/agents/leadership/aj-maestro.md](.claude/agents/leadership/aj-maestro.md)
+**Role:** AI-orchestrated implementation coordination using 11-agent team
+**Specialization:** Planning layer, execution layer, support layer coordination
 
 **When to Deploy:**
-- Implementing approved work orders
-- Bug fixes and feature development
-- Code refactoring
-- Test suite creation
+- All implementation tasks (Small/Medium/Large)
+- Coordinating planning agents (MON, ROR, TRA, EUS)
+- Managing execution agents (KIL, BAS, DRA)
+- Orchestrating support agents (APO, BON, CAP, URO)
 
-**To invoke AJ:**
-- Reference: "Please review `.claude/agents/leadership/aj-cc.md` for implementation tasks"
-- AJ provides tactical implementation, code execution, and work order completion
+**To invoke AJ MAESTRO:**
+- Reference: "Please review `.claude/agents/leadership/aj-maestro.md` to orchestrate implementation"
+- AJ MAESTRO coordinates all 11 specialized agents based on scale-determined workflow
+
+---
+
+### AJ (Claude Code Agent) [DEPRECATED]
+**File:** [.claude/agents/leadership/aj-cc.md](.claude/agents/leadership/aj-cc.md)
+**Role:** Legacy tactical implementation
+**Status:** Replaced by AJ MAESTRO + 11-agent team in v2.0
+
+**Migration Note:**
+- v1.0 projects: Continue using AJ for single-agent implementation
+- v2.0 projects: Use AJ MAESTRO for orchestrated multi-agent implementation
+- Use `/trinity-orchestrate` slash command to invoke AJ MAESTRO workflows
 
 ---
 
@@ -116,18 +128,216 @@
 
 ### JUNO (Quality Auditor)
 **File:** [.claude/agents/audit/juno-auditor.md](.claude/agents/audit/juno-auditor.md)
-**Role:** Comprehensive code quality and Trinity deployment audits
-**Specialization:** Quality assurance, security audits, performance analysis
+**Role:** Comprehensive code quality and Trinity deployment audits (DRA compliance validation)
+**Specialization:** Quality assurance, security audits, performance analysis, v2.0 deployment verification
 
 **When to Deploy:**
-- Trinity deployment verification
-- Code quality audits
+- Trinity v2.0 deployment verification
+- Code quality audits (DRA standards)
 - Security vulnerability scans
 - Performance bottleneck identification
+- Large scale stop point #4 (final review)
 
 **To invoke JUNO:**
 - Reference: "Please review `.claude/agents/audit/juno-auditor.md` to audit Trinity Method deployment and code quality"
-- JUNO performs comprehensive code quality audits and Trinity deployment verification
+- JUNO performs comprehensive audits using DRA compliance standards (≥70% acceptance criteria)
+
+---
+
+## 🎯 PLANNING LAYER (4 Agents - MON, ROR, TRA, EUS)
+
+### MON (Requirements Analyst)
+**File:** [.claude/agents/planning/mon-requirements.md](.claude/agents/planning/mon-requirements.md)
+**Role:** Requirements analysis, scale determination, acceptance criteria definition
+**Specialization:** Given-When-Then criteria, risk assessment, testability
+
+**When to Deploy:**
+- Large scale projects (stop point #1: requirements review)
+- Complex requirements analysis
+- Acceptance criteria definition
+
+**To invoke MON:**
+- Use `/trinity-requirements` slash command
+- AJ MAESTRO invokes MON automatically for Medium/Large scale projects
+
+---
+
+### ROR (Design Architect)
+**File:** [.claude/agents/planning/ror-design.md](.claude/agents/planning/ror-design.md)
+**Role:** Technical design, ADRs, Design Doc creation
+**Specialization:** Function signatures (≤2 params), error handling, DRA compliance
+
+**When to Deploy:**
+- Medium/Large scale projects (stop point #2: design approval)
+- Architecture decisions
+- Design Doc creation
+
+**To invoke ROR:**
+- Use `/trinity-design` slash command
+- AJ MAESTRO invokes ROR automatically for Medium/Large scale projects
+
+---
+
+### TRA (Work Planner)
+**File:** [.claude/agents/planning/tra-planner.md](.claude/agents/planning/tra-planner.md)
+**Role:** Implementation sequencing, BAS quality gates, timeline estimation
+**Specialization:** Task ordering, dependency resolution, 6-phase quality gates
+
+**When to Deploy:**
+- Large scale projects (stop point #3: plan approval)
+- Complex task sequencing
+- Timeline estimation
+
+**To invoke TRA:**
+- Use `/trinity-plan` slash command
+- AJ MAESTRO invokes TRA automatically for all scale projects
+
+---
+
+### EUS (Task Decomposer)
+**File:** [.claude/agents/planning/eus-decomposer.md](.claude/agents/planning/eus-decomposer.md)
+**Role:** Atomic task breakdown, commit planning, TDD enforcement
+**Specialization:** 1 task = 1 commit rule, RED-GREEN-REFACTOR, Conventional Commits
+
+**When to Deploy:**
+- All scale projects (atomic task breakdown)
+- TDD cycle planning
+- Commit message generation
+
+**To invoke EUS:**
+- Use `/trinity-decompose` slash command
+- AJ MAESTRO invokes EUS automatically for all scale projects
+
+---
+
+## ⚙️ EXECUTION LAYER (3 Agents - KIL, BAS, DRA)
+
+### KIL (Task Executor)
+**File:** [.claude/agents/aj-team/kil-task-executor.md](.claude/agents/aj-team/kil-task-executor.md)
+**Role:** TDD implementation, code execution, commit creation
+**Specialization:** RED-GREEN-REFACTOR cycle, atomic commits, test-first development
+
+**When to Deploy:**
+- All implementation tasks (invoked by AJ MAESTRO)
+- TDD cycle execution
+- Code writing and testing
+
+**To invoke KIL:**
+- AJ MAESTRO invokes KIL automatically
+- Direct invocation for specific TDD tasks
+
+---
+
+### BAS (Quality Gate)
+**File:** [.claude/agents/aj-team/bas-quality-gate.md](.claude/agents/aj-team/bas-quality-gate.md)
+**Role:** 6-phase quality gate enforcement
+**Specialization:** Linting, building, testing, coverage (≥80%), best practices
+
+**When to Deploy:**
+- After every KIL commit (automatic)
+- CI/CD pipeline integration
+- Quality validation
+
+**To invoke BAS:**
+- AJ MAESTRO invokes BAS automatically after each commit
+- Manual invocation for quality checks
+
+**6 Phases:**
+1. Linting (ESLint/Prettier auto-fix)
+2. Structure validation
+3. Build validation (TypeScript)
+4. Testing (all tests pass)
+5. Coverage check (≥80%)
+6. Final review (best practices)
+
+---
+
+### DRA (Code Reviewer)
+**File:** [.claude/agents/aj-team/dra-code-reviewer.md](.claude/agents/aj-team/dra-code-reviewer.md)
+**Role:** Code review, Design Doc compliance validation
+**Specialization:** ≥70% acceptance criteria, function complexity, error handling
+
+**When to Deploy:**
+- After implementation complete (stop points)
+- Design Doc compliance check
+- Final code review
+
+**To invoke DRA:**
+- AJ MAESTRO invokes DRA at stop points
+- Manual invocation for code reviews
+
+**DRA Standards:**
+- Functions ≤2 parameters
+- Function length <200 lines
+- Nesting depth ≤4 levels
+- Try-catch wraps async
+- ≥70% acceptance criteria met
+
+---
+
+## 🛠️ SUPPORT LAYER (4 Agents - APO, BON, CAP, URO)
+
+### APO (Documentation Specialist)
+**File:** [.claude/agents/aj-team/apo-documentation-specialist.md](.claude/agents/aj-team/apo-documentation-specialist.md)
+**Role:** API documentation, JSDoc generation, README maintenance
+**Specialization:** OpenAPI specs, TSDoc, inline documentation
+
+**When to Deploy:**
+- API documentation updates
+- JSDoc/TSDoc generation
+- README maintenance
+
+**To invoke APO:**
+- AJ MAESTRO invokes APO for documentation tasks
+- Manual invocation for doc updates
+
+---
+
+### BON (Dependency Manager)
+**File:** [.claude/agents/aj-team/bon-dependency-manager.md](.claude/agents/aj-team/bon-dependency-manager.md)
+**Role:** Dependency updates, security patches, version management
+**Specialization:** npm/pip/cargo updates, vulnerability scanning, lockfile management
+
+**When to Deploy:**
+- Dependency updates
+- Security patch application
+- Version conflict resolution
+
+**To invoke BON:**
+- AJ MAESTRO invokes BON for dependency tasks
+- Manual invocation for updates
+
+---
+
+### CAP (Configuration Specialist)
+**File:** [.claude/agents/aj-team/cap-configuration-specialist.md](.claude/agents/aj-team/cap-configuration-specialist.md)
+**Role:** Configuration file management, environment setup
+**Specialization:** tsconfig.json, .env, CI/CD configs, linting configs
+
+**When to Deploy:**
+- Configuration updates
+- Environment variable management
+- Build configuration changes
+
+**To invoke CAP:**
+- AJ MAESTRO invokes CAP for config tasks
+- Manual invocation for config updates
+
+---
+
+### URO (Refactoring Specialist)
+**File:** [.claude/agents/aj-team/uro-refactoring-specialist.md](.claude/agents/aj-team/uro-refactoring-specialist.md)
+**Role:** Code refactoring, technical debt reduction, DRY enforcement
+**Specialization:** Extract functions, reduce complexity, eliminate duplication
+
+**When to Deploy:**
+- Code refactoring tasks
+- Technical debt reduction
+- Complexity reduction
+
+**To invoke URO:**
+- AJ MAESTRO invokes URO for refactoring tasks
+- Manual invocation for code cleanup
 
 ---
 
@@ -211,15 +421,34 @@ npx @trinity-method/cli deploy --ci-deploy
 
 ## 🎯 QUICK REFERENCE
 
-| Need | Agent | Team | When to Use |
-|------|-------|------|-------------|
-| Strategic Planning | Aly | Leadership | Architecture, investigations |
-| Code Implementation | AJ | Leadership | Features, bugs, refactoring |
-| Complete Docs | ZEN | Deployment | After deployment, doc updates |
-| Quality Audit | JUNO | Audit | Verification, security review |
-| Context Updates | INO | Deployment | CLAUDE.md maintenance |
-| Structure Tasks | TAN | Deployment | Directory organization |
-| CI/CD Customization | Ein | Deployment | Coverage setup, badges, optimization |
+### v2.0 Agents (18 Total)
+
+| Need | Agent | Layer | Slash Command |
+|------|-------|-------|---------------|
+| **Scale Determination** | ALY | Leadership | N/A (always first) |
+| **AI Orchestration** | AJ MAESTRO | Leadership | `/trinity-orchestrate` |
+| **Requirements** | MON | Planning | `/trinity-requirements` |
+| **Technical Design** | ROR | Planning | `/trinity-design` |
+| **Work Planning** | TRA | Planning | `/trinity-plan` |
+| **Task Decomposition** | EUS | Planning | `/trinity-decompose` |
+| **TDD Implementation** | KIL | Execution | Auto (via MAESTRO) |
+| **Quality Gates** | BAS | Execution | Auto (via MAESTRO) |
+| **Code Review** | DRA | Execution | Auto (via MAESTRO) |
+| **API Documentation** | APO | Support | Auto (via MAESTRO) |
+| **Dependencies** | BON | Support | Auto (via MAESTRO) |
+| **Configuration** | CAP | Support | Auto (via MAESTRO) |
+| **Refactoring** | URO | Support | Auto (via MAESTRO) |
+| **Deployment Structure** | TAN | Deployment | N/A (initial setup) |
+| **Knowledge Base** | ZEN | Deployment | N/A (doc updates) |
+| **Context Management** | INO | Deployment | N/A (CLAUDE.md) |
+| **CI/CD** | Ein | Deployment | N/A (CI/CD setup) |
+| **Quality Audits** | JUNO | Audit | N/A (final review) |
+
+### v1.0 Legacy Agent
+
+| Need | Agent | Team | Status |
+|------|-------|------|--------|
+| Single-Agent Implementation | AJ (Claude Code) | Leadership | Deprecated in v2.0 |
 
 ---
 

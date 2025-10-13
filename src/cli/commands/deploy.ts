@@ -321,9 +321,11 @@ export async function deploy(options: DeployOptions): Promise<void> {
     await fs.ensureDir('.claude/agents/leadership');
     await fs.ensureDir('.claude/agents/deployment');
     await fs.ensureDir('.claude/agents/audit');
+    await fs.ensureDir('.claude/agents/planning'); // v2.0: MON, ROR, TRA, EUS
+    await fs.ensureDir('.claude/agents/aj-team'); // v2.0: KIL, BAS, DRA, APO, BON, CAP, URO
     await fs.ensureDir('.claude/hooks');
     await fs.ensureDir('trinity-hooks');
-    deploymentStats.directories += 5;
+    deploymentStats.directories += 7;
 
     spinner.succeed('Trinity Method structure created');
 
@@ -346,7 +348,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
       ...formatMetrics(metrics), // Merge collected metrics [WO#009]
     };
 
-    // STEP 5: Deploy knowledge base templates
+    // STEP 5: Deploy knowledge base templates (v2.0 includes best practices)
     spinner = ora('Deploying knowledge base templates...').start();
 
     const kbTemplates = [
@@ -354,7 +356,11 @@ export async function deploy(options: DeployOptions): Promise<void> {
       'Trinity.md',
       'To-do.md',
       'ISSUES.md',
-      'Technical-Debt.md'
+      'Technical-Debt.md',
+      'CODING-PRINCIPLES.md',
+      'TESTING-PRINCIPLES.md',
+      'AI-DEVELOPMENT-GUIDE.md',
+      'DOCUMENTATION-CRITERIA.md'
     ];
 
     for (const template of kbTemplates) {
@@ -474,13 +480,23 @@ export async function deploy(options: DeployOptions): Promise<void> {
       spinner.warn(`Source CLAUDE.md template not found for ${stack.framework}`);
     }
 
-    // STEP 7: Deploy agent configurations [WO#007]
+    // STEP 7: Deploy agent configurations [WO#007 + v2.0]
     spinner = ora('Deploying Claude Code agents...').start();
 
     const agentDirs = [
-      { dir: 'leadership', agents: ['aly-cto.md', 'aj-cc.md'] },
+      { dir: 'leadership', agents: ['aly-cto.md', 'aj-maestro.md'] }, // v2.0: aj-cc.md deprecated, use aj-maestro.md
       { dir: 'deployment', agents: ['tan-structure.md', 'zen-knowledge.md', 'ino-context.md', 'ein-cicd.md'] },
-      { dir: 'audit', agents: ['juno-auditor.md'] }
+      { dir: 'audit', agents: ['juno-auditor.md'] },
+      { dir: 'planning', agents: ['mon-requirements.md', 'ror-design.md', 'tra-planner.md', 'eus-decomposer.md'] }, // v2.0 new
+      { dir: 'aj-team', agents: [ // v2.0 new
+        'kil-task-executor.md',
+        'bas-quality-gate.md',
+        'dra-code-reviewer.md',
+        'apo-documentation-specialist.md',
+        'bon-dependency-manager.md',
+        'cap-configuration-specialist.md',
+        'uro-refactoring-specialist.md'
+      ]}
     ];
 
     for (const { dir, agents } of agentDirs) {
@@ -892,9 +908,10 @@ export async function deploy(options: DeployOptions): Promise<void> {
     // SUCCESS: Display deployment summary
     console.log(chalk.green.bold('\n✅ Trinity Method deployed successfully!\n'));
 
-    console.log(chalk.cyan('📊 Deployment Statistics:\n'));
+    console.log(chalk.cyan('📊 Deployment Statistics (v2.0):\n'));
     console.log(chalk.white(`   Directories Created: ${deploymentStats.directories}`));
-    console.log(chalk.white(`   Agents Deployed: ${deploymentStats.agents} (7 agents)`));
+    console.log(chalk.white(`   Agents Deployed: ${deploymentStats.agents} (v2.0: 2 leadership + 4 planning + 7 execution + 4 deployment + 1 audit)`));
+    console.log(chalk.white(`   Best Practices: 4 documents (CODING, TESTING, AI-DEV, DOCS)`));
     console.log(chalk.white(`   Hooks Deployed: ${deploymentStats.hooks}`));
     console.log(chalk.white(`   Templates Deployed: ${deploymentStats.templates} (6 work orders)`));
     console.log(chalk.white(`   Files Created: ${deploymentStats.files}`));
@@ -924,17 +941,21 @@ export async function deploy(options: DeployOptions): Promise<void> {
     }
 
     console.log(chalk.cyan('📚 Quick Start Commands:\n'));
-    console.log(chalk.white('  /trinity-init      ') + chalk.gray('- Complete Trinity integration (run first!)'));
-    console.log(chalk.white('  /trinity-verify    ') + chalk.gray('- Verify installation'));
-    console.log(chalk.white('  /trinity-docs      ') + chalk.gray('- View documentation'));
-    console.log(chalk.white('  /trinity-start     ') + chalk.gray('- Start a workflow'));
-    console.log(chalk.white('  /trinity-continue  ') + chalk.gray('- Resume after interruption'));
-    console.log(chalk.white('  /trinity-end       ') + chalk.gray('- End session & archive'));
-    console.log(chalk.white('  /trinity-workorder ') + chalk.gray('- Create a work order'));
-    console.log(chalk.white('  /trinity-agents    ') + chalk.gray('- View agent directory'));
-    console.log(chalk.white('  /trinity-analytics ') + chalk.gray('- View performance analytics'));
-    console.log(chalk.white('  /trinity-cache-stats') + chalk.gray('- View cache statistics\n'));
-    console.log(chalk.yellow('💡 Tip: ') + chalk.white('Run /trinity-init to complete integration, then /trinity-start to begin\n'));
+    console.log(chalk.white('  /trinity-init         ') + chalk.gray('- Complete Trinity integration (run first!)'));
+    console.log(chalk.white('  /trinity-verify       ') + chalk.gray('- Verify installation'));
+    console.log(chalk.white('  /trinity-start        ') + chalk.gray('- Start a workflow'));
+    console.log(chalk.white('\n  🤖 v2.0 AI Orchestration:'));
+    console.log(chalk.white('  /trinity-orchestrate  ') + chalk.gray('- AI-orchestrated implementation (AJ MAESTRO)'));
+    console.log(chalk.white('  /trinity-requirements ') + chalk.gray('- Analyze requirements (MON)'));
+    console.log(chalk.white('  /trinity-design       ') + chalk.gray('- Create technical design (ROR)'));
+    console.log(chalk.white('  /trinity-plan         ') + chalk.gray('- Plan implementation (TRA)'));
+    console.log(chalk.white('  /trinity-decompose    ') + chalk.gray('- Decompose into atomic tasks (EUS)'));
+    console.log(chalk.white('\n  📋 Legacy Commands:'));
+    console.log(chalk.white('  /trinity-workorder    ') + chalk.gray('- Create a work order'));
+    console.log(chalk.white('  /trinity-agents       ') + chalk.gray('- View agent directory'));
+    console.log(chalk.white('  /trinity-continue     ') + chalk.gray('- Resume after interruption'));
+    console.log(chalk.white('  /trinity-end          ') + chalk.gray('- End session & archive\n'));
+    console.log(chalk.yellow('💡 Tip: ') + chalk.white('Run /trinity-init, then use /trinity-orchestrate for AI-powered implementation\n'));
 
     console.log(chalk.cyan('📚 Next Steps:\n'));
 

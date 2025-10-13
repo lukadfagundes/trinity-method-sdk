@@ -2,7 +2,7 @@
 
 ## What is Trinity Method SDK?
 
-Trinity Method SDK is an **investigation-first development methodology** designed exclusively for [Claude Code](https://claude.com/claude-code), Anthropic's AI pair programming environment. It transforms how you work with AI by enforcing systematic investigation before implementation, creating persistent knowledge across sessions, and deploying 7 specialized AI agents.
+Trinity Method SDK is an **investigation-first development methodology** designed exclusively for [Claude Code](https://claude.com/claude-code), Anthropic's AI pair programming environment. It transforms how you work with AI by enforcing systematic investigation before implementation, creating persistent knowledge across sessions, and deploying 18 specialized AI agents in the v2.0 architecture.
 
 ### Why Trinity Method?
 
@@ -16,7 +16,7 @@ Trinity Method SDK is an **investigation-first development methodology** designe
 **The Solution:**
 - 🔍 **Investigation-first**: Understand before building
 - 📚 **Persistent knowledge**: Never lose context
-- 🤖 **7 Specialized agents**: Right tool for each task
+- 🤖 **18 Specialized agents (v2.0)**: AI-orchestrated development with planning, execution, and support layers
 - 📋 **Work order system**: Structured task management
 - 🚀 **90-second deployment**: Production-ready structure instantly
 
@@ -83,12 +83,13 @@ trinity deploy
      Skip (no linting setup)
    ```
 
-**What happens:**
-- ✅ Creates `trinity/` directory structure
-- ✅ Creates `.claude/` directory with 7 agents
-- ✅ Deploys 8 slash commands to `.claude/commands/`
+**What happens (v2.0):**
+- ✅ Creates `trinity/` directory structure with knowledge base
+- ✅ Creates `.claude/` directory with 18 agents (v2.0 architecture)
+- ✅ Deploys 26 slash commands to `.claude/commands/`
 - ✅ Creates `trinity-hooks/` for session management
 - ✅ Generates `CLAUDE.md` and `TRINITY.md`
+- ✅ Deploys 4 best practices documents (CODING-PRINCIPLES, TESTING-PRINCIPLES, AI-DEVELOPMENT-GUIDE, DOCUMENTATION-CRITERIA)
 - ✅ Configures linting tools (if selected)
 - ✅ Deploys in ~10 seconds
 
