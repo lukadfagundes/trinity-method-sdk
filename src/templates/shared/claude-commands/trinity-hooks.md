@@ -2,79 +2,206 @@
 description: Manage Trinity Hook Library for safe workflow automation
 ---
 
-Manage the Trinity Method Hook Library - view, enable, disable, and test hooks.
+Manage the Trinity Method Hook Library - view, enable, disable, test hooks, and register hooks in `.claude/settings.json`.
 
-**Hook Categories:**
+## ⚠️ CRITICAL: Hook Registration Required
 
-1. **Investigation Hooks**
-   - pre-investigation: Before investigation starts
-   - post-investigation: After investigation completes
-   - investigation-checkpoint: At investigation milestones
+**Hooks must be registered in `.claude/settings.json` to work!**
 
-2. **Cache Hooks**
-   - cache-miss: When cache lookup fails
-   - cache-warm: During cache warming
-   - cache-evict: Before cache eviction
+Creating a hook script in `trinity-hooks/` or `.claude/hooks/` is **NOT enough**. The hook will only execute if registered in `.claude/settings.json` with the appropriate trigger pattern.
 
-3. **Analytics Hooks**
-   - metric-collected: When metrics are gathered
-   - anomaly-detected: When anomalies are found
-   - report-generated: After report creation
+## Hook Registration Syntax
 
-4. **Learning Hooks**
-   - pattern-learned: When new pattern is learned
-   - pattern-applied: When pattern is applied
-   - confidence-threshold: When confidence changes
+Hooks are registered in `.claude/settings.json` under the `hooks` object:
 
-**Hook Management:**
+```json
+{
+  "hooks": {
+    "Stop": {
+      "*": "bash trinity-hooks/session-end-archive.sh"
+    },
+    "PreToolUse": {
+      "Bash(git commit:*)": "bash trinity-hooks/prevent-git.sh"
+    },
+    "PostToolUse": {
+      "Edit(trinity/knowledge-base/*)": "bash trinity-hooks/backup-knowledge.sh"
+    }
+  }
+}
+```
 
-Display all available hooks:
+**Hook Types:**
+- **Stop**: Triggers when session ends
+- **PreToolUse**: Triggers BEFORE tool executes (can block action)
+- **PostToolUse**: Triggers AFTER tool completes
+
+## Default Hooks (Pre-Registered)
+
+These hooks are automatically registered in `.claude/settings.json` when you run `npx trinity deploy`:
+
+### 1. session-end-archive.sh
+- **Type**: Stop
+- **Trigger**: `*` (all session end events)
+- **Purpose**: Archives session work to `trinity/archive/sessions/`
+- **Status**: ✅ Registered
+
+### 2. prevent-git.sh
+- **Type**: PreToolUse
+- **Triggers**:
+  - `Bash(git commit:*)`
+  - `Bash(git push:*)`
+  - `Bash(git merge:*)`
+  - `Bash(git checkout -b:*)`
+  - `Bash(git branch:*)`
+- **Purpose**: Blocks git operations (ALY should handle commits)
+- **Status**: ✅ Registered
+
+### 3. backup-knowledge.sh
+- **Type**: PostToolUse
+- **Triggers**:
+  - `Edit(trinity/knowledge-base/*)`
+  - `Write(trinity/knowledge-base/*)`
+- **Purpose**: Backs up knowledge base edits to `trinity/archive/`
+- **Status**: ✅ Registered
+
+### 4. quality-gates.sh
+- **Type**: PostToolUse
+- **Triggers**:
+  - `Bash(npm run build:*)`
+  - `Bash(npm test:*)`
+- **Purpose**: Enforces quality standards on build/test
+- **Status**: ✅ Registered
+
+## Hook Management
+
+Display all hooks with registration status:
+
+## Creating Custom Hooks
+
+When creating a new hook, you must complete **TWO steps**:
+
+### Step 1: Create Hook Script
+
+```bash
+# 1. Create script in trinity-hooks/
+touch trinity-hooks/my-custom-hook.sh
+chmod +x trinity-hooks/my-custom-hook.sh
+
+# 2. Write hook logic
+# (exit 0 for success, exit 1 for failure/block)
+
+# 3. Copy to .claude/hooks/
+cp trinity-hooks/my-custom-hook.sh .claude/hooks/
+chmod +x .claude/hooks/my-custom-hook.sh
+```
+
+### Step 2: Register Hook in .claude/settings.json ⭐ CRITICAL
+
+```json
+{
+  "hooks": {
+    "PostToolUse": {
+      "SlashCommand(/my-command)": "bash trinity-hooks/my-custom-hook.sh"
+    }
+  }
+}
+```
+
+**Without registration, the hook will NOT execute!**
+
+## Trigger Pattern Examples
+
+**Bash Commands:**
+```json
+"Bash(npm run build:*)": "bash trinity-hooks/build-check.sh"
+"Bash(git commit:*)": "bash trinity-hooks/prevent-git.sh"
+```
+
+**File Operations:**
+```json
+"Edit(src/**/*.ts)": "bash trinity-hooks/code-quality.sh"
+"Write(package.json)": "bash trinity-hooks/dep-check.sh"
+```
+
+**Slash Commands:**
+```json
+"SlashCommand(/trinity-orchestrate)": "bash trinity-hooks/orchestrate-hook.sh"
+"SlashCommand(/trinity-end)": "bash trinity-hooks/session-cleanup.sh"
+```
+
+**Wildcards:**
+```json
+"*": "bash trinity-hooks/log-all.sh"
+"Bash(*:*)": "bash trinity-hooks/log-bash.sh"
+```
+
+## Hook Status Display
+
+When you run this command, see:
+
 ```
 TRINITY HOOK LIBRARY
 ====================
 
-Investigation Hooks:
-  ✅ pre-investigation-validation
-  ✅ post-investigation-cleanup
-  ❌ investigation-auto-archive (disabled)
+Default Hooks (Registered):
+  ✅ session-end-archive.sh (ACTIVE)
+     Type: Stop
+     Trigger: * (all session ends)
 
-Cache Hooks:
-  ✅ cache-miss-logger
-  ❌ cache-performance-alert (disabled)
-  ...
+  ✅ prevent-git.sh (ACTIVE)
+     Type: PreToolUse
+     Triggers: git commit, push, merge, branch operations
+
+  ✅ backup-knowledge.sh (ACTIVE)
+     Type: PostToolUse
+     Triggers: Edit/Write trinity/knowledge-base/*
+
+  ✅ quality-gates.sh (ACTIVE)
+     Type: PostToolUse
+     Triggers: npm run build/test
+
+Custom Hooks:
+  ⚠️  my-custom-hook.sh (NOT REGISTERED)
+     File: trinity-hooks/my-custom-hook.sh
+     Status: Created but not registered - will not trigger
+     Action: Add registration entry to .claude/settings.json
 ```
 
-**Interactive Options:**
+## Testing Hooks
 
-1. **View Hook Details**
-   - Hook description
-   - Trigger conditions
-   - Actions performed
-   - Dependencies
-   - Configuration options
+**Manual test:**
+```bash
+bash trinity-hooks/[hook-name].sh
+```
 
-2. **Enable/Disable Hooks**
-   - Select hook to enable/disable
-   - Validate dependencies
-   - Apply changes
+**Trigger test:**
+- For PostToolUse hooks: Perform the action that triggers it
+- For PreToolUse hooks: Attempt the action it should block
+- For Stop hooks: End a Claude Code session
 
-3. **Test Hooks**
-   - Dry-run hook execution
-   - View hook output
-   - Verify hook behavior
+**Verify registration:**
+```bash
+cat .claude/settings.json | grep "[hook-name]"
+```
 
-4. **Create Custom Hook**
-   - Guide user through hook creation
-   - Use TrinityHookLibrary API
-   - Validate with HookValidator
+## Common Mistakes
 
-5. **Hook Performance**
-   - Execution times
-   - Failure rates
-   - Impact on workflow
+❌ Creating hook file without registering in settings.json
+❌ Wrong trigger pattern (missing `/` in slash commands)
+❌ Wrong hook type (PreToolUse vs PostToolUse)
+❌ Invalid JSON syntax in settings.json
+❌ Forgetting `chmod +x` on hook script
 
-**Safety Features:**
+## Safety Features
+
 - Hook validation before execution
-- Rollback on hook failure
-- Sandbox mode for testing
-- Hook execution logs
+- Exit code 1 blocks action (PreToolUse only)
+- Hook execution logs available
+- JSON validation for settings.json
+
+## Additional Resources
+
+- **Configuration Guide:** `docs/HOOK-CONFIGURATION-GUIDE.md`
+- **Hook Scripts:** `trinity-hooks/*.sh`
+- **Settings:** `.claude/settings.json`
+- **Claude Code Hooks Docs:** https://docs.claude.com/claude-code/hooks

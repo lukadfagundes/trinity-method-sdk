@@ -1,7 +1,5 @@
 ---
 description: Orchestrate implementation using AJ MAESTRO and 11-agent team
-globs: []
-alwaysShow: false
 ---
 
 # Trinity Orchestration - AJ MAESTRO

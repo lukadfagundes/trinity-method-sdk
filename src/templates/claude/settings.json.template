@@ -12,7 +12,9 @@
     },
     "PostToolUse": {
       "Edit(trinity/knowledge-base/*)": "bash trinity-hooks/backup-knowledge.sh",
-      "Write(trinity/knowledge-base/*)": "bash trinity-hooks/backup-knowledge.sh"
+      "Write(trinity/knowledge-base/*)": "bash trinity-hooks/backup-knowledge.sh",
+      "Bash(npm run build:*)": "bash trinity-hooks/quality-gates.sh",
+      "Bash(npm test:*)": "bash trinity-hooks/quality-gates.sh"
     }
   }
 }

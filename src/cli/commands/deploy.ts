@@ -812,6 +812,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
       const trinityIgnores = [
         '',
         '# Trinity Method deployment files',
+        'node_modules/',
         '.claude/',
         'trinity/',
         'trinity-hooks/',

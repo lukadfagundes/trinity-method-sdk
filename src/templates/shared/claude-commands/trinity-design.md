@@ -1,7 +1,5 @@
 ---
 description: Create technical design using ROR (Design Architect)
-globs: []
-alwaysShow: false
 ---
 
 # Trinity Technical Design - ROR

@@ -1,7 +1,5 @@
 ---
 description: Analyze requirements using MON (Requirements Analyst)
-globs: []
-alwaysShow: false
 ---
 
 # Trinity Requirements Analysis - MON

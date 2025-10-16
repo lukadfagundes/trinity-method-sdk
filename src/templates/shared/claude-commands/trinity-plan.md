@@ -1,7 +1,5 @@
 ---
 description: Create implementation plan using TRA (Work Planner)
-globs: []
-alwaysShow: false
 ---
 
 # Trinity Work Planning - TRA

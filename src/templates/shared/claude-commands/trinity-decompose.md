@@ -1,7 +1,5 @@
 ---
 description: Decompose work into atomic tasks using EUS (Task Decomposer)
-globs: []
-alwaysShow: false
 ---
 
 # Trinity Task Decomposition - EUS
