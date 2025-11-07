@@ -53,8 +53,61 @@ TRA produces structured JSON handoff:
 }
 ```
 
+## Visual Workflow Planning
+
+For interactive workflow planning with visual tree display, use `/trinity-orchestrate`.
+
+AJ MAESTRO generates complete workflow plans with:
+- Scale-based phase structures (SMALL/MEDIUM/LARGE)
+- Task breakdown with dependencies
+- Time estimates and parallelization analysis
+- Agent assignments for each task
+- Stop points for user approval
+- Visual tree structure with color coding
+
+### Plan vs. Workflow
+
+**TRA's Plan (Strategic):**
+- Requirements breakdown
+- 3-phase implementation structure
+- High-level task identification
+- Risk assessment
+- Resource allocation
+- Timeline estimation
+
+**AJ MAESTRO's Workflow (Tactical):**
+- Detailed task decomposition
+- Dependency resolution
+- Parallelization opportunities
+- Agent-specific assignments
+- Time-boxed estimates
+- Visual progress tracking
+
+**Use TRA for strategic planning, AJ MAESTRO for workflow execution visualization.**
+
+**See Also:** `/trinity-orchestrate` for interactive workflow planning with visual tree display
+
 ## Usage
 
 **Provide design and TRA will create implementation plan:**
 
 What is the technical design? (Or provide ROR's output)
+
+**For visual workflow generation:**
+
+Use `/trinity-orchestrate` to:
+1. Generate visual workflow plan
+2. See task dependencies as tree structure
+3. View time estimates with parallelization
+4. Get interactive approval workflow
+
+## Related Commands
+
+- `/trinity-orchestrate` - Visual workflow planning with AJ MAESTRO
+- `/trinity-design` - ROR technical design (input to TRA)
+- `/trinity-decompose` - EUS atomic task decomposition
+
+## Source Files
+
+- `src/coordination/AJMaestro.ts` - Workflow plan generator
+- `src/coordination/types.ts` - Workflow type definitions

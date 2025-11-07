@@ -1,0 +1,612 @@
+---
+description: Guide to Trinity investigation templates for structured problem-solving
+---
+
+# Trinity Investigation Templates
+
+**Purpose:** Guide users through selecting and using investigation templates for structured, comprehensive problem-solving.
+
+## Overview
+
+Trinity provides 5 comprehensive investigation templates that guide you through structured problem-solving with best practices built-in. Each template is optimized for a specific investigation type and integrates seamlessly with the Trinity Method workflow.
+
+**Investigation templates ensure:**
+- Comprehensive analysis and documentation
+- Consistent investigation quality
+- Knowledge preservation for future learning
+- Integration with workflow orchestration
+- Archival for organizational memory
+
+## Template Types
+
+### 1. Bug Investigation Template
+
+**Use When:** You need to reproduce, debug, and fix a known issue or defect.
+
+**Template Structure:**
+```markdown
+# Bug Investigation: [Issue Title]
+
+## Issue Description
+- What is broken?
+- How does it manifest?
+- User impact and severity
+
+## Reproduction Steps
+1. Detailed steps to reproduce
+2. Expected behavior
+3. Actual behavior
+4. Environment details
+
+## Root Cause Analysis (Five Whys)
+- Why 1: [First level cause]
+- Why 2: [Deeper cause]
+- Why 3: [Root cause emerging]
+- Why 4: [Systemic issue]
+- Why 5: [True root cause]
+
+## Debugging Strategy
+- Hypothesis formation
+- Evidence gathering
+- Testing approach
+- Diagnostic tools used
+
+## Solution Implementation
+- Fix approach and rationale
+- Code changes summary
+- Edge cases handled
+
+## Testing Strategy
+- Unit tests added
+- Integration tests
+- Regression prevention
+- Manual verification
+
+## Lessons Learned
+- What caused this bug?
+- How to prevent similar issues?
+- Patterns extracted
+```
+
+**Best For:**
+- Production bugs and defects
+- Regression issues
+- User-reported problems
+- Edge case failures
+
+**Example:** "JWT token refresh fails after 24 hours"
+
+---
+
+### 2. Performance Investigation Template
+
+**Use When:** You need to diagnose and optimize slow operations, bottlenecks, or resource issues.
+
+**Template Structure:**
+```markdown
+# Performance Investigation: [Performance Issue]
+
+## Performance Problem
+- What is slow?
+- Current metrics vs. target metrics
+- User impact and business cost
+
+## Profiling Strategy
+### Browser Profiling (Frontend)
+- Chrome DevTools Performance tab
+- React DevTools Profiler
+- Lighthouse audits
+
+### Backend Profiling
+- Application profiling (0x, clinic.js)
+- Database query analysis
+- APM tool metrics (New Relic, Datadog)
+
+### Database Profiling
+- EXPLAIN ANALYZE for queries
+- Index analysis
+- Query plan examination
+
+## Bottleneck Analysis
+- Identified bottlenecks with evidence
+- Resource utilization (CPU, Memory, I/O)
+- Network latency measurements
+
+## Optimization Strategy
+- Optimization approaches considered
+- Trade-offs evaluated
+- Chosen approach and rationale
+
+## Implementation
+- Code changes for optimization
+- Database index changes
+- Caching strategy
+- Resource allocation adjustments
+
+## Benchmarks
+### Before Optimization
+- Baseline metrics
+- Response times
+- Throughput
+
+### After Optimization
+- Improved metrics
+- Response times
+- Throughput
+- Percentage improvement
+
+## Performance Budgets
+- New performance targets
+- Monitoring alerts configured
+- Regression prevention
+```
+
+**Best For:**
+- Slow API endpoints
+- Memory leaks
+- Database query optimization
+- Frontend rendering issues
+
+**Example:** "User dashboard loads in 8 seconds, target is 2 seconds"
+
+---
+
+### 3. Security Investigation Template
+
+**Use When:** You need to assess, remediate, or disclose a security vulnerability.
+
+**Template Structure:**
+```markdown
+# Security Investigation: [Vulnerability Title]
+
+## Vulnerability Overview
+- CVE ID (if applicable)
+- Vulnerability type (OWASP Top 10 category)
+- Affected components and versions
+
+## CVSS v3.1 Scoring
+### Base Metrics
+- Attack Vector (Network/Adjacent/Local/Physical)
+- Attack Complexity (Low/High)
+- Privileges Required (None/Low/High)
+- User Interaction (None/Required)
+- Scope (Unchanged/Changed)
+- Confidentiality Impact (None/Low/High)
+- Integrity Impact (None/Low/High)
+- Availability Impact (None/Low/High)
+
+**CVSS Score:** [0.0-10.0]
+**Severity:** Critical/High/Medium/Low
+
+## Proof of Concept (PoC)
+- Steps to exploit vulnerability
+- PoC code or demonstration
+- Screenshots or evidence
+- Blast radius analysis
+
+## Impact Assessment
+- Data at risk
+- Systems affected
+- Potential attack scenarios
+- Business impact
+
+## Remediation Plan
+### Immediate Mitigations
+- Temporary fixes or workarounds
+- Risk reduction measures
+- Monitoring enhancements
+
+### Permanent Fix
+- Code changes required
+- Configuration updates
+- Dependency updates
+- Architecture changes
+
+## Validation
+- Security testing performed
+- Penetration test results
+- Vulnerability scan results
+- Third-party audit (if applicable)
+
+## Disclosure Timeline
+- Discovery date
+- Vendor notification (if applicable)
+- Patch development timeline
+- Public disclosure date
+- Communication plan
+```
+
+**Best For:**
+- CVE assessments
+- Dependency vulnerabilities
+- Security audits
+- Penetration test findings
+
+**Example:** "SQL injection vulnerability in user search endpoint"
+
+---
+
+### 4. Technical Investigation Template
+
+**Use When:** You need to make architecture decisions, design new systems, or document technical choices.
+
+**Template Structure:**
+```markdown
+# Technical Investigation: [Technical Decision]
+
+## Context
+- Current situation
+- Business requirements
+- Technical constraints
+- Stakeholders involved
+
+## Problem Statement
+- What problem are we solving?
+- Why is this important?
+- Success criteria
+
+## Requirements Analysis
+### Functional Requirements
+- What must the system do?
+
+### Non-Functional Requirements
+- Performance targets
+- Scalability needs
+- Security requirements
+- Reliability/availability
+- Maintainability
+
+## Architecture Options
+
+### Option 1: [Approach Name]
+**Description:** [How it works]
+**Pros:**
+- Advantage 1
+- Advantage 2
+
+**Cons:**
+- Disadvantage 1
+- Disadvantage 2
+
+**Complexity:** Low/Medium/High
+**Risk:** Low/Medium/High
+
+### Option 2: [Approach Name]
+[Same structure]
+
+### Option 3: [Approach Name]
+[Same structure]
+
+## Decision Matrix
+| Criteria | Weight | Option 1 | Option 2 | Option 3 |
+|----------|--------|----------|----------|----------|
+| Performance | 30% | 8/10 | 6/10 | 9/10 |
+| Maintainability | 25% | 7/10 | 9/10 | 5/10 |
+| Cost | 20% | 6/10 | 8/10 | 4/10 |
+| Risk | 15% | 7/10 | 7/10 | 5/10 |
+| Time to Implement | 10% | 8/10 | 7/10 | 5/10 |
+| **Total** | | **7.3** | **7.5** | **6.4** |
+
+## Recommended Approach
+**Choice:** [Selected option]
+**Rationale:** [Why this option was chosen]
+
+## Architecture Design Record (ADR)
+- Decision made
+- Context and constraints
+- Considered alternatives
+- Consequences and trade-offs
+- Implementation notes
+
+## Implementation Plan
+- 4-phase implementation approach
+- Milestones and timeline
+- Resource requirements
+- Risk mitigation
+```
+
+**Best For:**
+- Architecture decisions
+- Technology selection
+- Design pattern choices
+- Refactoring strategies
+
+**Example:** "Choose caching strategy for API responses"
+
+---
+
+### 5. Feature Investigation Template
+
+**Use When:** You need to plan, design, and implement new functionality or enhancements.
+
+**Template Structure:**
+```markdown
+# Feature Investigation: [Feature Name]
+
+## Feature Overview
+- What is this feature?
+- Why do users need it?
+- Expected user impact
+
+## User Stories
+### Epic
+As a [user type], I want [goal] so that [benefit].
+
+### User Stories
+1. As a [user], I want to [action] so that [benefit]
+   - Acceptance Criteria:
+     - [ ] Criterion 1
+     - [ ] Criterion 2
+     - [ ] Criterion 3
+
+2. [Additional user stories]
+
+## Feature Requirements
+### Functional Requirements
+- Feature behavior specification
+- User interactions
+- Business logic
+
+### Non-Functional Requirements
+- Performance expectations
+- Security considerations
+- Accessibility requirements
+- Mobile responsiveness
+
+## Design Mockups
+- UI/UX wireframes
+- User flow diagrams
+- Interaction patterns
+
+## Technical Design
+- Architecture approach
+- Data model changes
+- API endpoints (if applicable)
+- Frontend components
+- Backend services
+
+## Implementation Breakdown
+
+### Phase 1: Foundation
+- Database schema updates
+- API scaffolding
+- Core business logic
+
+### Phase 2: User Interface
+- Component development
+- Styling and responsiveness
+- Integration with backend
+
+### Phase 3: Refinement
+- Edge case handling
+- Error handling
+- Loading states
+- Validation
+
+### Phase 4: Testing & Polish
+- Unit tests
+- Integration tests
+- E2E tests
+- Performance testing
+- Accessibility audit
+
+## Feature Flags
+- Flag name and configuration
+- Rollout strategy (% of users)
+- Monitoring plan
+- Rollback plan
+
+## Success Metrics
+- KPIs to track
+- Target metrics
+- Analytics events
+- A/B testing plan (if applicable)
+
+## Release Plan
+- Beta testing approach
+- Staged rollout timeline
+- User communication
+- Documentation updates
+```
+
+**Best For:**
+- New features and enhancements
+- User-facing functionality
+- Product improvements
+- Feature additions
+
+**Example:** "Add two-factor authentication to user accounts"
+
+---
+
+## Template Selection Guide
+
+Use this decision tree to select the right template:
+
+```
+Is it a defect or bug?
+  → YES: Use Bug Investigation Template
+
+Is it a performance issue?
+  → YES: Use Performance Investigation Template
+
+Is it a security concern?
+  → YES: Use Security Investigation Template
+
+Is it an architecture or design decision?
+  → YES: Use Technical Investigation Template
+
+Is it new functionality?
+  → YES: Use Feature Investigation Template
+```
+
+## Usage Instructions
+
+### 1. Create Investigation from Template
+
+```bash
+# Copy template to investigations folder
+cp src/templates/investigations/[type].md.template \
+   trinity/investigations/[YYYY-MM-DD]-[title].md
+
+# Fill out investigation
+# Edit: trinity/investigations/[YYYY-MM-DD]-[title].md
+```
+
+### 2. Link to Design Doc
+
+Every investigation should reference the Design Doc:
+
+```markdown
+**Design Doc:** [Link to trinity/design-docs/[name].md]
+```
+
+### 3. Complete Investigation Thoroughly
+
+- Fill out ALL sections (don't skip)
+- Provide evidence (logs, metrics, screenshots)
+- Document rationale for decisions
+- Include lessons learned
+
+### 4. Archive When Complete
+
+```bash
+# Move completed investigation to archive
+mv trinity/investigations/[investigation].md \
+   trinity/archive/investigations/[YYYY-MM]/
+```
+
+## Integration with Workflow Orchestration
+
+Templates work seamlessly with `/trinity-orchestrate`:
+
+1. **Start with Template:** Choose appropriate template type
+2. **Orchestrate Workflow:** Use `/trinity-orchestrate` to generate implementation plan
+3. **Investigation Phase:** Use template to guide analysis
+4. **Implementation:** Workflow coordinates agents for implementation
+5. **Documentation:** Template ensures comprehensive documentation
+6. **Archival:** Learning system extracts patterns
+
+**Example Workflow:**
+```bash
+# 1. Create investigation from template
+cp src/templates/investigations/performance.md.template \
+   trinity/investigations/2025-01-07-api-performance.md
+
+# 2. Generate workflow plan
+trinity orchestrate
+
+# 3. Execute workflow with template guidance
+# Template guides investigation phase
+# Workflow coordinates implementation
+# BAS quality gates ensure quality
+```
+
+## Best Practices
+
+### Selecting the Right Template
+
+**Do:**
+- Match investigation type to template type
+- Use Bug template for defects, not Feature template
+- Use Technical template for architecture decisions
+- Combine templates if investigation spans multiple types
+
+**Don't:**
+- Skip template selection (always use a template)
+- Force fit investigation into wrong template
+- Leave template sections empty
+
+### Filling Out Templates Effectively
+
+**Do:**
+- Be thorough and specific
+- Provide evidence (logs, metrics, screenshots)
+- Document decision rationale
+- Include failure analysis (what didn't work)
+- Update investigation as you learn more
+
+**Don't:**
+- Copy-paste without customization
+- Skip sections because they seem optional
+- Assume context is obvious (document everything)
+- Leave placeholders like "[TODO]"
+
+### Common Mistakes to Avoid
+
+1. **Skipping Investigation Phase**
+   - ❌ Jump directly to implementation
+   - ✅ Complete investigation template first
+
+2. **Insufficient Evidence**
+   - ❌ "Performance is bad"
+   - ✅ "API response time: 8.2s (target: <2s, measured with curl)"
+
+3. **Missing Testing Strategy**
+   - ❌ Implement fix without tests
+   - ✅ Define test strategy in investigation, implement with fix
+
+4. **Not Documenting Failures**
+   - ❌ Only document what worked
+   - ✅ Document approaches tried and why they didn't work
+
+5. **Archiving Incomplete Investigations**
+   - ❌ Archive investigation with empty sections
+   - ✅ Complete all sections before archiving
+
+## Template Locations
+
+All templates are located in:
+```
+src/templates/investigations/
+├── bug.md.template
+├── performance.md.template
+├── security.md.template
+├── technical.md.template
+└── feature.md.template
+```
+
+## Related Commands
+
+- `/trinity-orchestrate` - Generate workflow plan for investigation
+- `/trinity-plan` - TRA strategic planning for complex investigations
+- `/trinity-create-investigation` - Interactive investigation creation wizard
+- `/trinity-knowledge-preservation` - Learn how investigations teach
+
+## Real-World Examples
+
+### Example 1: Bug Investigation
+**Title:** "JWT token refresh fails after 24 hours"
+**Template:** Bug Investigation
+**Outcome:** Used Five Whys to discover token refresh logic had hardcoded 24h limit. Fixed and added tests. Pattern learned: "Check for hardcoded time limits in auth code."
+
+### Example 2: Performance Investigation
+**Title:** "Dashboard loads in 8 seconds"
+**Template:** Performance Investigation
+**Outcome:** Profiled with Chrome DevTools. Found N+1 query loading user data. Added database index and query optimization. Reduced to 1.8s (78% improvement).
+
+### Example 3: Security Investigation
+**Title:** "SQL injection in user search"
+**Template:** Security Investigation
+**Outcome:** CVSS score: 9.1 (Critical). PoC demonstrated data exfiltration. Fixed with parameterized queries. Security audit passed.
+
+### Example 4: Technical Investigation
+**Title:** "Choose state management for React app"
+**Template:** Technical Investigation
+**Outcome:** Evaluated Redux, Zustand, Context. Decision matrix favored Zustand for simplicity and performance. ADR documented.
+
+### Example 5: Feature Investigation
+**Title:** "Add two-factor authentication"
+**Template:** Feature Investigation
+**Outcome:** 12 user stories defined. 4-phase implementation plan. Feature flag for gradual rollout. Success metric: 40% adoption in 30 days.
+
+## What template do you need?
+
+Describe your investigation:
+- **Bug or defect?** → `/trinity-investigate-templates bug`
+- **Performance issue?** → `/trinity-investigate-templates performance`
+- **Security concern?** → `/trinity-investigate-templates security`
+- **Architecture decision?** → `/trinity-investigate-templates technical`
+- **New feature?** → `/trinity-investigate-templates feature`
+
+Templates ensure comprehensive, consistent investigations that contribute to organizational knowledge and accelerate future work.
