@@ -1,0 +1,634 @@
+# Security Investigation: {{title}}
+
+**Investigation ID:** {{investigationId}}
+**Created:** {{createdAt}}
+**Investigator:** {{investigator}}
+**Status:** {{status}}
+**Priority:** {{priority}}
+**Severity:** {{severity}}
+
+---
+
+## 🔒 Security Issue Summary
+
+**Brief Description:**
+{{description}}
+
+**Vulnerability Type:**
+- [ ] SQL Injection
+- [ ] Cross-Site Scripting (XSS)
+- [ ] Cross-Site Request Forgery (CSRF)
+- [ ] Authentication/Authorization bypass
+- [ ] Sensitive data exposure
+- [ ] Dependency vulnerability
+- [ ] Configuration issue
+- [ ] Cryptographic failure
+- [ ] Other: [specify]
+
+**CVSS Score:** [0.0 - 10.0]
+**CVSS Vector:** [CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H]
+
+**Affected Components:**
+-
+
+**Attack Vector:**
+- [ ] Network
+- [ ] Adjacent Network
+- [ ] Local
+- [ ] Physical
+
+**Attack Complexity:**
+- [ ] Low
+- [ ] High
+
+**Privileges Required:**
+- [ ] None
+- [ ] Low
+- [ ] High
+
+---
+
+## 🔍 Trinity Method Guided Questions
+
+### Vulnerability Discovery
+
+**1. How was this discovered?**
+- [ ] Security scan (tool:          )
+- [ ] Penetration test
+- [ ] Bug bounty report
+- [ ] Internal audit
+- [ ] User report
+- [ ] Incident response
+- [ ] Dependency alert (Dependabot, Snyk)
+
+**2. Is this being actively exploited?**
+- [ ] Yes, active exploitation detected
+- [ ] No evidence of exploitation
+- [ ] Unknown
+
+Evidence:
+
+**3. When was the vulnerability introduced?**
+- Date/Version:
+- Git commit:
+  ```bash
+  git log --all -- path/to/vulnerable/file.ts
+  git blame path/to/vulnerable/file.ts
+  ```
+
+### Impact Assessment
+
+**4. Confidentiality Impact**
+- [ ] None - No data exposure
+- [ ] Low - Minimal data exposure
+- [ ] High - Sensitive data exposure
+
+**What data could be exposed?**
+-
+
+**5. Integrity Impact**
+- [ ] None - No data modification
+- [ ] Low - Limited modification
+- [ ] High - Unrestricted modification
+
+**What could an attacker modify?**
+-
+
+**6. Availability Impact**
+- [ ] None - No service disruption
+- [ ] Low - Limited disruption
+- [ ] High - Complete service denial
+
+**What could an attacker disrupt?**
+-
+
+### Scope Analysis
+
+**7. Attack Prerequisites**
+- What does an attacker need?
+  - [ ] No authentication required
+  - [ ] Valid user account
+  - [ ] Admin privileges
+  - [ ] Physical access
+  - [ ] Social engineering
+  - [ ] Other:
+
+**8. Affected Systems**
+- [ ] Production
+- [ ] Staging
+- [ ] Development
+- [ ] All environments
+
+- [ ] Web application
+- [ ] API
+- [ ] Database
+- [ ] Infrastructure
+- [ ] Third-party integration
+
+**9. User Impact**
+- How many users are affected?
+  - [ ] All users
+  - [ ] Subset of users (specify):
+  - [ ] Admin users only
+
+---
+
+## 🛡️ Vulnerability Details
+
+### Technical Description
+[Detailed technical explanation of the vulnerability]
+
+### Proof of Concept (PoC)
+```http
+# Example attack request
+POST /api/endpoint HTTP/1.1
+Host: example.com
+Content-Type: application/json
+
+{
+  "payload": "malicious input"
+}
+```
+
+**Attack Steps:**
+1.
+2.
+3.
+
+**Expected Result (Vulnerable):**
+[What happens when vulnerability is exploited]
+
+**Expected Result (Patched):**
+[What should happen after fix]
+
+### Code Analysis
+**Vulnerable Code:**
+```typescript
+// File: path/to/file.ts
+// Line: XX
+function vulnerableFunction(userInput) {
+  // Unsafe operation
+  db.query(`SELECT * FROM users WHERE id = ${userInput}`);
+}
+```
+
+**Why is this vulnerable?**
+[Explanation]
+
+---
+
+## 🔬 Investigation Plan
+
+### Phase 1: Verify & Reproduce
+**Goal:** Confirm vulnerability and understand exploitability
+
+**Steps:**
+1. [ ] Review vulnerability report/CVE details
+2. [ ] Set up isolated test environment
+3. [ ] Reproduce vulnerability with PoC
+4. [ ] Document attack vector
+5. [ ] Assess real-world exploitability
+6. [ ] Determine if already exploited (check logs)
+
+**Test Environment:**
+```bash
+# Setup commands
+docker-compose up -d test-env
+npm run test:security
+```
+
+**Reproduction Confirmed:**
+- [ ] Yes, reproduced vulnerability
+- [ ] No, cannot reproduce (false positive)
+- [ ] Partially reproduced (conditions required)
+
+### Phase 2: Assess Impact
+**Goal:** Understand full scope and impact
+
+**Steps:**
+1. [ ] Identify all affected code paths
+2. [ ] Check for similar vulnerabilities (grep, pattern search)
+3. [ ] Assess data exposure risk
+4. [ ] Review access logs for suspicious activity
+5. [ ] Determine disclosure timeline
+6. [ ] Estimate remediation effort
+
+**Similar Vulnerabilities Found:**
+-
+
+**Log Analysis:**
+```bash
+# Check for exploitation attempts
+grep "suspicious_pattern" logs/*.log
+awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -20
+```
+
+**Findings:**
+-
+
+### Phase 3: Develop Remediation
+**Goal:** Create and test security fix
+
+**Steps:**
+1. [ ] Research fix approaches
+2. [ ] Design secure implementation
+3. [ ] Implement fix
+4. [ ] Write security tests
+5. [ ] Test fix in isolation
+6. [ ] Verify no functionality regression
+7. [ ] Security review fix
+
+**Fix Approach:**
+[Description of fix strategy]
+
+---
+
+## 🎯 Remediation Strategy
+
+### Immediate Actions (Now)
+**Goal:** Stop active exploitation
+
+1. [ ] Block malicious IPs (if exploitation detected)
+2. [ ] Disable vulnerable endpoint (if safe)
+3. [ ] Rotate compromised credentials
+4. [ ] Enable additional logging/monitoring
+5. [ ] Notify security team
+
+**Emergency Commands:**
+```bash
+# Block IPs
+iptables -A INPUT -s malicious.ip -j DROP
+
+# Disable feature
+curl -X POST /admin/feature-toggle/vulnerable-feature/disable
+
+# Rotate secrets
+aws secretsmanager rotate-secret --secret-id prod/api-key
+```
+
+### Short-term Fix (24-48 hours)
+**Goal:** Implement temporary mitigation
+
+1. [ ] Input validation
+2. [ ] Rate limiting
+3. [ ] WAF rules
+4. [ ] Access controls
+5. [ ] Monitoring alerts
+
+**Mitigation Code:**
+```typescript
+// Temporary input validation
+function sanitizeInput(input: string): string {
+  // Remove dangerous characters
+  return input.replace(/[^a-zA-Z0-9]/g, '');
+}
+```
+
+### Long-term Fix (1-2 weeks)
+**Goal:** Permanent security enhancement
+
+1. [ ] Refactor vulnerable code
+2. [ ] Implement proper security controls
+3. [ ] Add comprehensive tests
+4. [ ] Update security policies
+5. [ ] Security training for team
+
+**Secure Implementation:**
+```typescript
+// Permanent fix using parameterized queries
+async function getUserById(userId: string): Promise<User> {
+  // Input validation
+  if (!/^\d+$/.test(userId)) {
+    throw new ValidationError('Invalid user ID format');
+  }
+
+  // Parameterized query (prevents SQL injection)
+  const result = await db.query(
+    'SELECT * FROM users WHERE id = $1',
+    [userId]
+  );
+
+  return result.rows[0];
+}
+```
+
+---
+
+## 🔐 Security Controls
+
+### Input Validation
+```typescript
+// Whitelist validation
+function validateEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Sanitization
+import DOMPurify from 'dompurify';
+const clean = DOMPurify.sanitize(dirty);
+```
+
+### Output Encoding
+```typescript
+// HTML encoding
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// SQL parameterization
+const result = await db.query(
+  'SELECT * FROM users WHERE email = $1',
+  [userEmail]  // Parameter binding prevents injection
+);
+```
+
+### Authentication & Authorization
+```typescript
+// Require authentication
+app.use('/api/admin', requireAuth, requireRole('admin'));
+
+// Check authorization
+function checkPermission(user: User, resource: Resource): boolean {
+  return user.permissions.includes(resource.requiredPermission);
+}
+```
+
+### Cryptography
+```typescript
+// Password hashing
+import bcrypt from 'bcrypt';
+const saltRounds = 12;
+const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
+
+// Secure random tokens
+import crypto from 'crypto';
+const token = crypto.randomBytes(32).toString('hex');
+
+// Encryption (AES-256-GCM)
+const algorithm = 'aes-256-gcm';
+const key = crypto.randomBytes(32);
+const iv = crypto.randomBytes(16);
+const cipher = crypto.createCipheriv(algorithm, key, iv);
+```
+
+### HTTPS/TLS
+```typescript
+// Enforce HTTPS
+app.use((req, res, next) => {
+  if (!req.secure && process.env.NODE_ENV === 'production') {
+    return res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
+// Security headers
+import helmet from 'helmet';
+app.use(helmet());
+```
+
+---
+
+## 🧪 Security Testing
+
+### Automated Security Tests
+```typescript
+describe('Security: SQL Injection Prevention', () => {
+  it('should reject SQL injection attempts', async () => {
+    const maliciousInput = "1' OR '1'='1";
+
+    await expect(getUserById(maliciousInput))
+      .rejects
+      .toThrow(ValidationError);
+  });
+
+  it('should use parameterized queries', async () => {
+    const spy = jest.spyOn(db, 'query');
+
+    await getUserById('123');
+
+    expect(spy).toHaveBeenCalledWith(
+      expect.stringContaining('$1'),
+      expect.arrayContaining(['123'])
+    );
+  });
+});
+
+describe('Security: XSS Prevention', () => {
+  it('should escape HTML in user input', () => {
+    const malicious = '<script>alert("XSS")</script>';
+    const safe = escapeHtml(malicious);
+
+    expect(safe).not.toContain('<script>');
+    expect(safe).toContain('&lt;script&gt;');
+  });
+});
+```
+
+### Manual Security Testing
+- [ ] Test with common attack payloads
+- [ ] Fuzzing with malformed input
+- [ ] Authentication bypass attempts
+- [ ] Authorization escalation attempts
+- [ ] Session hijacking tests
+- [ ] CSRF token validation
+- [ ] Rate limiting verification
+
+**Tools:**
+```bash
+# OWASP ZAP
+zap-cli quick-scan https://target.com
+
+# Burp Suite
+# Manual testing with Burp Suite Proxy
+
+# SQLMap
+sqlmap -u "http://target.com/page?id=1" --dbs
+
+# Nikto
+nikto -h https://target.com
+```
+
+---
+
+## 📊 CVSS Scoring
+
+### CVSS v3.1 Calculator
+
+**Base Score Metrics:**
+- Attack Vector (AV): [N/A/L/P]
+- Attack Complexity (AC): [L/H]
+- Privileges Required (PR): [N/L/H]
+- User Interaction (UI): [N/R]
+- Scope (S): [U/C]
+- Confidentiality (C): [N/L/H]
+- Integrity (I): [N/L/H]
+- Availability (A): [N/L/H]
+
+**Vector String:**
+```
+CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
+```
+
+**Scores:**
+- Base Score: X.X [None/Low/Medium/High/Critical]
+- Temporal Score: X.X
+- Environmental Score: X.X
+
+**Severity Level:**
+- [ ] None (0.0)
+- [ ] Low (0.1-3.9)
+- [ ] Medium (4.0-6.9)
+- [ ] High (7.0-8.9)
+- [ ] Critical (9.0-10.0)
+
+---
+
+## 💡 Root Cause Analysis
+
+### Security Weakness
+[Explanation of underlying security issue]
+
+### Why Analysis
+1. **Why was this vulnerability introduced?**
+   Answer:
+
+2. **Why wasn't it caught in code review?**
+   Answer:
+
+3. **Why didn't security testing find it?**
+   Answer:
+
+4. **Why didn't security training prevent it?**
+   Answer:
+
+5. **What systemic issue allowed this?**
+   Answer: [Root cause]
+
+---
+
+## 🔧 Fix Implementation
+
+### Code Changes
+**Files Modified:**
+- `path/to/vulnerable/file.ts`
+- `path/to/tests/security.spec.ts`
+
+**Security Fix:**
+```diff
+- // Vulnerable code
++ // Secure code
+```
+
+### Configuration Changes
+```yaml
+# Security headers
+security:
+  hsts: true
+  csp: "default-src 'self'"
+  xssProtection: true
+```
+
+### Infrastructure Updates
+-
+
+---
+
+## ✅ Success Criteria
+
+**Vulnerability Remediated:**
+- [ ] Vulnerability cannot be reproduced
+- [ ] Security tests pass
+- [ ] No similar vulnerabilities exist
+- [ ] Fix reviewed by security team
+- [ ] Deployed to all environments
+- [ ] No functionality regressions
+
+**Validation:**
+- [ ] Penetration test confirms fix
+- [ ] Security scan shows no vulnerabilities
+- [ ] Code review approved
+- [ ] No exploitation attempts in logs
+
+---
+
+## 📢 Disclosure & Communication
+
+### Internal Communication
+- [ ] Security team notified
+- [ ] Engineering team notified
+- [ ] Management notified (if high/critical)
+- [ ] Incident report created
+
+### External Communication
+**If vulnerability is in open source dependency:**
+- [ ] Upstream maintainer notified
+- [ ] CVE requested (if applicable)
+- [ ] Security advisory published
+
+**If user data was exposed:**
+- [ ] Legal team consulted
+- [ ] Affected users notified
+- [ ] Regulatory bodies notified (GDPR, etc)
+
+**Disclosure Timeline:**
+- Discovery: [date]
+- Vendor notification: [date]
+- Fix released: [date]
+- Public disclosure: [date +90 days]
+
+---
+
+## 🛡️ Prevention Strategy
+
+### Secure Coding Practices
+- [ ] Use parameterized queries (prevent SQL injection)
+- [ ] Validate and sanitize all input
+- [ ] Encode all output
+- [ ] Use security libraries (helmet, DOMPurify)
+- [ ] Implement principle of least privilege
+- [ ] Enable security linters (ESLint security rules)
+
+### Security Testing
+- [ ] Add security tests to CI/CD
+- [ ] Regular SAST scans (static analysis)
+- [ ] Regular DAST scans (dynamic analysis)
+- [ ] Dependency vulnerability scanning
+- [ ] Annual penetration testing
+
+### Training & Awareness
+- [ ] Security training for developers
+- [ ] Secure code review checklist
+- [ ] OWASP Top 10 awareness
+- [ ] Threat modeling sessions
+
+---
+
+## 📚 References
+
+**OWASP Resources:**
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
+
+**CVE/CWE:**
+- CVE-YYYY-XXXXX: [link]
+- CWE-###: [weakness type]
+
+**Security Advisories:**
+- [GitHub Advisory]
+- [Vendor Advisory]
+
+**Related Incidents:**
+-
+
+---
+
+**Investigation Status:** {{status}}
+**Severity:** {{severity}}
+**Remediation Status:** [Not Started / In Progress / Completed]
+**Last Updated:** {{lastUpdated}}

@@ -1,0 +1,551 @@
+# Performance Investigation: {{title}}
+
+**Investigation ID:** {{investigationId}}
+**Created:** {{createdAt}}
+**Investigator:** {{investigator}}
+**Status:** {{status}}
+**Priority:** {{priority}}
+
+---
+
+## ⚡ Performance Issue Summary
+
+**Brief Description:**
+{{description}}
+
+**Observed Performance:**
+- Current metric: [e.g., 2000ms response time]
+- Target metric: [e.g., 500ms response time]
+- Gap: [e.g., 1500ms slower than target]
+
+**Affected Operations:**
+-
+
+**User Impact:**
+- [ ] Page load slow
+- [ ] API timeouts
+- [ ] Database queries slow
+- [ ] High memory usage
+- [ ] High CPU usage
+- [ ] Application crashes/restarts
+
+---
+
+## 🔍 Trinity Method Guided Questions
+
+### Performance Baseline
+
+**1. Current Metrics**
+- What is the current performance?
+  - Response time (p50):
+  - Response time (p95):
+  - Response time (p99):
+  - Throughput (req/sec):
+  - Error rate:
+
+- When is performance worst?
+  - [ ] Always slow
+  - [ ] Peak hours (specify):
+  - [ ] After certain actions
+  - [ ] After deployment
+  - [ ] With large datasets
+
+**2. Historical Performance**
+- How has performance changed over time?
+  - 1 week ago:
+  - 1 month ago:
+  - 6 months ago:
+
+- When did performance start degrading?
+  Date/Time:
+
+- What changed at that time?
+  - [ ] Code deployment
+  - [ ] Traffic increase
+  - [ ] Data growth
+  - [ ] Infrastructure change
+  - [ ] Configuration change
+
+### Bottleneck Identification
+
+**3. Where is the slowness?**
+- [ ] Frontend (browser rendering)
+- [ ] Network (latency, bandwidth)
+- [ ] API server (request processing)
+- [ ] Database (query execution)
+- [ ] External services (third-party APIs)
+- [ ] File I/O (disk operations)
+
+- How do you know?
+  Evidence:
+
+**4. Resource Utilization**
+- CPU usage:
+  - Current: X%
+  - Peak: Y%
+  - Baseline: Z%
+
+- Memory usage:
+  - Current: X MB/GB
+  - Peak: Y MB/GB
+  - Baseline: Z MB/GB
+
+- Disk I/O:
+  - Read: X MB/s
+  - Write: Y MB/s
+
+- Network I/O:
+  - Inbound: X MB/s
+  - Outbound: Y MB/s
+
+**5. Known Performance Issues**
+- Are there N+1 query problems?
+- Are there memory leaks?
+- Are there inefficient algorithms (O(n²))?
+- Are there blocking operations?
+- Are results being cached?
+
+---
+
+## 📊 Performance Profiling
+
+### Browser Profiling (Frontend)
+
+**Chrome DevTools Performance:**
+```bash
+# Steps to capture profile:
+1. Open Chrome DevTools (F12)
+2. Go to Performance tab
+3. Click Record
+4. Perform slow operation
+5. Stop recording
+6. Analyze flame graph
+```
+
+**Key Metrics:**
+- Time to First Byte (TTFB):
+- First Contentful Paint (FCP):
+- Largest Contentful Paint (LCP):
+- Time to Interactive (TTI):
+- Total Blocking Time (TBT):
+- Cumulative Layout Shift (CLS):
+
+**Bottlenecks Found:**
+-
+
+### Backend Profiling
+
+**Node.js Profiling:**
+```bash
+# Generate CPU profile
+node --prof app.js
+node --prof-process isolate-*.log > profile.txt
+
+# Heap snapshot for memory
+node --inspect app.js
+# Open chrome://inspect, take heap snapshot
+```
+
+**Python Profiling:**
+```bash
+# cProfile
+python -m cProfile -o output.prof app.py
+python -m pstats output.prof
+
+# memory_profiler
+python -m memory_profiler app.py
+```
+
+**Findings:**
+-
+
+### Database Profiling
+
+**Query Analysis:**
+```sql
+-- PostgreSQL
+EXPLAIN ANALYZE
+SELECT ...;
+
+-- MySQL
+EXPLAIN
+SELECT ...;
+
+-- Check slow query log
+SHOW VARIABLES LIKE 'slow_query_log';
+```
+
+**Slow Queries Identified:**
+1. Query: `[SQL]`
+   - Execution time: X ms
+   - Rows scanned: Y
+   - Indexes used: [index names]
+
+2. Query: `[SQL]`
+   - Execution time: X ms
+   - Rows scanned: Y
+   - Indexes used: [index names]
+
+**N+1 Query Problems:**
+-
+
+**Missing Indexes:**
+-
+
+### Application Performance Monitoring (APM)
+
+**Tool:** [e.g., New Relic, DataDog, Sentry]
+
+**Traces:**
+- Slowest transactions:
+  1. [Transaction name] - X ms
+  2. [Transaction name] - Y ms
+
+- Most time-consuming operations:
+  1. [Operation] - X% of time
+  2. [Operation] - Y% of time
+
+**Screenshots:**
+- [Link to APM trace screenshot]
+
+---
+
+## 🔬 Investigation Plan
+
+### Phase 1: Measure & Profile
+**Goal:** Establish baseline and identify bottlenecks
+
+**Steps:**
+1. [ ] Run performance benchmarks (before optimization)
+2. [ ] Profile CPU usage
+3. [ ] Profile memory usage
+4. [ ] Analyze database queries
+5. [ ] Review network waterfalls
+6. [ ] Identify top 3 bottlenecks
+
+**Benchmark Commands:**
+```bash
+# Load testing
+artillery quick --count 100 --num 10 http://localhost:3000
+
+# Or k6
+k6 run load-test.js
+
+# Or Apache Bench
+ab -n 1000 -c 10 http://localhost:3000/api/endpoint
+```
+
+**Baseline Metrics (before optimization):**
+- p50 response time: X ms
+- p95 response time: Y ms
+- p99 response time: Z ms
+- Requests/sec: N
+- Error rate: M%
+
+### Phase 2: Optimize Top Bottleneck
+**Goal:** Fix the slowest operation first
+
+**Top Bottleneck:**
+[Description]
+
+**Optimization Approach:**
+- [ ] Add caching
+- [ ] Optimize algorithm (O(n²) → O(n log n))
+- [ ] Add database index
+- [ ] Reduce data fetched
+- [ ] Paginate results
+- [ ] Use connection pooling
+- [ ] Implement lazy loading
+- [ ] Compress responses
+- [ ] Other: [specify]
+
+**Expected Improvement:**
+- Current: X ms
+- Target: Y ms
+- Improvement: Z% faster
+
+### Phase 3: Validate & Measure
+**Goal:** Confirm optimization worked
+
+**Steps:**
+1. [ ] Re-run benchmarks (after optimization)
+2. [ ] Compare before/after metrics
+3. [ ] Verify no regressions
+4. [ ] Load test with realistic traffic
+5. [ ] Monitor in production
+
+**After Optimization Metrics:**
+- p50 response time: X ms (was Y ms) → Z% improvement
+- p95 response time: X ms (was Y ms) → Z% improvement
+- p99 response time: X ms (was Y ms) → Z% improvement
+- Requests/sec: N (was M) → Z% improvement
+- Error rate: X% (was Y%) → Z% change
+
+---
+
+## 🎯 Optimization Strategies
+
+### Caching Strategies
+
+**What to Cache:**
+- [ ] Database query results
+- [ ] API responses
+- [ ] Computed values
+- [ ] Static assets
+- [ ] Session data
+
+**Caching Layers:**
+- [ ] In-memory (Redis, Memcached)
+- [ ] HTTP caching (CDN, browser)
+- [ ] Application-level caching
+- [ ] Database query caching
+
+**Cache Implementation:**
+```typescript
+// Example caching code
+const cacheKey = generateKey(params);
+let result = await cache.get(cacheKey);
+
+if (!result) {
+  result = await expensiveOperation(params);
+  await cache.set(cacheKey, result, 3600); // 1 hour TTL
+}
+
+return result;
+```
+
+### Database Optimizations
+
+**Indexing:**
+```sql
+-- Add indexes for slow queries
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_orders_user_created ON orders(user_id, created_at);
+```
+
+**Query Optimization:**
+```sql
+-- ❌ Bad: SELECT *
+SELECT * FROM users WHERE email = 'test@example.com';
+
+-- ✅ Good: SELECT specific fields
+SELECT id, name, email FROM users WHERE email = 'test@example.com';
+
+-- ❌ Bad: N+1 queries
+SELECT * FROM orders; -- 100 orders
+SELECT * FROM users WHERE id = 1; -- Query for each order
+
+-- ✅ Good: JOIN
+SELECT orders.*, users.name
+FROM orders
+JOIN users ON orders.user_id = users.id;
+```
+
+**Connection Pooling:**
+```typescript
+// Configure connection pool
+const pool = new Pool({
+  max: 20,           // Max connections
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+```
+
+### Algorithm Optimizations
+
+**Time Complexity Improvements:**
+- [ ] O(n²) → O(n log n) [sorting]
+- [ ] O(n) → O(1) [use HashMap/Set]
+- [ ] O(n!) → O(n²) [dynamic programming]
+
+**Example:**
+```typescript
+// ❌ Bad: O(n²) nested loops
+function findDuplicates(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[i] === arr[j]) return true;
+    }
+  }
+  return false;
+}
+
+// ✅ Good: O(n) using Set
+function findDuplicates(arr) {
+  const seen = new Set();
+  for (const item of arr) {
+    if (seen.has(item)) return true;
+    seen.add(item);
+  }
+  return false;
+}
+```
+
+### Frontend Optimizations
+
+**Code Splitting:**
+```javascript
+// Lazy load components
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
+```
+
+**Image Optimization:**
+- [ ] Use WebP format
+- [ ] Implement lazy loading
+- [ ] Use responsive images
+- [ ] Compress images
+- [ ] Use CDN
+
+**Bundle Size Reduction:**
+```bash
+# Analyze bundle
+npm run build -- --analyze
+
+# Remove unused dependencies
+npx depcheck
+
+# Use production builds
+NODE_ENV=production npm run build
+```
+
+---
+
+## 📈 Performance Budgets
+
+### Target Metrics
+- **Response Time:**
+  - p50: < 200ms
+  - p95: < 500ms
+  - p99: < 1000ms
+
+- **Throughput:**
+  - Minimum: 100 req/sec
+  - Target: 500 req/sec
+
+- **Resource Usage:**
+  - CPU: < 70%
+  - Memory: < 80%
+  - Disk I/O: < 50MB/s
+
+- **Web Vitals:**
+  - LCP: < 2.5s
+  - FID: < 100ms
+  - CLS: < 0.1
+
+### Performance Regression Prevention
+
+**Automated Performance Tests:**
+```typescript
+// Performance test example
+describe('Performance: getUserOrders', () => {
+  it('should complete in < 500ms for 1000 orders', async () => {
+    const start = performance.now();
+    await getUserOrders(userId);
+    const duration = performance.now() - start;
+
+    expect(duration).toBeLessThan(500);
+  });
+});
+```
+
+**CI/CD Performance Gates:**
+```yaml
+# GitHub Actions example
+- name: Performance Test
+  run: npm run test:performance
+
+- name: Check Performance Budget
+  run: |
+    if [ $P95_RESPONSE_TIME -gt 500 ]; then
+      echo "Performance regression detected"
+      exit 1
+    fi
+```
+
+---
+
+## 💡 Root Cause Analysis
+
+### Performance Bottleneck
+[Detailed explanation of what is causing slowness]
+
+### Why Analysis
+1. **Why is the system slow?**
+   Answer:
+
+2. **Why does that cause slowness?**
+   Answer:
+
+3. **Why does that happen?**
+   Answer:
+
+4. **Why wasn't this optimized earlier?**
+   Answer:
+
+5. **What changed to make this noticeable?**
+   Answer: [Root cause]
+
+---
+
+## 🔧 Solution
+
+### Optimizations Implemented
+**1. [Optimization Name]**
+- Description:
+- Expected improvement:
+- Actual improvement:
+
+**2. [Optimization Name]**
+- Description:
+- Expected improvement:
+- Actual improvement:
+
+### Code Changes
+**Files Modified:**
+- `path/to/file.ts`
+
+**Key Changes:**
+```diff
+- // Slow code
++ // Fast code
+```
+
+### Infrastructure Changes
+-
+
+---
+
+## ✅ Success Criteria
+
+**Performance Targets Met:**
+- [ ] Response time < 500ms (p95)
+- [ ] Throughput > 100 req/sec
+- [ ] CPU usage < 70%
+- [ ] Memory usage < 80%
+- [ ] No performance regressions
+- [ ] User-reported slowness resolved
+
+**Validation:**
+- [ ] Load tests pass
+- [ ] Production metrics within budget
+- [ ] No errors from optimization
+- [ ] Monitoring confirms improvement
+
+---
+
+## 📚 Lessons Learned
+
+### What Worked
+-
+
+### What Didn't Work
+-
+
+### Prevention Strategy
+-
+
+---
+
+**Investigation Status:** {{status}}
+**Performance Improvement:** [X% faster]
+**Last Updated:** {{lastUpdated}}

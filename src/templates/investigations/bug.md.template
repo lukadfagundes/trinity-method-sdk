@@ -1,0 +1,413 @@
+# Bug Investigation: {{title}}
+
+**Investigation ID:** {{investigationId}}
+**Created:** {{createdAt}}
+**Investigator:** {{investigator}}
+**Status:** {{status}}
+**Priority:** {{priority}}
+
+---
+
+## 🐛 Bug Summary
+
+**Brief Description:**
+{{description}}
+
+**Observed Behavior:**
+[Describe what is currently happening]
+
+**Expected Behavior:**
+[Describe what should happen]
+
+**Impact:**
+- [ ] Production users affected
+- [ ] Development blocked
+- [ ] Data integrity at risk
+- [ ] Performance degraded
+- [ ] Security implications
+
+**Affected Components:**
+-
+
+**Affected Users/Systems:**
+-
+
+---
+
+## 🔍 Trinity Method Guided Questions
+
+### Investigation Phase
+
+**1. Reproduction**
+- Can you reproduce the bug consistently?
+  - [ ] Yes, 100% reproducible
+  - [ ] Sometimes (intermittent)
+  - [ ] No, cannot reproduce
+
+- What are the exact steps to reproduce?
+  1.
+  2.
+  3.
+
+- What conditions are necessary?
+  - Environment:
+  - Data state:
+  - User permissions:
+  - Timing/race conditions:
+
+**2. Evidence Collection**
+- What error messages appear?
+  ```
+  [Paste error messages, stack traces]
+  ```
+
+- What do the logs show?
+  - Error logs:
+  - Application logs:
+  - System logs:
+
+- What are the relevant metrics?
+  - Response times:
+  - Error rates:
+  - Resource usage:
+
+**3. Timeline Analysis**
+- When was the bug first observed?
+  Date/Time:
+
+- What changed before the bug appeared?
+  - [ ] Code deployment
+  - [ ] Configuration change
+  - [ ] Data migration
+  - [ ] Infrastructure change
+  - [ ] Dependency update
+
+- Git commits around the time bug appeared:
+  ```bash
+  git log --oneline --since="YYYY-MM-DD"
+  ```
+
+**4. Scope Analysis**
+- How widespread is the issue?
+  - [ ] All users
+  - [ ] Specific user segment
+  - [ ] Single user
+  - [ ] All environments
+  - [ ] Production only
+  - [ ] Dev/Staging only
+
+- What is NOT affected?
+  - Working features:
+  - Working environments:
+  - Working user segments:
+
+**5. Root Cause Hypothesis**
+- What do you think is causing this?
+  Hypothesis:
+
+- What evidence supports this hypothesis?
+  -
+
+- How would you test this hypothesis?
+  -
+
+---
+
+## 🔬 Investigation Plan
+
+### Phase 1: Reproduce & Isolate
+**Goal:** Consistently reproduce the bug in a controlled environment
+
+**Steps:**
+1. [ ] Set up isolated test environment
+2. [ ] Follow reproduction steps
+3. [ ] Document exact conditions needed
+4. [ ] Capture logs/screenshots/video
+5. [ ] Verify bug occurs in isolation
+
+**Success Criteria:**
+- [ ] Bug reproduced 3+ times consistently
+- [ ] Minimal reproduction steps documented
+- [ ] Environment variables identified
+
+### Phase 2: Debug & Analyze
+**Goal:** Identify the root cause
+
+**Steps:**
+1. [ ] Add debug logging at decision points
+2. [ ] Use debugger to step through code
+3. [ ] Review recent code changes (git blame, git diff)
+4. [ ] Check for related closed issues
+5. [ ] Test hypothesis with targeted experiments
+
+**Debug Commands:**
+```bash
+# Add your debugging commands here
+npm run debug
+node --inspect app.js
+```
+
+**Success Criteria:**
+- [ ] Root cause identified with certainty
+- [ ] Evidence collected proving root cause
+- [ ] Understanding of why bug wasn't caught earlier
+
+### Phase 3: Verify Fix Approach
+**Goal:** Confirm fix strategy before implementing
+
+**Steps:**
+1. [ ] Design fix approach
+2. [ ] Consider edge cases
+3. [ ] Evaluate fix risks
+4. [ ] Review fix with team (if high-risk)
+5. [ ] Document fix reasoning
+
+**Fix Approach:**
+[Describe your planned fix]
+
+**Risks:**
+-
+
+**Alternatives Considered:**
+1.
+2.
+
+---
+
+## 🧪 Testing Strategy
+
+### Test Cases to Add
+**1. Reproduction Test:**
+```typescript
+describe('Bug: {{title}}', () => {
+  it('should reproduce the bug', () => {
+    // Steps that currently fail
+  });
+});
+```
+
+**2. Fix Validation Test:**
+```typescript
+describe('Fix: {{title}}', () => {
+  it('should verify the bug is fixed', () => {
+    // Steps that should now pass
+  });
+});
+```
+
+**3. Regression Prevention Tests:**
+```typescript
+describe('Regression: {{title}}', () => {
+  it('should prevent this bug from recurring', () => {
+    // Edge cases to prevent future regressions
+  });
+});
+```
+
+### Manual Testing Checklist
+- [ ] Test exact reproduction steps (should now pass)
+- [ ] Test edge cases
+- [ ] Test related functionality (no new bugs)
+- [ ] Test in all environments (dev, staging, prod)
+- [ ] Test with different user permissions
+- [ ] Test with different data states
+
+---
+
+## 📊 Evidence & Findings
+
+### Logs
+```
+[Paste relevant log entries]
+```
+
+### Stack Traces
+```
+[Paste stack traces]
+```
+
+### Screenshots/Videos
+- [Link to screenshot/video 1]
+- [Link to screenshot/video 2]
+
+### Database Queries
+```sql
+-- Queries that reveal the issue
+```
+
+### Metrics
+- Error rate before: X errors/min
+- Error rate after: Y errors/min
+- Affected users: N users
+- Duration: H hours
+
+---
+
+## 💡 Root Cause Analysis
+
+### Root Cause
+[Detailed explanation of what caused the bug]
+
+**Why did this happen?**
+- Immediate cause:
+- Underlying cause:
+- Contributing factors:
+
+**Why wasn't this caught earlier?**
+- [ ] Missing test coverage
+- [ ] Edge case not considered
+- [ ] Race condition only in production
+- [ ] Configuration difference
+- [ ] Other:
+
+### Five Whys Analysis
+1. **Why did the bug occur?**
+   Answer:
+
+2. **Why did that happen?**
+   Answer:
+
+3. **Why did that happen?**
+   Answer:
+
+4. **Why did that happen?**
+   Answer:
+
+5. **Why did that happen?**
+   Answer: [Root cause]
+
+---
+
+## 🔧 Solution
+
+### Fix Implementation
+**Files Changed:**
+- `path/to/file1.ts` - [Brief description of change]
+- `path/to/file2.ts` - [Brief description of change]
+
+**Code Changes:**
+```diff
+- // Old code
++ // New code
+```
+
+**Configuration Changes:**
+-
+
+### Fix Validation
+- [ ] All new tests pass
+- [ ] All existing tests still pass
+- [ ] Manual testing completed
+- [ ] Code review approved
+- [ ] Deployed to staging
+- [ ] Verified in staging
+- [ ] Deployed to production
+- [ ] Monitoring shows fix worked
+
+---
+
+## 🛡️ Prevention Strategy
+
+### Prevent This Bug
+**Immediate Actions:**
+- [ ] Add test coverage for this scenario
+- [ ] Add input validation
+- [ ] Add error handling
+- [ ] Add monitoring/alerts
+- [ ] Document edge case
+
+### Prevent Similar Bugs
+**Long-term Actions:**
+- [ ] Update coding standards
+- [ ] Add linting rule
+- [ ] Improve error messages
+- [ ] Enhance documentation
+- [ ] Team knowledge sharing
+- [ ] Update onboarding materials
+
+### Tests Added
+**Test Coverage:**
+- Unit tests: X tests added
+- Integration tests: Y tests added
+- E2E tests: Z tests added
+- Coverage increased by: N%
+
+**Test Files:**
+- `path/to/test1.spec.ts`
+- `path/to/test2.spec.ts`
+
+---
+
+## 📚 Lessons Learned
+
+### What Went Well
+-
+
+### What Could Be Improved
+-
+
+### Knowledge Gained
+-
+
+### Patterns to Share
+-
+
+---
+
+## ✅ Success Criteria
+
+**Definition of Done:**
+- [x] Bug reproduced consistently
+- [ ] Root cause identified
+- [ ] Fix implemented
+- [ ] Tests added (≥80% coverage for changed code)
+- [ ] Code reviewed
+- [ ] Deployed to production
+- [ ] Verified in production
+- [ ] No new bugs introduced
+- [ ] Documentation updated
+- [ ] Team notified
+
+**Verification:**
+- [ ] Original reporter confirms fix
+- [ ] No errors in logs for 24 hours
+- [ ] Monitoring shows normal metrics
+- [ ] No related support tickets
+
+---
+
+## 🔗 Related Resources
+
+**Related Issues:**
+- Issue #123 - [Similar bug]
+- Issue #456 - [Related feature]
+
+**Related Investigations:**
+- Investigation INV-001 - [Related investigation]
+
+**Documentation:**
+- [Link to relevant docs]
+
+**External Resources:**
+- [Stack Overflow thread]
+- [GitHub issue]
+- [Blog post]
+
+---
+
+## 📝 Investigation Log
+
+### {{timestamp1}}
+[Note about what you discovered/tried]
+
+### {{timestamp2}}
+[Note about what you discovered/tried]
+
+### {{timestamp3}}
+[Note about what you discovered/tried]
+
+---
+
+**Investigation Status:** {{status}}
+**Last Updated:** {{lastUpdated}}
+**Next Steps:** {{nextSteps}}
