@@ -1,6 +1,30 @@
 /**
- * Similarity Detector
- * Finds semantically similar queries using Jaccard similarity algorithm
+ * SimilarityDetector - Semantic similarity detection using Jaccard algorithm for cache retrieval
+ *
+ * @see docs/best-practices.md#caching-strategies - Similarity-based caching
+ *
+ * **Trinity Principle:** "Evidence-Based Decisions"
+ * Finds semantically similar cached investigations using Jaccard similarity (set intersection/union),
+ * enabling agents to leverage past work even when queries don't match exactly.
+ *
+ * **Why This Exists:**
+ * Exact cache hits are rare - queries vary in phrasing while seeking similar information.
+ * "authentication bug" and "auth error" describe related issues. Similarity detection finds
+ * cached investigations with ≥80% token overlap, letting agents reuse relevant past work.
+ * This dramatically increases cache effectiveness beyond exact-match-only approaches.
+ *
+ * @example
+ * ```typescript
+ * const detector = new SimilarityDetector();
+ *
+ * // Find similar cached investigations
+ * const similar = await detector.findSimilar('user login issue', cachedEntries, 0.8);
+ * // Returns: [{ cacheKey: '...', similarity: 0.85, cachedResult: {...} }]
+ *
+ * if (similar.length > 0) {
+ *   console.log(`Found ${similar.length} similar investigations`);
+ * }
+ * ```
  */
 
 import { CacheEntry } from '../shared/types';
@@ -18,6 +42,9 @@ export interface SimilarQuery<T = any> {
   };
 }
 
+/**
+ * SimilarityDetector finds semantically similar queries using Jaccard algorithm
+ */
 export class SimilarityDetector {
   private keyGenerator: CacheKeyGenerator;
   private readonly defaultThreshold = 0.8; // 80% similarity required

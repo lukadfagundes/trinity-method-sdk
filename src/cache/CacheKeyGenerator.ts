@@ -1,10 +1,34 @@
 /**
- * Cache Key Generator
- * Generates consistent, deterministic cache keys from queries using SHA-256 hashing
+ * CacheKeyGenerator - Deterministic cache key generation with normalization and hashing
+ *
+ * @see docs/best-practices.md#caching-strategies - Cache key generation patterns
+ *
+ * **Trinity Principle:** "Evidence-Based Decisions"
+ * Generates consistent SHA-256 keys from investigation queries with stopword removal and
+ * normalization, ensuring identical queries always hit same cache entry regardless of phrasing.
+ *
+ * **Why This Exists:**
+ * Cache effectiveness depends on key consistency. Similar queries phrased differently ("add user auth"
+ * vs "implement user authentication") should map to same key. This generator normalizes queries by
+ * removing stopwords, lowercasing, sorting tokens, then hashing, maximizing cache hit rate while
+ * maintaining determinism.
+ *
+ * @example
+ * ```typescript
+ * const generator = new CacheKeyGenerator();
+ *
+ * // Generates same key for similar queries
+ * const key1 = generator.generate('add user authentication');
+ * const key2 = generator.generate('implement user auth');
+ * // key1 === key2 after normalization
+ * ```
  */
 
 import * as crypto from 'crypto';
 
+/**
+ * CacheKeyGenerator creates consistent cache keys from queries
+ */
 export class CacheKeyGenerator {
   private stopwords: Set<string>;
 

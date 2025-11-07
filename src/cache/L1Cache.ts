@@ -1,6 +1,29 @@
 /**
- * L1 Cache - In-Memory LRU Cache
- * Fastest tier with LRU eviction policy
+ * L1Cache - In-memory LRU cache providing sub-millisecond access to investigation results
+ *
+ * @see docs/best-practices.md#caching-strategies - Cache tier performance characteristics
+ *
+ * **Trinity Principle:** "Evidence-Based Decisions"
+ * L1 provides instant access to frequently-used investigation results with LRU eviction,
+ * optimizing for speed over persistence. Survives within single session, loses state on restart.
+ *
+ * **Why This Exists:**
+ * Most investigations reference recent work repeatedly. L1 cache keeps "hot" data in memory
+ * for sub-millisecond retrieval, eliminating filesystem I/O and database queries. When agents
+ * re-examine recent findings, L1 delivers them instantly, making iterative investigation workflows
+ * feel instantaneous rather than waiting for disk access.
+ *
+ * @example
+ * ```typescript
+ * const l1 = new L1Cache({ maxEntries: 1000, ttl: 3600000 });
+ *
+ * // Cache recent investigation
+ * await l1.set('auth-flow-investigation', result);
+ *
+ * // Instant retrieval (< 1ms)
+ * const cached = await l1.get<InvestigationResult>('auth-flow-investigation');
+ * if (cached) console.log('L1 hit - instant access!');
+ * ```
  */
 
 import { LRUCache } from 'lru-cache';
@@ -13,6 +36,9 @@ export interface L1CacheConfig {
   ttl: number; // Default time-to-live in milliseconds (default: 24 hours)
 }
 
+/**
+ * L1Cache provides in-memory caching with LRU eviction
+ */
 export class L1Cache {
   private cache: LRUCache<string, CacheEntry>;
   private config: L1CacheConfig;

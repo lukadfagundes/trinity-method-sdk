@@ -1,6 +1,29 @@
 /**
- * L2 Cache - Persistent Disk Cache
- * JSON file-based cache with bucketed directory structure for performance
+ * L2Cache - Filesystem-based persistent cache surviving application restarts
+ *
+ * @see docs/best-practices.md#caching-strategies - Persistent caching patterns
+ *
+ * **Trinity Principle:** "Knowledge Preservation"
+ * L2 persists investigation results to disk with bucketed directory structure, surviving
+ * restarts and providing medium-term storage. Bridges gap between ephemeral L1 and permanent L3.
+ *
+ * **Why This Exists:**
+ * L1 cache disappears on restart, but many investigations remain relevant across sessions.
+ * L2 stores results as JSON files with intelligent bucketing (first 2 chars of hash), enabling
+ * fast filesystem lookups that persist between runs. When restarting development, agents
+ * immediately access yesterday's findings instead of re-investigating.
+ *
+ * @example
+ * ```typescript
+ * const l2 = new L2Cache({ cacheDir: './trinity/.cache', maxSizeMB: 500 });
+ *
+ * // Persist investigation to disk
+ * await l2.set('performance-analysis', result, 86400000); // 24h TTL
+ *
+ * // Retrieve after restart
+ * const cached = await l2.get<InvestigationResult>('performance-analysis');
+ * if (cached) console.log('L2 hit - persisted across restart!');
+ * ```
  */
 
 import * as fs from 'fs/promises';
@@ -16,6 +39,9 @@ export interface L2CacheConfig {
   ttl: number; // Default TTL in milliseconds (default: 24 hours)
 }
 
+/**
+ * L2Cache provides filesystem-based caching with automatic eviction
+ */
 export class L2Cache {
   private config: L2CacheConfig;
   private keyGenerator: CacheKeyGenerator;

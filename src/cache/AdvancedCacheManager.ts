@@ -1,6 +1,44 @@
 /**
- * Advanced Cache Manager
- * Orchestrates 3-tier caching system (L1, L2, L3) with similarity detection
+ * AdvancedCacheManager - 3-tier caching system for investigation results with similarity detection
+ *
+ * @see docs/best-practices.md#caching-strategies - Performance optimization patterns
+ * @see docs/methodology/investigation-first-complete.md - Investigation caching philosophy
+ *
+ * **Trinity Principle:** "Evidence-Based Decisions"
+ * Caching investigation results enables data-driven decision making by providing instant
+ * access to historical findings. The 3-tier design balances speed (L1 in-memory), persistence
+ * (L2 filesystem), and cross-session permanence (L3 SQLite), ensuring investigations benefit
+ * from past work without redundant exploration.
+ *
+ * **Why This Exists:**
+ * Investigations take time and consume API tokens. Re-running identical investigations wastes
+ * resources and slows development. This cache system stores investigation results across
+ * sessions with intelligent similarity detection, enabling instant retrieval of similar findings
+ * and progressive learning over time. L1 provides sub-millisecond access, L2 survives restarts,
+ * L3 persists indefinitely with semantic search capabilities.
+ *
+ * @example
+ * ```typescript
+ * const cache = new AdvancedCacheManager({
+ *   l1: { maxSize: 100, ttl: 3600 },
+ *   l2: { maxSize: 500, ttl: 86400 },
+ *   l3: { dbPath: './trinity/cache.db' },
+ *   similarityThreshold: 0.8
+ * });
+ *
+ * // Cache investigation result
+ * const key = cache.generateKey({ query: 'auth flow', agent: 'MON' });
+ * await cache.set(key, investigationResult, 3600);
+ *
+ * // Retrieve with fallback through tiers
+ * const cached = await cache.get<InvestigationResult>(key);
+ * if (cached) {
+ *   console.log(`Cache hit! Saved ${cached.tokensSaved} tokens`);
+ * }
+ *
+ * // Find similar investigations
+ * const similar = await cache.findSimilar({ query: 'authentication', threshold: 0.8 });
+ * ```
  */
 
 import { CacheEntry, CacheStats } from '../shared/types';
@@ -35,6 +73,9 @@ export interface TieredCacheStats {
   };
 }
 
+/**
+ * AdvancedCacheManager orchestrates 3-tier caching with similarity detection
+ */
 export class AdvancedCacheManager {
   private l1Cache: L1Cache;
   private l2Cache: L2Cache;

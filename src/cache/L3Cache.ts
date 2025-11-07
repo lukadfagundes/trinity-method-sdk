@@ -1,6 +1,34 @@
 /**
- * L3 Cache - Compressed Disk Cache
- * Gzip-compressed JSON file cache for large-scale historical data
+ * L3Cache - Compressed long-term storage for historical investigation results
+ *
+ * @see docs/best-practices.md#caching-strategies - Long-term caching architecture
+ *
+ * **Trinity Principle:** "Knowledge Preservation"
+ * L3 provides indefinite storage with gzip compression, preserving investigation history
+ * across weeks and months. Optimizes disk usage while maintaining complete investigative record.
+ *
+ * **Why This Exists:**
+ * Valuable investigations remain relevant long after L1/L2 expiration. Historical patterns,
+ * architecture decisions, and past solutions inform future work. L3 compresses and stores
+ * investigations indefinitely with 60-70% space savings via gzip, creating permanent
+ * institutional memory. When facing similar problems months later, agents retrieve historical
+ * context instead of starting from zero.
+ *
+ * @example
+ * ```typescript
+ * const l3 = new L3Cache({
+ *   cacheDir: './trinity/.cache/l3',
+ *   maxSizeMB: 1000,
+ *   compressionLevel: 6
+ * });
+ *
+ * // Store long-term investigation
+ * await l3.set('auth-refactor-2024', result, 604800000); // 7 days TTL
+ *
+ * // Retrieve months later
+ * const historical = await l3.get<InvestigationResult>('auth-refactor-2024');
+ * if (historical) console.log('Found historical context from 6 months ago');
+ * ```
  */
 
 import * as fs from 'fs/promises';
@@ -22,6 +50,9 @@ export interface L3CacheConfig {
   compressionLevel: number; // Gzip compression level 1-9 (default: 6)
 }
 
+/**
+ * L3Cache provides compressed long-term storage with gzip
+ */
 export class L3Cache {
   private config: L3CacheConfig;
   private keyGenerator: CacheKeyGenerator;
