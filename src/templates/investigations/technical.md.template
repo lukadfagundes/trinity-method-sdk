@@ -1,0 +1,364 @@
+# Technical Investigation: {{title}}
+
+**Investigation ID:** {{investigationId}}
+**Created:** {{createdAt}}
+**Investigator:** {{investigator}}
+**Status:** {{status}}
+**Priority:** {{priority}}
+
+---
+
+## 🔧 Technical Issue Summary
+
+**Brief Description:**
+{{description}}
+
+**Technical Area:**
+- [ ] Architecture / Design
+- [ ] Code Quality / Refactoring
+- [ ] Integration / APIs
+- [ ] Data Migration / Schema
+- [ ] Infrastructure / DevOps
+- [ ] Third-party Dependencies
+- [ ] Technical Debt
+- [ ] Other: [specify]
+
+**Complexity:**
+- [ ] Low (1-2 days)
+- [ ] Medium (3-5 days)
+- [ ] High (1-2 weeks)
+- [ ] Very High (>2 weeks)
+
+**Affected Systems:**
+-
+
+---
+
+## 🔍 Trinity Method Guided Questions
+
+### Problem Definition
+
+**1. What is the technical challenge?**
+[Describe the technical problem clearly]
+
+**2. Why is this important?**
+- Business impact:
+- Technical impact:
+- User impact:
+
+**3. What are the constraints?**
+- Time constraints:
+- Resource constraints:
+- Technical constraints:
+- Business constraints:
+
+**4. What is the current state?**
+[Describe how things work today]
+
+**5. What is the desired state?**
+[Describe how things should work]
+
+**6. What is the gap?**
+[Describe the difference between current and desired state]
+
+### Solution Space Exploration
+
+**7. What solutions have been considered?**
+
+**Solution 1:**
+- Description:
+- Pros:
+- Cons:
+- Estimated effort:
+- Risk level:
+
+**Solution 2:**
+- Description:
+- Pros:
+- Cons:
+- Estimated effort:
+- Risk level:
+
+**Solution 3:**
+- Description:
+- Pros:
+- Cons:
+- Estimated effort:
+- Risk level:
+
+**8. What is the recommended approach?**
+[Chosen solution and rationale]
+
+**9. What are the risks?**
+- Technical risks:
+- Business risks:
+- Timeline risks:
+
+**10. What dependencies exist?**
+- Code dependencies:
+- System dependencies:
+- Team dependencies:
+- External dependencies:
+
+---
+
+## 📐 Architecture & Design
+
+### Current Architecture
+```
+[Diagram or description of current architecture]
+```
+
+**Components:**
+-
+
+**Data Flow:**
+1.
+2.
+3.
+
+**Known Issues:**
+-
+
+### Proposed Architecture
+```
+[Diagram or description of proposed architecture]
+```
+
+**Changes:**
+-
+
+**New Components:**
+-
+
+**Updated Data Flow:**
+1.
+2.
+3.
+
+**Improvements:**
+-
+
+### Design Decisions
+
+**Decision 1: [Title]**
+- **Context:** [Why this decision is needed]
+- **Options Considered:**
+  1. Option A
+  2. Option B
+  3. Option C
+- **Decision:** [Chosen option]
+- **Rationale:** [Why this option was chosen]
+- **Consequences:** [Impact of this decision]
+
+**Decision 2: [Title]**
+- **Context:**
+- **Options Considered:**
+- **Decision:**
+- **Rationale:**
+- **Consequences:**
+
+---
+
+## 🛠️ Implementation Plan
+
+### Phase 1: Research & Design
+**Duration:** [X days]
+
+**Tasks:**
+- [ ] Review existing codebase
+- [ ] Research solutions / libraries
+- [ ] Create proof of concept
+- [ ] Design document review
+- [ ] Architecture decision record (ADR)
+
+**Deliverables:**
+- Design document
+- Proof of concept code
+- ADR documentation
+
+### Phase 2: Implementation
+**Duration:** [X days]
+
+**Tasks:**
+- [ ] Set up development environment
+- [ ] Implement core functionality
+- [ ] Add error handling
+- [ ] Add logging / monitoring
+- [ ] Code review
+
+**Deliverables:**
+- Implementation code
+- Unit tests
+- Integration tests
+
+### Phase 3: Testing & Validation
+**Duration:** [X days]
+
+**Tasks:**
+- [ ] Unit testing (≥80% coverage)
+- [ ] Integration testing
+- [ ] Performance testing
+- [ ] Security testing
+- [ ] User acceptance testing
+
+**Deliverables:**
+- Test results
+- Performance benchmarks
+- Security scan results
+
+### Phase 4: Deployment
+**Duration:** [X days]
+
+**Tasks:**
+- [ ] Deployment plan
+- [ ] Database migrations
+- [ ] Configuration updates
+- [ ] Deploy to staging
+- [ ] Deploy to production
+- [ ] Monitoring setup
+
+**Deliverables:**
+- Deployed code
+- Deployment documentation
+- Runbook
+
+---
+
+## 🧪 Testing Strategy
+
+### Unit Tests
+```typescript
+describe('Technical Implementation', () => {
+  describe('ComponentName', () => {
+    it('should handle happy path', () => {
+      // Test happy path
+    });
+
+    it('should handle edge cases', () => {
+      // Test edge cases
+    });
+
+    it('should handle errors gracefully', () => {
+      // Test error handling
+    });
+  });
+});
+```
+
+**Test Coverage Target:** ≥80%
+
+### Integration Tests
+- [ ] Test integration with System A
+- [ ] Test integration with System B
+- [ ] Test data flow end-to-end
+- [ ] Test error scenarios
+
+### Performance Tests
+- [ ] Load testing (expected load)
+- [ ] Stress testing (peak load)
+- [ ] Scalability testing
+- [ ] Response time validation
+
+**Performance Targets:**
+- Response time: < 500ms (p95)
+- Throughput: > 100 req/sec
+- Memory usage: < 1GB
+- CPU usage: < 70%
+
+---
+
+## 📊 Success Criteria
+
+**Technical Success:**
+- [ ] Implementation meets design specification
+- [ ] All tests pass (≥80% coverage)
+- [ ] Performance targets met
+- [ ] Security scan passes
+- [ ] Code review approved
+- [ ] Documentation complete
+
+**Business Success:**
+- [ ] User requirements met
+- [ ] Acceptance criteria passed
+- [ ] Stakeholder approval
+- [ ] Timeline met
+
+**Validation:**
+- [ ] Deployed to production
+- [ ] Monitoring confirms stable operation
+- [ ] No regressions detected
+- [ ] User feedback positive
+
+---
+
+## 🔗 Related Resources
+
+**Design Documents:**
+- [Link to design doc]
+
+**Architecture Decision Records:**
+- [Link to ADR]
+
+**Related Tickets:**
+- Issue #123
+- PR #456
+
+**External Resources:**
+- [Documentation]
+- [Blog post]
+- [GitHub repo]
+
+---
+
+## 📝 Investigation Log
+
+### {{timestamp1}}
+**Research:**
+[Notes on research findings]
+
+### {{timestamp2}}
+**Design:**
+[Notes on design decisions]
+
+### {{timestamp3}}
+**Implementation:**
+[Notes on implementation progress]
+
+### {{timestamp4}}
+**Testing:**
+[Notes on test results]
+
+---
+
+## 💡 Lessons Learned
+
+**What Went Well:**
+-
+
+**What Could Be Improved:**
+-
+
+**Knowledge Gained:**
+-
+
+**Patterns to Reuse:**
+-
+
+**Patterns to Avoid:**
+-
+
+---
+
+## 🔄 Next Steps
+
+1. [ ] [Next action item]
+2. [ ] [Next action item]
+3. [ ] [Next action item]
+
+---
+
+**Investigation Status:** {{status}}
+**Completion:** [X%]
+**Last Updated:** {{lastUpdated}}
+**Next Review:** {{nextReview}}

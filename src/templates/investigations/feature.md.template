@@ -1,0 +1,490 @@
+# Feature Investigation: {{title}}
+
+**Investigation ID:** {{investigationId}}
+**Created:** {{createdAt}}
+**Investigator:** {{investigator}}
+**Status:** {{status}}
+**Priority:** {{priority}}
+
+---
+
+## ✨ Feature Summary
+
+**Brief Description:**
+{{description}}
+
+**Feature Type:**
+- [ ] New functionality
+- [ ] Enhancement to existing feature
+- [ ] User experience improvement
+- [ ] API / Integration
+- [ ] Performance optimization
+- [ ] Security enhancement
+- [ ] Accessibility improvement
+
+**User Story:**
+As a [user type], I want [goal] so that [benefit].
+
+**Business Value:**
+- [ ] Revenue generation
+- [ ] Cost reduction
+- [ ] User satisfaction
+- [ ] Competitive advantage
+- [ ] Regulatory compliance
+- [ ] Technical debt reduction
+
+---
+
+## 🔍 Trinity Method Guided Questions
+
+### Requirements Analysis
+
+**1. What problem does this feature solve?**
+[Describe the user problem or business need]
+
+**2. Who are the users?**
+- Primary users:
+- Secondary users:
+- User segments:
+
+**3. What are the user goals?**
+- Goal 1:
+- Goal 2:
+- Goal 3:
+
+**4. What is the current workaround?**
+[How do users currently accomplish this without the feature?]
+
+**5. What are the must-have requirements?**
+- [ ] Requirement 1
+- [ ] Requirement 2
+- [ ] Requirement 3
+
+**6. What are the nice-to-have requirements?**
+- [ ] Requirement 1
+- [ ] Requirement 2
+- [ ] Requirement 3
+
+**7. What are the non-functional requirements?**
+- Performance: [e.g., load in < 2s]
+- Scalability: [e.g., handle 10k users]
+- Accessibility: [e.g., WCAG 2.1 AA]
+- Security: [e.g., encrypt at rest]
+- Reliability: [e.g., 99.9% uptime]
+
+### User Experience
+
+**8. What is the user flow?**
+1. User starts at: [entry point]
+2. User does: [action]
+3. System responds: [response]
+4. User sees: [feedback]
+5. User completes: [goal]
+
+**9. What is the happy path?**
+[Describe the ideal user journey]
+
+**10. What are the edge cases?**
+- Edge case 1:
+- Edge case 2:
+- Edge case 3:
+
+**11. What are the error scenarios?**
+- Error 1: [What happens? How should system respond?]
+- Error 2:
+- Error 3:
+
+**12. What is the user feedback mechanism?**
+- Success states:
+- Error states:
+- Loading states:
+- Empty states:
+
+### Technical Feasibility
+
+**13. Is this technically feasible?**
+- [ ] Yes, straightforward
+- [ ] Yes, but complex
+- [ ] Yes, with limitations
+- [ ] No, needs research
+- [ ] Unknown, needs spike
+
+**14. What are the technical dependencies?**
+- Libraries / frameworks:
+- APIs / services:
+- Database changes:
+- Infrastructure:
+
+**15. What are the technical risks?**
+- Risk 1: [Risk and mitigation]
+- Risk 2:
+- Risk 3:
+
+**16. What is the estimated complexity?**
+- Frontend: [XS/S/M/L/XL]
+- Backend: [XS/S/M/L/XL]
+- Database: [XS/S/M/L/XL]
+- Infrastructure: [XS/S/M/L/XL]
+- Overall: [XS/S/M/L/XL]
+
+---
+
+## 🎨 Design & Mockups
+
+### User Interface Design
+
+**Wireframes:**
+- [Link to wireframe 1]
+- [Link to wireframe 2]
+
+**Mockups:**
+- [Link to mockup 1]
+- [Link to mockup 2]
+
+**Interactive Prototype:**
+- [Link to Figma / InVision]
+
+### User Flow Diagram
+```
+[User flow diagram or description]
+
+Start → Action 1 → Decision Point → Action 2 → End
+```
+
+### Data Model
+```
+[Database schema or data structure]
+
+Table: features
+- id: uuid
+- name: string
+- status: enum
+- created_at: timestamp
+```
+
+### API Design
+```http
+# Create feature
+POST /api/features
+Content-Type: application/json
+
+{
+  "name": "Feature Name",
+  "description": "Description"
+}
+
+# Response
+{
+  "id": "uuid",
+  "name": "Feature Name",
+  "status": "active"
+}
+```
+
+---
+
+## 🛠️ Implementation Plan
+
+### Epic Breakdown
+
+**Epic:** [Feature Name]
+
+**Stories:**
+1. **User Story 1:** As a [user], I want [goal]
+   - Acceptance Criteria:
+     - [ ] Criterion 1
+     - [ ] Criterion 2
+   - Estimate: [X points]
+
+2. **User Story 2:** As a [user], I want [goal]
+   - Acceptance Criteria:
+     - [ ] Criterion 1
+     - [ ] Criterion 2
+   - Estimate: [X points]
+
+3. **User Story 3:** As a [user], I want [goal]
+   - Acceptance Criteria:
+     - [ ] Criterion 1
+     - [ ] Criterion 2
+   - Estimate: [X points]
+
+**Total Estimate:** [X points / X days]
+
+### Implementation Phases
+
+**Phase 1: Backend API**
+- [ ] Design API endpoints
+- [ ] Implement data models
+- [ ] Implement business logic
+- [ ] Add validation
+- [ ] Write API tests
+- [ ] API documentation
+
+**Phase 2: Frontend UI**
+- [ ] Implement UI components
+- [ ] Connect to API
+- [ ] Add form validation
+- [ ] Add loading states
+- [ ] Add error handling
+- [ ] Write UI tests
+
+**Phase 3: Integration**
+- [ ] End-to-end testing
+- [ ] User acceptance testing
+- [ ] Performance testing
+- [ ] Accessibility audit
+- [ ] Security review
+
+**Phase 4: Launch**
+- [ ] Feature flag setup
+- [ ] Gradual rollout plan
+- [ ] Monitoring setup
+- [ ] Documentation
+- [ ] User communication
+
+---
+
+## ✅ Acceptance Criteria
+
+### Functional Acceptance Criteria
+
+**Must Have:**
+- [ ] User can [primary action]
+- [ ] System validates [input]
+- [ ] System displays [feedback]
+- [ ] User can [secondary action]
+- [ ] Error handling works for [scenario]
+
+**Should Have:**
+- [ ] Feature works on mobile
+- [ ] Feature works on tablet
+- [ ] Feature works on desktop
+- [ ] Feature supports keyboard navigation
+- [ ] Feature is accessible (WCAG 2.1 AA)
+
+**Could Have:**
+- [ ] User can [nice-to-have action]
+- [ ] System provides [enhanced feature]
+
+### Non-Functional Acceptance Criteria
+
+**Performance:**
+- [ ] Page loads in < 2 seconds
+- [ ] API responds in < 500ms
+- [ ] No performance regressions
+
+**Security:**
+- [ ] Input validation implemented
+- [ ] Authentication required
+- [ ] Authorization enforced
+- [ ] Security scan passes
+
+**Accessibility:**
+- [ ] Screen reader compatible
+- [ ] Keyboard navigation works
+- [ ] Color contrast meets WCAG AA
+- [ ] Focus indicators visible
+
+**Quality:**
+- [ ] Code review approved
+- [ ] Test coverage ≥80%
+- [ ] No linting errors
+- [ ] Documentation complete
+
+---
+
+## 🧪 Testing Strategy
+
+### Test Scenarios
+
+**Scenario 1: Happy Path**
+- Given: [preconditions]
+- When: [user action]
+- Then: [expected result]
+
+**Scenario 2: Edge Case**
+- Given: [preconditions]
+- When: [user action]
+- Then: [expected result]
+
+**Scenario 3: Error Handling**
+- Given: [preconditions]
+- When: [error condition]
+- Then: [expected error handling]
+
+### Automated Tests
+
+**Unit Tests:**
+```typescript
+describe('Feature: {{title}}', () => {
+  describe('createFeature', () => {
+    it('should create feature with valid input', () => {
+      // Test implementation
+    });
+
+    it('should validate required fields', () => {
+      // Test validation
+    });
+
+    it('should handle errors gracefully', () => {
+      // Test error handling
+    });
+  });
+});
+```
+
+**Integration Tests:**
+```typescript
+describe('Feature Integration', () => {
+  it('should complete end-to-end flow', async () => {
+    // Test full user journey
+  });
+});
+```
+
+**E2E Tests:**
+```typescript
+describe('Feature E2E', () => {
+  it('should allow user to complete task', () => {
+    // Cypress / Playwright test
+  });
+});
+```
+
+### Manual Testing Checklist
+- [ ] Test on Chrome
+- [ ] Test on Firefox
+- [ ] Test on Safari
+- [ ] Test on mobile (iOS)
+- [ ] Test on mobile (Android)
+- [ ] Test with screen reader
+- [ ] Test keyboard navigation
+- [ ] Test with slow network
+- [ ] Test with large datasets
+
+---
+
+## 📈 Success Metrics
+
+### User Metrics
+- **Adoption Rate:** [Target: X% of users in first month]
+- **Engagement:** [Target: Y actions per user per week]
+- **Completion Rate:** [Target: Z% complete task successfully]
+- **User Satisfaction:** [Target: NPS score of N]
+
+### Technical Metrics
+- **Performance:** [Target: <500ms p95 response time]
+- **Reliability:** [Target: 99.9% uptime]
+- **Error Rate:** [Target: <0.1% errors]
+- **Test Coverage:** [Target: ≥80%]
+
+### Business Metrics
+- **Revenue Impact:** [Target: $X increase]
+- **Cost Savings:** [Target: $Y savings]
+- **Conversion Rate:** [Target: Z% improvement]
+
+**How to Measure:**
+- Analytics: [Google Analytics, Mixpanel, etc.]
+- Monitoring: [DataDog, New Relic, etc.]
+- User Feedback: [Surveys, support tickets]
+
+---
+
+## 🚀 Launch Plan
+
+### Feature Flag Strategy
+- [ ] Implement feature flag
+- [ ] Test with internal users (0%)
+- [ ] Roll out to beta users (10%)
+- [ ] Expand to early adopters (25%)
+- [ ] Gradual rollout (50%)
+- [ ] Full launch (100%)
+
+**Rollback Plan:**
+- [ ] Feature flag can disable feature instantly
+- [ ] Database migrations are reversible
+- [ ] Previous version available for rollback
+
+### Communication Plan
+
+**Internal:**
+- [ ] Engineering team notified
+- [ ] Support team trained
+- [ ] Sales team briefed
+- [ ] Documentation updated
+
+**External:**
+- [ ] Announcement blog post
+- [ ] Email to users
+- [ ] In-app notification
+- [ ] Social media posts
+
+---
+
+## 📚 Documentation
+
+**User Documentation:**
+- [ ] Feature overview
+- [ ] How-to guides
+- [ ] Video tutorials
+- [ ] FAQ
+
+**Technical Documentation:**
+- [ ] API documentation
+- [ ] Architecture documentation
+- [ ] Database schema
+- [ ] Deployment guide
+
+---
+
+## 💡 Lessons Learned
+
+### What Went Well
+-
+
+### Challenges Faced
+-
+
+### What Would We Do Differently
+-
+
+### Knowledge to Share
+-
+
+---
+
+## 🔗 Related Resources
+
+**Design:**
+- [Figma design]
+- [User research]
+
+**Development:**
+- [GitHub PR]
+- [Technical spec]
+
+**Project Management:**
+- [Jira epic]
+- [Project plan]
+
+---
+
+## 🔄 Future Enhancements
+
+**Phase 2 Ideas:**
+1. [Enhancement idea 1]
+2. [Enhancement idea 2]
+3. [Enhancement idea 3]
+
+**User Requests:**
+-
+
+**Technical Improvements:**
+-
+
+---
+
+**Investigation Status:** {{status}}
+**Feature Status:** [Not Started / In Development / In Testing / Launched]
+**Launch Date:** [Target date]
+**Last Updated:** {{lastUpdated}}
