@@ -1,9 +1,36 @@
 /**
- * KnowledgeSharingBus - Enable cross-agent knowledge sharing
+ * KnowledgeSharingBus - Pub/sub system for cross-agent pattern and strategy sharing
  *
- * Broadcasts high-confidence patterns between agents.
- * Only patterns with confidence ≥ 0.8 are shared.
- * Receiving agents validate before accepting.
+ * @see docs/best-practices.md - Knowledge sharing patterns
+ * @see docs/methodology/investigation-first-complete.md - Collective learning
+ *
+ * **Trinity Principle:** "Knowledge Preservation"
+ * Enables agents to share high-confidence patterns (≥0.8 threshold) through pub/sub architecture,
+ * building collective intelligence where each agent's learning benefits all agents. Creates
+ * knowledge network effect where system-wide intelligence grows faster than individual learning.
+ *
+ * **Why This Exists:**
+ * Isolated agent learning is inefficient. MON discovers pattern about missing acceptance criteria,
+ * but ROR keeps making same design mistakes. This bus broadcasts validated patterns between agents
+ * with confidence-based filtering, ensuring only proven knowledge propagates. When one agent learns
+ * something valuable, all related agents immediately benefit, accelerating team-wide improvement
+ * and preventing duplicate discovery.
+ *
+ * @example
+ * ```typescript
+ * const bus = new KnowledgeSharingBus(learningData);
+ *
+ * // Subscribe to patterns
+ * await bus.subscribeToPatterns('ROR', async (broadcast) => {
+ *   if (broadcast.pattern.confidence >= 0.8) {
+ *     console.log(`Received pattern from ${broadcast.sourceAgent}`);
+ *     await bus.acceptSharedPattern(broadcast.pattern, 'ROR');
+ *   }
+ * });
+ *
+ * // Broadcast high-confidence pattern
+ * await bus.broadcastPattern(pattern, 'MON');
+ * ```
  *
  * @module learning/KnowledgeSharingBus
  */

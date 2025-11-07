@@ -1,9 +1,34 @@
 /**
- * StrategySelectionEngine - Select best strategy based on historical performance
+ * StrategySelectionEngine - AI-powered strategy selection based on historical performance data
  *
- * Implements confidence-weighted scoring with fallback to default strategies.
- * Algorithm: (successRate * 0.6) + (confidence * 0.4)
- * Confidence threshold: 0.7
+ * @see docs/best-practices.md - Strategy selection patterns
+ * @see docs/methodology/investigation-first-complete.md - Evidence-based investigation
+ *
+ * **Trinity Principle:** "Evidence-Based Decisions"
+ * Selects optimal investigation strategies by analyzing historical performance data with
+ * confidence-weighted scoring. Ensures agents choose proven approaches rather than guessing,
+ * making investigations faster and more successful through data-driven strategy selection.
+ *
+ * **Why This Exists:**
+ * Traditional development guesses at approaches. Should we use top-down or bottom-up analysis?
+ * Broad search or focused deep-dive? This engine analyzes past investigations: which strategies
+ * worked for similar contexts? It scores strategies using formula (successRate × 0.6 + confidence × 0.4),
+ * requiring ≥0.7 confidence threshold, ensuring agents always choose statistically-validated
+ * approaches over hunches.
+ *
+ * @example
+ * ```typescript
+ * const engine = new StrategySelectionEngine(learningData, tracker);
+ *
+ * // Select strategy for investigation
+ * const context = {
+ *   type: 'performance',
+ *   scope: ['api', 'database'],
+ *   estimatedComplexity: 'high'
+ * };
+ * const strategy = await engine.selectStrategy('MON', context);
+ * console.log(`Selected: ${strategy.name} (score: ${strategy.score})`);
+ * ```
  *
  * @module learning/StrategySelectionEngine
  */

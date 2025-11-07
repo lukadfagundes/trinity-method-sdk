@@ -1,8 +1,38 @@
 /**
- * LearningDataStore - Persist and retrieve learning data
+ * LearningDataStore - Persistent storage for learned patterns, strategies, and error resolutions
  *
- * Stores patterns, strategies, errors, and optimizations for Trinity agents.
- * Uses JSON file persistence in agent-specific directories.
+ * @see docs/best-practices.md - Testing and learning integration
+ * @see docs/methodology/investigation-first-complete.md - Learning system integration
+ *
+ * **Trinity Principle:** "Knowledge Preservation"
+ * Captures patterns from every investigation and persists them across sessions using filesystem
+ * storage. Enables agents to learn from experience, building institutional knowledge that survives
+ * restarts and improves over time through pattern recognition and strategy refinement.
+ *
+ * **Why This Exists:**
+ * Traditional development loses knowledge when developers leave or forget. Hard-won lessons
+ * disappear, and teams repeatedly solve the same problems. This store persists learned patterns,
+ * successful strategies, and error resolutions to disk in agent-specific directories, ensuring
+ * institutional knowledge survives across sessions, team changes, and project boundaries. Agents
+ * get smarter over time instead of starting from zero each investigation.
+ *
+ * @example
+ * ```typescript
+ * const store = new LearningDataStore('./trinity/learning');
+ *
+ * // Save learned pattern
+ * await store.savePattern('MON', {
+ *   patternId: 'missing-acceptance-criteria',
+ *   description: 'Users often request features without acceptance criteria',
+ *   confidence: 0.85,
+ *   successCount: 12,
+ *   usageCount: 14
+ * });
+ *
+ * // Retrieve all patterns for agent
+ * const learningData = await store.loadLearningData('MON');
+ * const patterns = Array.from(learningData.patterns.values());
+ * ```
  *
  * @module learning/LearningDataStore
  */

@@ -1,8 +1,36 @@
 /**
- * PerformanceTracker - Track strategy effectiveness and investigation metrics
+ * PerformanceTracker - High-resolution performance measurement and strategy effectiveness tracking
  *
- * Implements high-resolution timing, token tracking, and learning metrics
- * per Quality Measurement Standard specifications.
+ * @see docs/best-practices.md - Performance measurement standards
+ * @see docs/methodology/investigation-first-complete.md - Investigation metrics
+ *
+ * **Trinity Principle:** "Evidence-Based Decisions"
+ * Tracks investigation performance with nanosecond precision, measuring strategy effectiveness,
+ * token consumption, and error rates. Provides quantitative evidence for strategy selection and
+ * continuous improvement through detailed performance analytics.
+ *
+ * **Why This Exists:**
+ * "What gets measured gets improved." Traditional development lacks performance data - teams
+ * guess which approaches work best. This tracker captures high-resolution timing (process.hrtime.bigint),
+ * token usage, and success rates for every investigation, building statistical evidence that
+ * drives strategy selection. Agents see exactly which approaches work fastest and most reliably,
+ * enabling data-driven continuous improvement.
+ *
+ * @example
+ * ```typescript
+ * const tracker = new PerformanceTracker(learningData);
+ *
+ * // Start tracking investigation
+ * tracker.trackInvestigationStart('inv-123', 'MON');
+ * tracker.trackStrategyStart('inv-123', 'breadth-first-analysis');
+ *
+ * // ... investigation work ...
+ *
+ * // Complete tracking
+ * await tracker.trackInvestigationComplete('inv-123', result);
+ * const metrics = await tracker.getPerformanceTrends('MON');
+ * console.log(`Avg duration: ${metrics.avgDuration}ms`);
+ * ```
  *
  * @module learning/PerformanceTracker
  */
