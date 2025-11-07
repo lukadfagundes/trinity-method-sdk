@@ -1,8 +1,11 @@
 /**
  * StrategySelectionEngine - AI-powered strategy selection based on historical performance data
  *
+ * @see docs/knowledge-preservation.md - Knowledge preservation philosophy and pattern matching
  * @see docs/best-practices.md - Strategy selection patterns
  * @see docs/methodology/investigation-first-complete.md - Evidence-based investigation
+ * @see LearningDataStore.ts - Pattern storage and retrieval
+ * @see PerformanceTracker.ts - Strategy performance tracking
  *
  * **Trinity Principle:** "Evidence-Based Decisions"
  * Selects optimal investigation strategies by analyzing historical performance data with
@@ -15,6 +18,12 @@
  * worked for similar contexts? It scores strategies using formula (successRate × 0.6 + confidence × 0.4),
  * requiring ≥0.7 confidence threshold, ensuring agents always choose statistically-validated
  * approaches over hunches.
+ *
+ * **Knowledge Preservation Architecture (Layer 2):**
+ * This implements pattern matching at investigation-time. When an investigation starts, this engine
+ * analyzes context against historical patterns from Layer 1 (LearningDataStore), surfaces relevant
+ * matches with confidence scores, and recommends proven strategies. This accelerates investigations
+ * by applying learned patterns immediately.
  *
  * @example
  * ```typescript

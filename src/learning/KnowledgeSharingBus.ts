@@ -1,8 +1,11 @@
 /**
  * KnowledgeSharingBus - Pub/sub system for cross-agent pattern and strategy sharing
  *
+ * @see docs/knowledge-preservation.md - Knowledge sharing and cross-team learning
  * @see docs/best-practices.md - Knowledge sharing patterns
  * @see docs/methodology/investigation-first-complete.md - Collective learning
+ * @see LearningDataStore.ts - Shared pattern storage
+ * @see StrategySelectionEngine.ts - Cross-agent strategy recommendations
  *
  * **Trinity Principle:** "Knowledge Preservation"
  * Enables agents to share high-confidence patterns (≥0.8 threshold) through pub/sub architecture,
@@ -15,6 +18,12 @@
  * with confidence-based filtering, ensuring only proven knowledge propagates. When one agent learns
  * something valuable, all related agents immediately benefit, accelerating team-wide improvement
  * and preventing duplicate discovery.
+ *
+ * **Knowledge Preservation Architecture (Cross-Layer):**
+ * This enables knowledge sharing across all three layers. Patterns from Layer 1 (storage) are
+ * broadcast to other agents for Layer 2 (matching). Layer 3 (performance tracking) validates
+ * shared patterns and updates confidence scores. Also enables cross-team and cross-project
+ * knowledge distribution through pattern export/import.
  *
  * @example
  * ```typescript

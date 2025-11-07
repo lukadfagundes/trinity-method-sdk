@@ -1,8 +1,11 @@
 /**
  * LearningDataStore - Persistent storage for learned patterns, strategies, and error resolutions
  *
+ * @see docs/knowledge-preservation.md - Knowledge preservation philosophy and architecture
  * @see docs/best-practices.md - Testing and learning integration
  * @see docs/methodology/investigation-first-complete.md - Learning system integration
+ * @see KnowledgeSharingBus.ts - Cross-team knowledge sharing
+ * @see StrategySelectionEngine.ts - Pattern matching and strategy selection
  *
  * **Trinity Principle:** "Knowledge Preservation"
  * Captures patterns from every investigation and persists them across sessions using filesystem
@@ -15,6 +18,12 @@
  * successful strategies, and error resolutions to disk in agent-specific directories, ensuring
  * institutional knowledge survives across sessions, team changes, and project boundaries. Agents
  * get smarter over time instead of starting from zero each investigation.
+ *
+ * **Knowledge Preservation Architecture (Layer 1):**
+ * This is the foundation of Trinity Method's 3-layer learning system. It handles automatic pattern
+ * extraction from completed investigations, storing structured learning data that feeds into pattern
+ * matching (Layer 2) and reinforcement learning (Layer 3). Every investigation contributes to
+ * organizational knowledge that accelerates future work.
  *
  * @example
  * ```typescript

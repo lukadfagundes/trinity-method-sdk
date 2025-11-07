@@ -1,8 +1,11 @@
 /**
  * PerformanceTracker - High-resolution performance measurement and strategy effectiveness tracking
  *
+ * @see docs/knowledge-preservation.md - Performance metrics and continuous improvement
  * @see docs/best-practices.md - Performance measurement standards
  * @see docs/methodology/investigation-first-complete.md - Investigation metrics
+ * @see StrategySelectionEngine.ts - Uses performance data for strategy scoring
+ * @see LearningDataStore.ts - Persists performance metrics
  *
  * **Trinity Principle:** "Evidence-Based Decisions"
  * Tracks investigation performance with nanosecond precision, measuring strategy effectiveness,
@@ -15,6 +18,12 @@
  * token usage, and success rates for every investigation, building statistical evidence that
  * drives strategy selection. Agents see exactly which approaches work fastest and most reliably,
  * enabling data-driven continuous improvement.
+ *
+ * **Knowledge Preservation Architecture (Layer 3):**
+ * This implements reinforcement learning through continuous feedback. When investigations complete,
+ * this tracker measures outcomes (success/failure, duration, quality) and updates pattern confidence
+ * scores in Layer 1. Successful strategies get confidence boosts; failed approaches get confidence
+ * penalties. The learning system self-optimizes over time.
  *
  * @example
  * ```typescript
