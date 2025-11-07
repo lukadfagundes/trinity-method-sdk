@@ -1,7 +1,12 @@
 /**
  * Learning Status Command - Display learning system status and performance metrics
+ *
+ * @see docs/knowledge-preservation.md - Knowledge preservation philosophy
  * @see docs/best-practices.md - Learning system integration
+ * @see ../../learning/LearningMetricsDashboard.ts - Metrics dashboard implementation
+ *
  * **Trinity Principle:** "Knowledge Preservation" - Monitor institutional learning
+ *
  * @module cli/commands/learning-status
  */
 
@@ -10,18 +15,21 @@ import ora from 'ora';
 import fs from 'fs-extra';
 import path from 'path';
 
+import { LearningDataStore, LearningData } from '../../learning/LearningDataStore.js';
+import { LearningMetricsDashboard } from '../../learning/LearningMetricsDashboard.js';
+import { AgentType } from '../../shared/types/index.js';
+
 interface LearningStatusOptions {
   verbose?: boolean;
+  dashboard?: boolean;
 }
 
 export async function learningStatus(options: LearningStatusOptions = {}): Promise<void> {
-  console.log(chalk.blue.bold('\n🧠 Trinity Learning System Status\n'));
-
   const spinner = ora('Loading learning data...').start();
 
   try {
     const configPath = path.join(process.cwd(), 'trinity/learning/config.json');
-    const registryPath = path.join(process.cwd(), 'trinity/learning/patterns/registry.json');
+    const learningDir = path.join(process.cwd(), '.trinity/learning');
 
     if (!(await fs.pathExists(configPath))) {
       spinner.fail('Learning system not initialized');
@@ -37,10 +45,47 @@ export async function learningStatus(options: LearningStatusOptions = {}): Promi
       return;
     }
 
+    // Load learning data for all agents
+    const store = new LearningDataStore(learningDir);
+    // Using v1.0 agent names for learning system compatibility
+    const agents: string[] = [
+      'MON',
+      'ROR',
+      'TRA',
+      'EUS',
+      'KIL',
+      'BAS',
+      'DRA',
+      'APO',
+      'BON',
+      'CAP',
+      'URO',
+      'ALY',
+    ];
+
+    const learningData = new Map<AgentType, LearningData>();
+    for (const agent of agents) {
+      try {
+        const data = await store.loadLearningData(agent as AgentType);
+        learningData.set(agent as AgentType, data);
+      } catch (error) {
+        // Agent may not have learning data yet
+      }
+    }
+
     spinner.succeed('Learning data loaded');
 
-    // Display learning system status
-    console.log(chalk.green('\n📊 Learning System:'));
+    // Display full dashboard if --dashboard flag is set
+    if (options.dashboard) {
+      const dashboard = new LearningMetricsDashboard(learningData);
+      await dashboard.displayFullDashboard();
+      return;
+    }
+
+    // Display simple status (legacy behavior)
+    console.log(chalk.blue.bold('\n🧠 Trinity Learning System Status\n'));
+
+    console.log(chalk.green('📊 Learning System:'));
     console.log(`   Status: ${config.enabled ? chalk.green('Active') : chalk.red('Disabled')}`);
     console.log(`   Learning Rate: ${config.learningRate || 0.1}`);
 
@@ -49,24 +94,28 @@ export async function learningStatus(options: LearningStatusOptions = {}): Promi
     console.log(`   Self Improvement: ${config.selfImprovement ? '✓' : '✗'}`);
     console.log(`   Knowledge Sharing: ${config.knowledgeSharing ? '✓' : '✗'}`);
 
-    // Load patterns registry
-    if (await fs.pathExists(registryPath)) {
-      const registry = await fs.readJson(registryPath);
-      const patternCount = registry.patterns?.length || 0;
+    // Count patterns across all agents
+    let totalPatterns = 0;
+    for (const data of learningData.values()) {
+      totalPatterns += data.patterns.size;
+    }
 
-      console.log(chalk.green('\n📚 Learned Patterns:'));
-      console.log(`   Total Patterns: ${patternCount}`);
+    console.log(chalk.green('\n📚 Learned Patterns:'));
+    console.log(`   Total Patterns: ${totalPatterns}`);
+    console.log(`   Agents with Data: ${learningData.size}`);
 
-      if (patternCount > 0 && options.verbose) {
-        console.log(chalk.cyan('\n   Recent Patterns:'));
-        registry.patterns.slice(0, 5).forEach((pattern: any, index: number) => {
-          console.log(`   ${index + 1}. ${pattern.name || 'Unnamed'}`);
-        });
+    if (options.verbose && totalPatterns > 0) {
+      console.log(chalk.cyan('\n   Patterns by Agent:'));
+      for (const [agent, data] of learningData.entries()) {
+        if (data.patterns.size > 0) {
+          console.log(`   ${agent}: ${data.patterns.size} patterns`);
+        }
       }
     }
 
-    console.log(chalk.cyan('\n💡 Use `/trinity-learning-status` for detailed insights\n'));
-
+    console.log(
+      chalk.cyan('\n💡 Use `trinity learning-status --dashboard` for detailed metrics dashboard\n')
+    );
   } catch (error: any) {
     spinner.fail('Failed to load learning status');
     console.error(chalk.red(`   Error: ${error.message}`));

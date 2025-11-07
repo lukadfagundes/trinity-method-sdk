@@ -105,6 +105,7 @@ program
   .command('learning-status')
   .description('🧠 Display learning system status')
   .option('--verbose', 'Show detailed pattern information')
+  .option('--dashboard', 'Display comprehensive metrics dashboard')
   .action(learningStatus);
 
 program
