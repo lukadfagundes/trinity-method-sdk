@@ -1,17 +1,35 @@
 /**
- * TAN (Structure Specialist) - Enhanced with Learning Capabilities
+ * TAN (Structure Specialist) - Trinity Method project structure deployment and validation
  *
- * Specializes in:
- * - File and directory structure analysis
- * - Architecture patterns
- * - Code organization
- * - Dependency management
+ * @see docs/workflows/deploy-workflow.md - SDK deployment process
+ * @see docs/agents/agent-selection-guide.md - TAN's deployment responsibilities
+ * @see docs/deployment/best-practices.md - Structure best practices
  *
- * Now includes self-improving capabilities for better structure recommendations.
+ * **Trinity Principle:** "Systematic Quality Assurance"
+ * TAN creates the complete Trinity Method folder structure, deploys all 11 agents,
+ * establishes technical debt baseline, and validates project setup. Ensures every
+ * Trinity project starts with consistent, methodology-aligned architecture.
+ *
+ * **Why This Exists:**
+ * Traditional project setup is ad-hoc and inconsistent. Developers create folder
+ * structures based on personal preference, leading to confusion and maintenance issues.
+ * TAN enforces Trinity Method's proven structure (`trinity/`, `.claude/`, documentation
+ * hierarchy), deploys agent templates, and validates completeness. Every project gets
+ * the same solid foundation, reducing onboarding time and architectural drift.
+ *
+ * @example
+ * ```typescript
+ * const tan = new TANAgent(learningData, tracker, strategy, bus);
+ * const result = await tan.createTrinityStructure('/path/to/project');
+ * // Creates: trinity/work-orders/, trinity/archive/, .claude/agents/, etc.
+ * await tan.deployAgents(projectPath);
+ * await tan.establishBaseline(projectPath);
+ * ```
  *
  * @module agents/TAN
  */
 
+import { InvestigationContext } from '../learning/StrategySelectionEngine';
 import {
   InvestigationResult,
   Finding,
@@ -20,13 +38,11 @@ import {
   InvestigationMetadata,
 } from '../shared/types';
 
-import { InvestigationContext } from '../learning/StrategySelectionEngine';
 
 import { SelfImprovingAgent } from './SelfImprovingAgent';
 
 /**
- * TAN Agent - Trinity Architecture Navigator
- * Enhanced with self-improving capabilities
+ * TAN Agent - Trinity Architecture Navigator with structure deployment capabilities
  */
 export class TANAgent extends SelfImprovingAgent {
   /**

@@ -1,7 +1,36 @@
 /**
- * ALY (Chief Technology Officer)
+ * ALY (Chief Technology Officer) - Strategic orchestrator and investigation coordinator
+ *
+ * @see docs/methodology/investigation-first-complete.md - Investigation-first workflow
+ * @see docs/agents/agent-selection-guide.md - ALY's role in agent hierarchy
+ * @see docs/workflows/session-workflow.md - Session lifecycle management
+ *
+ * **Trinity Principle:** "Investigation-First Development"
+ * ALY coordinates complex investigations by orchestrating the 11-agent team through
+ * scale-based workflows. Ensures appropriate planning and oversight based on task
+ * complexity, preventing both under-planning (rushing) and over-planning (waste).
+ *
+ * **Why This Exists:**
+ * Traditional development lacks adaptive workflows - simple tasks get bogged down in
+ * bureaucracy while complex features get insufficient review. ALY determines investigation
+ * scale (SMALL/MEDIUM/LARGE) and coordinates appropriate agent involvement, optimizing
+ * for both speed and quality. Acts as the strategic CTO ensuring investigations follow
+ * Trinity Method principles systematically.
+ *
+ * @example
+ * ```typescript
+ * const aly = new ALYAgent(learningData, tracker, strategy, bus);
+ * const context = {
+ *   type: 'technical',
+ *   scope: 'feature-implementation',
+ *   requirements: ['Add user authentication']
+ * };
+ * const result = await aly.executeInvestigation(context);
+ * console.log(`Investigation ${result.id} completed in ${result.duration}ms`);
+ * ```
  */
 import { InvestigationResult, InvestigationContext, Finding, LearnedPattern } from '../shared/types';
+
 import { SelfImprovingAgent } from './SelfImprovingAgent';
 
 export class ALYAgent extends SelfImprovingAgent {

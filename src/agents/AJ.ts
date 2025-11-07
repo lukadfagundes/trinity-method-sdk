@@ -1,7 +1,34 @@
 /**
- * AJ (Implementation Lead)
+ * AJ (Implementation Lead) - Deprecated Trinity Method v1.0 orchestrator
+ *
+ * @deprecated Use ALY (Chief Technology Officer) for v2.0 orchestration
+ * @see docs/agents/agent-selection-guide.md - Agent evolution and deprecation
+ * @see docs/evolution/from-methodology-to-SDK.md - v1.0 to v2.0 migration
+ *
+ * **Trinity Principle:** "Investigation-First Development"
+ * AJ was the original Trinity Method orchestrator in v1.0, coordinating the planning
+ * and execution agents. In v2.0, this role has been superseded by ALY (Chief Technology
+ * Officer) with expanded strategic capabilities and improved agent coordination.
+ *
+ * **Why This Exists:**
+ * This class remains for backward compatibility with v1.0 Trinity Method projects.
+ * New projects should use ALY instead. AJ provided the foundation for multi-agent
+ * orchestration that evolved into the more sophisticated v2.0 agent hierarchy.
+ *
+ * @example
+ * ```typescript
+ * // DEPRECATED - Use ALY instead
+ * // const aj = new AJAgent(learningData, tracker, strategy, bus);
+ *
+ * // V2.0 APPROACH:
+ * const aly = new ALYAgent(learningData, tracker, strategy, bus);
+ * const result = await aly.executeInvestigation(context);
+ * ```
+ *
+ * @module agents/AJ
  */
 import { InvestigationResult, InvestigationContext, Finding, LearnedPattern } from '../shared/types';
+
 import { SelfImprovingAgent } from './SelfImprovingAgent';
 
 export class AJAgent extends SelfImprovingAgent {

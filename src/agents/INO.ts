@@ -1,17 +1,36 @@
 /**
- * INO (Context Specialist) - Enhanced with Learning Capabilities
+ * INO (Context Specialist) - CLAUDE.md behavioral hierarchy and ISSUES.md database establishment
  *
- * Specializes in:
- * - CLAUDE.md integration and management
- * - Context boundaries and scope
- * - Investigation context detection
- * - Multi-file context analysis
+ * @see docs/context-and-issues-guide.md - Context management philosophy
+ * @see docs/agents/agent-selection-guide.md - INO's context responsibilities
+ * @see docs/workflows/deploy-workflow.md - Context file deployment
  *
- * Now includes self-improving capabilities for better context management.
+ * **Trinity Principle:** "Evidence-Based Decisions"
+ * INO establishes CLAUDE.md behavioral hierarchy defining agent behaviors and ISSUES.md
+ * comprehensive database of known patterns, errors, and solutions. Provides agents with
+ * context boundaries and historical evidence for faster, more accurate investigations.
+ *
+ * **Why This Exists:**
+ * Traditional development lacks context persistence. Agents start each investigation
+ * from zero, repeating research and rediscovering known issues. INO creates living
+ * documentation of project context (CLAUDE.md) and issue history (ISSUES.md), giving
+ * agents immediate access to past findings. This transforms investigations from
+ * exploration to informed analysis, reducing duplicate work and accelerating resolution.
+ *
+ * @example
+ * ```typescript
+ * const ino = new INOAgent(learningData, tracker, strategy, bus);
+ * await ino.establishCLAUDEmd('/path/to/project');
+ * // Creates: .claude/CLAUDE.md with agent behaviors
+ * await ino.createISSUESDatabase(projectPath);
+ * // Creates: ISSUES.md with pattern/error database
+ * await ino.integrateV2Practices(projectPath);
+ * ```
  *
  * @module agents/INO
  */
 
+import { InvestigationContext } from '../learning/StrategySelectionEngine';
 import {
   InvestigationResult,
   Finding,
@@ -20,13 +39,11 @@ import {
   InvestigationMetadata,
 } from '../shared/types';
 
-import { InvestigationContext } from '../learning/StrategySelectionEngine';
 
 import { SelfImprovingAgent } from './SelfImprovingAgent';
 
 /**
- * INO Agent - Investigation Navigator & Orchestrator
- * Enhanced with self-improving capabilities
+ * INO Agent - Investigation Navigator & Orchestrator with context establishment capabilities
  */
 export class INOAgent extends SelfImprovingAgent {
   /**

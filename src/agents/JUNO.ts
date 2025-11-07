@@ -1,17 +1,39 @@
 /**
- * JUNO (Quality Auditor) - Enhanced with Learning Capabilities
+ * JUNO (Quality Auditor) - Comprehensive Trinity Method deployment auditing and compliance validation
  *
- * Specializes in:
- * - Quality auditing and validation
- * - Test coverage analysis
- * - Code quality metrics
- * - Best practices enforcement
+ * @see docs/workflows/audit-workflow.md - JUNO audit process
+ * @see docs/agents/agent-selection-guide.md - JUNO's quality responsibilities
+ * @see docs/quality-standards.md - Quality standards enforced (WO-023)
  *
- * Now includes self-improving capabilities for better quality assessments.
+ * **Trinity Principle:** "Systematic Quality Assurance"
+ * JUNO performs comprehensive audits of Trinity v2.0 deployments using DRA review standards,
+ * validating that all components (11 agents, 25 commands, documentation, structure) are
+ * correctly deployed and operational. Ensures quality isn't aspirational but systematically
+ * enforced through automated validation.
+ *
+ * **Why This Exists:**
+ * Traditional quality assurance is manual, inconsistent, and error-prone. Teams say
+ * "we value quality" but lack systematic enforcement. JUNO automates comprehensive
+ * deployment auditing, checking file existence, content validity, template processing,
+ * and methodology compliance. Every Trinity deployment is validated to same high standard,
+ * catching issues before they reach production and ensuring teams actually get the quality
+ * they expect.
+ *
+ * @example
+ * ```typescript
+ * const juno = new JUNOAgent(learningData, tracker, strategy, bus);
+ * const auditResult = await juno.auditDeployment('/path/to/project');
+ * // Validates: 11 agents deployed, 25 commands present, structure complete
+ * console.log(`Audit: ${auditResult.score}/100, ${auditResult.issues.length} issues`);
+ * if (auditResult.score < 80) {
+ *   await juno.generateRemediationPlan(auditResult);
+ * }
+ * ```
  *
  * @module agents/JUNO
  */
 
+import { InvestigationContext } from '../learning/StrategySelectionEngine';
 import {
   InvestigationResult,
   Finding,
@@ -20,13 +42,11 @@ import {
   InvestigationMetadata,
 } from '../shared/types';
 
-import { InvestigationContext } from '../learning/StrategySelectionEngine';
 
 import { SelfImprovingAgent } from './SelfImprovingAgent';
 
 /**
- * JUNO Agent - Quality Auditor
- * Enhanced with self-improving capabilities
+ * JUNO Agent - Quality Auditor with deployment validation capabilities
  */
 export class JUNOAgent extends SelfImprovingAgent {
   /**

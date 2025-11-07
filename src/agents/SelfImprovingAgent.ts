@@ -1,12 +1,54 @@
 /**
- * SelfImprovingAgent - Base class for learning-enabled Trinity agents
+ * SelfImprovingAgent - Base class for all Trinity Method agents with cross-session learning
  *
- * Provides learning capabilities to TAN, ZEN, INO, JUNO agents.
- * Implements pattern extraction, strategy selection, and knowledge sharing.
+ * @see docs/methodology/investigation-first-complete.md - Core Trinity Method philosophy
+ * @see docs/agents/agent-selection-guide.md - Agent architecture and coordination patterns
+ * @see docs/best-practices.md - Testing and coding standards
+ *
+ * **Trinity Principle:** "Investigation-First Development"
+ * Agents learn from every investigation, improving over time through pattern recognition
+ * and knowledge sharing. This enforces systematic investigation before implementation,
+ * building institutional knowledge that compounds with each session rather than starting
+ * from scratch every time.
+ *
+ * **Why This Exists:**
+ * Traditional development treats each task as isolated. Context is lost between sessions,
+ * mistakes repeat, and valuable lessons fade when developers leave. This base class ensures
+ * all Trinity agents participate in cross-session learning and knowledge preservation,
+ * creating institutional memory that makes agents smarter over time. Every investigation
+ * extracts patterns, every error resolution is remembered, and every successful strategy
+ * is shared across the agent team.
+ *
+ * @example
+ * ```typescript
+ * // Creating a learning-enabled agent
+ * const learningData = new LearningDataStore();
+ * const tracker = new PerformanceTracker();
+ * const strategy = new StrategySelectionEngine();
+ * const bus = new KnowledgeSharingBus();
+ *
+ * class MyAgent extends SelfImprovingAgent {
+ *   constructor() {
+ *     super('MY_AGENT', learningData, tracker, strategy, bus);
+ *   }
+ *
+ *   async executeInvestigation(context) {
+ *     // Agent-specific investigation logic
+ *     const result = await this.investigate(context);
+ *     // Learning happens automatically via learnFromInvestigation()
+ *     return result;
+ *   }
+ * }
+ * ```
  *
  * @module agents/SelfImprovingAgent
  */
 
+
+import { KnowledgeSharingBus, PatternBroadcast } from '../learning/KnowledgeSharingBus';
+import { LearningDataStore } from '../learning/LearningDataStore';
+import { PerformanceTracker } from '../learning/PerformanceTracker';
+import { StrategySelectionEngine, InvestigationContext } from '../learning/StrategySelectionEngine';
 import {
   InvestigationResult,
   LearnedPattern,
@@ -15,13 +57,8 @@ import {
   AgentType,
 } from '../shared/types';
 
-import { KnowledgeSharingBus, PatternBroadcast } from '../learning/KnowledgeSharingBus';
-import { LearningDataStore } from '../learning/LearningDataStore';
-import { PerformanceTracker } from '../learning/PerformanceTracker';
-import { StrategySelectionEngine, InvestigationContext } from '../learning/StrategySelectionEngine';
-
 /**
- * Abstract base class for self-improving agents
+ * Abstract base class for self-improving agents with learning capabilities
  */
 export abstract class SelfImprovingAgent {
   protected agentId: AgentType;

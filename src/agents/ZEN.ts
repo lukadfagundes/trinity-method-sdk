@@ -1,17 +1,35 @@
 /**
- * ZEN (Knowledge Base Specialist) - Enhanced with Learning Capabilities
+ * ZEN (Knowledge Base Specialist) - Comprehensive documentation creation and knowledge preservation
  *
- * Specializes in:
- * - Documentation analysis and generation
- * - Knowledge extraction
- * - Research and reference management
- * - Pattern documentation
+ * @see docs/workflows/deploy-workflow.md - Documentation deployment
+ * @see docs/agents/agent-selection-guide.md - ZEN's knowledge responsibilities
+ * @see docs/methodology/trinity-framework.md - Knowledge Trinity principles
  *
- * Now includes self-improving capabilities for better documentation recommendations.
+ * **Trinity Principle:** "Knowledge Preservation"
+ * ZEN creates comprehensive documentation capturing project architecture, methodology
+ * integration, and best practices. Transforms implicit knowledge into explicit documentation
+ * that survives across team changes and time, building institutional memory.
+ *
+ * **Why This Exists:**
+ * Traditional projects suffer from knowledge loss. Documentation becomes outdated, tribal
+ * knowledge exists only in developers' heads, and new team members struggle to understand
+ * "why" decisions were made. ZEN systematically documents architecture, methodology
+ * integration, lessons learned, and patterns, ensuring knowledge is discoverable, accurate,
+ * and maintained. Documentation becomes living record of project intelligence.
+ *
+ * @example
+ * ```typescript
+ * const zen = new ZENAgent(learningData, tracker, strategy, bus);
+ * await zen.createArchitectureDoc('/path/to/project');
+ * await zen.documentMethodologyIntegration(projectPath);
+ * await zen.captureLessonsLearned(investigation);
+ * // Creates: docs/architecture/, docs/methodology/, docs/lessons-learned/
+ * ```
  *
  * @module agents/ZEN
  */
 
+import { InvestigationContext } from '../learning/StrategySelectionEngine';
 import {
   InvestigationResult,
   Finding,
@@ -20,13 +38,11 @@ import {
   InvestigationMetadata,
 } from '../shared/types';
 
-import { InvestigationContext } from '../learning/StrategySelectionEngine';
 
 import { SelfImprovingAgent } from './SelfImprovingAgent';
 
 /**
- * ZEN Agent - Knowledge Extraction Navigator
- * Enhanced with self-improving capabilities
+ * ZEN Agent - Knowledge Extraction Navigator with documentation generation capabilities
  */
 export class ZENAgent extends SelfImprovingAgent {
   /**
