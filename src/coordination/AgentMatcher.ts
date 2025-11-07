@@ -1,8 +1,34 @@
 /**
- * Agent Matcher for Task Coordination
+ * AgentMatcher - Skill-based agent selection with intelligent workload balancing
  *
- * Implements skill-based agent selection and workload balancing for task assignment.
- * Uses least-loaded agent algorithm with skill matching to optimize task distribution.
+ * @see docs/agents/agent-selection-guide.md - Agent capabilities and specializations
+ * @see docs/workflows/implementation-workflow.md - Task assignment workflow
+ *
+ * **Trinity Principle:** "Investigation-First Development"
+ * Matches tasks to agents based on skill alignment and current workload, ensuring optimal
+ * agent utilization. Uses least-loaded algorithm with skill scoring to prevent bottlenecks
+ * while maintaining quality through specialization-based assignment.
+ *
+ * **Why This Exists:**
+ * Traditional development assigns work arbitrarily or based solely on availability. This creates
+ * bottlenecks when specialists are overloaded while generalists sit idle. AgentMatcher analyzes
+ * task requirements, scores agents by skill match (0-1), then selects least-loaded qualified agent.
+ * TAN handles structure tasks, ZEN handles documentation, each agent works in their strength zone,
+ * maximizing both speed and quality.
+ *
+ * @example
+ * ```typescript
+ * const matcher = new AgentMatcher();
+ *
+ * // Match task to best available agent
+ * const task = {
+ *   id: 't-123',
+ *   type: 'documentation',
+ *   skillsRequired: ['knowledge-capture', 'architecture-documentation']
+ * };
+ * const assignment = await matcher.matchAgentToTask(task, agentStatuses);
+ * console.log(`Assigned to ${assignment.agentId} (skill match: ${assignment.confidence})`);
+ * ```
  *
  * @module coordination/AgentMatcher
  * @version 1.0.0

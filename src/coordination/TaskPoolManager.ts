@@ -1,9 +1,35 @@
 /**
- * Task Pool Manager - Centralized Task Coordination
+ * TaskPoolManager - Centralized orchestration for multi-agent task coordination
  *
- * Orchestrates task distribution, dependency resolution, and agent coordination
- * for multi-agent investigations. Manages priority queuing, parallel execution,
- * and load balancing across Trinity agents.
+ * @see docs/workflows/implementation-workflow.md - Multi-agent task distribution
+ * @see docs/agents/agent-selection-guide.md - Agent coordination patterns
+ *
+ * **Trinity Principle:** "Investigation-First Development"
+ * Orchestrates task distribution across agent team with priority queuing, dependency resolution,
+ * and load balancing. Ensures optimal agent utilization while respecting task dependencies and
+ * priority levels (critical → high → medium → low).
+ *
+ * **Why This Exists:**
+ * Multi-agent investigations require sophisticated coordination. Critical tasks must execute first,
+ * dependencies must resolve correctly, and agents can't be overloaded. TaskPoolManager integrates
+ * AgentMatcher (skill-based assignment), DependencyResolver (execution order), and TaskStatusTracker
+ * (progress monitoring) into unified orchestration layer. Tasks flow through priority queue, get
+ * assigned to optimal agents, execute in dependency-safe order, maximizing throughput without chaos.
+ *
+ * @example
+ * ```typescript
+ * const poolManager = new TaskPoolManager(matcher, resolver, tracker);
+ *
+ * // Initialize investigation
+ * await poolManager.initializeInvestigation('inv-123', tasks);
+ *
+ * // Schedule tasks with priority and dependencies
+ * await poolManager.scheduleTasks(['task-1', 'task-2', 'task-3']);
+ *
+ * // Execute with optimal agent assignment
+ * const result = await poolManager.executeTasks(agentStatuses);
+ * console.log(`Completed ${result.completedTasks.length} tasks`);
+ * ```
  *
  * @module coordination/TaskPoolManager
  * @version 1.0.0

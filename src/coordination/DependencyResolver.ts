@@ -1,9 +1,35 @@
 /**
- * Dependency Resolver for Task Coordination
+ * DependencyResolver - Topological sorting and cycle detection for task dependency graphs
  *
- * Implements topological sorting and cycle detection for task dependency graphs.
- * Uses Tarjan's Strongly Connected Components algorithm for cycle detection
- * and Kahn's algorithm for topological sorting.
+ * @see docs/workflows/implementation-workflow.md - Task sequencing and dependencies
+ * @see docs/best-practices.md - Dependency management patterns
+ *
+ * **Trinity Principle:** "Systematic Quality Assurance"
+ * Resolves task dependencies using Tarjan's algorithm (cycle detection) and Kahn's algorithm
+ * (topological sort), ensuring tasks execute in correct order without deadlocks. Prevents
+ * circular dependencies that would block progress.
+ *
+ * **Why This Exists:**
+ * Complex investigations have interdependent tasks. Task B needs Task A's output, Task C needs
+ * B, but accidental circular dependencies (A→B→C→A) cause deadlocks. This resolver builds
+ * dependency graphs, detects cycles before execution, and determines valid execution order
+ * through topological sorting. Tasks execute in optimal sequence: all prerequisites complete
+ * before dependent tasks start.
+ *
+ * @example
+ * ```typescript
+ * const resolver = new DependencyResolver();
+ *
+ * // Detect circular dependencies
+ * const hasCycles = resolver.detectCycles(tasks);
+ * if (hasCycles) {
+ *   console.error('Circular dependency detected!');
+ * }
+ *
+ * // Get valid execution order
+ * const order = resolver.topologicalSort(tasks);
+ * // Returns: [Task A, Task B, Task C] (dependencies first)
+ * ```
  *
  * @module coordination/DependencyResolver
  * @version 1.0.0
@@ -17,7 +43,7 @@ import {
 } from '../shared/types';
 
 /**
- * Resolves task dependencies and determines execution order
+ * Resolves task dependencies and determines execution order using graph algorithms
  */
 export class DependencyResolver {
   /**

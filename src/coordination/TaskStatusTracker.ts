@@ -1,8 +1,35 @@
 /**
- * Task Status Tracker with File-Based Locking
+ * TaskStatusTracker - Cross-process safe task lifecycle management with file-based locking
  *
- * Implements task lifecycle management with cross-process safe file-based locking.
- * Provides synchronization primitives to prevent race conditions in parallel execution.
+ * @see docs/workflows/implementation-workflow.md - Task lifecycle and status transitions
+ * @see docs/best-practices.md - Concurrency and locking patterns
+ *
+ * **Trinity Principle:** "Systematic Quality Assurance"
+ * Tracks task lifecycle (pending → in-progress → completed/failed) with file-based locks preventing
+ * race conditions in parallel execution. Ensures tasks transition safely through states without
+ * corruption from concurrent agent access.
+ *
+ * **Why This Exists:**
+ * Parallel agent execution creates race conditions. Two agents could claim same task simultaneously,
+ * or update status concurrently causing corruption. File-based locking provides cross-process
+ * synchronization - when agent acquires task lock, no other agent can modify it. State transitions
+ * follow validation rules (can't mark completed task as pending), and stale locks get cleaned
+ * automatically, ensuring robust concurrent coordination.
+ *
+ * @example
+ * ```typescript
+ * const tracker = new TaskStatusTracker('./trinity/coordination');
+ *
+ * // Start task with lock
+ * await tracker.startTask('task-1', 'TAN-001');
+ *
+ * // Complete task
+ * await tracker.completeTask('task-1', { success: true });
+ *
+ * // Get stats
+ * const stats = tracker.getStats();
+ * console.log(`Completed: ${stats.completed}, Failed: ${stats.failed}`);
+ * ```
  *
  * @module coordination/TaskStatusTracker
  * @version 1.0.0
