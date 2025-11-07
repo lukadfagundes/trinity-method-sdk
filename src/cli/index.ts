@@ -11,6 +11,7 @@ import { analytics } from './commands/analytics.js';
 import { cacheStats } from './commands/cache-stats.js';
 import { learningStatus } from './commands/learning-status.js';
 import { benchmark } from './commands/benchmark.js';
+import { registerOrchestrateCommand } from './commands/orchestrate.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -112,5 +113,12 @@ program
   .option('--suite <suite>', 'Benchmark suite to run')
   .option('--iterations <n>', 'Number of iterations', parseInt)
   .action(benchmark);
+
+// Register crisis command (modular design)
+import { registerCrisisCommand } from './commands/crisis.js';
+registerCrisisCommand(program);
+
+// Register orchestrate command (modular design)
+registerOrchestrateCommand(program);
 
 program.parse();
