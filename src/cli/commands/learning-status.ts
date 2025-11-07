@@ -1,3 +1,10 @@
+/**
+ * Learning Status Command - Display learning system status and performance metrics
+ * @see docs/best-practices.md - Learning system integration
+ * **Trinity Principle:** "Knowledge Preservation" - Monitor institutional learning
+ * @module cli/commands/learning-status
+ */
+
 import chalk from 'chalk';
 import ora from 'ora';
 import fs from 'fs-extra';

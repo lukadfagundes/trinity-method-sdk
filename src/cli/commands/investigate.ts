@@ -1,4 +1,36 @@
 #!/usr/bin/env node
+/**
+ * Investigate Command - Create and execute Trinity Method investigations with ALY orchestration
+ *
+ * @see docs/workflows/investigation-workflow.md - Investigation execution process
+ * @see docs/methodology/investigation-first-complete.md - Investigation-first philosophy
+ *
+ * **Trinity Principle:** "Investigation-First Development"
+ * Orchestrates investigations through ALY (CTO) with scale-based workflows (SMALL/MEDIUM/LARGE),
+ * coordinating planning agents (MON, ROR, TRA) and execution agents (KIL, BAS, DRA). Ensures
+ * systematic investigation with appropriate oversight based on complexity.
+ *
+ * **Why This Exists:**
+ * Traditional development jumps to coding without investigation. This leads to rework, missed
+ * requirements, and poor architecture. This command enforces investigation-first approach: ALY
+ * analyzes complexity, coordinates planning (requirements → design → tasks), then executes with
+ * quality gates. Simple tasks get streamlined workflow, complex features get comprehensive planning.
+ *
+ * @example
+ * ```bash
+ * # Interactive investigation
+ * npx trinity investigate
+ *
+ * # Direct investigation
+ * npx trinity investigate --type technical --scope "Add user authentication"
+ *
+ * # Specify investigation type
+ * npx trinity investigate --type feature
+ * ```
+ *
+ * @module cli/commands/investigate
+ */
+
 import { existsSync } from 'fs';
 import { pathToFileURL } from 'url';
 import { join, resolve } from 'path';
@@ -8,11 +40,9 @@ import ora from 'ora';
 import { InvestigateOptions } from '../types.js';
 
 /**
- * Trinity Investigate Command
- *
- * Creates and executes investigations using the Trinity SDK agents
+ * Execute Trinity Method investigation
+ * @param options - Investigation options
  */
-
 export async function investigate(options: InvestigateOptions): Promise<void> {
   console.log(chalk.cyan.bold('\n🔍 Trinity Investigation\n'));
 

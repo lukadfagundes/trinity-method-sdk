@@ -1,13 +1,14 @@
 #!/usr/bin/env node
+/**
+ * Dashboard Command - Unified web dashboard for monitoring all Trinity systems
+ * @see docs/workflows/dashboard-workflow.md
+ * **Trinity Principle:** "Evidence-Based Decisions" - Real-time system visibility
+ * @module cli/commands/dashboard
+ */
+
 import chalk from 'chalk';
 import { DashboardOptions } from '../types.js';
 import { UnifiedDashboard } from '../UnifiedDashboard.js';
-
-/**
- * Trinity Dashboard Command
- *
- * Launches unified web dashboard for monitoring all Trinity systems
- */
 
 export async function dashboard(options: DashboardOptions): Promise<void> {
   console.log(chalk.cyan.bold('\n📊 Trinity Dashboard\n'));

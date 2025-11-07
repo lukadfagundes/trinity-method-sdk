@@ -1,3 +1,10 @@
+/**
+ * Review Command - Review Trinity Method session history and archived work
+ * @see docs/workflows/session-workflow.md
+ * **Trinity Principle:** "Knowledge Preservation" - Learn from session history
+ * @module cli/commands/review
+ */
+
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';

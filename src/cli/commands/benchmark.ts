@@ -1,3 +1,10 @@
+/**
+ * Benchmark Command - Run performance benchmarks and detect regressions
+ * @see docs/workflows/benchmark-workflow.md
+ * **Trinity Principle:** "Evidence-Based Decisions" - Measure performance systematically
+ * @module cli/commands/benchmark
+ */
+
 import chalk from 'chalk';
 import ora from 'ora';
 import fs from 'fs-extra';

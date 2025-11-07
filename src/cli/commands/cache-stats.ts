@@ -1,3 +1,10 @@
+/**
+ * Cache Stats Command - Display cache statistics and performance metrics
+ * @see docs/best-practices.md#caching-strategies
+ * **Trinity Principle:** "Evidence-Based Decisions" - Monitor cache effectiveness
+ * @module cli/commands/cache-stats
+ */
+
 import chalk from 'chalk';
 import ora from 'ora';
 import fs from 'fs-extra';

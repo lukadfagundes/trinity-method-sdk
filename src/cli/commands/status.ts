@@ -1,3 +1,10 @@
+/**
+ * Status Command - Display Trinity Method deployment and system status
+ * @see docs/deployment/best-practices.md
+ * **Trinity Principle:** "Systematic Quality Assurance" - Verify deployment health
+ * @module cli/commands/status
+ */
+
 import chalk from 'chalk';
 import fs from 'fs-extra';
 

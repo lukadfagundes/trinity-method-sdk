@@ -1,3 +1,10 @@
+/**
+ * Update Command - Update Trinity Method SDK deployment to latest version
+ * @see docs/workflows/update-workflow.md
+ * **Trinity Principle:** "Systematic Quality Assurance" - Keep deployment current
+ * @module cli/commands/update
+ */
+
 import ora from 'ora';
 import chalk from 'chalk';
 import inquirer from 'inquirer';

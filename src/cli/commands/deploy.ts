@@ -1,3 +1,35 @@
+/**
+ * Deploy Command - Complete Trinity Method SDK deployment to user projects
+ *
+ * @see docs/workflows/deploy-workflow.md - Complete deployment process
+ * @see docs/deployment/best-practices.md - Deployment best practices
+ *
+ * **Trinity Principle:** "Systematic Quality Assurance"
+ * Deploys complete Trinity Method infrastructure with interactive wizard: creates folder structure,
+ * deploys 11 agent templates, installs slash commands, configures quality tools (ESLint, Prettier),
+ * and sets up CI/CD templates. Ensures every Trinity project starts with proven, consistent foundation.
+ *
+ * **Why This Exists:**
+ * Manual setup is error-prone and inconsistent. Developers forget folders, skip quality tools, or
+ * misconfigure agents. This command orchestrates TAN (structure), ZEN (documentation), INO (context),
+ * and EIN (CI/CD) to deploy battle-tested Trinity infrastructure in minutes. Every project gets same
+ * high-quality foundation: 11 agents, 25 commands, quality gates, and documentation architecture.
+ *
+ * @example
+ * ```bash
+ * # Interactive deployment
+ * npx trinity deploy
+ *
+ * # Non-interactive with defaults
+ * npx trinity deploy --yes
+ *
+ * # Force redeployment
+ * npx trinity deploy --force
+ * ```
+ *
+ * @module cli/commands/deploy
+ */
+
 import ora, { Ora } from 'ora';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
@@ -25,6 +57,10 @@ import { DeployOptions, DeploymentStats, LintingTool, CodebaseMetrics } from '..
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+/**
+ * Deploy Trinity Method SDK to project
+ * @param options - Deployment options
+ */
 export async function deploy(options: DeployOptions): Promise<void> {
   console.log(chalk.blue.bold('\n🔱 Trinity Method SDK - Deployment\n'));
 

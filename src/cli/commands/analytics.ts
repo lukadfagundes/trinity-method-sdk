@@ -1,3 +1,33 @@
+/**
+ * Analytics Command - View performance analytics and investigation metrics
+ *
+ * @see docs/workflows/analytics-workflow.md - Analytics visualization
+ * @see docs/best-practices.md - Performance measurement
+ *
+ * **Trinity Principle:** "Evidence-Based Decisions"
+ * Displays investigation performance metrics, strategy effectiveness, and system-wide analytics
+ * with trend analysis. Provides data-driven insights for continuous improvement.
+ *
+ * **Why This Exists:**
+ * "What gets measured gets improved." This command surfaces learning system data: which strategies
+ * work best, investigation durations, agent performance trends. Teams see concrete evidence of
+ * improvement over time, identify bottlenecks, and make data-driven workflow optimizations.
+ *
+ * @example
+ * ```bash
+ * # View analytics dashboard
+ * npx trinity analytics
+ *
+ * # Export as JSON
+ * npx trinity analytics --format json
+ *
+ * # Specific time period
+ * npx trinity analytics --period 7d
+ * ```
+ *
+ * @module cli/commands/analytics
+ */
+
 import chalk from 'chalk';
 import ora from 'ora';
 import fs from 'fs-extra';
@@ -8,6 +38,10 @@ interface AnalyticsOptions {
   period?: string;
 }
 
+/**
+ * Display Trinity analytics dashboard
+ * @param options - Analytics display options
+ */
 export async function analytics(options: AnalyticsOptions = {}): Promise<void> {
   console.log(chalk.blue.bold('\n📊 Trinity Analytics Dashboard\n'));
 

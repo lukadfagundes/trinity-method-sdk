@@ -1,16 +1,17 @@
 #!/usr/bin/env node
+/**
+ * Analyze Command - Quick code analysis using context detection and Trinity agents
+ * @see docs/workflows/analysis-workflow.md
+ * **Trinity Principle:** "Investigation-First Development" - Analyze before implementing
+ * @module cli/commands/analyze
+ */
+
 import { existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { pathToFileURL } from 'url';
 import chalk from 'chalk';
 import ora from 'ora';
 import { AnalyzeOptions } from '../types.js';
-
-/**
- * Trinity Analyze Command
- *
- * Quick code analysis using context detection and agents
- */
 
 export async function analyze(target: string | undefined, options: AnalyzeOptions): Promise<void> {
   console.log(chalk.cyan.bold('\n🔍 Trinity Quick Analysis\n'));
