@@ -20,30 +20,6 @@ export interface UpdateOptions {
   dryRun?: boolean;
 }
 
-export interface ReviewOptions {
-  since?: string;
-  project?: string;
-}
-
-export interface InvestigateOptions {
-  type?: 'security' | 'performance' | 'architecture' | 'quality';
-  target?: string;
-  scope?: string;
-  learning?: boolean;
-  verbose?: boolean;
-}
-
-export interface DashboardOptions {
-  port?: number;
-  host?: string;
-  verbose?: boolean;
-}
-
-export interface AnalyzeOptions {
-  metrics?: boolean;
-  verbose?: boolean;
-}
-
 export interface LintingTool {
   id: string;
   name: string;

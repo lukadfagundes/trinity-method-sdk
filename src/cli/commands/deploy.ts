@@ -340,17 +340,12 @@ export async function deploy(options: DeployOptions): Promise<void> {
     await fs.ensureDir('trinity/patterns');
     await fs.ensureDir('trinity/work-orders');
     await fs.ensureDir('trinity/templates');
-    await fs.ensureDir('trinity/metrics');
-    await fs.ensureDir('trinity/metrics/benchmarks');
-    await fs.ensureDir('trinity/metrics/analytics');
-    await fs.ensureDir('trinity/metrics/learning');
-    await fs.ensureDir('trinity/metrics/baselines');
     await fs.ensureDir('trinity/investigations/plans');
     await fs.ensureDir('trinity/archive/work-orders');
     await fs.ensureDir('trinity/archive/investigations');
     await fs.ensureDir('trinity/archive/reports');
     await fs.ensureDir('trinity/archive/sessions');
-    deploymentStats.directories += 16;
+    deploymentStats.directories += 11;
 
      // Claude Code directories
     await fs.ensureDir('.claude/agents/leadership');
@@ -548,93 +543,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
     spinner.succeed(`Agents deployed (${deploymentStats.agents} agents)`);
 
 
-    // STEP 8.5: Initialize Analytics System
-    if (!options.skipAudit) {
-      spinner = ora('Initializing Trinity Analytics...').start();
-      try {
-        // Create analytics directory
-        await fs.ensureDir('trinity/analytics');
-
-        // Create initial analytics config
-        const analyticsConfig = {
-          enabled: true,
-          collectMetrics: true,
-          trackPerformance: true,
-          detectAnomalies: true,
-          projectName: variables.PROJECT_NAME,
-          framework: stack.framework,
-          sourceDir: stack.sourceDir,
-          thresholds: {
-            responseTime: 1000,
-            errorRate: 0.05,
-            cacheHitRate: 0.7,
-          },
-        };
-
-        await fs.writeJson('trinity/analytics/config.json', analyticsConfig, { spaces: 2 });
-
-        spinner.succeed('Analytics system initialized');
-        deploymentStats.files++;
-      } catch (error: any) {
-        spinner.warn('Analytics initialization skipped');
-        console.log(chalk.yellow(`   Run '/trinity-analytics' later to set up analytics`));
-      }
-    }
-
-    // STEP 8.6: Initialize Learning System
-    spinner = ora('Initializing Trinity Learning System...').start();
-    try {
-      // Create learning directory
-      await fs.ensureDir('trinity/learning');
-      await fs.ensureDir('trinity/learning/patterns');
-
-      // Initialize learning system config
-      const learningConfig = {
-        enabled: true,
-        patternDetection: true,
-        selfImprovement: true,
-        knowledgeSharing: true,
-        learningRate: 0.1,
-      };
-
-      await fs.writeJson('trinity/learning/config.json', learningConfig, { spaces: 2 });
-
-      // Create empty patterns registry
-      await fs.writeJson('trinity/learning/patterns/registry.json', { patterns: [] }, { spaces: 2 });
-
-      spinner.succeed('Learning system initialized');
-      deploymentStats.files += 2;
-    } catch (error: any) {
-      spinner.warn('Learning system initialization skipped');
-      console.log(chalk.yellow(`   Run '/trinity-learning-status' later to set up learning`));
-    }
-
-    // STEP 8.7: Initialize Cache System
-    spinner = ora('Initializing Trinity Cache...').start();
-    try {
-      // Create cache directory
-      await fs.ensureDir('trinity/cache');
-
-      // Initialize cache config
-      const cacheConfig = {
-        enabled: true,
-        tiers: {
-          l1: { maxSize: 50, ttl: 300000 },    // 5 minutes
-          l2: { maxSize: 200, ttl: 1800000 },  // 30 minutes
-          l3: { maxSize: 1000, ttl: 86400000 } // 24 hours
-        },
-        similarityThreshold: 0.8,
-        persistToDisk: true,
-      };
-
-      await fs.writeJson('trinity/cache/config.json', cacheConfig, { spaces: 2 });
-
-      spinner.succeed('Cache system initialized');
-      deploymentStats.files++;
-    } catch (error: any) {
-      spinner.warn('Cache initialization skipped');
-      console.log(chalk.yellow(`   Run '/trinity-cache-stats' later to set up cache`));
-    }
+    // Analytics, Learning, and Cache systems removed from deployment
 
     // STEP 9: Deploy settings.json (empty - users can configure manually)
     spinner = ora('Creating Claude Code settings...').start();
@@ -662,28 +571,55 @@ export async function deploy(options: DeployOptions): Promise<void> {
       spinner.warn('Employee Directory template not found');
     }
 
-    // STEP 9.6: Deploy slash commands [WO#021]
+    // STEP 9.6: Deploy slash commands (categorized) [WO#021]
     spinner = ora('Deploying Trinity slash commands...').start();
 
     const commandsDir = '.claude/commands';
-    await fs.ensureDir(commandsDir);
 
-    // Copy ALL slash command files from templates
+    // Create categorized subdirectories
+    await fs.ensureDir(`${commandsDir}/session`);
+    await fs.ensureDir(`${commandsDir}/planning`);
+    await fs.ensureDir(`${commandsDir}/execution`);
+    await fs.ensureDir(`${commandsDir}/investigation`);
+    await fs.ensureDir(`${commandsDir}/infrastructure`);
+    await fs.ensureDir(`${commandsDir}/utility`);
+
+    // Command categorization map
+    const commandCategories: Record<string, string> = {
+      'trinity-start.md': 'session',
+      'trinity-continue.md': 'session',
+      'trinity-end.md': 'session',
+      'trinity-requirements.md': 'planning',
+      'trinity-design.md': 'planning',
+      'trinity-decompose.md': 'planning',
+      'trinity-plan.md': 'planning',
+      'trinity-orchestrate.md': 'execution',
+      'trinity-create-investigation.md': 'investigation',
+      'trinity-plan-investigation.md': 'investigation',
+      'trinity-investigate-templates.md': 'investigation',
+      'trinity-init.md': 'infrastructure',
+      'trinity-crisis.md': 'infrastructure',
+      'trinity-agents.md': 'utility',
+      'trinity-verify.md': 'utility',
+      'trinity-workorder.md': 'utility'
+    };
+
     const commandsTemplatePath = path.join(templatesPath, 'shared/claude-commands');
     const commandFiles = await fs.readdir(commandsTemplatePath);
 
     let deployedCommands = 0;
     for (const file of commandFiles) {
-      if (file.endsWith('.md')) {
+      if (file.endsWith('.md') && commandCategories[file]) {
         const sourcePath = path.join(commandsTemplatePath, file);
-        const destPath = path.join(commandsDir, file);
+        const category = commandCategories[file];
+        const destPath = path.join(commandsDir, category, file);
         await fs.copy(sourcePath, destPath);
         deployedCommands++;
         deploymentStats.files++;
       }
     }
 
-    spinner.succeed(`Deployed ${deployedCommands} Trinity slash commands`);
+    spinner.succeed(`Deployed ${deployedCommands} Trinity slash commands (6 categories)`);
 
     // STEP 9.7: Deploy linting configuration (if selected) [WO#011]
     if (options.lintingTools && options.lintingTools.length > 0) {

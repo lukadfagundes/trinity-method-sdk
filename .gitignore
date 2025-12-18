@@ -5,6 +5,7 @@ node_modules/
 
 # Testing
 coverage/
+test-results/
 *.lcov
 .nyc_output
 
@@ -43,18 +44,6 @@ pnpm-debug.log*
 # OS
 Thumbs.db
 
-# Claude Code
-.claude/
-
-# Trinity Method deployment files
+# Trinity Method - only ignore if SDK is deployed to itself for testing
 .claude/
 trinity/
-trinity-hooks/
-CLAUDE.md
-TRINITY.md
-SDK Testing Temp/
-
-# Package manager lock files (allow for monorepo)
-# Uncomment if you want to ignore specific lock files
-# package-lock.json
-# yarn.lock

@@ -285,3 +285,134 @@ Claude will guide you through a multi-phase workflow, sequentially adopting diff
 **Effort:** 5-7 hours total (20-30 min per command)
 **Assigned To:** TBD
 **Due Date:** TBD
+
+---
+
+## Testing Infrastructure
+
+### ⚠️ TODO: Implement Test Coverage for Remaining CLI Commands
+
+**Current Status:** All tests deleted during major cleanup (38 test files removed)
+
+**Issue:**
+- Previous tests were for deleted systems (analytics, benchmarks, cache, learning, coordination, agents, wizard)
+- No tests exist for the 3 remaining CLI commands: `deploy`, `update`, `crisis`
+- Zero test coverage for actual deployed functionality
+
+**What Needs Testing:**
+
+#### 1. Deploy Command (`src/cli/commands/deploy.ts`)
+**Critical Paths:**
+- Directory structure creation (11 trinity dirs, 5 .claude dirs)
+- Agent template deployment (18 agents to 5 subdirectories)
+- Slash command deployment (16 commands to 6 categories)
+- Knowledge base template processing with variable substitution
+- Linting tool deployment (optional ESLint/Prettier configs)
+- CI/CD template deployment (optional GitHub Actions/GitLab CI)
+- Framework detection (React, Vue, Angular, etc.)
+- Codebase metrics collection (file counts, complexity)
+- .gitignore updates
+- Version file creation
+
+**Test Types Needed:**
+- Unit tests: Framework detection, template processing, variable substitution
+- Integration tests: Full deployment to temp directory, verify all files/folders created
+- E2E tests: Deploy to real project structure, verify functionality
+
+#### 2. Update Command (`src/cli/commands/update.ts`)
+**Critical Paths:**
+- Version comparison logic
+- Backup and restore of user files (ARCHITECTURE.md, To-do.md, ISSUES.md)
+- Template updates
+- Agent updates
+- Rollback on failure
+
+**Test Types Needed:**
+- Unit tests: Version comparison, backup/restore logic
+- Integration tests: Update from v1.0.0 to v1.1.0 with user file preservation
+- Edge cases: Partial updates, concurrent update attempts
+
+#### 3. Crisis Command (`src/cli/commands/crisis.ts`)
+**Critical Paths:**
+- Crisis detection logic
+- Recovery protocol execution
+- Session documentation
+- Validation checks
+
+**Test Types Needed:**
+- Unit tests: Crisis detector, recovery protocols, validator
+- Integration tests: Full crisis workflow from detection to recovery
+
+**Implementation Plan:**
+
+### Phase 1: Test Infrastructure Setup (1-2 hours)
+- [ ] Create `tests/` directory structure
+  ```
+  tests/
+    unit/
+      cli/
+        commands/
+        utils/
+    integration/
+      cli/
+        commands/
+    e2e/
+      deployment/
+    fixtures/
+      projects/
+    helpers/
+  ```
+- [ ] Set up Jest configuration (already in package.json)
+- [ ] Create test helpers for temp directory management
+- [ ] Create fixture projects for different frameworks
+
+### Phase 2: Deploy Command Tests (3-4 hours)
+- [ ] Unit tests for framework detection
+- [ ] Unit tests for template processor
+- [ ] Unit tests for codebase metrics
+- [ ] Integration test: Full deployment to empty directory
+- [ ] Integration test: Deployment with linting tools
+- [ ] Integration test: Deployment with CI/CD templates
+- [ ] E2E test: Deploy to React project, verify structure
+
+### Phase 3: Update Command Tests (2-3 hours)
+- [ ] Unit tests for version comparison
+- [ ] Unit tests for backup/restore logic
+- [ ] Integration test: Update from older version
+- [ ] Integration test: User file preservation
+- [ ] Test rollback on failure
+
+### Phase 4: Crisis Command Tests (2-3 hours)
+- [ ] Unit tests for crisis detector
+- [ ] Unit tests for recovery protocols
+- [ ] Unit tests for validator
+- [ ] Integration test: Full crisis workflow
+
+### Phase 5: CI/CD Integration (1 hour)
+- [ ] Set up GitHub Actions workflow
+- [ ] Configure test coverage reporting
+- [ ] Add test status badge to README
+- [ ] Set minimum coverage threshold (e.g., 80%)
+
+**Test Coverage Goals:**
+- **Unit Tests:** 90%+ coverage of utility functions and logic
+- **Integration Tests:** 80%+ coverage of command workflows
+- **E2E Tests:** Critical happy paths validated
+
+**Testing Stack:**
+- Jest (already configured)
+- ts-jest (already installed)
+- @types/jest (already installed)
+- fs-extra for temp directory management
+- Mock file system for faster unit tests
+
+**Priority:** MEDIUM
+**Effort:** 8-12 hours total
+**Assigned To:** TBD
+**Due Date:** TBD
+
+**Notes:**
+- Focus on deploy command first (highest complexity, most critical)
+- Use temp directories for all integration tests to avoid polluting workspace
+- Mock external dependencies (npm install, git commands) in unit tests
+- Real execution in integration/e2e tests with cleanup

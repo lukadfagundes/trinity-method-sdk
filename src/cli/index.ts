@@ -2,8 +2,6 @@
 import { program } from 'commander';
 import { deploy } from './commands/deploy.js';
 import { update } from './commands/update.js';
-import { status } from './commands/status.js';
-import { analytics } from './commands/analytics.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -18,7 +16,7 @@ program
   .version(`${pkg.version} (Trinity Method SDK)`, '-v, --version', 'Output the current version');
 
 // ========================================
-// Setup Commands (Original CLI)
+// Setup Commands
 // ========================================
 
 program
@@ -38,21 +36,5 @@ program
   .option('--all', 'Update all registered Trinity projects')
   .option('--dry-run', 'Preview changes without writing files')
   .action(update);
-
-program
-  .command('status')
-  .description('Show Trinity Method deployment status')
-  .action(status);
-
-program
-  .command('analytics')
-  .description('📊 Display Trinity analytics dashboard')
-  .option('--format <type>', 'Output format (text, json)')
-  .option('--period <period>', 'Time period for metrics')
-  .action(analytics);
-
-// Register crisis command (modular design)
-import { registerCrisisCommand } from './commands/crisis.js';
-registerCrisisCommand(program);
 
 program.parse();
