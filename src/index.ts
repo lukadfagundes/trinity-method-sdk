@@ -1,9 +1,7 @@
 /**
  * Trinity Method SDK - Main Entry Point
- * Exports shared types only
+ * CLI-only deployment tool - no programmatic exports
  */
 
-// ========================================
-// SHARED TYPES
-// ========================================
-export * from './shared/types';
+// This SDK is a CLI tool accessed via `npx trinity deploy` and `npx trinity update`
+// It does not export any programmatic APIs for library usage

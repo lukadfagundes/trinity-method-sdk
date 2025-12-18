@@ -55,7 +55,6 @@ export interface CodebaseMetrics {
 
 export interface DeploymentStats {
   agents: number;
-  hooks: number;
   templates: number;
   directories: number;
   files: number;

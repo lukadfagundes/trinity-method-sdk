@@ -66,7 +66,6 @@ export async function deploy(options: DeployOptions): Promise<void> {
   let spinner: Ora | undefined;
   const deploymentStats: DeploymentStats = {
     agents: 0,
-    hooks: 0,
     templates: 0,
     directories: 0,
     files: 0
@@ -543,8 +542,6 @@ export async function deploy(options: DeployOptions): Promise<void> {
     spinner.succeed(`Agents deployed (${deploymentStats.agents} agents)`);
 
 
-    // Analytics, Learning, and Cache systems removed from deployment
-
     // STEP 9: Deploy settings.json (empty - users can configure manually)
     spinner = ora('Creating Claude Code settings...').start();
 
@@ -598,7 +595,6 @@ export async function deploy(options: DeployOptions): Promise<void> {
       'trinity-plan-investigation.md': 'investigation',
       'trinity-investigate-templates.md': 'investigation',
       'trinity-init.md': 'infrastructure',
-      'trinity-crisis.md': 'infrastructure',
       'trinity-agents.md': 'utility',
       'trinity-verify.md': 'utility',
       'trinity-workorder.md': 'utility'
@@ -806,15 +802,12 @@ export async function deploy(options: DeployOptions): Promise<void> {
     console.log(chalk.white(`   Directories Created: ${deploymentStats.directories}`));
     console.log(chalk.white(`   Agents Deployed: ${deploymentStats.agents} (v2.0: 2 leadership + 4 planning + 7 execution + 4 deployment + 1 audit)`));
     console.log(chalk.white(`   Best Practices: 4 documents (CODING, TESTING, AI-DEV, DOCS)`));
-    console.log(chalk.white(`   Hooks Deployed: ${deploymentStats.hooks}`));
     console.log(chalk.white(`   Templates Deployed: ${deploymentStats.templates} (6 work orders)`));
     console.log(chalk.white(`   Files Created: ${deploymentStats.files}`));
     console.log(chalk.white(`   CLAUDE.md Files: 3 (root + trinity + ${stack.sourceDir})`));
-    console.log(chalk.white(`   Systems Initialized: Analytics, Learning, Cache`));
 
     const totalComponents = deploymentStats.directories + deploymentStats.agents +
-                           (deploymentStats.hooks * 2) + deploymentStats.templates +
-                           deploymentStats.files;
+                           deploymentStats.templates + deploymentStats.files;
     console.log(chalk.white(`   Total Components: ${totalComponents}`));
     console.log('');
 
