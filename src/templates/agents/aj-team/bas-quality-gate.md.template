@@ -47,12 +47,17 @@ Phase 3: Build Validation
     ↓
 Phase 4: Testing
     ↓
-Phase 5: Coverage Check (≥80%)
+Phase 5: Coverage Check (≥threshold% or default 80%)
     ↓
 Phase 6: Final Review (best practices)
     ↓
 ✅ Approved OR 🛑 Escalate to DRA
 ```
+
+**Coverage Threshold Configuration:**
+- Check `trinity/knowledge-base/TESTING-PRINCIPLES.md` for `COVERAGE_THRESHOLD`
+- Check environment variable `TRINITY_COVERAGE_THRESHOLD`
+- Default: 80% (if not configured)
 
 ### 2. Auto-Fixing
 
@@ -65,7 +70,7 @@ Phase 6: Final Review (best practices)
 **Phases 3-6** escalate on failure:
 - Build errors → Escalate to DRA
 - Test failures → Escalate to DRA
-- Coverage <80% → Escalate to DRA
+- Coverage <threshold% (default 80%) → Escalate to DRA
 - Best practices violations → Escalate to DRA
 
 ### 3. Commit Creation
@@ -83,7 +88,7 @@ Phase 6: Final Review (best practices)
 - 0 structure violations
 - 0 build errors
 - 0 test failures
-- ≥80% coverage (lines and branches)
+- ≥threshold% coverage (lines and branches) - configured via `COVERAGE_THRESHOLD` or default 80%
 - 0 best practices violations
 
 ---
@@ -232,21 +237,23 @@ npm test
 
 ### Phase 5: Coverage Check
 
-**Purpose**: Validate code coverage ≥80%
+**Purpose**: Validate code coverage ≥threshold% (configured or default 80%)
+
+**Configuration**: Read from `trinity/knowledge-base/TESTING-PRINCIPLES.md` (`COVERAGE_THRESHOLD`) or env var `TRINITY_COVERAGE_THRESHOLD`
 
 **Commands**:
 ```bash
 npm run test:coverage
 ```
 
-**Pass Criteria**:
-- Line coverage ≥80%
-- Branch coverage ≥80%
-- Function coverage ≥80%
-- Statement coverage ≥80%
+**Pass Criteria** (using configured threshold, default 80%):
+- Line coverage ≥threshold%
+- Branch coverage ≥threshold%
+- Function coverage ≥threshold%
+- Statement coverage ≥threshold%
 
 **No Auto-Fix** (escalate on failure):
-- Coverage <80% → Escalate to DRA (missing tests)
+- Coverage <threshold% → Escalate to DRA (missing tests)
 
 **Output**:
 ```json
@@ -561,7 +568,7 @@ npm run build
 **Always escalate to DRA**:
 - Build errors
 - Test failures
-- Coverage <80%
+- Coverage <threshold% (configured or default 80%)
 - Best practices violations
 
 ---
@@ -669,7 +676,7 @@ Before approving task:
 - [ ] Phase 2: Structure - 0 violations (auto-fixed if needed)
 - [ ] Phase 3: Build - succeeds
 - [ ] Phase 4: Testing - all tests pass
-- [ ] Phase 5: Coverage - ≥80% lines and branches
+- [ ] Phase 5: Coverage - ≥threshold% (configured or default 80%) lines and branches
 - [ ] Phase 6: Final Review - 0 best practices violations
 - [ ] Commit created with proper format
 - [ ] Commit message includes TDD phase (RED/GREEN/REFACTOR)
@@ -686,7 +693,7 @@ Before approving task:
 - No structure violations
 - No build errors
 - No test failures
-- Coverage ≥80%
+- Coverage ≥threshold% (configured or default 80%)
 - No best practices violations
 
 **If ANY phase fails**: Escalate to DRA immediately
@@ -718,7 +725,9 @@ Before approving task:
 
 ### Coverage Threshold
 
-**80% minimum** for:
+**Configuration**: Read from `trinity/knowledge-base/TESTING-PRINCIPLES.md` (`COVERAGE_THRESHOLD`) or env var `TRINITY_COVERAGE_THRESHOLD`
+
+**Threshold% minimum** (default 80%) for:
 - Line coverage
 - Branch coverage
 - Function coverage
@@ -744,7 +753,7 @@ Before approving task:
 ### ❌ DON'T:
 - Skip phases
 - Auto-fix build or test errors
-- Approve with <80% coverage
+- Approve with <threshold% coverage (configured or default 80%)
 - Create commits before all phases pass
 - Push commits to remote
 - Modify implementation without DRA review

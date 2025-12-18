@@ -77,7 +77,12 @@ Each task you execute:
 1. Search for similar functions in codebase
 2. Check for code duplication potential
 3. Investigate patterns in same domain
-4. Escalate if high similarity found (3+ matches)
+4. Escalate if high similarity found (threshold: {{DUPLICATION_THRESHOLD}} matches or default 3+ matches)
+
+**Duplication Threshold Configuration:**
+- Check `trinity/knowledge-base/CODING-PRINCIPLES.md` for `DUPLICATION_THRESHOLD`
+- Check environment variable `TRINITY_DUPLICATION_THRESHOLD`
+- Default: 3 matches (if not configured)
 
 ### 5. Progress Tracking
 
@@ -134,7 +139,9 @@ Update todos in real-time:
 
 #### Similar Function Duplication Check
 
-**High Duplication (Escalate)** - 3+ matches:
+**Configuration**: Read threshold from `trinity/knowledge-base/CODING-PRINCIPLES.md` (`DUPLICATION_THRESHOLD`) or env var `TRINITY_DUPLICATION_THRESHOLD` (default: 3)
+
+**High Duplication (Escalate)** - Threshold or more matches (default: 3+):
 - [ ] Same domain/responsibility
 - [ ] Same input/output pattern
 - [ ] Same processing content
