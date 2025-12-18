@@ -116,10 +116,8 @@ Structure:
 ✓ trinity/patterns/
 ✓ trinity/sessions/
 ✓ trinity/templates/
-✓ .claude/agents/ (7 agents)
-✓ .claude/commands/ (8 slash commands)
-✓ .claude/hooks/
-✓ trinity-hooks/
+✓ .claude/agents/ (18 agents)
+✓ .claude/commands/ (18 slash commands)
 
 Agents:
 ✓ ALY (CTO) - Strategic leadership

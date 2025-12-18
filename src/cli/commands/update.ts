@@ -105,11 +105,7 @@ export async function update(options: UpdateOptions): Promise<void> {
       }
     }
 
-    // Update hooks
-    const hooksSource = path.join(sdkPath, 'templates/hooks');
-    if (await fs.pathExists(hooksSource) && !options.dryRun) {
-      await fs.copy(hooksSource, '.claude/hooks', { overwrite: true });
-    }
+    // Hooks removed from SDK - users manage custom hooks manually
 
     // Restore user content
     for (const file of userFiles) {

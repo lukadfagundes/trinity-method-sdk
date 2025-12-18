@@ -358,8 +358,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
     await fs.ensureDir('.claude/agents/audit');
     await fs.ensureDir('.claude/agents/planning'); // v2.0: MON, ROR, TRA, EUS
     await fs.ensureDir('.claude/agents/aj-team'); // v2.0: KIL, BAS, DRA, APO, BON, CAP, URO
-    await fs.ensureDir('.claude/hooks');
-    deploymentStats.directories += 6;
+    deploymentStats.directories += 5;
 
     spinner.succeed('Trinity Method structure created');
 
@@ -548,36 +547,6 @@ export async function deploy(options: DeployOptions): Promise<void> {
 
     spinner.succeed(`Agents deployed (${deploymentStats.agents} agents)`);
 
-    // STEP 8: Deploy hooks [WO#007]
-    spinner = ora('Deploying hook scripts...').start();
-
-    const hookScripts = [
-      'session-end-archive.sh',
-      'quality-gates.sh',
-      'prevent-git.sh',
-      'backup-knowledge.sh'
-    ];
-
-    for (const hook of hookScripts) {
-      const templatePath = path.join(templatesPath, 'hooks', `${hook}.template`);
-
-      if (await fs.pathExists(templatePath)) {
-        const content = await fs.readFile(templatePath, 'utf8');
-        const processed = processTemplate(content, variables);
-
-        await fs.writeFile(path.join('.claude', 'hooks', hook), processed);
-
-        try {
-          await fs.chmod(path.join('.claude', 'hooks', hook), 0o755);
-        } catch (err) {
-          // Windows may not support chmod
-        }
-
-        deploymentStats.hooks++;
-      }
-    }
-
-    spinner.succeed(`Hook scripts deployed (${deploymentStats.hooks} scripts)`);
 
     // STEP 8.5: Initialize Analytics System
     if (!options.skipAudit) {
@@ -667,39 +636,17 @@ export async function deploy(options: DeployOptions): Promise<void> {
       console.log(chalk.yellow(`   Run '/trinity-cache-stats' later to set up cache`));
     }
 
-    // STEP 9: Deploy settings.json [WO#007]
-    spinner = ora('Deploying Claude Code settings...').start();
+    // STEP 9: Deploy settings.json (empty - users can configure manually)
+    spinner = ora('Creating Claude Code settings...').start();
 
-    const settingsPath = path.join(templatesPath, 'claude', 'settings.json.template');
-
-    if (await fs.pathExists(settingsPath)) {
-      const content = await fs.readFile(settingsPath, 'utf8');
-      const processed = processTemplate(content, variables);
-      await fs.writeFile('.claude/settings.json', processed);
-    } else {
-      const defaultSettings = {
-        hooks: {
-          Stop: { "*": "bash .claude/hooks/session-end-archive.sh" },
-          PreToolUse: {
-            "Bash(git commit:*)": "bash .claude/hooks/prevent-git.sh",
-            "Bash(git push:*)": "bash .claude/hooks/prevent-git.sh",
-            "Bash(git merge:*)": "bash .claude/hooks/prevent-git.sh",
-            "Bash(git checkout -b:*)": "bash .claude/hooks/prevent-git.sh",
-            "Bash(git branch:*)": "bash .claude/hooks/prevent-git.sh"
-          },
-          PostToolUse: {
-            "Edit(trinity/knowledge-base/*)": "bash .claude/hooks/backup-knowledge.sh",
-            "Write(trinity/knowledge-base/*)": "bash .claude/hooks/backup-knowledge.sh",
-            "Bash(npm run build:*)": "bash .claude/hooks/quality-gates.sh",
-            "Bash(npm test:*)": "bash .claude/hooks/quality-gates.sh"
-          }
-        }
-      };
-      await fs.writeJson('.claude/settings.json', defaultSettings, { spaces: 2 });
+    const settingsPath = '.claude/settings.json';
+    if (!await fs.pathExists(settingsPath)) {
+      // Create empty settings file
+      await fs.writeJson(settingsPath, {}, { spaces: 2 });
+      deploymentStats.files++;
     }
 
-    deploymentStats.files++;
-    spinner.succeed('Claude Code settings configured');
+    spinner.succeed('Claude Code settings created (empty - customize as needed)');
 
     // STEP 9.5: Deploy Employee Directory [WO#009]
     spinner = ora('Deploying Employee Directory...').start();

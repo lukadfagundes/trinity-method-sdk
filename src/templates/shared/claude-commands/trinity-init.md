@@ -490,7 +490,6 @@ After planning with orchestrate, execute workflow with AJ MAESTRO coordination:
 - `/trinity-learning-status` - Learning system dashboard
 - `/trinity-investigate-templates` - Investigation template guide
 - `/trinity-verify` - Verification command documentation
-- `/trinity-knowledge-preservation` - Learn about learning system philosophy
 
 ## What's Next?
 

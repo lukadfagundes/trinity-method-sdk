@@ -1473,11 +1473,7 @@ ZEN: Updates knowledge base
 cat trinity/knowledge-base/To-do.md
 # Update task statuses
 
-# 2. Trigger session end (automatic if using hooks)
-# Or manually:
-./.claude/hooks/session-end-archive.sh
-
-# 3. Session archived to trinity/sessions/YYYY-MM-DD-HH-MM/
+# 2. Manually archive session work to trinity/sessions/YYYY-MM-DD-HH-MM/
 
 # 4. Review what was accomplished
 cat trinity/sessions/$(ls -t trinity/sessions | head -1)/implementation-notes.md

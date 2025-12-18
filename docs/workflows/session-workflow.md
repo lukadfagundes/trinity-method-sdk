@@ -34,33 +34,7 @@ Phase 5: Session End (5-15 minutes)
 
 **Goal:** Load context, understand current state, plan session goals
 
-### Automatic Actions (via session-start hook)
-
-```bash
-# .claude/hooks/session-start.sh
-echo "=== Trinity Method Session Start ==="
-echo "Date: $(date)"
-echo ""
-
-# Display current tasks
-echo "Current Tasks:"
-cat trinity/knowledge-base/To-do.md
-
-# Display known issues
-echo ""
-echo "Known Issues:"
-cat trinity/knowledge-base/ISSUES.md | head -20
-
-# Display recent sessions
-echo ""
-echo "Recent Sessions:"
-ls -t trinity/sessions/ | head -5
-
-echo ""
-echo "=== Session Start Complete ==="
-```
-
-### Manual Actions
+### Actions
 
 **Developer/User:**
 1. Review To-do.md for planned tasks
@@ -324,10 +298,10 @@ trinity/sessions/YYYY-MM-DD-HH-MM/implementation-notes.md
 
 **Goal:** Archive session, extract insights, prepare for next session
 
-### Automatic Actions (via session-end hook)
+### Session Archiving Example
 
 ```bash
-# .claude/hooks/session-end.sh
+# Manual session archiving script
 echo "=== Trinity Method Session End ==="
 
 # Create session archive directory

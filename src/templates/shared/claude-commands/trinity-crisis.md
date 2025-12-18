@@ -298,7 +298,6 @@ Teams using Trinity crisis management report:
 - `/trinity-learning-status` - View learned crisis patterns
 - `/trinity-learning-status --dashboard` - Comprehensive crisis metrics
 - `/trinity-orchestrate` - Plan crisis recovery workflows
-- `/trinity-knowledge-preservation` - Understand how crises teach
 
 ## Source Files
 

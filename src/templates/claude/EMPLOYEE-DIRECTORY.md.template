@@ -470,13 +470,6 @@ Located in `trinity/templates/`:
 - PATTERN-TEMPLATE.md
 - VERIFICATION-TEMPLATE.md
 
-### Automation Hooks
-Located in `trinity-hooks/` and `.claude/hooks/`:
-- session-end-archive.sh - Archives work at session end
-- quality-gates.sh - Enforces quality standards
-- prevent-git.sh - Blocks unauthorized git operations
-- backup-knowledge.sh - Backs up knowledge base
-
 ---
 
 ## 🧹 CODE QUALITY TOOLS

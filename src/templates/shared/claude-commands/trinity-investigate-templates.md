@@ -571,7 +571,6 @@ src/templates/investigations/
 - `/trinity-orchestrate` - Generate workflow plan for investigation
 - `/trinity-plan` - TRA strategic planning for complex investigations
 - `/trinity-create-investigation` - Interactive investigation creation wizard
-- `/trinity-knowledge-preservation` - Learn how investigations teach
 
 ## Real-World Examples
 

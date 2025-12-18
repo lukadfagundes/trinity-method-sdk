@@ -126,7 +126,6 @@ async function createFolderStructure(projectRoot: string): Promise<void> {
     '.claude/agents/deployment/',
     '.claude/agents/audit/',
     '.claude/commands/',
-    '.claude/hooks/',
   ];
 
   console.log('📁 Creating folder structure...');
