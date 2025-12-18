@@ -41,7 +41,8 @@ export interface PostInstallInstruction {
 export interface Stack {
   framework: string;
   language: string;
-  sourceDir: string;
+  sourceDir: string;           // Primary source directory (for backward compatibility)
+  sourceDirs: string[];        // All detected source directories (monorepo support)
   packageManager?: string;
 }
 

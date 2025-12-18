@@ -2,11 +2,93 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { Stack } from '../types.js';
 
+// Common source directory names
+const COMMON_SOURCE_DIRS = [
+  'src', 'lib', 'app', 'backend', 'frontend',
+  'server', 'client', 'database', 'packages', 'apps'
+];
+
+// Nested directory patterns (2-level and 3-level)
+const NESTED_PATTERNS: string[][] = [
+  // 2-level patterns - backend variations
+  ['backend', 'src'], ['backend', 'lib'], ['backend', 'app'],
+  // 2-level patterns - frontend variations
+  ['frontend', 'src'], ['frontend', 'lib'], ['frontend', 'app'],
+  // 2-level patterns - server/client variations
+  ['server', 'src'], ['server', 'lib'], ['server', 'app'],
+  ['client', 'src'], ['client', 'lib'], ['client', 'app'],
+  // 2-level patterns - src nested
+  ['src', 'backend'], ['src', 'frontend'], ['src', 'database'], ['src', 'server'], ['src', 'client'],
+
+  // 3-level patterns - src nested deeply
+  ['src', 'backend', 'src'], ['src', 'backend', 'lib'], ['src', 'backend', 'app'],
+  ['src', 'frontend', 'src'], ['src', 'frontend', 'lib'], ['src', 'frontend', 'app'],
+  ['src', 'database', 'src'], ['src', 'database', 'lib'],
+
+  // 3-level patterns - frontend/backend with app
+  ['frontend', 'app', 'lib'], ['frontend', 'app', 'src'],
+  ['backend', 'app', 'lib'], ['backend', 'app', 'src'],
+  ['server', 'app', 'lib'], ['server', 'app', 'src'],
+  ['client', 'app', 'lib'], ['client', 'app', 'src']
+];
+
+/**
+ * Detect all source directories in the project (monorepo support)
+ */
+async function detectSourceDirectories(targetDir: string): Promise<string[]> {
+  const foundDirs: string[] = [];
+
+  // Check top-level directories
+  for (const dir of COMMON_SOURCE_DIRS) {
+    const dirPath = path.join(targetDir, dir);
+    if (await exists(dirPath)) {
+      foundDirs.push(dir);
+    }
+  }
+
+  // Check 2-level nested patterns
+  for (const pattern of NESTED_PATTERNS) {
+    if (pattern.length === 2) {
+      const [parent, child] = pattern;
+      const fullPath = path.join(targetDir, parent, child);
+      if (await exists(fullPath)) {
+        const relativePath = `${parent}/${child}`;
+        if (!foundDirs.includes(relativePath)) {
+          foundDirs.push(relativePath);
+        }
+      }
+    }
+  }
+
+  // Check 3-level nested patterns (also captures intermediate directories)
+  for (const pattern of NESTED_PATTERNS) {
+    if (pattern.length === 3) {
+      const [level1, level2, level3] = pattern;
+      const fullPath = path.join(targetDir, level1, level2, level3);
+      if (await exists(fullPath)) {
+        // Add the 3-level path
+        const deepPath = `${level1}/${level2}/${level3}`;
+        if (!foundDirs.includes(deepPath)) {
+          foundDirs.push(deepPath);
+        }
+        // Also add intermediate 2-level path
+        const intermediatePath = `${level1}/${level2}`;
+        if (!foundDirs.includes(intermediatePath)) {
+          foundDirs.push(intermediatePath);
+        }
+      }
+    }
+  }
+
+  return foundDirs;
+}
+
 export async function detectStack(targetDir: string = process.cwd()): Promise<Stack> {
   const result: Stack = {
     language: 'Unknown',
     framework: 'Generic',
     sourceDir: 'src',
+    sourceDirs: [],
     packageManager: 'npm'
   };
 
@@ -83,6 +165,17 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
     }
   } catch (error: any) {
     console.error('Error detecting stack:', error.message);
+  }
+
+  // Detect all source directories (monorepo support)
+  result.sourceDirs = await detectSourceDirectories(targetDir);
+
+  // Ensure primary sourceDir is in sourceDirs array
+  if (result.sourceDirs.length === 0) {
+    result.sourceDirs = [result.sourceDir];
+  } else if (!result.sourceDirs.includes(result.sourceDir)) {
+    // If detected sourceDirs doesn't include the primary, use first detected as primary
+    result.sourceDir = result.sourceDirs[0];
   }
 
   return result;

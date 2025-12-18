@@ -475,9 +475,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
       spinner.warn('Trinity CLAUDE.md template not found');
     }
 
-    // STEP 6.6: Deploy source directory CLAUDE.md [WO#008]
-    spinner = ora(`Deploying ${stack.sourceDir}/CLAUDE.md...`).start();
-
+    // STEP 6.6: Deploy source directory CLAUDE.md to ALL detected directories [WO#008]
     const frameworkMap: Record<string, string> = {
       'Node.js': 'nodejs-CLAUDE.md.template',
       'Flutter': 'flutter-CLAUDE.md.template',
@@ -498,11 +496,28 @@ export async function deploy(options: DeployOptions): Promise<void> {
 
     if (await fs.pathExists(sourceCLAUDETemplate)) {
       const content = await fs.readFile(sourceCLAUDETemplate, 'utf8');
-      const processed = processTemplate(content, variables);
-      await fs.ensureDir(stack.sourceDir);
-      await fs.writeFile(`${stack.sourceDir}/CLAUDE.md`, processed);
-      deploymentStats.files++;
-      spinner.succeed(`${stack.sourceDir}/CLAUDE.md deployed`);
+
+      // Deploy to all detected source directories
+      let deployedCount = 0;
+      for (const sourceDir of stack.sourceDirs) {
+        spinner = ora(`Deploying ${sourceDir}/CLAUDE.md...`).start();
+
+        // Only deploy if directory exists (never create directories)
+        if (await fs.pathExists(sourceDir)) {
+          // Process template with this specific source directory
+          const processed = processTemplate(content, { ...variables, SOURCE_DIR: sourceDir });
+          await fs.writeFile(`${sourceDir}/CLAUDE.md`, processed);
+          deploymentStats.files++;
+          deployedCount++;
+          spinner.succeed(`${sourceDir}/CLAUDE.md deployed`);
+        } else {
+          spinner.warn(`Directory ${sourceDir} not found, skipping`);
+        }
+      }
+
+      if (deployedCount === 0) {
+        spinner.warn('No source directories found for CLAUDE.md deployment');
+      }
     } else {
       spinner.warn(`Source CLAUDE.md template not found for ${stack.framework}`);
     }
@@ -804,7 +819,13 @@ export async function deploy(options: DeployOptions): Promise<void> {
     console.log(chalk.white(`   Best Practices: 4 documents (CODING, TESTING, AI-DEV, DOCS)`));
     console.log(chalk.white(`   Templates Deployed: ${deploymentStats.templates} (6 work orders)`));
     console.log(chalk.white(`   Files Created: ${deploymentStats.files}`));
-    console.log(chalk.white(`   CLAUDE.md Files: 3 (root + trinity + ${stack.sourceDir})`));
+
+    // Display CLAUDE.md deployment summary
+    const claudeMdCount = 2 + stack.sourceDirs.length;
+    const sourceDirsList = stack.sourceDirs.length > 3
+      ? `${stack.sourceDirs.slice(0, 3).join(', ')}... (${stack.sourceDirs.length} total)`
+      : stack.sourceDirs.join(', ');
+    console.log(chalk.white(`   CLAUDE.md Files: ${claudeMdCount} (root + trinity + ${sourceDirsList})`));
 
     const totalComponents = deploymentStats.directories + deploymentStats.agents +
                            deploymentStats.templates + deploymentStats.files;
