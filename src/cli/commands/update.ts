@@ -108,7 +108,7 @@ export async function update(options: UpdateOptions): Promise<void> {
     // Update hooks
     const hooksSource = path.join(sdkPath, 'templates/hooks');
     if (await fs.pathExists(hooksSource) && !options.dryRun) {
-      await fs.copy(hooksSource, 'trinity-hooks', { overwrite: true });
+      await fs.copy(hooksSource, '.claude/hooks', { overwrite: true });
     }
 
     // Restore user content

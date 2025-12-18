@@ -48,7 +48,6 @@ import {
 import { deployLintingTool } from '../utils/deploy-linting.js';
 import { injectLintingDependencies } from '../utils/inject-dependencies.js';
 import { deployCITemplates } from '../utils/deploy-ci.js';
-import { injectTrinityMethodSection } from '../utils/inject-readme.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { readFileSync } from 'fs';
@@ -360,8 +359,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
     await fs.ensureDir('.claude/agents/planning'); // v2.0: MON, ROR, TRA, EUS
     await fs.ensureDir('.claude/agents/aj-team'); // v2.0: KIL, BAS, DRA, APO, BON, CAP, URO
     await fs.ensureDir('.claude/hooks');
-    await fs.ensureDir('trinity-hooks');
-    deploymentStats.directories += 7;
+    deploymentStats.directories += 6;
 
     spinner.succeed('Trinity Method structure created');
 
@@ -568,11 +566,9 @@ export async function deploy(options: DeployOptions): Promise<void> {
         const processed = processTemplate(content, variables);
 
         await fs.writeFile(path.join('.claude', 'hooks', hook), processed);
-        await fs.writeFile(path.join('trinity-hooks', hook), processed);
 
         try {
           await fs.chmod(path.join('.claude', 'hooks', hook), 0o755);
-          await fs.chmod(path.join('trinity-hooks', hook), 0o755);
         } catch (err) {
           // Windows may not support chmod
         }
@@ -581,7 +577,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
       }
     }
 
-    spinner.succeed(`Hook scripts deployed (${deploymentStats.hooks} scripts to 2 locations)`);
+    spinner.succeed(`Hook scripts deployed (${deploymentStats.hooks} scripts)`);
 
     // STEP 8.5: Initialize Analytics System
     if (!options.skipAudit) {
@@ -683,11 +679,19 @@ export async function deploy(options: DeployOptions): Promise<void> {
     } else {
       const defaultSettings = {
         hooks: {
-          Stop: { "*": "bash trinity-hooks/session-end-archive.sh" },
+          Stop: { "*": "bash .claude/hooks/session-end-archive.sh" },
           PreToolUse: {
-            "Bash(git commit:*)": "bash trinity-hooks/prevent-git.sh",
-            "Bash(git push:*)": "bash trinity-hooks/prevent-git.sh",
-            "Bash(git merge:*)": "bash trinity-hooks/prevent-git.sh"
+            "Bash(git commit:*)": "bash .claude/hooks/prevent-git.sh",
+            "Bash(git push:*)": "bash .claude/hooks/prevent-git.sh",
+            "Bash(git merge:*)": "bash .claude/hooks/prevent-git.sh",
+            "Bash(git checkout -b:*)": "bash .claude/hooks/prevent-git.sh",
+            "Bash(git branch:*)": "bash .claude/hooks/prevent-git.sh"
+          },
+          PostToolUse: {
+            "Edit(trinity/knowledge-base/*)": "bash .claude/hooks/backup-knowledge.sh",
+            "Write(trinity/knowledge-base/*)": "bash .claude/hooks/backup-knowledge.sh",
+            "Bash(npm run build:*)": "bash .claude/hooks/quality-gates.sh",
+            "Bash(npm test:*)": "bash .claude/hooks/quality-gates.sh"
           }
         }
       };
@@ -849,12 +853,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
         '',
         '# Trinity Method deployment files',
         'node_modules/',
-        '.claude/',
-        'trinity/',
-        'trinity-hooks/',
-        'viewer/',
-        'CLAUDE.md',
-        'TRINITY.md'
+        'trinity/'
       ];
 
       // Check if Trinity section already exists
@@ -872,32 +871,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
       console.error(chalk.yellow(`   Warning: ${error.message}`));
     }
 
-
-    // STEP 12: Inject Trinity Method section into README.md [WO#017]
-    spinner = ora('Injecting Trinity Method section into README.md...').start();
-
-    try {
-      const readmeResult = await injectTrinityMethodSection(variables);
-
-      if (readmeResult.success) {
-        if (readmeResult.injected) {
-          spinner.succeed('Trinity Method section added to README.md');
-          deploymentStats.files++;
-        } else if (readmeResult.skipped) {
-          spinner.info('Trinity Method section already exists in README.md');
-        } else if (readmeResult.created === false) {
-          spinner.info('README.md not found - skipping Trinity Method section');
-        }
-      } else {
-        spinner.warn('README.md injection skipped');
-        console.log(chalk.yellow(`   ${readmeResult.message}`));
-      }
-    } catch (error: any) {
-      spinner.warn('README.md injection failed');
-      console.error(chalk.yellow(`   Warning: ${error.message}`));
-    }
-
-    // STEP 13: Install Trinity Method SDK to project
+    // STEP 12: Install Trinity Method SDK to project
     spinner = ora('Installing Trinity Method SDK...').start();
 
     try {
