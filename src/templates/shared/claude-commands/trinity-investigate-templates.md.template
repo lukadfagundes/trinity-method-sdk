@@ -446,11 +446,11 @@ Is it new functionality?
 
 ```bash
 # Copy template to investigations folder
-cp src/templates/investigations/[type].md.template \
-   trinity/investigations/[YYYY-MM-DD]-[title].md
+cp trinity/templates/investigations/[type].md \
+   trinity/investigations/INV-XXX-[title].md
 
 # Fill out investigation
-# Edit: trinity/investigations/[YYYY-MM-DD]-[title].md
+# Edit: trinity/investigations/INV-XXX-[title].md
 ```
 
 ### 2. Link to Design Doc
@@ -558,7 +558,17 @@ Templates work seamlessly with `/trinity-orchestrate`:
 
 ## Template Locations
 
-All templates are located in:
+After deployment, templates are located in:
+```
+trinity/templates/investigations/
+├── bug.md
+├── performance.md
+├── security.md
+├── technical.md
+└── feature.md
+```
+
+Source templates (before deployment):
 ```
 src/templates/investigations/
 ├── bug.md.template

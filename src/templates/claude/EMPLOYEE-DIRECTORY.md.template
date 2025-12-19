@@ -464,13 +464,21 @@ npx @trinity-method/cli deploy --ci-deploy
 - [Technical Debt](../trinity/knowledge-base/Technical-Debt.md)
 
 ### Work Order Templates
-Located in `trinity/templates/`:
+Located in `trinity/templates/work-orders/`:
 - INVESTIGATION-TEMPLATE.md
 - IMPLEMENTATION-TEMPLATE.md
 - ANALYSIS-TEMPLATE.md
 - AUDIT-TEMPLATE.md
 - PATTERN-TEMPLATE.md
 - VERIFICATION-TEMPLATE.md
+
+### Investigation Templates
+Located in `trinity/templates/investigations/`:
+- bug.md - Bug investigation with Five Whys analysis
+- feature.md - Feature analysis with epic breakdown
+- technical.md - Technical investigation with ADR format
+- performance.md - Performance baselines with p50/p95/p99
+- security.md - Security investigation with CVSS 3.1 scoring
 
 ---
 

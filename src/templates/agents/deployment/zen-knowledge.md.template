@@ -218,7 +218,8 @@ Trinity v2.0 adapts implementation approach based on scope:
 
 **Work Order System (Legacy):**
 - Investigation orders: trinity/work-orders/
-- Templates: trinity/templates/
+- Work order templates: trinity/templates/work-orders/
+- Investigation templates: trinity/templates/investigations/
 - Patterns: trinity/patterns/
 - *Note: v2.0 uses scale-based workflows, work orders optional*
 

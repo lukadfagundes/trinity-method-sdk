@@ -5,7 +5,7 @@ description: Verify Trinity Method installation completeness
 Verify that Trinity Method is properly installed in this project.
 
 Check for:
-1. **Trinity Core Structure (12 directories):**
+1. **Trinity Core Structure (14 directories):**
    - trinity/knowledge-base/
    - trinity/reports/
    - trinity/sessions/
@@ -14,6 +14,8 @@ Check for:
    - trinity/patterns/
    - trinity/work-orders/
    - trinity/templates/
+   - trinity/templates/work-orders/
+   - trinity/templates/investigations/
    - trinity/archive/work-orders/
    - trinity/archive/investigations/
    - trinity/archive/reports/

@@ -1,12 +1,44 @@
 ---
-description: Plan implementation workflow with Trinity Method guidance
+description: Orchestrate work orders and investigations with AJ MAESTRO
+---
+
+# Trinity Orchestration
+
+**Purpose:** Execute work orders and investigations using the Trinity Method 19-agent team orchestrated by AJ MAESTRO.
+
+## Usage
+
+### Orchestrate Work Orders
+```bash
+/trinity-orchestrate @WO-XXX-{task-name}.md
+```
+
+**Workflow:**
+1. Create work order using `/trinity-workorder` (saved to `trinity/work-orders/`)
+2. Execute with `/trinity-orchestrate @WO-001-example.md`
+3. **AJ MAESTRO** orchestrates implementation using 19-agent team
+4. Deliverables saved per work order specifications
+
+### Orchestrate Investigations
+```bash
+/trinity-orchestrate @INV-XXX-{title}.md
+```
+
+**Workflow:**
+1. Create investigation using `/trinity-create-investigation` (saved to `trinity/investigations/`)
+2. Execute with `/trinity-orchestrate @INV-001-example.md`
+3. **AJ MAESTRO** orchestrates investigation (READ-ONLY)
+4. Findings saved to `trinity/reports/`
+
+⚠️ **CRITICAL:** Investigations are READ-ONLY. No code changes during investigation phase.
+
 ---
 
 # Trinity Workflow Planning Guide
 
-**Purpose:** Guide you through selecting and executing the appropriate Trinity workflow based on your task's scale and complexity.
+**For general workflow planning without specific work orders/investigations:**
 
-**Important:** This is a planning guide, not automated orchestration. Claude will adopt different agent personas sequentially to guide you through each phase of your workflow. All agents are Claude with specialized context—there's no parallel AI system running in the background.
+**Important:** This is a planning guide. Claude will adopt different agent personas sequentially to guide you through each phase of your workflow. All agents are Claude with specialized context—there's no parallel AI system running in the background.
 
 ## How Trinity Workflows Work
 

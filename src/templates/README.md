@@ -805,14 +805,21 @@ project-root/
 │   │   └── DOCUMENTATION-CRITERIA.md   # knowledge-base/DOCUMENTATION-CRITERIA.md.template
 │   ├── reports/                        # JUNO audit reports (directory only)
 │   └── templates/
-│       ├── INVESTIGATION-TEMPLATE.md   # work-orders/INVESTIGATION-TEMPLATE.md
-│       ├── IMPLEMENTATION-TEMPLATE.md  # work-orders/IMPLEMENTATION-TEMPLATE.md
-│       ├── ANALYSIS-TEMPLATE.md        # work-orders/ANALYSIS-TEMPLATE.md
-│       ├── AUDIT-TEMPLATE.md           # work-orders/AUDIT-TEMPLATE.md
-│       ├── PATTERN-TEMPLATE.md         # work-orders/PATTERN-TEMPLATE.md
-│       ├── VERIFICATION-TEMPLATE.md    # work-orders/VERIFICATION-TEMPLATE.md
+│       ├── work-orders/
+│       │   ├── INVESTIGATION-TEMPLATE.md   # work-orders/INVESTIGATION-TEMPLATE.md.template
+│       │   ├── IMPLEMENTATION-TEMPLATE.md  # work-orders/IMPLEMENTATION-TEMPLATE.md.template
+│       │   ├── ANALYSIS-TEMPLATE.md        # work-orders/ANALYSIS-TEMPLATE.md.template
+│       │   ├── AUDIT-TEMPLATE.md           # work-orders/AUDIT-TEMPLATE.md.template
+│       │   ├── PATTERN-TEMPLATE.md         # work-orders/PATTERN-TEMPLATE.md.template
+│       │   └── VERIFICATION-TEMPLATE.md    # work-orders/VERIFICATION-TEMPLATE.md.template
+│       ├── investigations/
+│       │   ├── bug.md                      # investigations/bug.md.template
+│       │   ├── feature.md                  # investigations/feature.md.template
+│       │   ├── technical.md                # investigations/technical.md.template
+│       │   ├── performance.md              # investigations/performance.md.template
+│       │   └── security.md                 # investigations/security.md.template
 │       └── ci/
-│           └── generic-ci.yml          # ci/generic-ci.yml
+│           └── generic-ci.yml              # ci/generic-ci.yml
 ├── .claude/
 │   ├── EMPLOYEE-DIRECTORY.md           # claude/EMPLOYEE-DIRECTORY.md.template
 │   ├── agents/

@@ -395,6 +395,28 @@ describe('Regression: {{title}}', () => {
 
 ---
 
+## 📚 Reference Documentation
+
+**Trinity Method Core:**
+- [Trinity Method Protocols](../../CLAUDE.md) - Root Trinity guidance
+- [Investigation Requirements](../../trinity/CLAUDE.md#investigation-protocols) - Investigation-first methodology
+- [Agent Directory](../../.claude/EMPLOYEE-DIRECTORY.md) - 19-agent Trinity team
+
+**Knowledge Base:**
+- [Architecture](../../trinity/knowledge-base/ARCHITECTURE.md) - System architecture and patterns
+- [Known Issues](../../trinity/knowledge-base/ISSUES.md) - Issue patterns database
+- [Technical Debt](../../trinity/knowledge-base/Technical-Debt.md) - Debt tracking
+- [Testing Standards](../../trinity/knowledge-base/TESTING-PRINCIPLES.md) - Test requirements
+- [Coding Standards](../../trinity/knowledge-base/CODING-PRINCIPLES.md) - Code quality
+
+**Investigation Protocols:**
+- READ-ONLY: No file modifications during investigation
+- Document findings thoroughly
+- Provide evidence-based recommendations
+- Implementation requires separate approval
+
+---
+
 ## 📝 Investigation Log
 
 ### {{timestamp1}}
@@ -409,5 +431,8 @@ describe('Regression: {{title}}', () => {
 ---
 
 **Investigation Status:** {{status}}
+**Priority:** {{priority}}
+**Created:** {{createdAt}}
 **Last Updated:** {{lastUpdated}}
-**Next Steps:** {{nextSteps}}
+**Next Review:** {{nextReview}}
+**Investigator:** {{investigator}}

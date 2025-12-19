@@ -599,21 +599,21 @@ export async function deploy(options: DeployOptions): Promise<void> {
 
     // Command categorization map
     const commandCategories: Record<string, string> = {
-      'trinity-start.md': 'session',
-      'trinity-continue.md': 'session',
-      'trinity-end.md': 'session',
-      'trinity-requirements.md': 'planning',
-      'trinity-design.md': 'planning',
-      'trinity-decompose.md': 'planning',
-      'trinity-plan.md': 'planning',
-      'trinity-orchestrate.md': 'execution',
-      'trinity-create-investigation.md': 'investigation',
-      'trinity-plan-investigation.md': 'investigation',
-      'trinity-investigate-templates.md': 'investigation',
-      'trinity-init.md': 'infrastructure',
-      'trinity-agents.md': 'utility',
-      'trinity-verify.md': 'utility',
-      'trinity-workorder.md': 'utility'
+      'trinity-start.md.template': 'session',
+      'trinity-continue.md.template': 'session',
+      'trinity-end.md.template': 'session',
+      'trinity-requirements.md.template': 'planning',
+      'trinity-design.md.template': 'planning',
+      'trinity-decompose.md.template': 'planning',
+      'trinity-plan.md.template': 'planning',
+      'trinity-orchestrate.md.template': 'execution',
+      'trinity-create-investigation.md.template': 'investigation',
+      'trinity-plan-investigation.md.template': 'investigation',
+      'trinity-investigate-templates.md.template': 'investigation',
+      'trinity-init.md.template': 'infrastructure',
+      'trinity-agents.md.template': 'utility',
+      'trinity-verify.md.template': 'utility',
+      'trinity-workorder.md.template': 'utility'
     };
 
     const commandsTemplatePath = path.join(templatesPath, 'shared/claude-commands');
@@ -621,10 +621,12 @@ export async function deploy(options: DeployOptions): Promise<void> {
 
     let deployedCommands = 0;
     for (const file of commandFiles) {
-      if (file.endsWith('.md') && commandCategories[file]) {
+      if (file.endsWith('.md.template') && commandCategories[file]) {
         const sourcePath = path.join(commandsTemplatePath, file);
         const category = commandCategories[file];
-        const destPath = path.join(commandsDir, category, file);
+        // Remove .template extension for deployed files
+        const deployedName = file.replace('.template', '');
+        const destPath = path.join(commandsDir, category, deployedName);
         await fs.copy(sourcePath, destPath);
         deployedCommands++;
         deploymentStats.files++;
@@ -679,6 +681,9 @@ export async function deploy(options: DeployOptions): Promise<void> {
       'VERIFICATION-TEMPLATE.md.template'
     ];
 
+    // Ensure trinity/templates/work-orders directory exists
+    await fs.ensureDir('trinity/templates/work-orders');
+
     for (const template of woTemplates) {
       const templatePath = path.join(templatesPath, 'work-orders', template);
 
@@ -687,12 +692,41 @@ export async function deploy(options: DeployOptions): Promise<void> {
         const processed = processTemplate(content, variables);
         // Remove .template extension for deployed files
         const deployedName = template.replace('.template', '');
-        await fs.writeFile(`trinity/templates/${deployedName}`, processed);
+        await fs.writeFile(`trinity/templates/work-orders/${deployedName}`, processed);
         deploymentStats.templates++;
       }
     }
 
     spinner.succeed(`Work order templates deployed (${deploymentStats.templates} templates)`);
+
+    // STEP 10.5: Deploy investigation templates
+    spinner = ora('Deploying investigation templates...').start();
+
+    const investigationTemplates = [
+      'bug.md.template',
+      'feature.md.template',
+      'performance.md.template',
+      'security.md.template',
+      'technical.md.template'
+    ];
+
+    // Ensure trinity/templates/investigations directory exists
+    await fs.ensureDir('trinity/templates/investigations');
+
+    for (const template of investigationTemplates) {
+      const templatePath = path.join(templatesPath, 'investigations', template);
+
+      if (await fs.pathExists(templatePath)) {
+        const content = await fs.readFile(templatePath, 'utf8');
+        const processed = processTemplate(content, variables);
+        // Remove .template extension for deployed files
+        const deployedName = template.replace('.template', '');
+        await fs.writeFile(`trinity/templates/investigations/${deployedName}`, processed);
+        deploymentStats.templates++;
+      }
+    }
+
+    spinner.succeed(`Investigation templates deployed (${investigationTemplates.length} templates)`);
 
     // STEP 11: Deploy CI/CD workflow templates (if --ci-deploy flag set) [WO#015]
     if (options.ciDeploy) {
