@@ -111,7 +111,7 @@ Location: `trinity/knowledge-base/ARCHITECTURE.md`
 │       ├── leadership/
 │       │   ├── aly-cto.md       # Chief Technology Officer
 │       │   └── aj-maestro.md    # Implementation Orchestrator (v2.0)
-│       └── aj-team/             # 11 specialized agents (v2.0)
+│       └── aj-team/             # 7 specialized agents in AJ Team (v2.0)
 ├── CLAUDE.md                    # Claude Code memory
 └── TRINITY.md                   # Trinity Method guide
 ```
@@ -188,7 +188,7 @@ Trinity v2.0 adapts implementation approach based on scope:
 
 **Leadership:**
 - **ALY** (CTO) - Strategic planning, scale determination
-- **AJ MAESTRO** (Orchestrator) - Coordinates 11 specialized agents
+- **AJ MAESTRO** (Orchestrator) - Coordinates 19 specialized agents across 5 teams
 
 **Planning Agents:**
 - **MON** - Requirements analysis, scale determination
@@ -282,7 +282,7 @@ Trinity v2.0 adapts implementation approach based on scope:
 ├── .claude/
 │   └── agents/
 │       ├── leadership/          # ALY + AJ MAESTRO
-│       └── aj-team/             # 11 specialized agents
+│       └── aj-team/             # 7 specialized agents in AJ Team
 ├── CLAUDE.md
 └── TRINITY.md
 ```

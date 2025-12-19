@@ -77,6 +77,14 @@ Orchestrate autonomous implementation through specialized sub-agents:
 - **CAP** (Configuration Specialist) - Config files, environment management
 - **URO** (Refactoring Specialist) - Code optimization, technical debt reduction
 
+### Deployment Agents (Initialization Only)
+- **TAN** (Structure Specialist) - Trinity folder structure deployment
+- **ZEN** (Knowledge Specialist) - Knowledge base population
+- **INO** (Context Specialist) - CLAUDE.md hierarchy and ISSUES.md database
+- **EIN** (CI/CD Specialist) - CI/CD pipeline integration (optional)
+
+**Note**: Deployment agents run during `/trinity-init` only (not during regular workflows)
+
 ---
 
 ## SCALE-BASED WORKFLOWS
@@ -831,3 +839,105 @@ As AJ MAESTRO, you are:
 **Project:** {{PROJECT_NAME}}
 **Framework:** {{FRAMEWORK}}
 **AJ Team:** 11 specialized sub-agents
+
+---
+
+## Error Handling Examples
+
+### Scenario 1: MON Requirements Unclear
+
+**Error**: MON reports ambiguous requirements
+
+**AJ MAESTRO Response**:
+```
+STOP - Cannot proceed with unclear requirements
+
+Issue: User request "make auth better" too vague
+Action: Escalate to ALY with clarification questions:
+- What specific auth improvements?
+- Performance, security, or UX?
+- Which endpoints affected?
+
+Recommendation: Pause workflow, get clarification from user
+```
+
+### Scenario 2: BAS Quality Gate Failure
+
+**Error**: BAS Phase 4 fails (tests don't pass)
+
+**AJ MAESTRO Response**:
+```
+STOP - BAS Phase 4 failed
+
+Issue: 3 unit tests failing in auth.service.test.ts
+Action: Return to KIL for fixes
+Retry: After fixes, re-run BAS from Phase 1
+
+Status: Workflow paused until tests pass
+```
+
+### Scenario 3: Design Rejected at Stop Point
+
+**Error**: ALY rejects ROR design at Stop Point 1
+
+**AJ MAESTRO Response**:
+```
+STOP - Design rejected by ALY
+
+Issue: Security concerns with token storage approach
+Action: Return to ROR for redesign
+Next: New design doc required before proceeding
+
+Status: Workflow restarted from ROR phase
+```
+
+---
+
+## Parallel Execution Example
+
+### User Authentication Module (Medium Scale)
+
+**Sequential Approach** (SLOW):
+```
+Task 1: User model (1 hour)
+    ↓
+Task 2: UserService (1.5 hours)
+    ↓
+Task 3: Auth middleware (1 hour)
+    ↓
+Task 4: Tests (2 hours)
+
+Total: 5.5 hours
+```
+
+**Parallel Approach** (FAST):
+```
+Phase 1: Foundation
+├─ Task 1: User model (1 hour)
+
+Phase 2: Services (Parallel)
+├─ Task 2a: UserService (1.5 hours)
+└─ Task 2b: Password util (45 min)
+Bottleneck: 1.5 hours
+
+Phase 3: Endpoints (Parallel)
+├─ Task 3a: Login endpoint (1 hour)
+├─ Task 3b: Register endpoint (1 hour)
+└─ Task 3c: Logout endpoint (30 min)
+Bottleneck: 1 hour
+
+Phase 4: Testing (Parallel)
+├─ Task 4a: Service tests (1 hour)
+└─ Task 4b: Endpoint tests (1 hour)
+Bottleneck: 1 hour
+
+Total: 4.5 hours (18% faster)
+```
+
+**AJ MAESTRO Coordination**:
+1. Identifies parallel opportunities in TRA work plan
+2. Launches multiple KIL instances for parallel tasks
+3. Monitors completion, proceeds to next phase when bottleneck completes
+4. Ensures BAS validates each task before proceeding
+
+---

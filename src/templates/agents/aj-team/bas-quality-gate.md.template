@@ -774,3 +774,133 @@ Before approving task:
 **Version**: 2.0.0
 **Last Updated**: 2025-10-11
 **Coordinates With**: KIL, DRA
+
+---
+
+## Configuration Priority Order
+
+Trinity supports configuration at multiple levels. Priority (highest to lowest):
+
+1. **Environment Variables** (Runtime Override)
+   ```bash
+   TRINITY_COVERAGE_THRESHOLD=90
+   TRINITY_BUILD_TIMEOUT=300
+   ```
+
+2. **Knowledge Base Configuration** (Project Standard)
+   ```markdown
+   # trinity/knowledge-base/TESTING-PRINCIPLES.md
+   COVERAGE_THRESHOLD=85
+   
+   # trinity/knowledge-base/CODING-PRINCIPLES.md
+   MAX_FUNCTION_LENGTH=50
+   ```
+
+3. **Default Values** (Fallback)
+   - Coverage threshold: 80%
+   - Build timeout: 120 seconds
+   - Max function length: 30 lines
+
+**Example**: If `TRINITY_COVERAGE_THRESHOLD=90` is set as environment variable, it overrides knowledge base value (85) and default (80).
+
+---
+
+---
+
+## Phase Failure Recovery
+
+### What Happens When a Phase Fails
+
+**Immediate Actions**:
+1. **Stop execution** - Do not proceed to next phase
+2. **Document failure** - Record which check failed and why
+3. **Report to KIL** - Return to KIL with failure details
+4. **No commit** - Changes not committed until all phases pass
+
+### Recovery Process by Phase
+
+**Phase 1 Failure (Linting)**:
+```
+Failed: ESLint errors in auth.service.ts
+├─ Fix: Run `npm run lint:fix` or manually fix
+├─ Re-run: Phase 1 only
+└─ Continue: If pass, proceed to Phase 2
+```
+
+**Phase 2 Failure (Structure)**:
+```
+Failed: File in wrong directory
+├─ Fix: Move file to correct location
+├─ Re-run: Phases 1-2 (structure change may affect linting)
+└─ Continue: If both pass, proceed to Phase 3
+```
+
+**Phase 3 Failure (Build)**:
+```
+Failed: TypeScript compilation error
+├─ Fix: Resolve type errors
+├─ Re-run: Phases 1-3 (changes may affect linting/structure)
+└─ Continue: If all pass, proceed to Phase 4
+```
+
+**Phase 4 Failure (Tests)**:
+```
+Failed: 3 unit tests failing
+├─ Fix: Debug and fix failing tests
+├─ Re-run: Phases 1-4 (test fixes may affect earlier phases)
+└─ Continue: If all pass, proceed to Phase 5
+```
+
+**Phase 5 Failure (Coverage)**:
+```
+Failed: Coverage 72% (threshold 80%)
+├─ Fix: Add tests for uncovered code
+├─ Re-run: Phases 4-5 (new tests may affect test results)
+└─ Continue: If coverage met, proceed to Phase 6
+```
+
+**Phase 6 Failure (Review)**:
+```
+Failed: Complexity threshold exceeded
+├─ Fix: Refactor to reduce complexity
+├─ Re-run: ALL phases (refactoring changes everything)
+└─ Continue: If all pass, ready to commit
+```
+
+### Retry Strategy
+
+**Automatic Retry**: None - All fixes are manual
+
+**Re-run Scope**:
+- Minor fixes (linting, formatting): Re-run from failed phase
+- Code changes (logic, structure): Re-run ALL phases
+- Refactoring: ALWAYS re-run all phases
+
+### Example Recovery Session
+
+```markdown
+## Task 3: Add JWT validation
+
+Attempt 1:
+├─ Phase 1: ✅ Pass
+├─ Phase 2: ✅ Pass
+├─ Phase 3: ✅ Pass
+├─ Phase 4: ❌ FAIL - 2 tests failing
+└─ Action: Fix tests, re-run from Phase 1
+
+Attempt 2 (after test fixes):
+├─ Phase 1: ✅ Pass
+├─ Phase 2: ✅ Pass
+├─ Phase 3: ✅ Pass
+├─ Phase 4: ✅ Pass
+├─ Phase 5: ❌ FAIL - Coverage 76% (need 80%)
+└─ Action: Add edge case tests, re-run from Phase 4
+
+Attempt 3 (after coverage improvement):
+├─ Phase 4: ✅ Pass (all tests)
+├─ Phase 5: ✅ Pass (coverage 85%)
+├─ Phase 6: ✅ Pass
+└─ Result: ✅ READY TO COMMIT
+```
+
+---

@@ -280,3 +280,38 @@ Always output structured JSON for ROR to consume:
 ---
 
 **Remember:** MON sets the foundation for the entire implementation. Accurate requirements analysis and scale determination ensure the right workflow is followed with appropriate stop points and quality gates.
+
+---
+
+## When NOT to Use MON
+
+Skip MON for:
+
+**Small Scale Tasks (1-2 files)**:
+- Requirements are obvious from user request
+- Simple bug fixes
+- Straightforward features
+- Quick configurations
+
+**Example**: "Fix typo in error message" → Just do it (KIL + BAS)
+
+**Already Well-Defined Tasks**:
+- User provides detailed requirements document
+- Work order has comprehensive acceptance criteria
+- No ambiguity in scope
+
+**Example**: User gives 10-page spec → Skip MON, go to ROR for design
+
+**Trivial Changes**:
+- Documentation updates
+- Comment additions
+- Formatting fixes
+
+**Use MON When**:
+- Requirements unclear or ambiguous
+- Medium/Large scale (3+ files)
+- User request vague ("make auth better")
+- Multiple stakeholders with different needs
+- Complex business logic requiring clarification
+
+---

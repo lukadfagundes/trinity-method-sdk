@@ -100,3 +100,169 @@ This creates a structured investigation in `trinity/work-orders/` with:
 ## Usage
 
 Describe your task and Claude will help you choose the right workflow and guide you through the process.
+
+---
+
+## Scale Determination Criteria
+
+### File Count Assessment
+
+**SMALL Scale (1-2 files)**:
+- Single feature file + test file
+- Bug fix in one location
+- Configuration change
+- Documentation update
+**Examples**:
+- Fix validation bug in user.service.ts + add test
+- Update API endpoint in auth.controller.ts
+- Add utility function to string-utils.ts
+
+**MEDIUM Scale (3-5 files)**:
+- Feature spanning multiple files
+- Service + controller + types + tests
+- Refactoring with dependencies
+**Examples**:
+- JWT refresh tokens: service (2 files) + middleware + types + tests (4 files total)
+- Add pagination: controller + service + types + tests (4 files)
+- Extract shared logic: create new utility + update 3 consumers + tests (5 files)
+
+**LARGE Scale (6+ files)**:
+- Full module implementation
+- Cross-cutting concerns
+- Major refactoring
+**Examples**:
+- User management module: 12 files (services, controllers, middleware, types, tests, validators)
+- Payment integration: 8 files (service, webhook handler, types, models, tests, config)
+- Database migration: 10+ files (migration scripts, model updates, service changes, tests)
+
+### Complexity Factors (May Increase Scale)
+
+Consider bumping scale up if:
+- **High Security Impact**: Auth, payments, data access → Add stop points
+- **Complex Logic**: Multiple algorithms, state machines → Need design review
+- **External Dependencies**: Third-party APIs, new libraries → Requires planning
+- **Cross-Team Impact**: Changes affect multiple teams/services → Need coordination
+
+**Example**: 2-file auth change might be MEDIUM due to security impact requiring design review.
+
+---
+
+## Decision Tree
+
+```
+User Request
+    ↓
+How many files affected?
+    ├─ 1-2 files ──→ SMALL
+    ├─ 3-5 files ──→ MEDIUM
+    └─ 6+ files ──→ LARGE
+         ↓
+    [Check Complexity Factors]
+         ↓
+    High security/complexity?
+         ├─ Yes → Increase scale
+         └─ No → Keep scale
+              ↓
+         [Determine Workflow]
+              ↓
+    SMALL → KIL + BAS (0 stops)
+    MEDIUM → MON/ROR + KIL + BAS + DRA (2 stops)
+    LARGE → MON + ROR + TRA + EUS + KIL + BAS + DRA (4 stops)
+```
+
+### Scale-to-Workflow Mapping
+
+| Scale | Files | Agents | Stop Points | Duration |
+|-------|-------|--------|-------------|----------|
+| SMALL | 1-2 | KIL, BAS | 0 | <1 hour |
+| MEDIUM | 3-5 | MON/ROR, KIL, BAS, DRA | 2 | 2-6 hours |
+| LARGE | 6+ | MON, ROR, TRA, EUS, KIL, BAS, DRA | 4 | 1-2 days |
+
+**Stop Points**:
+- SMALL: No stops (direct execution)
+- MEDIUM: Design review + Final review
+- LARGE: Requirements + Design + Plan + Final review
+
+---
+
+---
+
+## /trinity-start vs /trinity-orchestrate
+
+### When to Use Each
+
+**Use /trinity-start** when:
+- ✅ Starting fresh work (no investigation file exists)
+- ✅ User request is clear
+- ✅ Want ALY to determine scale and delegate
+
+**Use /trinity-orchestrate** when:
+- ✅ Have existing work order file
+- ✅ Want to execute specific WO-XXX
+- ✅ Resuming paused work order
+
+### Workflow Difference
+
+**/trinity-start**:
+```
+User request → ALY assesses → Determines scale → Delegates to AJ MAESTRO
+```
+
+**/trinity-orchestrate @WO-042**:
+```
+Read WO-042 → AJ MAESTRO executes directly (skip ALY assessment)
+```
+
+**Example**:
+- "Add JWT refresh tokens" → Use `/trinity-start`
+- "Execute WO-042" → Use `/trinity-orchestrate @WO-042`
+
+---
+
+---
+
+## Visual Workflow Guide
+
+```
+START HERE: User has a task
+    ↓
+┌───────────────────────────────────────┐
+│ Is Trinity deployed in this project? │
+└────────┬──────────────────┬───────────┘
+         │ No               │ Yes
+         ↓                  ↓
+    /trinity-init      Is this a new task?
+         │                  │
+         │            ┌─────┴──────┐
+         │            │ Yes        │ No (resuming)
+         │            ↓            ↓
+         │      /trinity-start  /trinity-continue
+         │            │            │
+         └────────────┴────────────┘
+                      ↓
+              ALY determines scale
+                      │
+         ┌────────────┼────────────┐
+         │            │            │
+    SMALL (0)    MEDIUM (2)    LARGE (4)
+    KIL+BAS      +Design       +Full planning
+         │            │            │
+         └────────────┼────────────┘
+                      ↓
+              AJ MAESTRO executes
+                      ↓
+              BAS validates (6 phases)
+                      ↓
+              DRA reviews compliance
+                      ↓
+              ┌───────┴────────┐
+              │ Complete?      │
+              └───┬────────┬───┘
+                  │ Yes    │ No
+                  ↓        ↓
+            /trinity-end  Continue next task
+```
+
+**Numbers in parentheses** = Stop points for ALY review
+
+---

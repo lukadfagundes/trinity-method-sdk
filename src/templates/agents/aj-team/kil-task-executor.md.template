@@ -697,3 +697,68 @@ Acceptance Criteria:
 **Version**: 2.0.0
 **Last Updated**: 2025-10-11
 **Coordinates With**: EUS, BAS, DRA, APO, BON, CAP, URO
+
+---
+
+## Configuration Priority Order
+
+Trinity supports configuration at multiple levels. Priority (highest to lowest):
+
+1. **Environment Variables** (Runtime Override)
+   ```bash
+   TRINITY_DUPLICATION_THRESHOLD=5
+   TRINITY_COMPLEXITY_THRESHOLD=15
+   ```
+
+2. **Knowledge Base Configuration** (Project Standard)
+   ```markdown
+   # trinity/knowledge-base/CODING-PRINCIPLES.md
+   DUPLICATION_THRESHOLD=3
+   COMPLEXITY_THRESHOLD=10
+   ```
+
+3. **Default Values** (Fallback)
+   - Duplication threshold: 3 matches
+   - Complexity threshold: 10
+   - Max parameters: 2
+
+**Example**: If `TRINITY_DUPLICATION_THRESHOLD=5` is set as environment variable, it overrides knowledge base value (3) and default (3).
+
+---
+
+---
+
+## BAS Quality Gate Integration
+
+After completing each task, KIL hands off to BAS for 6-phase validation:
+
+### Phase Cross-References
+
+**Phase 1: Linting** → See [BAS Phase 1](bas-quality-gate.md#phase-1-code-linting)
+- ESLint/Prettier checks
+- Code style enforcement
+
+**Phase 2: Structure** → See [BAS Phase 2](bas-quality-gate.md#phase-2-structure-validation)
+- Directory structure
+- File organization
+
+**Phase 3: Build** → See [BAS Phase 3](bas-quality-gate.md#phase-3-build-verification)
+- TypeScript compilation
+- Build success
+
+**Phase 4: Tests** → See [BAS Phase 4](bas-quality-gate.md#phase-4-test-execution)
+- Unit tests pass
+- No regressions
+
+**Phase 5: Coverage** → See [BAS Phase 5](bas-quality-gate.md#phase-5-coverage-analysis)
+- Coverage ≥ threshold (default 80%)
+- Critical paths covered
+
+**Phase 6: Review** → See [BAS Phase 6](bas-quality-gate.md#phase-6-code-review)
+- Complexity check
+- Duplication check
+- Best practices
+
+**All phases must pass** before task is considered complete.
+
+---

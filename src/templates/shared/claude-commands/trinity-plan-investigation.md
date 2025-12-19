@@ -86,3 +86,50 @@ Save investigation plan to:
 - Assign specific agents
 - Create investigation from plan
 - Export plan to JSON
+
+---
+
+## When to Use: /trinity-plan-investigation vs /trinity-create-investigation
+
+### /trinity-create-investigation
+**Use when**: Starting a new investigation from scratch
+
+**What it does**:
+- Creates new INV-XXX file
+- Sets up investigation structure
+- Defines research questions
+- Establishes scope
+
+**Example**: "Investigate why API is slow" → Creates INV-015-api-performance-analysis.md
+
+### /trinity-plan-investigation
+**Use when**: Investigation already exists, need execution plan
+
+**What it does**:
+- Reads existing INV-XXX file
+- Creates research methodology
+- Generates data collection plan
+- Defines success criteria
+- Produces step-by-step investigation tasks
+
+**Example**: "Plan how to execute INV-015" → Creates detailed investigation plan with 8 research tasks
+
+### Workflow
+
+```
+1. /trinity-create-investigation
+   → Creates INV-XXX-problem.md
+   
+2. /trinity-plan-investigation
+   → Reads INV-XXX-problem.md
+   → Creates investigation-plan-XXX.md
+   
+3. Execute investigation
+   → Follow plan
+   → Document findings
+   
+4. Archive results
+   → Update INV-XXX with conclusions
+```
+
+---

@@ -14,7 +14,7 @@ The templates module contains all template files used during Trinity Method depl
 
 ```
 templates/
-├── agents/                      # Agent configuration templates (18 agents)
+├── agents/                      # Agent configuration templates (19 agents)
 │   ├── leadership/              # Leadership team (2 agents)
 │   ├── deployment/              # Deployment specialists (4 agents)
 │   ├── audit/                   # Quality auditor (1 agent)
@@ -209,7 +209,7 @@ Claude Code integration files.
 - **Purpose**: Agent directory with descriptions
 - **Target**: `.claude/EMPLOYEE-DIRECTORY.md`
 - **Variables**: PROJECT_NAME, FRAMEWORK
-- **Content**: All 18 agents with roles, responsibilities, and invocation commands
+- **Content**: All 19 agents with roles, responsibilities, and invocation commands
 - **Sections**: Leadership, Planning, Execution, Deployment, Audit teams
 
 ---

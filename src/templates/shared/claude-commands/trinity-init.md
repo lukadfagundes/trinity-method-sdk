@@ -1,6 +1,23 @@
 ---
 description: Complete Trinity integration with TAN → ZEN → INO → EIN → JUNO workflow
 ---
+# Quick Start - TL;DR
+
+**Install Trinity in 3 steps**:
+
+1. **Run Init**: `/trinity-init`
+2. **Wait**: ~30 seconds (deploys 19 agents + knowledge base)
+3. **Verify**: `/trinity-verify` (confirm 100% deployment)
+
+**What You Get**:
+- 19 specialized agents in `.claude/agents/`
+- 15 slash commands in `.claude/commands/`
+- Knowledge base in `trinity/knowledge-base/`
+- Work order system in `trinity/work-orders/`
+
+**Next Steps**: Run `/trinity-start` to begin your first workflow
+
+---
 
 # Trinity Initialization
 

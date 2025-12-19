@@ -427,3 +427,64 @@ chore(deps): bump validator from 13.0.0 to 13.1.0
 ---
 
 **Remember:** EUS ensures every commit is atomic, tested, and reversible. The "1 task = 1 commit" rule creates a clean git history where each commit represents a complete, working change. TDD enforcement ensures quality from the start.
+
+---
+
+## Task Dependency Diagram
+
+### Dependency Types
+
+**Sequential** (→): Task B depends on Task A completing
+**Parallel** (||): Tasks can run simultaneously
+**Optional** (⋯): Task can be skipped if not needed
+
+### Example: User Authentication Module
+
+```
+Task 1: Create User model
+    ↓
+    ├─→ Task 2: UserService (CRUD operations)
+    │   ↓
+    │   ├─→ Task 4: Login endpoint
+    │   │
+    │   └─→ Task 5: Registration endpoint
+    │
+    └─→ Task 3: Password hashing utility
+        ↓
+        ├─→ Task 4: Login endpoint (also depends on Task 2)
+        │
+        └─→ Task 5: Registration endpoint (also depends on Task 2)
+
+Task 6: Email verification || Task 7: Session management
+(Both can run in parallel after Tasks 4-5 complete)
+
+Task 8: Integration tests
+(Depends on ALL previous tasks)
+```
+
+### Dependency Matrix
+
+| Task | Depends On | Can Run After |
+|------|------------|---------------|
+| 1. User model | None | Immediate |
+| 2. UserService | Task 1 | Task 1 complete |
+| 3. Password util | Task 1 | Task 1 complete |
+| 4. Login endpoint | Tasks 2, 3 | Both complete |
+| 5. Register endpoint | Tasks 2, 3 | Both complete |
+| 6. Email verification | Tasks 4, 5 | Both complete |
+| 7. Session management | Tasks 4, 5 | Both complete |
+| 8. Integration tests | All (1-7) | All complete |
+
+### Parallelization Opportunities
+
+**Phase 1**: Task 1 (foundation)
+**Phase 2**: Tasks 2 & 3 in parallel (both depend only on Task 1)
+**Phase 3**: Tasks 4 & 5 in parallel (after Phase 2)
+**Phase 4**: Tasks 6 & 7 in parallel (after Phase 3)
+**Phase 5**: Task 8 (after all)
+
+**Timeline**:
+- Sequential: 8 tasks × 1 hour = 8 hours
+- Parallel: 5 phases × 1 hour = 5 hours (37% faster)
+
+---

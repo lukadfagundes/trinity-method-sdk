@@ -611,3 +611,96 @@ Describe your investigation:
 - **New feature?** → `/trinity-investigate-templates feature`
 
 Templates ensure comprehensive, consistent investigations that contribute to organizational knowledge and accelerate future work.
+---
+
+## Investigation Workflow Example
+
+### Step 1: Create Investigation
+
+```bash
+/trinity-create-investigation
+```
+
+User provides: "Investigate why API response times increased"
+
+Creates: `INV-023-api-performance-degradation.md`
+
+### Step 2: Plan Investigation
+
+```bash
+/trinity-plan-investigation INV-023
+```
+
+Generates research plan with tasks:
+1. Collect baseline metrics
+2. Profile current endpoints
+3. Analyze database queries
+4. Check external API calls
+5. Review recent code changes
+6. Document findings
+
+### Step 3: Execute Investigation
+
+Follow plan, document findings in INV-023
+
+### Step 4: Conclude
+
+Update INV-023 with:
+- Root cause identified
+- Recommended solutions
+- Create work orders for fixes
+
+---
+
+---
+
+## Template Verification Instructions
+
+After investigating templates, verify your findings:
+
+### Verification Checklist
+
+**1. Template Structure**:
+```bash
+# Count template files
+find src/templates -name "*.template" | wc -l
+# Expected: 19 agent templates + knowledge base templates
+
+# Verify organization
+ls -la src/templates/agents/leadership/
+ls -la src/templates/agents/deployment/
+ls -la src/templates/agents/planning/
+ls -la src/templates/agents/aj-team/
+ls -la src/templates/agents/audit/
+```
+
+**2. Placeholder Variables**:
+```bash
+# Find all placeholders
+grep -r "{{" src/templates/ | cut -d: -f2 | sort -u
+
+# Common placeholders:
+# {{PROJECT_NAME}}
+# {{FRAMEWORK}}
+# {{TECH_STACK}}
+# {{SOURCE_DIR}}
+# {{TRINITY_VERSION}}
+# {{DEPLOYMENT_TIMESTAMP}}
+```
+
+**3. Cross-References**:
+```bash
+# Check for broken references
+grep -r "See \[" src/templates/
+
+# Verify agent name consistency
+grep -r "**MON**\|**ROR**\|**TRA**" src/templates/ | wc -l
+```
+
+**4. Build Verification**:
+```bash
+npm run build
+# Should compile without errors
+```
+
+---

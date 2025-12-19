@@ -49,3 +49,79 @@ Located in: `.claude/agents/aj-team/`
 Ask which agent you want to learn more about, and Claude will read that agent's template from `.claude/agents/{subdirectory}/` and provide a detailed summary of their capabilities and responsibilities.
 
 **Example:** "Tell me about MON's requirements analysis process"
+
+---
+
+## Quick Agent Lookup
+
+| Agent | Role | When to Use | File Location |
+|-------|------|-------------|---------------|
+| **ALY** | CTO | Strategic decisions, stop point reviews | leadership/aly-cto.md |
+| **AJ MAESTRO** | Orchestrator | Coordinate Medium/Large workflows | leadership/aj-maestro.md |
+| **AJ CC** | Continuity | Session recovery, investigations | leadership/aj-cc.md |
+| **TAN** | Structure | Deploy Trinity folders (init only) | deployment/tan-structure.md |
+| **ZEN** | Knowledge | Populate knowledge base (init only) | deployment/zen-knowledge.md |
+| **INO** | Context | CLAUDE.md hierarchy (init only) | deployment/ino-context.md |
+| **EIN** | CI/CD | GitHub Actions setup (init only) | deployment/ein-cicd.md |
+| **MON** | Requirements | Extract requirements, determine scale | planning/mon-requirements.md |
+| **ROR** | Design | Technical design, ADRs | planning/ror-design.md |
+| **TRA** | Planner | Work plans, phase breakdown | planning/tra-planner.md |
+| **EUS** | Decomposer | Break into atomic tasks | planning/eus-decomposer.md |
+| **KIL** | Executor | TDD implementation | aj-team/kil-task-executor.md |
+| **BAS** | Quality Gate | 6-phase validation | aj-team/bas-quality-gate.md |
+| **DRA** | Reviewer | Code review, compliance | aj-team/dra-code-reviewer.md |
+| **APO** | Documentation | API docs, comments | aj-team/apo-documentation-specialist.md |
+| **BON** | Dependencies | Package management | aj-team/bon-dependency-manager.md |
+| **CAP** | Configuration | Config files, env vars | aj-team/cap-configuration-specialist.md |
+| **URO** | Refactoring | Code optimization | aj-team/uro-refactoring-specialist.md |
+| **JUNO** | Auditor | Deployment verification | audit/juno-auditor.md |
+
+---
+
+## Agent Selection Flowchart
+
+```
+What do you need?
+
+├─ Deploy Trinity → TAN, ZEN, INO (+ EIN if CI/CD)
+│
+├─ Start new work → ALY (determines scale) → AJ MAESTRO
+│
+├─ Resume interrupted work → AJ CC (session recovery)
+│
+├─ Investigation only → AJ CC (read-only analysis)
+│
+└─ Specific task:
+    │
+    ├─ Extract requirements → MON
+    ├─ Create design → ROR
+    ├─ Plan work → TRA
+    ├─ Break into tasks → EUS
+    ├─ Implement code → KIL
+    ├─ Validate quality → BAS
+    ├─ Review code → DRA
+    ├─ Write docs → APO
+    ├─ Manage packages → BON
+    ├─ Configure app → CAP
+    ├─ Refactor code → URO
+    └─ Audit deployment → JUNO
+```
+
+---
+
+---
+
+## Agent Naming Standard
+
+**Format**: `**AGENT** - Full Title (Acronym)`
+
+**Examples**:
+- **ALY** - Chief Technology Officer (CTO)
+- **AJ MAESTRO** - Implementation Orchestrator
+- **AJ CC** - Continuous Context Specialist
+- **MON** - Requirements Analyst
+- **KIL** - Task Executor
+
+**Consistency**: All agent references across Trinity use this format for clarity.
+
+---

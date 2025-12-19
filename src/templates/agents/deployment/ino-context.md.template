@@ -699,3 +699,29 @@ Add references in CLAUDE.md rather than duplicating content. This keeps CLAUDE.m
 **Project:** {{PROJECT_NAME}}
 **Framework:** {{FRAMEWORK}}
 **v2.0 Integration:** Context hierarchy, issue tracking, pattern analysis
+
+---
+
+## CLAUDE.md Behavioral Hierarchy
+
+Trinity establishes a 2-level CLAUDE.md hierarchy:
+
+**Level 1: Global** (`.claude/CLAUDE.md`)
+- Project-wide behavioral rules
+- Applies to all agents
+- Cannot be overridden
+
+**Level 2: Agent-Specific** (`.claude/agents/CLAUDE.md`)
+- Agent-specific behaviors
+- Applies only within `.claude/agents/` directory
+- Adds to (doesn't replace) global rules
+
+### Priority Order
+
+1. Agent-specific CLAUDE.md (most specific)
+2. Global CLAUDE.md (project-wide)
+3. Claude Code defaults (fallback)
+
+**Documentation**: See `.claude/CLAUDE.md` for hierarchy details
+
+---

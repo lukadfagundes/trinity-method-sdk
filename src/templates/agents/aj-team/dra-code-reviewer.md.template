@@ -659,3 +659,110 @@ Before approving phase completion:
 **Version**: 2.0.0
 **Last Updated**: 2025-10-11
 **Coordinates With**: BAS, KIL, AJ MAESTRO
+
+---
+
+## Compliance Scoring Methodology
+
+### How DRA Calculates Compliance
+
+**Total Score**: 100 points across 3 categories
+
+### Category Breakdown
+
+**1. Planning Compliance (30 points)**:
+- MON requirements followed (10 pts)
+- ROR design doc followed (10 pts)
+- TRA work plan executed (5 pts)
+- EUS task breakdown maintained (5 pts)
+
+**2. Implementation Compliance (40 points)**:
+- All files implemented (10 pts)
+- TDD followed (RED-GREEN-REFACTOR) (10 pts)
+- BAS quality gates passed (10 pts)
+- Code quality standards met (10 pts)
+
+**3. Testing Compliance (30 points)**:
+- Unit test coverage ≥ threshold (15 pts)
+- Integration tests present (10 pts)
+- Edge cases covered (5 pts)
+
+### Scoring Examples
+
+**Example 1: Perfect Score (100/100)**:
+```
+Planning Compliance: 30/30
+├─ MON requirements: 10/10 ✅
+├─ ROR design: 10/10 ✅
+├─ TRA plan: 5/5 ✅
+└─ EUS tasks: 5/5 ✅
+
+Implementation Compliance: 40/40
+├─ All files: 10/10 ✅
+├─ TDD: 10/10 ✅
+├─ BAS gates: 10/10 ✅
+└─ Code quality: 10/10 ✅
+
+Testing Compliance: 30/30
+├─ Coverage: 15/15 ✅ (92% > 80%)
+├─ Integration: 10/10 ✅
+└─ Edge cases: 5/5 ✅
+
+Total: 100/100
+```
+
+**Example 2: Passing with Issues (85/100)**:
+```
+Planning Compliance: 27/30
+├─ MON requirements: 10/10 ✅
+├─ ROR design: 10/10 ✅
+├─ TRA plan: 5/5 ✅
+└─ EUS tasks: 2/5 ⚠️ (2 unplanned tasks added)
+
+Implementation Compliance: 33/40
+├─ All files: 10/10 ✅
+├─ TDD: 8/10 ⚠️ (skipped RED phase once)
+├─ BAS gates: 10/10 ✅
+└─ Code quality: 5/10 ❌ (complexity exceeded)
+
+Testing Compliance: 25/30
+├─ Coverage: 13/15 ⚠️ (85% but uneven distribution)
+├─ Integration: 10/10 ✅
+└─ Edge cases: 2/5 ❌ (missing email validation edge cases)
+
+Total: 85/100 (Pass - ≥70% threshold)
+```
+
+**Example 3: Failing (65/100)**:
+```
+Planning Compliance: 20/30
+├─ MON requirements: 8/10 ⚠️ (1 requirement ignored)
+├─ ROR design: 5/10 ❌ (design not followed)
+├─ TRA plan: 5/5 ✅
+└─ EUS tasks: 2/5 ⚠️ (many unplanned tasks)
+
+Implementation Compliance: 30/40
+├─ All files: 8/10 ⚠️ (1 file missing)
+├─ TDD: 6/10 ❌ (REFACTOR phase skipped)
+├─ BAS gates: 10/10 ✅
+└─ Code quality: 6/10 ❌ (duplication issues)
+
+Testing Compliance: 15/30
+├─ Coverage: 10/15 ❌ (72% < 80%)
+├─ Integration: 5/10 ❌ (incomplete)
+└─ Edge cases: 0/5 ❌ (none)
+
+Total: 65/100 (FAIL - < 70% threshold)
+```
+
+### Thresholds
+
+- **90-100**: Excellent - Exemplary work
+- **80-89**: Good - Minor improvements needed
+- **70-79**: Acceptable - Some issues to address
+- **60-69**: Poor - Significant problems
+- **<60**: Unacceptable - Major rework required
+
+**Minimum Pass**: 70/100
+
+---

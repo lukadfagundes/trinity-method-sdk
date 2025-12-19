@@ -92,3 +92,57 @@ What functionality needs to be implemented?
 **For complete workflow planning:**
 
 Use `/trinity-orchestrate` to plan your implementation approach with MON as the first phase
+
+---
+
+## Requirements Extraction Template
+
+Use this template to extract requirements from user requests:
+
+### 1. Functional Requirements
+**What the system must do**:
+- [ ] Requirement 1: [Action] when [condition]
+- [ ] Requirement 2: [System] shall [capability]
+- [ ] Requirement 3: [Feature] must support [scenario]
+
+**Example**:
+- [ ] System shall validate JWT tokens on every authenticated request
+- [ ] Refresh endpoint must return new access token within 100ms
+- [ ] Invalid tokens must return 401 Unauthorized with error message
+
+### 2. Non-Functional Requirements
+**How the system must perform**:
+- **Performance**: Response time, throughput targets
+- **Security**: Authentication, authorization, data protection
+- **Scalability**: Concurrent users, data volume
+- **Reliability**: Uptime, error handling
+- **Maintainability**: Code quality, documentation
+
+**Example**:
+- Performance: Token refresh <100ms (p95)
+- Security: HttpOnly cookies, HTTPS only
+- Scalability: Support 10k concurrent sessions
+
+### 3. Constraints & Assumptions
+**Limitations and dependencies**:
+- Technology constraints (must use X, cannot use Y)
+- Timeline constraints
+- Resource constraints
+- Third-party dependencies
+- Assumptions about user behavior
+
+**Example**:
+- Must use existing PostgreSQL database
+- Cannot modify user table schema (constraint)
+- Assume users refresh tokens before expiration (assumption)
+
+### 4. Acceptance Criteria
+**How to verify requirements are met**:
+- Given [context], When [action], Then [expected outcome]
+
+**Example**:
+- Given valid refresh token, When POST /auth/refresh, Then return 200 with new tokens
+- Given expired token, When POST /auth/refresh, Then return 401 with error
+- Given invalid token, When POST /auth/refresh, Then return 401 and log attempt
+
+---

@@ -89,3 +89,113 @@ Use `/trinity-orchestrate` to plan your implementation approach with TRA as a ke
 - `/trinity-orchestrate` - Complete workflow planning guidance
 - `/trinity-design` - ROR technical design (input to TRA)
 - `/trinity-decompose` - EUS atomic task decomposition (follows TRA)
+
+---
+
+## Complexity Scoring Guide
+
+Rate each task on complexity (1-10 scale):
+
+### Scoring Criteria
+
+**1-3 (Low)**:
+- Simple CRUD operations
+- Configuration changes
+- Documentation updates
+- Straightforward refactoring
+
+**4-6 (Medium)**:
+- Business logic implementation
+- API integrations
+- Database migrations
+- Multi-step workflows
+
+**7-10 (High)**:
+- Complex algorithms
+- Security-critical features
+- Performance optimization
+- Large-scale refactoring
+
+### Complexity Factors
+
+Add +1-2 points for each:
+- External dependencies (APIs, services)
+- Security requirements (auth, payments, PII)
+- Performance requirements (<100ms, high throughput)
+- Complex state management
+- Cross-cutting concerns
+
+**Example**:
+- "Add user field" = 2 (Low)
+- "JWT refresh tokens" = 6 (Medium: auth + API + security)
+- "Real-time notification system" = 9 (High: WebSockets + state + performance)
+
+---
+
+## Task Parallelization
+
+### Identifying Parallel Tasks
+
+Tasks can run in parallel if:
+- ✅ No shared file modifications
+- ✅ No data dependencies
+- ✅ Independent test suites
+
+Tasks must be sequential if:
+- ❌ One modifies file that other reads
+- ❌ One creates interface that other implements
+- ❌ One's output is other's input
+
+### Parallelization Examples
+
+**Example 1: Authentication Module**
+
+Sequential (WRONG):
+```
+1. Create auth service → 2 hours
+2. Create auth middleware → 1 hour  
+3. Add types → 30 min
+4. Write tests → 2 hours
+Total: 5.5 hours
+```
+
+Parallel (CORRECT):
+```
+Phase 1 (Parallel):
+- Create auth service (2 hours)
+- Create auth middleware (1 hour)
+- Add types (30 min)
+Bottleneck: 2 hours
+
+Phase 2 (Parallel):
+- Test auth service (1 hour)
+- Test auth middleware (1 hour)
+Bottleneck: 1 hour
+
+Total: 3 hours (42% faster)
+```
+
+**Example 2: API Endpoints**
+
+```
+Parallel Tasks (no dependencies):
+├─ POST /users endpoint (1 hour)
+├─ GET /users/:id endpoint (45 min)
+├─ PUT /users/:id endpoint (1 hour)
+└─ DELETE /users/:id endpoint (45 min)
+
+Bottleneck: 1 hour (vs 3.5 hours sequential)
+Speedup: 71%
+```
+
+**Dependencies Require Sequencing**:
+```
+1. Create User model (must finish first)
+   ↓
+2. Parallel tasks can start:
+   ├─ UserService (uses model)
+   ├─ UserController (uses model)
+   └─ User validation (uses model)
+```
+
+---

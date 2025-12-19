@@ -113,3 +113,69 @@ What is the implementation plan? (Or provide TRA's output)
 **For complete workflow planning:**
 
 Use `/trinity-orchestrate` to plan your implementation with EUS decomposition as a key phase
+
+---
+
+## Conventional Commits Quick Reference
+
+Trinity uses Conventional Commits for atomic task commits (1 task = 1 commit).
+
+### Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+- **feat**: New feature
+- **fix**: Bug fix
+- **refactor**: Code change (no feature/fix)
+- **test**: Add/update tests
+- **docs**: Documentation only
+- **style**: Formatting (no code change)
+- **perf**: Performance improvement
+- **chore**: Build/tooling changes
+
+### Examples
+
+**Feature**:
+```
+feat(auth): add JWT refresh token endpoint
+
+Implement POST /auth/refresh endpoint with token rotation.
+Uses HttpOnly cookies for security.
+
+Closes #42
+```
+
+**Fix**:
+```
+fix(auth): validate token expiration correctly
+
+Token expiration was checked against wrong timestamp.
+Now uses UTC comparison.
+
+Fixes #128
+```
+
+**Refactor**:
+```
+refactor(validation): extract email validator to utility
+
+Reduces code duplication across 3 files.
+Maintains same validation logic.
+```
+
+### Trinity Best Practices
+
+1. **One Task = One Commit**: Each EUS task gets exactly one commit
+2. **Atomic**: Commit must be complete (tests pass, build succeeds)
+3. **Descriptive**: Subject line explains "what", body explains "why"
+4. **Reference Issues**: Link to work orders (e.g., "WO-042")
+
+---

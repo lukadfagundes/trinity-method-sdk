@@ -385,3 +385,75 @@ Always output structured JSON for TRA to consume:
 ---
 
 **Remember:** ROR's Design Doc is the contract between planning and implementation. DRA will validate that KIL's implementation matches this design with ≥70% compliance. Clear, detailed designs prevent rework and ensure quality.
+
+---
+
+## Scale Transition Examples
+
+Sometimes initial scale assessment changes during design phase.
+
+### Example 1: Small → Medium (Security Complexity)
+
+**Initial**: "Add password reset endpoint"
+- Looks like 2 files (controller + test)
+- Assessed as SMALL
+
+**During ROR Design**: Security analysis reveals:
+- Token generation and validation needed
+- Email service integration required
+- Rate limiting essential (prevent abuse)
+- Expiration logic with cleanup
+
+**Result**: Bumped to MEDIUM (4 files)
+- auth.controller.ts (reset endpoint)
+- token.service.ts (token generation/validation)
+- email.service.ts (send reset emails)
+- Tests for all three
+
+**Recommendation to ALY**: "Upgrade to Medium scale - security requirements add complexity"
+
+### Example 2: Medium → Large (Hidden Dependencies)
+
+**Initial**: "Add file upload feature"
+- Looks like 4 files (controller, service, storage, tests)
+- Assessed as MEDIUM
+
+**During ROR Design**: Discovered requirements:
+- Multiple file types (images, PDFs, videos)
+- Size validation and virus scanning
+- Thumbnail generation for images
+- Storage backend abstraction (S3 + local)
+- Upload progress tracking
+- Batch uploads
+- Cleanup of orphaned files
+
+**Result**: Bumped to LARGE (8 files)
+- upload.controller.ts
+- upload.service.ts
+- storage/ (3 providers: S3, local, mock)
+- validation.service.ts
+- thumbnail.service.ts
+- cleanup.worker.ts
+- Full test suite
+
+**Recommendation to ALY**: "Upgrade to Large scale - scope expanded significantly during design"
+
+### Example 3: Medium → Small (Simpler Than Expected)
+
+**Initial**: "Implement caching layer"
+- Sounds complex
+- Assessed as MEDIUM
+
+**During ROR Design**: Simple solution found:
+- Use existing Redis setup
+- Single cache.service.ts wrapper
+- Basic get/set/delete operations
+- No custom logic needed
+
+**Result**: Downgraded to SMALL (2 files)
+- cache.service.ts
+- cache.service.test.ts
+
+**Recommendation to ALY**: "Downgrade to Small scale - simpler than anticipated"
+
+---

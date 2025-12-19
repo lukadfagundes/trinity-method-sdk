@@ -79,3 +79,25 @@ Investigation deliverables:
 - Impact assessment
 
 **Implementation happens SEPARATELY** only after user explicitly requests it based on investigation findings.
+
+---
+
+## Investigation Naming Convention
+
+**Format**: `INV-XXX-{brief-description}.md`
+
+**Components**:
+- **INV**: Investigation prefix (always uppercase)
+- **XXX**: Three-digit sequential number (001, 002, 003...)
+- **brief-description**: Lowercase, hyphenated
+
+**Examples**:
+```
+INV-001-performance-bottleneck-analysis.md
+INV-012-authentication-flow-review.md
+INV-025-database-query-optimization.md
+```
+
+**Auto-Numbering**: System scans `trinity/investigations/` and assigns next number
+
+---
