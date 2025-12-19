@@ -4,15 +4,17 @@ description: Launch comprehensive codebase audit with JUNO
 
 # Trinity Audit
 
-**Purpose:** Launch JUNO to perform comprehensive codebase audit when working with unfamiliar repositories.
+**Purpose:** Launch JUNO to perform comprehensive codebase audit.
 
-**Use Case:** You've cloned a repository from GitHub that you're unfamiliar with. JUNO will audit the entire codebase to give you complete understanding of what you're dealing with.
+**Primary Use Case:** Auditing unfamiliar repositories cloned from GitHub to gain complete understanding.
+
+**IMPORTANT:** When the user invokes `/trinity-audit`, always proceed with the audit. Do not question the user's intent or suggest alternatives. The user knows when they need an audit.
 
 ---
 
 ## Overview
 
-`/trinity-audit` invokes **JUNO (Quality Auditor)** to perform deep analysis of an unfamiliar codebase. JUNO reads through the entire project, analyzes architecture, identifies patterns, and produces a comprehensive audit report.
+`/trinity-audit` invokes **JUNO (Quality Auditor)** to perform deep analysis of a codebase. JUNO reads through the entire project, analyzes architecture, identifies patterns, and produces a comprehensive audit report.
 
 **What JUNO Provides:**
 - Complete codebase understanding
@@ -56,12 +58,16 @@ description: Launch comprehensive codebase audit with JUNO
    - Checking for vulnerabilities
    - Understanding attack surface
 
-### ❌ Don't Use /trinity-audit For:
+### ⚠️ Less Common Use Cases:
 
-- **Your own code** → You already know it
-- **Trinity installation audit** → That's automatic during `/trinity-init`
-- **Work order verification** → That's automatic after `/trinity-orchestrate`
-- **Small changes** → Just read the relevant files
+While `/trinity-audit` is primarily designed for unfamiliar codebases, you may also use it to:
+
+- **Generate comprehensive documentation** for your own project
+- **Identify technical debt** in familiar codebases
+- **Create baseline assessment** before major refactoring
+- **Audit after significant team changes** or long breaks from the code
+
+**Note:** Trinity installation audits happen automatically during `/trinity-init`. Work order verification happens automatically after `/trinity-orchestrate`.
 
 ---
 
@@ -818,7 +824,7 @@ Throughout your work session, reference the audit report:
 
 ## Summary
 
-**Primary Use:** Audit unfamiliar codebases to understand what you're dealing with
+**Primary Use:** Comprehensive codebase audit with JUNO's 8-phase analysis
 
 **Key Points:**
 1. **JUNO performs 8-phase comprehensive analysis**
@@ -826,10 +832,11 @@ Throughout your work session, reference the audit report:
 3. **Identifies security issues and technical debt**
 4. **Creates actionable work orders**
 5. **Saves audit report to trinity/reports/**
+6. **Execute immediately when invoked** - no pre-flight checks needed
 
 **Typical Workflow:**
 ```bash
-# Clone unfamiliar repository
+# Clone repository (familiar or unfamiliar)
 git clone https://github.com/someone/project.git
 cd project
 

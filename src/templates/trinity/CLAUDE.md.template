@@ -1,0 +1,372 @@
+# CLAUDE.md - Trinity Method Enforcement
+## {{PROJECT_NAME}} - Trinity Protocols
+
+**Framework:** {{FRAMEWORK}}
+**Trinity Version:** {{TRINITY_VERSION}}
+**Source Directory:** {{SOURCE_DIR}}
+
+---
+
+## Trinity Method Core Principles
+
+### The Fundamental Law
+**"No updates without investigation. No changes without Trinity consensus. No shortcuts without consequences."**
+
+### Investigation-First Requirements
+- **Mandatory Investigation**: Every code change, feature addition, or bug fix must begin with thorough investigation
+- **Evidence-Based Decisions**: All implementation decisions backed by documented evidence
+- **Pattern Recognition**: Leverage existing patterns and solutions from knowledge base
+- **Quality Gates**: No code moves forward without passing all Trinity quality standards
+
+### ⚠️ CRITICAL: Investigation vs Implementation Protocol
+
+**INVESTIGATIONS ARE READ-ONLY:**
+- Investigations analyze, document, and report findings ONLY
+- **NO file modifications** during investigations
+- **NO code implementations** during investigations
+- **NO fixes applied** during investigations
+
+**IMPLEMENTATIONS ARE SEPARATE:**
+- Implementation happens ONLY after investigation is complete
+- Implementation requires explicit user approval
+- User must explicitly request implementation based on investigation findings
+- Never assume investigation = permission to implement
+
+---
+
+## Session Workflow Protocols
+
+### Session Initialization
+```markdown
+## Required Steps at Session Start:
+1. Load project context from ../CLAUDE.md
+2. Review outstanding tasks in knowledge-base/To-do.md
+3. Check system health and performance metrics
+4. Update dependencies if needed
+5. Verify integrity checks
+6. Initialize debugging frameworks
+7. Load Trinity knowledge base patterns
+```
+
+### Session Completion
+```markdown
+## Required Steps at Session End:
+1. Document all changes in knowledge-base/ARCHITECTURE.md
+2. Update knowledge-base/To-do.md with completed/new items
+3. Record new issues and patterns in knowledge-base/ISSUES.md
+4. Plan next session requirements
+5. Update performance metrics
+6. Archive session artifacts to sessions/
+7. Update Technical-Debt.md with any new debt identified
+```
+
+### Session Artifacts Management
+```yaml
+Session Artifacts:
+  Location: trinity/sessions/[YYYY-MM-DD]-[HHMMSS]/
+  Required Files:
+    - SESSION-SUMMARY.md         # Session overview and accomplishments
+    - investigation-summary.md   # What was investigated
+    - patterns-discovered.md     # New patterns found
+    - issues-resolved.md         # Problems solved
+    - performance-report.md      # Metrics and baselines
+    - next-session-plan.md       # Planning for continuation
+```
+
+---
+
+## Crisis Management Protocols
+
+### Console Error Crisis Protocol
+```markdown
+## Immediate Response for Console Errors:
+1. STOP all development activity
+2. Capture complete error stack trace
+3. Investigate root cause using Trinity Method
+4. Document error pattern in knowledge-base/ISSUES.md
+5. Implement comprehensive debugging
+6. Verify fix with extensive testing
+7. Update error prevention measures
+8. Resume development only after verification
+```
+
+### Performance Crisis Protocol
+```markdown
+## Response for Performance Degradation:
+1. Measure current performance metrics
+2. Compare against established baselines in ../CLAUDE.md
+3. Identify performance bottlenecks
+4. Investigate using Trinity methodology
+5. Implement targeted optimizations
+6. Validate improvements with metrics
+7. Update performance baselines
+8. Document optimization patterns
+```
+
+### Data Integrity Crisis Protocol
+```markdown
+## Response for Data Inconsistencies:
+1. Immediately assess data corruption scope
+2. Audit all data sources and relationships
+3. Identify inconsistencies
+4. Backup current state before changes
+5. Restore data integrity systematically
+6. Verify data accuracy across all systems
+7. Implement additional integrity checks
+8. Document data recovery procedures
+```
+
+### Framework-Specific Crisis Protocol
+```markdown
+## Response for Framework Failures:
+1. Check framework version compatibility
+2. Analyze API rate limits and quotas
+3. Review recent framework updates
+4. Investigate connection and authentication
+5. Verify external service dependencies
+6. Implement fallback mechanisms
+7. Test all functionality end-to-end
+8. Monitor for recurring issues
+```
+
+---
+
+## Quality Standards & Checklists
+
+### Pre-Commit Quality Checklist
+```markdown
+## Mandatory Checks Before Any Commit:
+- [ ] Trinity investigation completed and documented
+- [ ] All tests passing (unit, integration, end-to-end)
+- [ ] Debugging statements implemented and verified
+- [ ] Performance standards met or exceeded
+- [ ] Zero console errors in development/production
+- [ ] User experience audit passed (if applicable)
+- [ ] Data integrity verified
+- [ ] Framework-specific functionality tested
+- [ ] Security review completed
+- [ ] Documentation updated and synchronized
+```
+
+### Code Quality Requirements
+```javascript
+// Mandatory debugging format for all critical functions
+const debugLog = (functionName, context, data) => {
+    console.log(`[TRINITY] ${functionName}`, {
+        timestamp: Date.now(),
+        context: context,
+        data: data,
+        framework: '{{FRAMEWORK}}',
+        session: process.env.SESSION_ID || 'unknown'
+    });
+};
+
+// Example implementation
+function criticalOperation(params) {
+    debugLog('criticalOperation', 'ENTRY', {
+        params: params,
+        source: '{{SOURCE_DIR}}'
+    });
+
+    // Function implementation...
+
+    debugLog('criticalOperation', 'EXIT', {
+        result: 'success',
+        responseTime: Date.now() - startTime
+    });
+}
+```
+
+### Trinity Method Investigation Standards
+```markdown
+## Investigation Requirements:
+1. **Scope Definition**: Clearly define what needs investigation
+2. **Time Boxing**: Set maximum investigation time (default: 2 hours)
+3. **Evidence Collection**: Gather all relevant data and patterns
+4. **Pattern Analysis**: Check existing solutions in knowledge-base/
+5. **Root Cause Analysis**: Identify underlying causes, not symptoms
+6. **Solution Documentation**: Document all findings in investigations/
+7. **Implementation Planning**: Create detailed implementation plan
+8. **Risk Assessment**: Identify potential complications and mitigations
+```
+
+---
+
+## Success Metrics Tracking
+
+### Trinity Performance Indicators
+```javascript
+const trinityMetrics = {
+    // Investigation Metrics
+    investigationSuccessRate: 0,      // % of investigations leading to successful solutions
+    investigationTimeEfficiency: 0,   // Average investigation time vs planned time
+    investigationScopeControl: 0,     // % of investigations staying within scope
+
+    // Quality Metrics
+    issuesPreventedByPatterns: 0,     // Issues caught by existing patterns
+    knowledgeReuseRate: 0,            // % of solutions reused from knowledge base
+    qualityGatePassRate: 0,           // % of commits passing all quality gates
+
+    // Crisis Metrics
+    crisisProtocolActivations: 0,     // Number of crisis protocols triggered
+    crisisResolutionTime: 0,          // Average time to resolve crises
+    preventativeMeasuresEffective: 0, // % of issues prevented by measures
+
+    // Framework Specific
+    frameworkUptimePercentage: 0,     // Framework availability metrics
+    functionalitySuccessRate: 0,      // % of features working correctly
+    apiErrorRate: 0,                  // External API error frequency
+
+    // Development Efficiency
+    sessionProductivity: 0,           // Features/fixes per session
+    documentationSyncRate: 0,         // % of code changes with docs
+    crossSessionKnowledgeTransfer: 0  // Knowledge retention between sessions
+};
+```
+
+### Metric Collection Requirements
+- Metrics collected at start/end of each session
+- Weekly metric review and trend analysis
+- Automated alerts for metric degradation
+- Monthly metric reporting and process improvement
+
+---
+
+## Cross-Session Knowledge Structure
+
+### Knowledge Persistence Framework
+```yaml
+Knowledge Base Structure:
+  trinity/knowledge-base/
+    - ISSUES.md              # Common problems and solutions
+    - Trinity.md             # Trinity Method project guide
+    - ARCHITECTURE.md        # System architecture documentation
+    - Technical-Debt.md      # Technical debt tracking
+    - To-do.md               # Task tracking and planning
+
+  trinity/sessions/
+    - [YYYY-MM-DD]-[HHMMSS]/  # Session artifacts
+      - SESSION-SUMMARY.md
+      - investigation-summary.md
+      - patterns-discovered.md
+      - issues-resolved.md
+      - performance-report.md
+
+  trinity/investigations/
+    - [investigation-name]/    # Investigation work products
+
+  trinity/patterns/
+    - [pattern-name].md        # Reusable solution patterns
+
+  trinity/work-orders/
+    - WORKORDER-XXX.md         # Active work orders
+```
+
+### Knowledge Transfer Protocols
+- Session handoffs must include knowledge summary
+- All discoveries added to appropriate knowledge base files
+- Pattern extraction and generalization required
+- Cross-reference related knowledge base entries
+
+---
+
+## Trinity Method Commands
+
+### Investigation Commands
+```bash
+# Start Trinity Investigation
+Begin Trinity Method investigation for [feature/bug/task]
+
+# Complete Investigation
+Finalize investigation with implementation plan
+
+# Scope Control
+Set investigation time limit: [X hours]
+Check investigation scope boundaries
+```
+
+### Quality Enforcement Commands
+```bash
+# Quality Gates
+Execute pre-commit checklist
+Verify Trinity quality standards
+Run comprehensive test suite
+Validate performance baselines
+```
+
+### Crisis Management Commands
+```bash
+# Crisis Response
+Execute Console Error Crisis Protocol
+Execute Performance Crisis Protocol
+Execute Data Integrity Crisis Protocol
+Execute Framework Crisis Protocol
+```
+
+---
+
+## Technology-Specific Adaptations
+
+### {{FRAMEWORK}} Integration
+- Trinity Method protocols adapt to {{FRAMEWORK}} architecture
+- Framework-specific debugging and monitoring standards
+- Performance optimization for {{FRAMEWORK}} runtime
+- Security protocols for {{FRAMEWORK}} applications
+- Refer to {{SOURCE_DIR}}/CLAUDE.md for detailed framework guidance
+
+### Framework Compliance
+- All Trinity protocols adapt to project's tech stack
+- Data integrity crucial for application state management
+- Performance monitoring for framework-specific operations
+- Security protocols for framework-specific vulnerabilities
+
+---
+
+## Context Hierarchy
+
+### Hierarchical Context Loading
+```
+1. ../CLAUDE.md              → Global project context (load FIRST)
+2. trinity/CLAUDE.md (this file) → Trinity Method enforcement (load SECOND)
+3. ../{{SOURCE_DIR}}/CLAUDE.md   → Technology-specific rules (load THIRD)
+```
+
+### Context Priority Rules
+- **Global context** provides project overview, performance baselines, team standards
+- **Trinity context** enforces investigation workflow, quality gates, session protocols
+- **Source context** provides technology-specific debugging, patterns, and conventions
+- When conflicts arise, **Trinity context takes precedence** for workflow enforcement
+
+---
+
+## Reference to Parent Context
+
+This file extends and enforces the global requirements defined in `../CLAUDE.md`. All Trinity Method protocols must comply with:
+- Global performance baselines
+- Project-wide behavioral requirements
+- Technology stack specifications
+- Quality gate requirements
+
+For technology-specific implementation details, see: `../source/CLAUDE.md`
+
+---
+
+## Context Hierarchy
+
+This file enforces Trinity Method protocols for all development work.
+
+**Parent Context**: [../CLAUDE.md](../CLAUDE.md) - Project overview and global requirements
+**Child Context**: [../source/CLAUDE.md](../source/CLAUDE.md) - Framework-specific implementation rules
+**Related Resources**:
+- [Agent Directory](../claude/EMPLOYEE-DIRECTORY.md) - 19-agent Trinity team guide
+- [Architecture Documentation](knowledge-base/ARCHITECTURE.md) - System architecture and patterns
+- [Known Issues](knowledge-base/ISSUES.md) - Issue patterns and resolutions
+- [Technical Debt](knowledge-base/Technical-Debt.md) - Debt tracking and reduction plans
+
+---
+
+**Trinity Method Enforcement Active**
+**Project:** {{PROJECT_NAME}}
+**Framework:** {{FRAMEWORK}}
+**Trinity Version**: {{TRINITY_VERSION}}
+**Last Updated**: {{CURRENT_DATE}}

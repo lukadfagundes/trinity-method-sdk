@@ -47,3 +47,7 @@ Thumbs.db
 # Trinity Method - only ignore if SDK is deployed to itself for testing
 .claude/
 trinity/
+
+# Exception: Don't ignore template source files
+!src/templates/trinity/
+!src/templates/.claude/
