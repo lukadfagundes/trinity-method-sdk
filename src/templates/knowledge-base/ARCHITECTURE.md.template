@@ -314,5 +314,139 @@ graph LR
 
 ---
 
-*Architecture document maintained as part of Trinity Method implementation*
-*Updates required after significant architectural changes*
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This is a **living document** that should be updated throughout development to maintain accuracy.
+
+### Immediate Updates Required ⚠️
+
+Update **within the same session** when:
+
+- ✅ **New Components Added**: Add to Component Architecture table with dependencies and status
+- ✅ **Technology Stack Changes**: Update Technology Profile (framework version, new libraries, tools)
+- ✅ **API Changes**: Modify endpoint structure, add new APIs, change authentication method
+- ✅ **New Integrations**: Add external service integrations to Integration Points
+- ✅ **Architectural Refactoring**: Component reorganization, pattern changes, layer modifications
+- ✅ **Major Architectural Decisions**: Add to Technical Decisions Log with rationale
+- ✅ **Database Schema Changes**: Update Data Models, schema version, migration strategy
+- ✅ **Performance Baseline Changes**: Update after optimization or when targets change
+
+### Regular Updates (Weekly) ⏰
+
+Review and update during sprint planning or `/trinity-end`:
+
+- Component status changes (in development → testing → production)
+- Deployment environment updates
+- Monitoring and alerting configuration changes
+- Scaling strategy adjustments based on usage data
+- Security measures updates (new vulnerabilities addressed)
+
+### Quarterly Reviews 📅
+
+Deep architectural review and validation:
+
+- Architecture evolution planning (next quarter roadmap)
+- Technology constraint reassessment
+- Bottleneck analysis update
+- Migration path validation
+- Long-term improvement planning
+
+### Cross-Document Update Triggers 🔗
+
+**When updating ARCHITECTURE.md, also check:**
+
+- **[ISSUES.md](./ISSUES.md)**: Add known issues for new components, document architectural issues discovered
+- **[Technical-Debt.md](./Technical-Debt.md)**: Document architectural debt from shortcuts or legacy decisions
+- **[To-do.md](./To-do.md)**: Add tasks for incomplete architecture work (testing, documentation, monitoring)
+- **[CODING-PRINCIPLES.md](./CODING-PRINCIPLES.md)**: Update if component patterns establish new coding standards
+- **[TESTING-PRINCIPLES.md](./TESTING-PRINCIPLES.md)**: Update if new component types need new testing strategies
+
+### Update Scenarios - What to Change
+
+**Scenario: Added New Component**
+```yaml
+Updates_Required:
+  - Component_Architecture_Table: Add new row with component details
+  - Integration_Points: Add if component integrates with external services
+  - Data_Flow: Update if component processes data
+  - API_Architecture: Add if component exposes endpoints
+  - Testing_Architecture: Add component test strategy
+  - Cross_References:
+    - ISSUES.md: Document any known component issues
+    - To-do.md: Add component testing/documentation tasks
+```
+
+**Scenario: Framework/Technology Upgrade**
+```yaml
+Updates_Required:
+  - Technology_Profile: Update framework version and dependencies
+  - Framework_Specific_Architecture: Update patterns for new version
+  - Performance_Baselines: Re-benchmark with new framework
+  - Testing_Framework: Update test setup for new version
+  - Technical_Decisions_Log: Document upgrade rationale
+  - Migration_Path: Add upgrade steps for future reference
+  - Cross_References:
+    - Technical-Debt.md: Mark deprecated patterns as resolved
+    - CODING-PRINCIPLES.md: Update framework-specific examples
+```
+
+**Scenario: Performance Optimization**
+```yaml
+Updates_Required:
+  - Performance_Baselines: Update with new metrics
+  - Optimization_Strategies: Document what optimization was applied
+  - Monitoring_Points: Add new performance metrics if needed
+  - Bottleneck_Analysis: Update resolved bottlenecks
+  - Cross_References:
+    - Technical-Debt.md: Mark performance debt as resolved
+    - ISSUES.md: Close performance-related issues
+```
+
+**Scenario: New External Integration**
+```yaml
+Updates_Required:
+  - Integration_Points: Add external service details
+  - API_Architecture: Document integration API usage
+  - Security_Architecture: Add authentication/authorization for integration
+  - Deployment_Architecture: Add integration environment config
+  - Cross_References:
+    - To-do.md: Add integration testing tasks
+    - ISSUES.md: Document integration limitations/issues
+```
+
+### How to Update
+
+**Step-by-step process:**
+
+1. **Identify Section**: Find the relevant section based on what changed
+2. **Update Content**: Make specific changes (don't just update timestamp)
+3. **Verify Placeholders**: Ensure no `{{VARIABLE}}` syntax introduced
+4. **Check Cross-References**: Update related documents if needed
+5. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}` to actual date
+6. **Git Commit**: Commit with message like "docs: update ARCHITECTURE.md - added UserAuth component"
+
+**Quality Checklist:**
+- [ ] Changes are specific and meaningful (not generic)
+- [ ] All component names consistent across document
+- [ ] Cross-references to other files are valid
+- [ ] Metrics and values are from actual project (not examples)
+- [ ] Related documents updated (ISSUES, Technical-Debt, To-do)
+
+### When NOT to Update ❌
+
+**Don't update if:**
+- Only code comments changed (architecture unchanged)
+- Minor bug fixes that don't affect architecture
+- Code refactoring within existing components (no component changes)
+- Test additions that don't change test architecture
+- Documentation updates in code (no architectural documentation needed)
+
+**Stale timestamps are okay** if architecture genuinely hasn't changed. Don't update just to update.
+
+---
+
+**Document Status**: Living Documentation
+**Update Frequency**: As needed (session-based)
+**Maintained By**: Development team using Trinity Method
+**Referenced By**: `/trinity-end` command for session updates
+**Last Updated**: {{CURRENT_DATE}}

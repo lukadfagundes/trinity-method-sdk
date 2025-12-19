@@ -519,5 +519,19 @@ pre-commit install
 
 ---
 
+## Related Documentation
+
+**Trinity Method Context Files**:
+- [../CLAUDE.md](../CLAUDE.md) - Project overview and global requirements
+- [../trinity/CLAUDE.md](../trinity/CLAUDE.md) - Trinity Method enforcement and protocols
+- [../source/CLAUDE.md](../source/CLAUDE.md) - Framework-specific implementation rules
+
+**Knowledge Base**:
+- [Investigation Protocols](../trinity/CLAUDE.md#investigation-protocols) - Investigation-first methodology
+- [Quality Gates](../trinity/CLAUDE.md#quality-standards) - BAS 6-phase quality gates
+- [Crisis Management](../trinity/CLAUDE.md#crisis-management) - Emergency escalation protocols
+
+---
+
 **Trinity Method {{TRINITY_VERSION}}**
 **Deployed:** {{DEPLOYMENT_TIMESTAMP}}

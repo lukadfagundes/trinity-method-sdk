@@ -165,27 +165,180 @@ End current Trinity Method session and prepare for commit.
 
 ## Knowledge Base Update Checklist
 
-Before ending session, update:
+Before ending session, ALY updates living documentation based on session work:
 
-### Required Updates
+### Phase 1: Core Document Updates (Required)
 
-- [ ] **ARCHITECTURE.md** - New patterns, decisions, diagrams
-- [ ] **ISSUES.md** - Close resolved, add new issues found
-- [ ] **To-do.md** - Remove completed, add new tasks
-- [ ] **Technical-Debt.md** - Add new debt, remove paid down
+Update these documents based on what changed during the session:
 
-### Optional Updates (if changed)
+#### ARCHITECTURE.md
+- [ ] **New Components**: Add to Component Architecture table
+- [ ] **Technology Changes**: Update Technology Profile (framework versions, new tools)
+- [ ] **API Changes**: Update API endpoints or patterns
+- [ ] **Integration Changes**: Add/update External Integrations
+- [ ] **Performance Changes**: Update baselines if optimization occurred
+- [ ] **Architectural Decisions**: Add to Technical Decisions Log
+- [ ] **Cross-References**: Verify links to ISSUES.md, Technical-Debt.md still valid
+- [ ] **Last Updated**: Set to current date
 
-- [ ] **CODING-PRINCIPLES.md** - New code standards discovered
-- [ ] **TESTING-PRINCIPLES.md** - New testing patterns
-- [ ] **AI-DEVELOPMENT-GUIDE.md** - Workflow improvements
-- [ ] **DOCUMENTATION-CRITERIA.md** - Doc standards refined
+#### ISSUES.md
+- [ ] **Close Resolved Issues**: Mark issues fixed during session as resolved
+- [ ] **Add New Issues**: Document new bugs/patterns discovered
+- [ ] **Update Patterns**: Add new recurring patterns discovered
+- [ ] **Update Metrics**: Refresh Issue Resolution Metrics
+- [ ] **Investigation Links**: Link to investigations completed this session
+- [ ] **Cross-References**: Ensure links to Technical-Debt.md, ARCHITECTURE.md accurate
+- [ ] **Last Updated**: Set to current date
 
-### Quality Check
+#### To-do.md
+- [ ] **Remove Completed**: Delete or mark complete tasks finished during session
+- [ ] **Add New Tasks**: Add tasks identified during development
+- [ ] **Update Priorities**: Re-prioritize based on new information
+- [ ] **Update Sprint Planning**: Refresh current sprint status
+- [ ] **Update Backlog**: Add items discovered during session
+- [ ] **Velocity Metrics**: Calculate session velocity
+- [ ] **Last Updated**: Set to current date
 
-- [ ] All files have meaningful content (not empty)
-- [ ] Timestamps updated
-- [ ] References between files are valid
-- [ ] No TODO placeholders left
+#### Technical-Debt.md
+- [ ] **Add New Debt**: Document TODOs/FIXMEs/HACKs added during session
+- [ ] **Resolve Debt**: Remove items paid down during session
+- [ ] **Update Metrics**: Recalculate debt metrics (TODO count, file complexity, coverage)
+- [ ] **Add Patterns**: Document new debt patterns discovered
+- [ ] **Update Trends**: Refresh Session Comparison metrics
+- [ ] **ROI Analysis**: Update debt reduction plan based on session learnings
+- [ ] **Cross-References**: Ensure links to ISSUES.md patterns are current
+- [ ] **Last Updated**: Set to current date
+
+### Phase 2: Standards Updates (If Changed)
+
+Only update these if the session introduced new patterns or standards:
+
+#### CODING-PRINCIPLES.md
+- [ ] **New Patterns**: Add new good/bad examples discovered
+- [ ] **Refactoring Strategies**: Document new refactoring patterns used
+- [ ] **Framework Changes**: Update if framework version changed standards
+- [ ] **Last Updated**: Set to current date (only if modified)
+
+#### TESTING-PRINCIPLES.md
+- [ ] **New Test Patterns**: Add testing patterns discovered
+- [ ] **Coverage Updates**: Update coverage targets if changed
+- [ ] **Testing Strategies**: Document new mocking/stubbing patterns
+- [ ] **Last Updated**: Set to current date (only if modified)
+
+#### AI-DEVELOPMENT-GUIDE.md
+- [ ] **Workflow Improvements**: Update if Trinity workflows changed
+- [ ] **Scale Examples**: Add new scale examples if discovered
+- [ ] **Agent Protocols**: Update if agent communication patterns changed
+- [ ] **Last Updated**: Set to current date (only if modified)
+
+#### Trinity.md
+- [ ] **Protocol Updates**: Document protocol changes or improvements
+- [ ] **Performance Baselines**: Update if project baselines changed
+- [ ] **Session Workflow**: Update if workflow process improved
+- [ ] **Success Metrics**: Add metrics from completed session
+- [ ] **Last Updated**: Set to current date (only if modified)
+
+#### DOCUMENTATION-CRITERIA.md
+- [ ] **Criteria Changes**: Update if documentation standards evolved
+- [ ] **Last Updated**: Set to current date (only if modified)
+
+### Phase 3: Quality Verification
+
+After all updates, verify documentation integrity:
+
+#### Content Quality
+- [ ] All updated files have meaningful changes (not just timestamp)
+- [ ] No placeholder syntax `{{VARIABLE}}` introduced during updates
+- [ ] Metrics use real project values (not example numbers)
+- [ ] Code examples match project's actual framework/language
+
+#### Cross-Reference Integrity
+- [ ] Links between documents still work (no broken references)
+- [ ] When updating ARCHITECTURE → checked if ISSUES/Technical-Debt need updates
+- [ ] When adding ISSUES → added related Technical-Debt items if applicable
+- [ ] When closing To-do tasks → verified linked ISSUES closed
+
+#### Consistency Checks
+- [ ] Timestamps updated ({{CURRENT_DATE}} replaced with actual date)
+- [ ] Project name consistent across all files
+- [ ] Framework/technology names consistent
+- [ ] Component names match across ARCHITECTURE/ISSUES/Technical-Debt
+
+#### Completeness Validation
+- [ ] New components documented in ARCHITECTURE
+- [ ] New issues documented in ISSUES.md
+- [ ] New technical debt tracked in Technical-Debt.md
+- [ ] Completed work removed from To-do.md
+- [ ] Session learnings captured somewhere (not lost)
+
+### Update Guidelines
+
+**For each document updated**:
+1. Open the file
+2. Use the document's "When to Update" section as guide (see knowledge-base templates)
+3. Make specific, meaningful changes (don't just change timestamps)
+4. Verify cross-references to other documents
+5. Keep placeholders for future sessions (don't replace with generic examples)
+
+**When in doubt**:
+- If something changed → document it
+- If nothing changed → don't update (stale timestamp is okay)
+- If unsure → reference the document's "When to Update This Document" section
+
+**Cross-Document Update Scenarios**:
+
+**Scenario: Added New Component**
+→ Update ARCHITECTURE.md (component table)
+→ Update To-do.md (add testing/documentation tasks)
+→ Check ISSUES.md (any known issues with this type of component?)
+
+**Scenario: Fixed Bug**
+→ Update ISSUES.md (close issue)
+→ Update Technical-Debt.md (if fix paid down debt)
+→ Update To-do.md (mark task complete)
+
+**Scenario: Added TODO/FIXME**
+→ Update Technical-Debt.md (increment TODO count)
+→ Update To-do.md (add task to address it)
+
+**Scenario: Refactored Large File**
+→ Update Technical-Debt.md (reduce file complexity metrics)
+→ Update ARCHITECTURE.md (if component structure changed)
+→ Update ISSUES.md (close related refactoring issues)
+
+### Session Summary Integration
+
+After knowledge base updates, ALY creates session summary including:
+- **Documents Updated**: List which knowledge-base files changed
+- **Key Changes**: Summarize what was added/removed/modified
+- **Cross-References**: Note which documents reference each other
+- **Metrics Delta**: Before/after metrics for Technical-Debt.md
+
+Example:
+```markdown
+## Knowledge Base Updates
+
+**ARCHITECTURE.md**:
+- Added: OAuth2 refresh token flow to API Architecture
+- Updated: Authentication section with refresh token rotation
+
+**ISSUES.md**:
+- Closed: ISS-042 (JWT refresh implementation)
+- Added: ISS-048 (Rate limiting pattern for auth endpoints)
+
+**Technical-Debt.md**:
+- Resolved: Email validation duplication (was in 3 files)
+- Added: Auth service refactoring (split into 2 files)
+- Metrics: TODO count decreased 5 → 3, File complexity improved
+
+**To-do.md**:
+- Completed: T-042 (Implement JWT refresh)
+- Added: T-048 (Rate limiting), T-049 (Auth refactoring)
+
+**Cross-References Updated**:
+- ARCHITECTURE.md ↔ ISSUES.md (linked refresh token pattern)
+- ISSUES.md ↔ Technical-Debt.md (linked auth refactoring debt)
+- To-do.md ↔ ISSUES.md (linked rate limiting task to issue)
+```
 
 ---

@@ -671,12 +671,12 @@ export async function deploy(options: DeployOptions): Promise<void> {
     spinner = ora('Deploying work order templates...').start();
 
     const woTemplates = [
-      'INVESTIGATION-TEMPLATE.md',
-      'IMPLEMENTATION-TEMPLATE.md',
-      'ANALYSIS-TEMPLATE.md',
-      'AUDIT-TEMPLATE.md',
-      'PATTERN-TEMPLATE.md',
-      'VERIFICATION-TEMPLATE.md'
+      'INVESTIGATION-TEMPLATE.md.template',
+      'IMPLEMENTATION-TEMPLATE.md.template',
+      'ANALYSIS-TEMPLATE.md.template',
+      'AUDIT-TEMPLATE.md.template',
+      'PATTERN-TEMPLATE.md.template',
+      'VERIFICATION-TEMPLATE.md.template'
     ];
 
     for (const template of woTemplates) {
@@ -685,7 +685,9 @@ export async function deploy(options: DeployOptions): Promise<void> {
       if (await fs.pathExists(templatePath)) {
         const content = await fs.readFile(templatePath, 'utf8');
         const processed = processTemplate(content, variables);
-        await fs.writeFile(`trinity/templates/${template}`, processed);
+        // Remove .template extension for deployed files
+        const deployedName = template.replace('.template', '');
+        await fs.writeFile(`trinity/templates/${deployedName}`, processed);
         deploymentStats.templates++;
       }
     }

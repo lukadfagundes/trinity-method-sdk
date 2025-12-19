@@ -355,5 +355,110 @@ const trinityMetrics = {
 
 ---
 
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This is a **living methodology document** that evolves as the team learns better development practices.
+
+### Immediate Updates Required ⚠️
+
+Update **when protocols change** (rare):
+
+- ✅ **Investigation Protocol Changed**: Update investigation procedures if team finds better approach
+- ✅ **Debugging Standard Modified**: Update debug patterns if framework/tools change
+- ✅ **Performance Baseline Changed**: Update targets after major optimization or framework upgrade
+- ✅ **Quality Gate Modified**: Update BAS phases if team adjusts quality criteria
+- ✅ **Crisis Protocol Triggered**: Document new crisis management procedures after incident
+
+### Session Updates (Via `/trinity-end`) 🔄
+
+Update at end of sessions **only if** methodology improved:
+
+- Success metrics (add session statistics)
+- Pattern library updates (new patterns discovered)
+- Session workflow improvements (better process found)
+- Investigation time adjustments (if team getting faster/slower)
+
+### Monthly Reviews 📅
+
+Trinity Method effectiveness assessment:
+
+- Review success metrics trends
+- Evaluate investigation-first effectiveness
+- Assess pattern library growth
+- Analyze crisis prevention success rate
+- Update methodology based on learnings
+
+### Cross-Document Update Triggers 🔗
+
+**When updating Trinity.md, also check:**
+
+- **[AI-DEVELOPMENT-GUIDE.md](./AI-DEVELOPMENT-GUIDE.md)**: Update workflows if Trinity protocols change
+- **[ISSUES.md](./ISSUES.md)**: Add Trinity Method pattern if process issue discovered
+
+### Update Scenarios - What to Change
+
+**Scenario: Investigation Time Box Changed**
+```yaml
+Updates_Required:
+  - Investigation_Procedures: Update time box (e.g., 30min → 45min)
+  - Rationale: Document why change made
+  - Success_Metrics: Track if change improves outcomes
+```
+
+**Scenario: New Debug Pattern Discovered**
+```yaml
+Updates_Required:
+  - Debugging_Standards: Add new pattern to framework-specific section
+  - Debug_Example: Provide code example
+  - Cross_References:
+    - CODING-PRINCIPLES.md: Add if pattern reveals coding standard
+```
+
+**Scenario: Performance Baseline Adjusted**
+```yaml
+Updates_Required:
+  - Performance_Standards: Update baseline metrics
+  - Baseline_Rationale: Document why targets changed
+  - Cross_References:
+    - ARCHITECTURE.md: Update Performance Architecture section
+```
+
+### How to Update
+
+**Step-by-step process:**
+
+1. **Validate Change**: Is this improving methodology or just project-specific?
+2. **Update Section**: Modify protocols, baselines, or workflows
+3. **Document Rationale**: Why was this change made?
+4. **Update Metrics**: Adjust success criteria if needed
+5. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}`
+
+**Quality Checklist:**
+- [ ] Change improves methodology (not just one-off adjustment)
+- [ ] Rationale documented (why change made)
+- [ ] Examples match project's framework/language
+- [ ] Success metrics updated to measure improvement
+- [ ] Related documents updated (AI-DEV-GUIDE, ISSUES)
+
+### When NOT to Update ❌
+
+**Don't update if:**
+- Project-specific change (belongs in ARCHITECTURE or ISSUES)
+- One-time exception (not a protocol change)
+- Framework-specific issue (document in ISSUES.md instead)
+- Only updating placeholders with project values (done during /trinity-init)
+
+**This document changes infrequently** - only update when methodology itself improves.
+
+---
+
+**Document Status**: Living Methodology Document
+**Update Frequency**: Rare (only when methodology improves)
+**Maintained By**: Development team using Trinity Method
+**Referenced By**: `/trinity-end` for success metrics only
+**Last Updated**: {{CURRENT_DATE}}
+
+---
+
 *Trinity Method implementation specific to {{PROJECT_NAME}}*
 *Continuously evolved based on project learnings*

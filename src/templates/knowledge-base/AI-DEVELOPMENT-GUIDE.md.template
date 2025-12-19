@@ -925,6 +925,33 @@ Quality Gate:
 
 ---
 
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This **workflow guide** updates when Trinity Method workflows improve.
+
+### When to Update ⚠️
+
+Update **only when workflows change**:
+
+- ✅ **Workflow Improved**: Team discovers better way to execute Trinity workflows
+- ✅ **Scale Criteria Changed**: Team adjusts Small/Medium/Large definitions based on experience
+- ✅ **Agent Protocol Updated**: Agent communication patterns improve
+- ✅ **BAS Phase Modified**: Quality gate phases adjusted based on project needs
+
+### How to Update
+
+1. Update workflow description with improved process
+2. Add new scale example if team discovered edge case
+3. Update agent communication pattern if protocol improved
+4. Cross-reference to Trinity.md if core methodology changed
+5. Update timestamp: `Last reviewed: {{date}}`
+
+**Cross-References**: When updating, also update [Trinity.md](./Trinity.md) if methodology itself changed.
+
+**Update Frequency**: Occasional (monthly) - workflows improve with team experience
+
+---
+
 **Document maintained by**: ZEN (Documentation Specialist)
 **Used by**: All 19 agents, AJ MAESTRO orchestration
 **Last reviewed**: {{date}}

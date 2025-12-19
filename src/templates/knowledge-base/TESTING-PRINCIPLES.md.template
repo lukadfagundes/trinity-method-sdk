@@ -862,6 +862,33 @@ npm test || exit 1
 
 ---
 
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This **standards document** updates infrequently - only when testing standards evolve.
+
+### When to Update ⚠️
+
+Update **only when standards change**:
+
+- ✅ **New Test Pattern**: Team discovers better testing approach (mocking, stubbing, etc.)
+- ✅ **Coverage Target Changed**: Team adjusts coverage thresholds based on project needs
+- ✅ **Framework Upgrade**: Test framework version changes testing best practices
+- ✅ **Test Strategy Gap**: Issue missed by tests reveals gap in testing principles
+
+### How to Update
+
+1. Add new test pattern example to relevant section
+2. Update coverage targets if team consensus changed
+3. Add testing strategy for new component types
+4. Cross-reference to ISSUES.md if pattern prevents test gaps
+5. Update timestamp: `Last reviewed: {{date}}`
+
+**Cross-References**: When updating, check [ISSUES.md](./ISSUES.md) - does new standard prevent bugs that tests missed?
+
+**Update Frequency**: Rare (quarterly or less) - testing standards are stable
+
+---
+
 **Document maintained by**: ZEN (Documentation Specialist)
 **Enforced by**: KIL (Task Executor - TDD), BAS (Quality Fixer - Coverage), APO (Acceptance Test Generator)
 **Last reviewed**: {{date}}

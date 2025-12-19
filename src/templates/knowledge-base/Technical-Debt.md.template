@@ -406,5 +406,235 @@ const calculateDebtScore = () => {
 
 ---
 
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This is a **living debt tracking system** that should be updated continuously to monitor and reduce technical debt.
+
+### Immediate Updates Required ⚠️
+
+Update **during development** (real-time):
+
+- ✅ **TODO/FIXME/HACK Added**: Increment debt counts immediately when adding code markers
+- ✅ **TODO/FIXME Resolved**: Decrement counts when removing debt markers
+- ✅ **Large File Created**: Update file complexity metrics when file >500 lines
+- ✅ **File Refactored**: Update complexity metrics when splitting/refactoring files
+- ✅ **Coverage Changes**: Update test coverage metrics after test additions/removals
+- ✅ **Security Issue Found**: Add to Security Debt section immediately
+- ✅ **Performance Bottleneck Identified**: Add to Performance Debt section
+- ✅ **Pattern Discovered**: Add to Pattern Library when recurring debt pattern found
+
+### Session Updates (Via `/trinity-end`) 🔄
+
+Update at end of each development session:
+
+- Recalculate all metrics (TODO count, file complexity, coverage)
+- Update Session Comparison (previous vs current metrics)
+- Add new debt from session work
+- Mark resolved debt from session work
+- Update trend analysis (improving/degrading/stable)
+- Calculate debt reduction velocity
+- Update ROI analysis for debt items
+
+### Weekly Reviews ⏰
+
+Track debt trends and prioritization:
+
+- Review debt metrics trend (week-over-week)
+- Identify highest-impact debt items (ROI analysis)
+- Update debt reduction plan priorities
+- Calculate velocity (debt items resolved per week)
+- Update Quick Wins section (easy, high-value items)
+
+### Monthly Audits 📅
+
+Deep debt analysis and strategic planning:
+
+- Full debt score recalculation
+- Pattern consolidation (merge similar debt patterns)
+- Quarterly goals assessment
+- Debt reduction strategy refinement
+- Automation opportunity identification
+
+### Cross-Document Update Triggers 🔗
+
+**When updating Technical-Debt.md, also check:**
+
+- **[ISSUES.md](./ISSUES.md)**: Link debt items to issues if debt causes recurring problems
+- **[To-do.md](./To-do.md)**: Create tasks to pay down critical/high-priority debt
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)**: Update if architectural debt revealed design problems
+- **[CODING-PRINCIPLES.md](./CODING-PRINCIPLES.md)**: Add principle if debt pattern reveals standard violation
+- **[TESTING-PRINCIPLES.md](./TESTING-PRINCIPLES.md)**: Update coverage targets if coverage debt significant
+
+### Update Scenarios - What to Change
+
+**Scenario: Added TODO/FIXME Comment**
+```yaml
+Updates_Required:
+  - TODO_FIXME_HACK_Inventory: Add new entry with file, line, description
+  - Debt_Metrics_Dashboard: Increment TODO_Comments count
+  - Priority_Assignment: Assign P0/P1/P2/P3 based on impact
+  - Session_Debt_Tracking: Add to "Added This Session" section
+  - Cross_References:
+    - To-do.md: Add task to resolve the TODO/FIXME
+```
+
+**Scenario: Refactored Large File (>500 lines → <300 lines)**
+```yaml
+Updates_Required:
+  - File_Complexity: Update file count metrics (Files_Over_500_Lines decrement)
+  - Complexity_Analysis: Update Average_File_Length
+  - Session_Debt_Tracking: Add to "Debt Resolved" section
+  - Trend_Analysis: Mark as IMPROVING
+  - Cross_References:
+    - ISSUES.md: Close related file complexity issues
+    - ARCHITECTURE.md: Update if component structure changed
+```
+
+**Scenario: Test Coverage Improved (75% → 85%)**
+```yaml
+Updates_Required:
+  - Test_Coverage: Update Overall_Coverage percentage
+  - Test_Coverage_Gaps: Remove components now covered
+  - Debt_Metrics_Dashboard: Update coverage metrics
+  - Session_Debt_Tracking: Document coverage increase
+  - Trend_Analysis: Mark Test_Coverage as IMPROVING
+  - Cross_References:
+    - TESTING-PRINCIPLES.md: Verify new coverage meets standards
+```
+
+**Scenario: Pattern Discovered (Code Duplication in 5 files)**
+```yaml
+Updates_Required:
+  - Pattern_Library: Create new pattern entry
+  - Root_Cause_Analysis: Document why duplication occurred
+  - Refactoring_Template: Provide solution for similar cases
+  - Impact_Analysis: Calculate ROI of fixing pattern
+  - Debt_Reduction_Plan: Add to Quick Wins or Strategic Improvements
+  - Cross_References:
+    - ISSUES.md: Link to duplication pattern if causes issues
+    - trinity/patterns/: Create pattern file
+```
+
+**Scenario: Security Vulnerability Fixed**
+```yaml
+Updates_Required:
+  - Security_Debt: Remove resolved vulnerability
+  - Debt_Metrics_Dashboard: Decrement Security_Warnings count
+  - Session_Debt_Tracking: Add to "Debt Resolved" section
+  - Prevention_Automation: Document how to prevent in future
+  - Cross_References:
+    - ISSUES.md: Close security issue
+    - CODING-PRINCIPLES.md: Add security principle if gap revealed
+```
+
+**Scenario: Performance Bottleneck Resolved**
+```yaml
+Updates_Required:
+  - Performance_Debt: Remove resolved bottleneck
+  - Optimization_Opportunities: Mark as completed
+  - Debt_Metrics_Dashboard: Update Performance_Issues count
+  - Impact_Analysis: Document performance improvement (ms saved)
+  - Cross_References:
+    - ARCHITECTURE.md: Update Performance Baselines
+    - ISSUES.md: Close performance issues
+```
+
+### How to Update
+
+**Step-by-step process:**
+
+1. **Run Metrics**: Execute debt metric calculations (grep TODO, count files, run coverage)
+2. **Compare Baseline**: Compare new metrics to previous session metrics
+3. **Update Sections**: Update relevant sections (metrics, patterns, priorities)
+4. **Calculate Trends**: Determine if debt is improving/degrading/stable
+5. **Update Cross-Refs**: Link related debt items to issues/todos
+6. **Prioritize**: Update debt reduction plan based on new ROI analysis
+7. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}` to actual date
+
+**Metric Calculation Commands** (for reference):
+```bash
+# Count TODO comments
+grep -r "TODO" src/ | wc -l
+
+# Count FIXME comments
+grep -r "FIXME" src/ | wc -l
+
+# Files over 500 lines
+find src/ -name "*.js" -exec wc -l {} \; | awk '$1 > 500' | wc -l
+
+# Test coverage
+npm run test:coverage -- --json | jq '.total.lines.pct'
+```
+
+**Quality Checklist:**
+- [ ] All metrics calculated with actual commands (not guessed)
+- [ ] Trend direction accurate (improving/degrading/stable)
+- [ ] ROI calculations realistic (effort vs impact)
+- [ ] Patterns have refactoring templates (actionable)
+- [ ] Cross-references to ISSUES/To-do updated
+- [ ] Debt reduction plan prioritized by ROI
+
+### When NOT to Update ❌
+
+**Don't update if:**
+- Metrics haven't changed (no new TODOs, files, coverage changes)
+- Only documentation updated (no code debt)
+- Third-party library issues (not project debt)
+- Debt is external dependency problem (out of team control)
+
+**Stale metrics are okay** if debt genuinely hasn't changed. Don't recalculate just to update timestamp.
+
+### Debt vs. Issue vs. Todo 🤔
+
+**Add to Technical-Debt.md when:**
+- Code quality problem (TODOs, complexity, coverage)
+- Known shortcut needing refactoring
+- Accumulating burden (technical interest)
+- Measurable metric (can track numerically)
+
+**Add to ISSUES.md when:**
+- Debt causes bugs or issues
+- Debt pattern causes recurring problems
+- Framework-specific debt pattern
+
+**Add to To-do.md when:**
+- Task to pay down specific debt item
+- Refactoring work planned
+- Debt resolution action item
+
+**Debt often triggers todos** (debt identified → todo created to fix it).
+
+### Metrics Update Frequency 📊
+
+**Real-time** (as code changes):
+- TODO/FIXME/HACK counts
+- File line counts
+
+**Per Session** (via `/trinity-end`):
+- Test coverage percentages
+- Debt score calculations
+- Trend analysis
+
+**Weekly**:
+- Velocity calculations
+- ROI analysis
+- Priority reassessment
+
+**Monthly**:
+- Full debt audit
+- Pattern consolidation
+- Strategic planning
+
+---
+
+**Document Status**: Living Debt Tracking System
+**Update Frequency**: Real-time (code changes) + session-based
+**Maintained By**: Development team using Trinity Method
+**Referenced By**: `/trinity-end` command for session updates
+**Metrics**: Automated via grep/find/coverage commands
+**Last Updated**: {{CURRENT_DATE}}
+
+---
+
 *Technical Debt tracking powered by Trinity Method v2.0*
 *Continuous monitoring and reduction system*

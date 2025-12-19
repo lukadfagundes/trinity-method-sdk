@@ -719,6 +719,32 @@ ZEN analyzes code against these principles and calculates compliance score:
 
 ---
 
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This **standards document** updates infrequently - only when coding standards evolve.
+
+### When to Update ⚠️
+
+Update **only when standards change**:
+
+- ✅ **New Pattern Discovered**: Team discovers recurring good/bad pattern worth documenting
+- ✅ **Framework Upgrade**: New framework version introduces new best practices
+- ✅ **Standard Violation**: Issue reveals gap in current standards (add principle to prevent)
+- ✅ **Refactoring Pattern**: Team discovers better refactoring strategy worth sharing
+
+### How to Update
+
+1. Add new good/bad example pair to relevant section
+2. Update framework-specific patterns if framework changed
+3. Cross-reference to ISSUES.md if pattern prevents known issue
+4. Update timestamp: `Last reviewed: {{date}}`
+
+**Cross-References**: When updating, check [ISSUES.md](./ISSUES.md) - does new standard prevent known issues?
+
+**Update Frequency**: Rare (quarterly or less) - standards are stable
+
+---
+
 **Document maintained by**: ZEN (Documentation Specialist)
 **Enforced by**: BAS (Quality Fixer), DRA (Code Reviewer)
 **Last reviewed**: {{date}}

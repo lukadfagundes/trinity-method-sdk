@@ -513,10 +513,10 @@ module.exports = config[process.env.NODE_ENV || 'development'];
 
 This file extends the Trinity Method protocols defined in `../trinity/CLAUDE.md` and global requirements from `../CLAUDE.md`. Node.js implementations must comply with:
 
-- Trinity Method investigation requirements
-- Global performance baselines
-- Quality gate standards
-- Crisis management protocols
+- Trinity Method investigation requirements ([../trinity/CLAUDE.md](../trinity/CLAUDE.md))
+- Global performance baselines ([../trinity/knowledge-base/ARCHITECTURE.md](../trinity/knowledge-base/ARCHITECTURE.md#performance-baseline))
+- Quality gate standards (BAS 6-phase) ([../trinity/CLAUDE.md](../trinity/CLAUDE.md#quality-standards))
+- Crisis management protocols ([../trinity/CLAUDE.md](../trinity/CLAUDE.md#crisis-management))
 
 All Node.js code must implement the debugging frameworks, error handling patterns, and performance monitoring specified in this document.
 

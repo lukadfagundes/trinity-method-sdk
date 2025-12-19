@@ -1086,6 +1086,33 @@ Investigation → CAP (create PRD)
 
 ---
 
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This **standards document** updates rarely - only when documentation standards evolve.
+
+### When to Update ⚠️
+
+Update **only when documentation requirements change**:
+
+- ✅ **New Template Added**: Team adds new documentation type (e.g., API spec template)
+- ✅ **Scale Criteria Adjusted**: Team changes file count thresholds for Small/Medium/Large
+- ✅ **Documentation Quality Standard Changed**: Team adjusts completeness/clarity/accuracy requirements
+- ✅ **Workflow Improved**: Team discovers better documentation workflow
+
+### How to Update
+
+1. Add new template to Templates section (if new doc type)
+2. Update scale-based requirements matrix if thresholds change
+3. Update quality standards if team consensus changes
+4. Update workflow diagrams if process improves
+5. Update timestamp: `Last reviewed: {{date}}`
+
+**Cross-References**: When updating, also update [AI-DEVELOPMENT-GUIDE.md](./AI-DEVELOPMENT-GUIDE.md) if workflows changed.
+
+**Update Frequency**: Very rare (annually or less) - documentation standards are very stable
+
+---
+
 **Document maintained by**: ZEN (Documentation Specialist)
 **Enforced by**: BON (Document Reviewer), ROR (Design Creator), CAP (PRD Creator)
 **Last reviewed**: {{date}}

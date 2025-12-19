@@ -350,5 +350,190 @@ Metrics:
 
 ---
 
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This is a **living issue intelligence system** that should be updated continuously to capture patterns and prevent recurring issues.
+
+### Immediate Updates Required ⚠️
+
+Update **as soon as discovered** (real-time):
+
+- ✅ **New Issue Discovered**: Add to Active Issues with full details (symptoms, root cause, solution)
+- ✅ **Issue Resolved**: Move from Active to documented pattern, mark resolution date
+- ✅ **Pattern Recognized**: When same issue appears 2+ times, create pattern entry
+- ✅ **Investigation Complete**: Link investigation file, add root cause analysis
+- ✅ **New Framework Issue**: Add to {{FRAMEWORK}}-Specific Patterns section
+- ✅ **Universal Pattern Found**: Add to Universal Development Patterns (applies to all frameworks)
+- ✅ **Trinity Method Issue**: Document methodology issues in Trinity Method Patterns
+
+### Session Updates (Via `/trinity-end`) 🔄
+
+Update at end of each development session:
+
+- Close resolved issues from current session
+- Add new issues encountered during session
+- Update issue metrics (resolution time, recurrence rate)
+- Update pattern frequency counts
+- Link to completed investigations
+- Update weekly issue review section
+- Refresh trending patterns analysis
+
+### Weekly Reviews ⏰
+
+Track issue trends and prevention effectiveness:
+
+- Review issues added this week
+- Calculate pattern prevention success rate
+- Identify trending patterns (increasing occurrences)
+- Update action items for high-priority patterns
+- Assess investigation queue priorities
+
+### Monthly Audits 📅
+
+Deep pattern analysis and prevention strategy:
+
+- Pattern effectiveness review (which patterns prevent most issues)
+- Update prevention strategies based on learnings
+- Consolidate similar patterns
+- Archive resolved patterns that haven't recurred
+- Measure issue recurrence rate
+
+### Cross-Document Update Triggers 🔗
+
+**When updating ISSUES.md, also check:**
+
+- **[Technical-Debt.md](./Technical-Debt.md)**: Add technical debt items for issues that reveal debt
+- **[To-do.md](./To-do.md)**: Create tasks to fix active issues or implement prevention
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)**: Update if issue reveals architectural problem
+- **[Trinity.md](./Trinity.md)**: Update investigation protocols if new investigation approach discovered
+- **[CODING-PRINCIPLES.md](./CODING-PRINCIPLES.md)**: Add principle if issue reveals coding standard gap
+- **[TESTING-PRINCIPLES.md](./TESTING-PRINCIPLES.md)**: Add test requirement if issue was missed by tests
+
+### Update Scenarios - What to Change
+
+**Scenario: Bug Found During Development**
+```yaml
+Updates_Required:
+  - Active_Issues: Add new issue with P0/P1/P2/P3 priority
+  - Issue_Template: Fill with symptoms, root cause, solution
+  - Pattern_Check: Is this a recurring issue? Create pattern if yes
+  - Investigation_Link: Link to trinity/investigations/ file if investigation done
+  - Cross_References:
+    - To-do.md: Add fix task with priority
+    - Technical-Debt.md: Add debt if issue reveals shortcuts
+```
+
+**Scenario: Issue Resolved**
+```yaml
+Updates_Required:
+  - Active_Issues: Remove from active section
+  - Pattern_Extraction: If issue can recur, create pattern template
+  - Issue_Metrics: Update resolution metrics
+  - Prevention_Strategy: Add prevention measures to relevant section
+  - Cross_References:
+    - To-do.md: Mark related task complete
+    - Technical-Debt.md: Mark related debt resolved
+```
+
+**Scenario: Pattern Recognized (3+ occurrences)**
+```yaml
+Updates_Required:
+  - Pattern_Section: Create new pattern entry or update existing
+  - Pattern_Frequency: Update occurrence count
+  - Related_Issues: Link all issue IDs that match this pattern
+  - Prevention_Measures: Document how to prevent this pattern
+  - Pattern_Library: Create pattern file in trinity/patterns/
+  - Cross_References:
+    - Technical-Debt.md: Link pattern to debt if applicable
+    - CODING-PRINCIPLES.md: Add principle if pattern reveals standard gap
+```
+
+**Scenario: Investigation Completed**
+```yaml
+Updates_Required:
+  - Issue_Entry: Add investigation findings to root cause section
+  - Investigation_Queue: Remove from pending, add to completed
+  - Pattern_Discovery: Create pattern if investigation revealed one
+  - Resolution_Path: Document solution from investigation
+  - Cross_References:
+    - Trinity.md: Link investigation file
+    - Pattern_Library: Create pattern file if reusable solution found
+```
+
+**Scenario: Framework-Specific Issue Found**
+```yaml
+Updates_Required:
+  - Framework_Specific_Patterns: Add issue to {{FRAMEWORK}} section
+  - Frequency_Tracking: Mark as HIGH/MEDIUM/LOW based on likelihood
+  - Known_Solutions: Add framework-specific solution code
+  - Prevention_Measures: Add framework best practices to prevent
+  - Cross_References:
+    - AI-DEVELOPMENT-GUIDE.md: Update if framework workflow needs adjustment
+```
+
+### How to Update
+
+**Step-by-step process:**
+
+1. **Categorize Issue**: Is it Critical/High/Medium/Low priority? Framework-specific or universal?
+2. **Document Completely**: Fill issue template with all details (don't leave partial entries)
+3. **Check for Patterns**: Search document for similar issues (2+ = pattern)
+4. **Link Investigation**: If investigation file exists, link it
+5. **Update Metrics**: Increment counts, update averages
+6. **Cross-Reference**: Update related documents (To-do, Technical-Debt, etc.)
+7. **Pattern Library**: Create trinity/patterns/ file if reusable solution
+8. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}` to actual date
+
+**Quality Checklist:**
+- [ ] Issue has complete symptoms, root cause, and solution
+- [ ] Priority matches impact (P0 = production down, P1 = core feature broken, etc.)
+- [ ] Pattern frequency accurate (count all occurrences)
+- [ ] Links to investigation files valid
+- [ ] Cross-references to other docs updated
+- [ ] Prevention measures actionable
+
+### When NOT to Update ❌
+
+**Don't add to ISSUES.md if:**
+- Simple typo fixes (not a pattern)
+- Expected behavior misunderstood (user error, not issue)
+- Third-party library bugs (document in ARCHITECTURE dependencies instead)
+- One-time environment issues (not reproducible)
+- Feature requests (add to To-do.md instead)
+
+**When to merge issues:**
+- If two issues have same root cause, merge into single pattern
+- Update pattern frequency count to reflect all occurrences
+
+### Issue vs. Debt vs. Todo 🤔
+
+**Add to ISSUES.md when:**
+- Bug that can recur
+- Pattern that should be prevented
+- Framework-specific problem to watch for
+
+**Add to Technical-Debt.md when:**
+- Code quality problem (TODOs, complexity, coverage)
+- Known shortcut that needs refactoring
+- Accumulating technical burden
+
+**Add to To-do.md when:**
+- Task to complete
+- Feature to implement
+- One-time action item
+
+**Many items belong in multiple documents** (issue + debt + todo for fix).
+
+---
+
+**Document Status**: Living Issue Intelligence System
+**Update Frequency**: Real-time (as issues discovered) + session-based
+**Maintained By**: Development team using Trinity Method
+**Referenced By**: `/trinity-end` command for session updates
+**Pattern Library**: Creates trinity/patterns/ files
+**Last Updated**: {{CURRENT_DATE}}
+
+---
+
 *Issue tracking powered by Trinity Method v2.0*
 *Continuous pattern recognition and prevention system*

@@ -262,5 +262,146 @@ Estimates:
 
 ---
 
+## 📝 WHEN TO UPDATE THIS DOCUMENT
+
+This is a **living task management system** updated continuously as work progresses.
+
+### Immediate Updates Required ⚠️
+
+Update **as tasks change** (real-time):
+
+- ✅ **Task Completed**: Mark complete or remove from list immediately
+- ✅ **New Task Identified**: Add to appropriate priority section (P0/P1/P2/P3)
+- ✅ **Priority Change**: Move tasks between priority levels as urgency changes
+- ✅ **Task Blocked**: Update status, add blocker details
+- ✅ **Subtasks Discovered**: Add subtask checklist to existing task
+
+### Session Updates (Via `/trinity-end`) 🔄
+
+Update at end of each development session:
+
+- Remove/mark completed tasks from session
+- Add new tasks discovered during development
+- Re-prioritize based on new information
+- Update sprint planning (velocity, burndown)
+- Calculate session productivity metrics
+- Update backlog with new items
+
+### Weekly Reviews ⏰
+
+Sprint planning and prioritization:
+
+- Review P0/P1 items (ensure highest priority work identified)
+- Update sprint status (tasks completed vs planned)
+- Calculate velocity (tasks per week)
+- Reprioritize backlog
+- Archive completed tasks if desired
+
+### Cross-Document Update Triggers 🔗
+
+**When updating To-do.md, also check:**
+
+- **[ISSUES.md](./ISSUES.md)**: Close issues when related tasks complete
+- **[Technical-Debt.md](./Technical-Debt.md)**: Update when debt-related tasks complete
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)**: Verify architecture changes documented when component tasks complete
+
+### Update Scenarios - What to Change
+
+**Scenario: Bug Fixed**
+```yaml
+Updates_Required:
+  - Active_Tasks: Remove or mark complete the fix task
+  - Sprint_Status: Update completed task count
+  - Velocity_Tracking: Add to completed tasks this week
+  - Cross_References:
+    - ISSUES.md: Close the related issue
+    - Technical-Debt.md: Update if fix paid down debt
+```
+
+**Scenario: New Feature Request**
+```yaml
+Updates_Required:
+  - Backlog: Add new task with description
+  - Priority_Assignment: Assign P0/P1/P2/P3 based on urgency
+  - Estimate: Add time/complexity estimate
+  - Dependencies: Link to related tasks if applicable
+```
+
+**Scenario: Task Blocked**
+```yaml
+Updates_Required:
+  - Task_Status: Update with blocker details
+  - Priority: May need to reprioritize
+  - New_Tasks: May need to create unblocking tasks
+  - Cross_References:
+    - ISSUES.md: Create issue for blocker if recurring
+```
+
+**Scenario: Sprint Completed**
+```yaml
+Updates_Required:
+  - Archive_Completed: Move completed tasks to archive or remove
+  - Sprint_Metrics: Calculate velocity, completion rate
+  - Next_Sprint: Move high-priority backlog items to active
+  - Velocity_Adjustment: Update estimates based on actual velocity
+```
+
+### How to Update
+
+**Step-by-step process:**
+
+1. **Identify Change**: Task complete, new task, priority change, or blocked?
+2. **Update Section**: Modify appropriate priority section or backlog
+3. **Cross-Reference**: Check if ISSUES/Technical-Debt need updates
+4. **Recalculate Metrics**: Update velocity, sprint status if needed
+5. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}`
+
+**Quality Checklist:**
+- [ ] All tasks have clear descriptions (what needs to be done)
+- [ ] Priorities accurate (P0 = urgent, P3 = low priority)
+- [ ] Estimates reasonable (based on team velocity)
+- [ ] Blocked tasks have blocker details
+- [ ] Completed tasks removed or marked complete
+- [ ] Related issues/debt items cross-referenced
+
+### When NOT to Update ❌
+
+**Don't add to To-do.md if:**
+- Already documented in ISSUES.md as a bug (use issue tracking instead)
+- Not actionable (vague idea without clear next steps)
+- Belongs in Technical-Debt.md (debt tracking, not task)
+- Long-term strategic item (add to ARCHITECTURE evolution planning)
+
+### Task vs. Issue vs. Debt 🤔
+
+**Add to To-do.md when:**
+- Specific action item to complete
+- Feature to implement
+- Bug to fix (with clear reproduction)
+- Refactoring work planned
+- Investigation to conduct
+
+**Add to ISSUES.md when:**
+- Bug that can recur
+- Pattern to track
+- Framework-specific problem
+
+**Add to Technical-Debt.md when:**
+- Code quality metric (TODO count, complexity)
+- Accumulated shortcut
+- Technical burden to track
+
+**Tasks often resolve issues and debt** (todo → fix → issue closed, debt reduced).
+
+---
+
+**Document Status**: Living Task Management System
+**Update Frequency**: Real-time (as tasks change) + session-based
+**Maintained By**: Development team using Trinity Method
+**Referenced By**: `/trinity-end` command for session updates
+**Last Updated**: {{CURRENT_DATE}}
+
+---
+
 *Task management powered by Trinity Method v2.0*
 *Investigation-first development approach*
