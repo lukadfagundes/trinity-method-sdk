@@ -1,0 +1,307 @@
+# {{PROJECT_NAME}}
+
+[APO: Write a 1-2 sentence description of what this project does and why it exists]
+
+[APO: Add appropriate badges based on project type. Examples:
+- npm projects: npm version, build status, coverage, license
+- Python projects: PyPI version, build status, coverage, license
+- Rust projects: crates.io version, build status, docs.rs
+- Mobile apps: version, platform support, license
+- Libraries: version, downloads, license
+Remove this instruction block and add actual badges below]
+
+---
+
+## Features
+
+[APO: List 4-8 key features discovered from codebase audit. Use emoji icons for visual appeal.
+Format: - 🚀 **Feature Name** - Brief description
+Remove this instruction and replace with actual features]
+
+- **Feature 1** - Description
+- **Feature 2** - Description
+- **Feature 3** - Description
+- **Feature 4** - Description
+
+---
+
+## Installation
+
+[APO: Provide installation instructions appropriate for the project type.
+- npm/Node.js: npm install, yarn add
+- Python: pip install, poetry add
+- Rust: cargo add
+- Go: go get
+- Mobile: App store links, build from source
+- Desktop apps: Download links, package managers
+Remove this instruction and add actual installation steps below]
+
+### Prerequisites
+
+[APO: List required tools, versions, and dependencies based on project analysis]
+
+- Prerequisite 1
+- Prerequisite 2
+
+### Install
+
+[APO: Provide the primary installation method for this project type]
+
+```bash
+# Installation command here
+```
+
+### Install from Source
+
+[APO: Provide build-from-source instructions]
+
+```bash
+git clone [repository-url]
+cd [project-directory]
+# Build commands
+```
+
+---
+
+## Quick Start
+
+[APO: Provide a minimal example showing how to use the project.
+Base this on:
+1. Entry points found in codebase
+2. Common patterns in existing code
+3. Documentation strings in source files
+4. Test files showing usage
+Remove this instruction and add actual quick start below]
+
+### Basic Usage
+
+```[LANGUAGE]
+// [APO: Replace with actual minimal working example]
+```
+
+### Advanced Example
+
+[APO: If applicable, show a more complex usage example]
+
+```[LANGUAGE]
+// [APO: Replace with actual advanced example or remove this section]
+```
+
+---
+
+## Usage
+
+[APO: Document common use cases found in the codebase or examples directory.
+Include code examples for each use case.
+Remove this instruction and add actual usage documentation below]
+
+### Use Case 1: [Description]
+
+```[LANGUAGE]
+// Example code
+```
+
+### Use Case 2: [Description]
+
+```[LANGUAGE]
+// Example code
+```
+
+---
+
+## Configuration
+
+[APO: Document configuration options based on:
+1. Config files found (config.json, .env, etc.)
+2. Command-line arguments
+3. Environment variables
+4. Constructor/initialization options in code
+Remove this instruction and add actual configuration documentation below]
+
+### Configuration Options
+
+[APO: If using a table format is appropriate:]
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| option1 | type | default | description |
+
+[APO: If using environment variables:]
+
+### Environment Variables
+
+```bash
+VARIABLE_NAME=value  # Description
+```
+
+[APO: If using configuration files:]
+
+### Configuration File
+
+**config.[ext]**
+```[format]
+{
+  "option": "value"
+}
+```
+
+---
+
+## API Reference
+
+[APO: Provide API documentation based on project type:
+- Libraries: Public classes, functions, methods
+- REST APIs: Endpoints, request/response formats
+- CLI tools: Commands, flags, arguments
+- Remove this instruction and add actual API documentation below
+- Link to full API docs if they exist separately]
+
+[APO: For libraries, document main exports]
+[APO: For APIs, document endpoints]
+[APO: For CLI tools, document commands]
+
+---
+
+## Documentation
+
+[APO: Link to additional documentation found in docs/ directory.
+If docs/ doesn't exist but should, note it as a TODO.
+Remove this instruction and add actual documentation links below]
+
+For complete documentation, see:
+
+- [Getting Started Guide](docs/guides/getting-started.md)
+- [Configuration Guide](docs/guides/configuration.md)
+- [API Reference](docs/api/README.md)
+- [Troubleshooting](docs/guides/troubleshooting.md)
+
+---
+
+## Examples
+
+[APO: If an examples/ directory exists, reference it.
+If example files exist, list them.
+Otherwise, remove this section.
+Remove this instruction and add actual examples section or remove entirely]
+
+Check out the [examples/](examples/) directory for more usage examples:
+
+- [Example 1](examples/example1) - Description
+- [Example 2](examples/example2) - Description
+
+---
+
+## Development
+
+[APO: Provide development setup instructions based on:
+1. package.json scripts (Node.js)
+2. Makefile targets
+3. Build system files (CMakeLists.txt, Cargo.toml, etc.)
+4. Contributing guidelines
+Remove this instruction and add actual development instructions below]
+
+### Setup Development Environment
+
+```bash
+# Clone and setup instructions
+```
+
+### Running Tests
+
+```bash
+# Test commands found in project
+```
+
+### Project Structure
+
+[APO: Optionally include directory structure if helpful]
+
+```
+project/
+├── src/              # Description
+├── tests/            # Description
+└── docs/             # Description
+```
+
+---
+
+## Contributing
+
+[APO: If CONTRIBUTING.md exists, link to it.
+Otherwise, provide basic contribution guidelines.
+Remove this instruction and update below]
+
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
+
+[APO: If CONTRIBUTING.md doesn't exist, provide basic guidelines:]
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+---
+
+## Changelog
+
+[APO: If CHANGELOG.md or docs/CHANGELOG.md exists, link to it.
+Otherwise, note where version history can be found.
+Remove this instruction and update below]
+
+See [CHANGELOG.md](docs/CHANGELOG.md) for a list of changes in each version.
+
+---
+
+## Support
+
+[APO: Provide support resources found or commonly used.
+Remove this instruction and add actual support information below]
+
+- 📖 [Documentation](docs/)
+- 💬 [Discussions](https://github.com/{{GITHUB_USER}}/{{PROJECT_VAR_NAME}}/discussions)
+- 🐛 [Issue Tracker](https://github.com/{{GITHUB_USER}}/{{PROJECT_VAR_NAME}}/issues)
+
+---
+
+## License
+
+[APO: Read LICENSE file and insert license type and copyright.
+Common formats: MIT, Apache-2.0, GPL-3.0, BSD-3-Clause
+Remove this instruction and add actual license information below]
+
+This project is licensed under the [LICENSE_TYPE] License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+[APO: This section is optional. Include if:
+1. README mentions contributors
+2. Significant third-party dependencies
+3. Inspiration from other projects
+Otherwise, remove this entire section including the instruction]
+
+- Contributor/Library 1
+- Contributor/Library 2
+
+---
+
+[APO: INSTRUCTIONS FOR COMPLETING THIS TEMPLATE:
+
+1. Read the LICENSE file to determine license type
+2. Analyze package.json, Cargo.toml, setup.py, go.mod, etc. to determine project type
+3. Scan source code for entry points and main exports
+4. Check for existing documentation in docs/, README sections, or code comments
+5. Identify configuration mechanisms (env vars, config files, CLI flags)
+6. Find examples in examples/, tests/, or inline documentation
+7. Replace all [APO: ...] instructions with actual content
+8. Remove all instruction blocks (like this one)
+9. Remove sections that don't apply to this project type
+10. Ensure all code examples use the correct language
+11. Verify all links point to existing files
+12. Add badges appropriate for the project type and hosting platform
+
+After completing:
+- Document what you filled in vs. what was placeholder
+- Note in the documentation audit report which sections need user review
+- Flag any sections where information was insufficient]

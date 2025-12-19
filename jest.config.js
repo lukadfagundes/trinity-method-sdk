@@ -1,7 +1,8 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
-  preset: 'ts-jest',
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
+  extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
     '^ora$': '<rootDir>/tests/__mocks__/ora.ts',
@@ -12,13 +13,15 @@ export default {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
+        useESM: true,
         tsconfig: {
-          module: 'commonjs',
+          module: 'nodenext',
           target: 'ES2022',
           lib: ['ES2022'],
-          moduleResolution: 'node',
+          moduleResolution: 'nodenext',
           esModuleInterop: true,
-          allowSyntheticDefaultImports: true
+          allowSyntheticDefaultImports: true,
+          isolatedModules: true
         }
       },
     ],

@@ -607,6 +607,8 @@ export async function deploy(options: DeployOptions): Promise<void> {
       'trinity-decompose.md.template': 'planning',
       'trinity-plan.md.template': 'planning',
       'trinity-orchestrate.md.template': 'execution',
+      'trinity-audit.md.template': 'execution',
+      'trinity-docs.md.template': 'execution',
       'trinity-create-investigation.md.template': 'investigation',
       'trinity-plan-investigation.md.template': 'investigation',
       'trinity-investigate-templates.md.template': 'investigation',
@@ -727,6 +729,32 @@ export async function deploy(options: DeployOptions): Promise<void> {
     }
 
     spinner.succeed(`Investigation templates deployed (${investigationTemplates.length} templates)`);
+
+    // STEP 10.6: Deploy documentation templates
+    spinner = ora('Deploying documentation templates...').start();
+
+    const documentationTemplates = [
+      'ROOT-README.md.template',
+      'SUBDIRECTORY-README.md.template'
+    ];
+
+    // Ensure trinity/templates/documentation directory exists
+    await fs.ensureDir('trinity/templates/documentation');
+
+    for (const template of documentationTemplates) {
+      const templatePath = path.join(templatesPath, 'documentation', template);
+
+      if (await fs.pathExists(templatePath)) {
+        const content = await fs.readFile(templatePath, 'utf8');
+        const processed = processTemplate(content, variables);
+        // Remove .template extension for deployed files
+        const deployedName = template.replace('.template', '');
+        await fs.writeFile(`trinity/templates/documentation/${deployedName}`, processed);
+        deploymentStats.templates++;
+      }
+    }
+
+    spinner.succeed(`Documentation templates deployed (${documentationTemplates.length} templates)`);
 
     // STEP 11: Deploy CI/CD workflow templates (if --ci-deploy flag set) [WO#015]
     if (options.ciDeploy) {

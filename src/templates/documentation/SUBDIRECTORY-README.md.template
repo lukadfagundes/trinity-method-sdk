@@ -1,0 +1,261 @@
+# {{DIRECTORY_NAME}}
+
+[APO: Write a brief description of this directory's purpose and what it contains.
+Remove this instruction and replace with actual description]
+
+---
+
+## Purpose
+
+[APO: Explain why this directory exists and what role it plays in the project architecture.
+Remove this instruction and replace with actual purpose]
+
+---
+
+## Contents
+
+[APO: List files and subdirectories found in this directory.
+Group by type if helpful (e.g., components, utilities, tests).
+Remove this instruction and add actual contents below]
+
+### Files
+
+[APO: List main files with brief descriptions]
+
+- `file1.[ext]` - Description
+- `file2.[ext]` - Description
+- `file3.[ext]` - Description
+
+### Subdirectories
+
+[APO: If subdirectories exist, list them with descriptions]
+
+- `subdirectory1/` - Description
+- `subdirectory2/` - Description
+
+---
+
+## Key Files
+
+[APO: Document the most important files in this directory.
+Include what they export, their purpose, and usage examples.
+Remove this instruction and add actual key files documentation below]
+
+### `important-file.[ext]`
+
+**Purpose:** [APO: What this file does]
+
+**Exports:** [APO: List main exports, classes, functions]
+- `exportedFunction1()` - Description
+- `exportedClass` - Description
+
+**Usage:**
+```[LANGUAGE]
+// [APO: Provide actual usage example based on code analysis]
+```
+
+---
+
+### `another-file.[ext]`
+
+**Purpose:** [APO: What this file does]
+
+**Exports:** [APO: List main exports]
+- `mainFunction()` - Description
+
+**Usage:**
+```[LANGUAGE]
+// [APO: Provide actual usage example]
+```
+
+---
+
+## Usage
+
+[APO: Provide examples of how to use code from this directory.
+Base this on:
+1. Import/require statements found in other files
+2. Test files showing usage
+3. Examples directory
+Remove this instruction and add actual usage below]
+
+### Basic Usage
+
+```[LANGUAGE]
+// [APO: Replace with actual import/usage example]
+```
+
+### Advanced Usage
+
+```[LANGUAGE]
+// [APO: Replace with actual advanced example or remove if not applicable]
+```
+
+---
+
+## Directory Structure
+
+[APO: Optionally provide a tree view of this directory's structure if it's complex.
+Remove this section if directory is simple.
+Remove this instruction and add actual structure or remove section]
+
+```
+{{DIRECTORY_NAME}}/
+├── file1.[ext]        # Description
+├── file2.[ext]        # Description
+├── subdirectory1/     # Description
+│   ├── sub-file1.[ext]
+│   └── sub-file2.[ext]
+└── subdirectory2/     # Description
+```
+
+---
+
+## Key Concepts
+
+[APO: If this directory implements important patterns or concepts, document them.
+Otherwise, remove this entire section.
+Remove this instruction and add concepts or remove section]
+
+### Concept 1
+
+[APO: Explanation of important concept]
+
+**Example:**
+```[LANGUAGE]
+// Example demonstrating concept
+```
+
+---
+
+## Dependencies
+
+[APO: Document dependencies of code in this directory.
+Remove this instruction and add actual dependencies below]
+
+### Internal Dependencies
+
+This directory depends on:
+- `../other-directory/` - Why this dependency exists
+- `../another-directory/` - Why this dependency exists
+
+### External Dependencies
+
+[APO: If this directory uses specific external packages, list them]
+
+This directory uses:
+- `external-package` - Why this package is used
+- `another-package` - Why this package is used
+
+---
+
+## Testing
+
+[APO: Provide information about tests for this directory.
+Remove this instruction and add actual testing information below]
+
+Tests for this directory are located in:
+- `tests/{{DIRECTORY_NAME}}/` - Unit tests
+- `tests/integration/{{DIRECTORY_NAME}}/` - Integration tests
+
+**Run tests:**
+```bash
+# [APO: Provide actual test command based on project]
+```
+
+---
+
+## Common Patterns
+
+[APO: Document common usage patterns found in this directory.
+Remove this section if not applicable.
+Remove this instruction and add patterns or remove section]
+
+### Pattern 1: [Pattern Name]
+
+**When to use:** [APO: Description of when this pattern is appropriate]
+
+**Example:**
+```[LANGUAGE]
+// [APO: Example of pattern]
+```
+
+---
+
+## Related Documentation
+
+[APO: Link to related documentation.
+Verify links exist before including.
+Remove this instruction and add actual links below]
+
+- [Main Documentation](../../docs/README.md)
+- [API Reference](../../docs/api/{{DIRECTORY_NAME}}.md)
+- [Architecture Guide](../../docs/architecture/README.md)
+- [Parent Directory](../README.md)
+
+---
+
+## Notes
+
+[APO: Include important considerations, gotchas, or best practices.
+Remove this instruction and add actual notes below]
+
+### Important Considerations
+
+- Note 1: [APO: Important consideration about this directory]
+- Note 2: [APO: Another important consideration]
+
+### Best Practices
+
+[APO: If there are established patterns for working with this code]
+
+- Practice 1
+- Practice 2
+
+### Future Improvements
+
+[APO: If TODO comments or issues reference this directory]
+
+- [ ] Planned improvement 1
+- [ ] Planned improvement 2
+
+---
+
+## Contributing
+
+[APO: Provide directory-specific contribution guidelines if needed.
+Otherwise, just reference main contributing guide.
+Remove this instruction and update below]
+
+When contributing to this directory:
+
+1. Follow the established patterns and conventions
+2. Add tests for new functionality
+3. Update this README if adding new files or concepts
+4. Ensure all tests pass before submitting PR
+
+See [Contributing Guidelines](../../CONTRIBUTING.md) for more details.
+
+---
+
+**Last Updated:** {{CURRENT_DATE}}
+
+---
+
+[APO: INSTRUCTIONS FOR COMPLETING THIS TEMPLATE:
+
+1. Scan this directory and all subdirectories for files
+2. Identify the most important files (entry points, main exports)
+3. Analyze import/export statements to understand dependencies
+4. Check for corresponding test files
+5. Look for patterns or common usages in code
+6. Replace all [APO: ...] instructions with actual content
+7. Remove all instruction blocks (like this one)
+8. Remove sections that don't apply (e.g., if no tests, remove testing section)
+9. Ensure code examples use the correct language syntax
+10. Verify all file paths and links are correct
+11. Update {{DIRECTORY_NAME}} and {{CURRENT_DATE}} placeholders
+
+After completing:
+- Note in documentation audit report which sections needed inference vs. found in code
+- Flag any sections where user review would be helpful]

@@ -32,18 +32,26 @@ Check for:
    - .claude/agents/planning/ (4 agents: MON, ROR, TRA, EUS)
    - .claude/agents/aj-team/ (7 agents: KIL, BAS, DRA, APO, BON, CAP, URO)
 
-4. **Slash Commands (15 commands):**
+4. **Slash Commands (18 commands in 6 categories):**
    - .claude/commands/ (all Trinity slash commands)
-   - Commands: init, verify, start, agents, requirements, design, plan, decompose,
-               continue, end, workorder, create-investigation, plan-investigation,
-               investigate-templates, orchestrate
+   - Session: start, continue, end
+   - Planning: requirements, design, plan, decompose
+   - Execution: orchestrate, audit, docs
+   - Investigation: create-investigation, plan-investigation, investigate-templates
+   - Infrastructure: init
+   - Utility: verify, agents, workorder
 
-5. **Knowledge Base Files (9 files):**
+5. **Templates (13 total):**
+   - Work Orders: 6 templates in trinity/templates/work-orders/
+   - Investigations: 5 templates in trinity/templates/investigations/
+   - Documentation: 2 templates in trinity/templates/documentation/
+
+6. **Knowledge Base Files (9 files):**
    - ARCHITECTURE.md, Trinity.md, To-do.md, ISSUES.md, Technical-Debt.md
    - CODING-PRINCIPLES.md, TESTING-PRINCIPLES.md
    - AI-DEVELOPMENT-GUIDE.md, DOCUMENTATION-CRITERIA.md
 
-6. **CI/CD Workflows (if deployed):**
+7. **CI/CD Workflows (if deployed):**
    - .github/workflows/ci.yml (BAS 6-phase quality gates)
    - .github/workflows/cd.yml (Deployment pipeline)
 

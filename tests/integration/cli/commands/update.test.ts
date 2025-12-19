@@ -2,7 +2,7 @@
  * Integration Tests - Update Command
  */
 
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import fs from 'fs-extra';
 import path from 'path';
 import { update } from '../../../../src/cli/commands/update.js';
@@ -18,7 +18,7 @@ import {
 describe('Update Command - Integration Tests', () => {
   let testDir: string;
   let originalCwd: string;
-  let exitSpy: jest.SpyInstance;
+  let exitSpy: any;
 
   beforeEach(async () => {
     // Create temp directory
