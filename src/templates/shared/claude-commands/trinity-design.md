@@ -57,36 +57,35 @@ ROR produces structured JSON handoff:
 }
 ```
 
-## Enhanced Documentation (v2.0)
+## ROR Agent Capabilities
 
-Trinity v2.0 includes comprehensive TSDoc for ROR agent:
-- **Trinity Principle:** Explanations of why design-first development matters
-- **"Why This Exists":** Context for ADRs and Design Doc compliance
-- **Practical Examples:** Real-world design patterns and ADR examples
-- **Cross-References:** Links to quality standards and technical investigation template
+ROR specializes in technical design following Trinity principles:
+- **Design-First Development:** Comprehensive design before implementation prevents rework
+- **ADR Documentation:** Architecture Decision Records capture rationale and trade-offs
+- **Design Doc Compliance:** DRA validates implementation matches design (≥70% required)
+- **Function Constraints:** ≤2 parameters, <200 lines, ≤4 nesting levels
 
-**See:** `src/agents/SelfImprovingAgent.ts` (ROR inherits enhanced documentation)
+## Integration with Trinity Workflow
 
-## Integration with Workflow Orchestration
+ROR's technical design follows MON's requirements analysis:
 
-ROR's technical design integrates with AJ MAESTRO workflow planning:
-
-1. **After MON:** Requirements analysis complete and approved
-2. **ROR Design:** Creates technical design with ADRs
-3. **Design Doc:** Comprehensive design documentation created
-4. **Workflow Phase 2:** Design approval (STOP POINT in MEDIUM/LARGE workflows)
+1. **After MON:** Requirements analysis complete with acceptance criteria
+2. **ROR Design (Claude adopts ROR persona):** Creates technical design with ADRs
+3. **Design Doc:** Comprehensive function signatures, error handling, architecture
+4. **Design Approval:** User reviews design (STOP POINT in Medium/Large workflows)
 5. **Handoff to TRA:** Design feeds into implementation planning
 
-**Example in MEDIUM-scale workflow:**
+**Example in Medium-scale workflow:**
 ```
-Phase 2: Technical Design (STOP POINT 1)
-├── Task 3 (ROR): Create technical design [2.0h]
-└── Task 4 (ROR): Document architecture decisions (ADR) [1.0h]
+Phase 2: Technical Design (STOP POINT)
+├── Create technical design with function signatures
+└── Document architecture decisions (ADR)
 
-User approval required before Phase 3 (Implementation)
+Output: JSON handoff with design doc, ADR, compliance criteria
+User approval required before Phase 3 (Planning)
 ```
 
-**See Also:** `/trinity-orchestrate` for visual workflow planning
+**See Also:** `/trinity-orchestrate` for complete workflow planning
 
 ## Technical Investigation Template
 
@@ -101,10 +100,10 @@ For architecture decisions and design choices, use Technical Investigation Templ
 
 ## Usage
 
-**Provide requirements and ROR will create technical design:**
+**Provide requirements and Claude (as ROR) will create technical design:**
 
 What are the requirements? (Or provide MON's output)
 
-**For visual workflow with ROR:**
+**For complete workflow planning:**
 
-Use `/trinity-orchestrate` to see ROR's role in complete workflow plan
+Use `/trinity-orchestrate` to plan your implementation with ROR design as a key phase

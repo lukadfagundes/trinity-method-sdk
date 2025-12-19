@@ -1,74 +1,25 @@
 ---
-description: Complete Trinity integration with v2.0 features and intelligent CLAUDE.md placement
+description: Complete Trinity integration with TAN → ZEN → INO → EIN → JUNO workflow
 ---
 
 # Trinity Initialization
 
-**Purpose:** Complete Trinity Method integration with comprehensive setup, intelligent CLAUDE.md placement, and v2.0 feature activation.
+**Purpose:** Complete Trinity Method integration with comprehensive setup and quality validation.
 
 ## Overview
 
-Trinity initialization deploys the complete Trinity Method infrastructure with:
-- ✨ **NEW v2.0 Features:** Crisis management, workflow orchestration, learning dashboard
-- 🧠 **Intelligent CLAUDE.md Placement:** Adaptive detection for complex repository structures
-- 📚 **Knowledge Base Population:** Architecture analysis and issue tracking
-- ✅ **Quality Verification:** JUNO audit for compliance
+Trinity initialization populates the Trinity Method infrastructure with:
+- 📁 **Structure Verification:** TAN validates Trinity directory structure
+- 📚 **Knowledge Base Population:** ZEN creates comprehensive documentation
+- 🧠 **Context Hierarchy:** INO establishes CLAUDE.md and ISSUES.md databases
+- ⚙️ **CI/CD Review:** EIN reviews and customizes deployed CI/CD workflows (if present)
+- ✅ **Quality Audit:** JUNO performs comprehensive compliance audit
 
 **Context:** User has run `trinity deploy` and basic Trinity structure exists. Deployment team will now populate and verify all Trinity documents.
 
-**IMPORTANT:** All folders and basic files already exist from deployment. DO NOT attempt to create folders that already exist (trinity/, .claude/, trinity-hooks/, etc.). Focus on POPULATING and VERIFYING content.
+**IMPORTANT:** All folders and basic files already exist from deployment. DO NOT attempt to create folders that already exist (trinity/, .claude/, etc.). Focus on POPULATING and VERIFYING content.
 
-## New v2.0 Features
-
-Trinity Method SDK v2.0 introduces powerful new capabilities:
-
-### Crisis Management System
-Automatic detection and guided recovery for 5 crisis types:
-- **Build Failure** - Compilation errors, dependency issues
-- **Test Failure** - Failing tests, coverage drops
-- **Error Pattern** - Repeated errors, systematic failures
-- **Performance Degradation** - Slowdowns, memory leaks, bottlenecks
-- **Security Vulnerability** - CVEs, exposed secrets, vulnerabilities
-
-**Try it:** `trinity crisis --health` or `/trinity-crisis`
-
-**Benefits:**
-- 60-70% faster crisis recovery
-- Systematic 6-phase recovery protocols
-- Automatic pattern learning
-- Crisis archive for organizational memory
-
-### Workflow Orchestration
-Visual workflow planning with AJ MAESTRO:
-- **Interactive workflow generation** with guided prompts
-- **Tree visualization** with color coding and progress tracking
-- **Scale-based phase structures** (SMALL/MEDIUM/LARGE)
-- **Time optimization** through parallelization analysis
-- **User approval** at stop points before execution
-
-**Try it:** `trinity orchestrate` or `/trinity-orchestrate`
-
-**Benefits:**
-- 20-40% time savings through parallelization
-- Visual workflow plans with dependencies
-- Predictable timelines with accurate estimates
-- Quality gates built into every phase
-
-### Learning Metrics Dashboard
-Comprehensive learning analytics with health scoring:
-- **System health overview** (0-100 scoring)
-- **Pattern library metrics** with visual breakdowns
-- **Performance metrics** with time savings calculation
-- **Agent performance** breakdown with success rates
-- **Actionable recommendations** based on metrics
-
-**Try it:** `trinity learning-status --dashboard` or `/trinity-learning-status`
-
-**Benefits:**
-- Track organizational learning growth
-- Measure ROI from pattern reuse
-- Identify knowledge gaps
-- Optimize agent performance
+## Trinity Method Capabilities
 
 ### Investigation Templates
 5 comprehensive templates for guided investigations:
@@ -579,77 +530,59 @@ pre-commit run --all-files
 
 ## Post-Init Next Steps
 
-After Trinity initialization, explore new v2.0 features:
+After Trinity initialization, explore Trinity Method workflows:
 
-### 1. Check System Health
-```bash
-trinity crisis --health
+### 1. Plan Your First Workflow
 ```
-or `/trinity-crisis`
-
-Quick system health check using crisis detection. Establishes baseline health metrics.
-
-### 2. Plan Your First Workflow
-```bash
-trinity orchestrate
+/trinity-orchestrate
 ```
-or `/trinity-orchestrate`
 
-Generate visual workflow plan for your first task. See time estimates and parallelization opportunities.
+Plan your implementation approach. Claude will guide you through workflow selection based on task scale.
 
-### 3. View Learning Metrics
-```bash
-trinity learning-status --dashboard
-```
-or `/trinity-learning-status`
-
-See comprehensive learning system analytics. Track pattern library growth and time savings.
-
-### 4. Explore Investigation Templates
+### 2. Explore Investigation Templates
 ```
 /trinity-investigate-templates
 ```
 
 Learn about 5 investigation template types. Choose the right template for your first investigation.
 
-### 5. Verify CLAUDE.md Placement
-```bash
-trinity verify
+### 3. Verify Installation
+```
+/trinity-verify
 ```
 
-Confirm adaptive CLAUDE.md placement and coverage analysis. Ensure all critical directories have context.
+Confirm Trinity structure completeness. Ensure all agents and directories are properly deployed.
 
-### 6. Create Your First Investigation
-```bash
-trinity create-investigation
+### 4. Create Your First Investigation
 ```
-or `/trinity-create-investigation`
+/trinity-create-investigation
+```
 
 Use investigation wizard to create structured investigation from template.
 
-### 7. Run Your First Workflow
-After planning with orchestrate, execute workflow with AJ MAESTRO coordination:
-- User approval at stop points
-- BAS quality gates automatic
-- Progress tracking throughout
-- Pattern learning on completion
+### 5. Start Development
+Use Trinity workflow commands based on task scale:
+- Small tasks: `/trinity-start` for direct implementation
+- Medium tasks: `/trinity-requirements` → `/trinity-design` → `/trinity-plan`
+- Large tasks: Full workflow with `/trinity-orchestrate` guidance
 
 ## Related Commands
 
-- `/trinity-crisis` - Crisis management system guide
 - `/trinity-orchestrate` - Workflow orchestration guide
-- `/trinity-learning-status` - Learning system dashboard
 - `/trinity-investigate-templates` - Investigation template guide
 - `/trinity-verify` - Verification command documentation
+- `/trinity-start` - Start your first Trinity workflow
+- `/trinity-requirements` - Requirements analysis (MON)
+- `/trinity-design` - Technical design (ROR)
+- `/trinity-plan` - Implementation planning (TRA)
 
 ## What's Next?
 
-Trinity is now fully integrated with v2.0 features. Your next steps:
+Trinity is now fully integrated. Your next steps:
 
-1. **Verify Setup:** Run `trinity verify` to confirm CLAUDE.md coverage
-2. **Health Baseline:** Run `trinity crisis --health` to establish baseline
-3. **First Investigation:** Create investigation from template
-4. **First Workflow:** Use `trinity orchestrate` to plan and execute
-5. **Monitor Learning:** Check `trinity learning-status --dashboard` regularly
+1. **Verify Setup:** Use `/trinity-verify` to confirm structure completeness
+2. **First Investigation:** Create investigation with `/trinity-create-investigation`
+3. **First Workflow:** Use `/trinity-orchestrate` to plan your implementation approach
+4. **Start Building:** Choose workflow based on task scale (Small/Medium/Large)
 
-Trinity will learn and improve with every investigation you complete. The more you use it, the more valuable it becomes.
+Trinity Method will help you maintain high quality standards throughout your development process.

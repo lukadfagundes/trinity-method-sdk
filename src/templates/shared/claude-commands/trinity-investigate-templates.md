@@ -490,15 +490,17 @@ Templates work seamlessly with `/trinity-orchestrate`:
 **Example Workflow:**
 ```bash
 # 1. Create investigation from template
-cp src/templates/investigations/performance.md.template \
-   trinity/investigations/2025-01-07-api-performance.md
+/trinity-create-investigation
+# Choose "Performance" template
+# Fill in API performance details
 
-# 2. Generate workflow plan
-trinity orchestrate
+# 2. Plan your workflow approach
+/trinity-orchestrate
+# Claude guides you through appropriate workflow based on scale
 
 # 3. Execute workflow with template guidance
 # Template guides investigation phase
-# Workflow coordinates implementation
+# Claude adopts agent personas for each phase
 # BAS quality gates ensure quality
 ```
 

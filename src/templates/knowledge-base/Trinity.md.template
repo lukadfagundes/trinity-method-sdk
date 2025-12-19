@@ -128,63 +128,47 @@ Debug_Levels:
 
 ## CRISIS MANAGEMENT PROTOCOLS
 
-### {{FRAMEWORK}}-Specific Crisis Indicators
+### {{FRAMEWORK}}-Specific Quality Indicators
 
-#### Console Error Crisis
+#### Console Error Monitoring
 **Trigger**: >{{ERROR_THRESHOLD}} console errors
-```bash
-# Immediate response
-trinity crisis console-errors
-
-# Actions:
+**Response Protocol**:
 1. Screenshot all errors
 2. Enable verbose debugging
 3. Trace error sources
-4. Document in ISSUES.md
+4. Document in ISSUES.md with error pattern analysis
 5. Implement fixes with full debugging
-```
+6. Update error handling patterns
 
-#### Performance Crisis
+#### Performance Monitoring
 **Trigger**: Performance degradation >{{PERF_DEGRADATION_THRESHOLD}}%
-```bash
-# Immediate response
-trinity crisis performance
-
-# Actions:
+**Response Protocol**:
 1. Profile current performance
 2. Compare with baselines
 3. Identify bottlenecks
 4. Document in Technical-Debt.md
 5. Implement optimizations
-```
+6. Update performance baselines
 
-#### Security Crisis
+#### Security Monitoring
 **Trigger**: Security vulnerability discovered
-```bash
-# Immediate response
-trinity crisis security
-
-# Actions:
+**Response Protocol**:
 1. Isolate vulnerability
 2. Assess impact scope
 3. Implement immediate patch
 4. Full security audit
 5. Update security protocols
-```
+6. Document in ISSUES.md
 
-#### Data Integrity Crisis
+#### Data Integrity Monitoring
 **Trigger**: Data inconsistency detected
-```bash
-# Immediate response
-trinity crisis data-integrity
-
-# Actions:
+**Response Protocol**:
 1. Halt write operations
 2. Backup current state
 3. Audit data sources
 4. Identify corruption point
 5. Restore integrity
-```
+6. Implement validation checks
 
 ---
 

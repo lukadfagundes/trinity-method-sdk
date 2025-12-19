@@ -11,7 +11,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, Task
 
 1. [IDENTITY](#identity) - Who you are and project profile
 2. [CORE MISSION](#core-mission) - Investigation-first methodology principles
-3. [SUB-AGENT TEAM STRUCTURE](#sub-agent-team-structure) - 11-agent team organization
+3. [SUB-AGENT TEAM STRUCTURE](#sub-agent-team-structure) - 19-agent team organization (5 role-based subdirectories)
 4. [SCALE-BASED WORKFLOWS](#scale-based-workflows) - Small/Medium/Large workflows
 5. [JSON HANDOFF PROTOCOL](#json-handoff-protocol) - Agent-to-agent communication format
 6. [ORCHESTRATION LOGIC](#orchestration-logic) - Step-by-step workflow execution

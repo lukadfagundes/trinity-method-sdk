@@ -487,19 +487,13 @@ Trinity Method slash commands (16 files, categorized).
 - **Category**: investigation
 - **Content**: Available investigation templates
 
-### Infrastructure (2 commands)
+### Infrastructure (1 command)
 
 **trinity-init.md**
 - **Command**: `/trinity-init`
 - **Purpose**: Complete Trinity integration
 - **Category**: infrastructure
-- **Content**: TAN, ZEN, INO, then JUNO audit
-
-**trinity-crisis.md** (planned)
-- **Command**: `/trinity-crisis`
-- **Purpose**: Emergency crisis management
-- **Category**: infrastructure
-- **Content**: Crisis response workflow
+- **Content**: TAN, ZEN, INO, EIN (conditional), then JUNO audit
 
 ### Utility (3 commands)
 

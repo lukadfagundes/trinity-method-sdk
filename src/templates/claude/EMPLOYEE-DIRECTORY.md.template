@@ -27,8 +27,15 @@
 
 ### AJ MAESTRO (Implementation Orchestrator)
 **File:** [.claude/agents/leadership/aj-maestro.md](.claude/agents/leadership/aj-maestro.md)
-**Role:** AI-orchestrated implementation coordination using 11-agent team
+**Role:** Implementation coordination using 19-agent team (organized in 5 role-based subdirectories)
 **Specialization:** Planning layer, execution layer, support layer coordination
+
+**Agent Organization:**
+- **Leadership:** ALY, AJ MAESTRO, AJ CC (3 agents)
+- **Deployment:** TAN, ZEN, INO, EIN (4 agents)
+- **Planning:** MON, ROR, TRA, EUS (4 agents)
+- **Implementation:** KIL, BAS, DRA, APO, BON, CAP, URO (7 agents)
+- **Audit:** JUNO (1 agent)
 
 **When to Deploy:**
 - All implementation tasks (Small/Medium/Large)
@@ -38,19 +45,14 @@
 
 **To invoke AJ MAESTRO:**
 - Reference: "Please review `.claude/agents/leadership/aj-maestro.md` to orchestrate implementation"
-- AJ MAESTRO coordinates all 11 specialized agents based on scale-determined workflow
+- AJ MAESTRO coordinates all specialized agents based on scale-determined workflow
 
 ---
 
-### AJ (Claude Code Agent) [DEPRECATED]
+### AJ CC (Code Coordinator)
 **File:** [.claude/agents/leadership/aj-cc.md](.claude/agents/leadership/aj-cc.md)
-**Role:** Legacy tactical implementation
-**Status:** Replaced by AJ MAESTRO + 11-agent team in v2.0
-
-**Migration Note:**
-- v1.0 projects: Continue using AJ for single-agent implementation
-- v2.0 projects: Use AJ MAESTRO for orchestrated multi-agent implementation
-- Use `/trinity-orchestrate` slash command to invoke AJ MAESTRO workflows
+**Role:** Code quality and implementation oversight
+**Specialization:** Tactical implementation coordination
 
 ---
 

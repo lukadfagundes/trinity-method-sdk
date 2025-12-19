@@ -57,63 +57,59 @@ EUS produces structured JSON handoff:
 }
 ```
 
-## Enhanced Documentation (v2.0)
+## EUS Agent Capabilities
 
-Trinity v2.0 includes comprehensive TSDoc for EUS agent:
-- **Trinity Principle:** Explanations of why atomic task decomposition matters
-- **"Why This Exists":** Context for "1 task = 1 commit" rule and TDD enforcement
-- **Practical Examples:** Real-world task decomposition examples
-- **Cross-References:** Links to TRA work planning and workflow orchestration
+EUS specializes in atomic task decomposition following Trinity principles:
+- **Atomic Breakdown:** "1 task = 1 commit" rule ensures clean version control
+- **TDD Enforcement:** Every task follows RED-GREEN-REFACTOR cycle
+- **Task Independence:** Minimal cross-dependencies enable parallel development
+- **Time Boxing:** Maximum 2 hours per task for manageable implementation
 
-**See:** `src/agents/SelfImprovingAgent.ts` (EUS inherits enhanced documentation)
+## Integration with Trinity Workflow
 
-## Integration with Workflow Orchestration
-
-EUS's task decomposition integrates with AJ MAESTRO workflow planning:
+EUS's task decomposition follows TRA's strategic planning:
 
 1. **After TRA:** Strategic plan created with high-level tasks
-2. **EUS Decomposition:** Breaks tasks into atomic units (1 commit each)
-3. **Workflow Execution:** AJ MAESTRO coordinates KIL to execute atomic tasks
-4. **TDD Cycles:** Each task follows RED-GREEN-REFACTOR cycle
+2. **EUS Decomposition (Claude adopts EUS persona):** Breaks tasks into atomic units (1 commit each)
+3. **KIL Execution:** Each atomic task implemented following TDD cycle
+4. **TDD Cycles:** RED (test) → GREEN (implement) → REFACTOR (clean)
 5. **BAS Quality Gates:** Validate after each atomic task commit
 
-**Example in workflow:**
+**Example workflow:**
 ```
 Phase 3: Implementation
-├── Task 5 (EUS): Decompose into atomic tasks [0.5h]
-│   Output: 12 atomic tasks (45min each)
+├── EUS Decomposition: Break plan into atomic tasks
+│   Output: 12 atomic tasks (each ≤2 hours)
 │   Each task = 1 TDD cycle = 1 commit
 │
-└── Task 6 (KIL): Implement feature functionality [4.8h]
+└── KIL Implementation: Execute atomic tasks
     ├── Atomic Task 1: Add validation logic → BAS gates
     ├── Atomic Task 2: Create service layer → BAS gates
     ├── Atomic Task 3: Implement error handling → BAS gates
-    └── ... (12 tasks total)
+    └── ... (continue until all tasks complete)
 ```
 
-**See Also:** `/trinity-orchestrate` for visual workflow with task decomposition
+**See Also:** `/trinity-orchestrate` for complete workflow planning
 
-## Workflow Task Decomposition
+## Scale-Based Task Decomposition
 
-AJ MAESTRO's workflow generator uses EUS-style decomposition:
-- **SMALL workflows:** 2-4 atomic tasks
-- **MEDIUM workflows:** 6-10 atomic tasks
-- **LARGE workflows:** 12-20 atomic tasks
+EUS adjusts decomposition granularity based on task scale:
+- **Small workflows:** 2-4 atomic tasks (direct implementation)
+- **Medium workflows:** 6-10 atomic tasks (phased approach)
+- **Large workflows:** 12-20 atomic tasks (comprehensive breakdown)
 
-Each atomic task in workflow:
+Each atomic task always follows Trinity principles:
 - Maximum 2 hours duration
-- Single responsibility
-- Clear success criteria
-- BAS quality gate validation
-
-**See:** `src/coordination/AJMaestro.ts` for workflow task decomposition logic
+- Single responsibility (one purpose)
+- Clear success criteria (testable)
+- BAS quality gate validation (6 phases)
 
 ## Usage
 
-**Provide implementation plan and EUS will decompose into atomic tasks:**
+**Provide implementation plan and Claude (as EUS) will decompose into atomic tasks:**
 
 What is the implementation plan? (Or provide TRA's output)
 
-**For visual workflow with EUS:**
+**For complete workflow planning:**
 
-Use `/trinity-orchestrate` to see EUS decomposition in complete workflow plan
+Use `/trinity-orchestrate` to plan your implementation with EUS decomposition as a key phase

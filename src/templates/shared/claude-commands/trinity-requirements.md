@@ -45,53 +45,50 @@ MON produces structured JSON handoff:
 }
 ```
 
-## Enhanced Documentation (v2.0)
+## MON Agent Capabilities
 
-Trinity v2.0 includes comprehensive TSDoc for MON agent:
-- **Trinity Principle:** Explanations of why requirements analysis matters
-- **"Why This Exists":** Context for requirements analysis in investigation workflow
-- **Practical Examples:** Real-world requirement analysis examples
-- **Cross-References:** Links to quality standards and related components
+MON specializes in requirements analysis following Trinity principles:
+- **Systematic Analysis:** Structured approach to capturing functional and non-functional requirements
+- **Scale Determination:** Objective criteria for Small/Medium/Large classification
+- **Acceptance Criteria:** Testable Given/When/Then format for clear validation
+- **Risk Assessment:** Proactive identification of constraints and dependencies
 
-**See:** `src/agents/SelfImprovingAgent.ts` (MON inherits enhanced documentation)
+## Integration with Trinity Workflow
 
-## Integration with Workflow Orchestration
-
-MON's requirements analysis integrates with AJ MAESTRO workflow planning:
+MON's requirements analysis is the first phase in Trinity workflows:
 
 1. **Investigation Start:** User describes task or investigation
-2. **MON Analysis:** Determines scale, documents requirements, identifies risks
-3. **Workflow Generation:** `/trinity-orchestrate` uses MON's scale determination
-4. **Phase 1 of Workflow:** Requirements analysis with acceptance criteria
+2. **MON Analysis (Claude adopts MON persona):** Determines scale, documents requirements, identifies risks
+3. **Scale-Based Workflow:** Small/Medium/Large determines next steps
+4. **Phase 1 Output:** Requirements with acceptance criteria in JSON format
 5. **Handoff to ROR:** Requirements feed into technical design phase
 
-**Example in LARGE-scale workflow:**
+**Example in Large-scale workflow:**
 ```
-Phase 1: Requirements Analysis (STOP POINT 1)
-├── Task 1 (MON): Analyze functional requirements [1.0h]
-└── Task 2 (MON): Analyze non-functional requirements [1.0h] (parallel)
+Phase 1: Requirements Analysis
+├── Analyze functional requirements
+└── Analyze non-functional requirements
 
-User approval required before Phase 2 (Design)
+Output: JSON handoff with scale, requirements, acceptance criteria, risks
+Next: ROR technical design phase
 ```
 
-**See Also:** `/trinity-orchestrate` for visual workflow planning
+**See Also:** `/trinity-orchestrate` for complete workflow planning
 
-## Quality Standards Reference
+## Quality Standards
 
-MON follows quality standards for requirements documentation:
-- Clear acceptance criteria (testable with Given/When/Then)
-- Risk identification and mitigation
-- Dependency mapping
-- Scale determination based on objective criteria
-
-**See:** `docs/quality-standards.md` for complete requirements quality standards
+MON follows Trinity quality standards for requirements:
+- **Clear acceptance criteria:** Testable with Given/When/Then format
+- **Risk identification:** Proactive constraint and dependency mapping
+- **Scale determination:** Objective criteria (file count, complexity)
+- **Structured handoff:** JSON format for downstream agents
 
 ## Usage
 
-**Describe your task and MON will analyze requirements:**
+**Describe your task and Claude (as MON) will analyze requirements:**
 
 What functionality needs to be implemented?
 
-**For visual workflow with MON:**
+**For complete workflow planning:**
 
-Use `/trinity-orchestrate` to see MON's role in complete workflow plan
+Use `/trinity-orchestrate` to plan your implementation approach with MON as the first phase

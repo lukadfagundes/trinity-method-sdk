@@ -1,252 +1,383 @@
 ---
-description: Orchestrate implementation using AJ MAESTRO with workflow visualization and 11-agent team
+description: Plan implementation workflow with Trinity Method guidance
 ---
 
-# Trinity Orchestration - AJ MAESTRO
+# Trinity Workflow Planning Guide
 
-**Purpose:** Orchestrate complex implementations with visual workflow planning and the AJ MAESTRO 11-agent team.
+**Purpose:** Guide you through selecting and executing the appropriate Trinity workflow based on your task's scale and complexity.
 
-## Overview
+**Important:** This is a planning guide, not automated orchestration. Claude will adopt different agent personas sequentially to guide you through each phase of your workflow. All agents are Claude with specialized context—there's no parallel AI system running in the background.
 
-AJ MAESTRO provides two powerful orchestration capabilities:
+## How Trinity Workflows Work
 
-1. **Workflow Visualization** (NEW) - Interactive workflow planning with visual tree display, time estimates, and parallelization analysis
-2. **Agent Orchestration** - Coordinate the 11-agent team for implementation
+Trinity uses **persona adoption**: Claude sequentially becomes different specialized agents (MON, ROR, TRA, etc.) to guide you through each workflow phase. You maintain control with manual approval at key checkpoints.
 
-## Workflow Visualization (NEW)
+**You control the workflow:**
+- Choose which phases to execute
+- Approve designs before implementation
+- Validate outputs at stop points
+- Adjust approach based on feedback
 
-Generate and visualize investigation workflows before execution with the `trinity orchestrate` CLI command.
+## Workflow Selection by Scale
 
-### Interactive Workflow Generation
+### Small Tasks (1-2 files, <4 hours)
 
-```bash
-# Interactive mode - AJ MAESTRO prompts for details
-trinity orchestrate
+**When to use:**
+- Simple bug fixes
+- Minor feature additions
+- Documentation updates
+- Configuration changes
 
-# Or specify details upfront
-trinity orchestrate \
-  --title "Implement user authentication" \
-  --type feature \
-  --scale MEDIUM \
-  --complexity 6 \
-  --files "src/auth/,src/middleware/"
+**Workflow:**
+```
+1. Quick Requirements Analysis
+   └── Briefly understand the change needed
+
+2. Direct Implementation
+   ├── Write code following best practices
+   ├── Write tests (TDD: RED-GREEN-REFACTOR)
+   └── BAS Quality Gates validation
+
+3. Commit and Complete
 ```
 
-### Interactive Prompts
-
-AJ MAESTRO guides you through workflow planning:
-
-1. **Investigation title:** What are you building? (e.g., "Add JWT token refresh")
-2. **Investigation type:** bug, feature, performance, security, or technical
-3. **Investigation scale:** SMALL, MEDIUM, or LARGE
-4. **Complexity rating:** 1-10 (where 10 is most complex)
-5. **Files affected:** Which parts of the codebase? (comma-separated)
-
-### Workflow Plan Output
-
-AJ MAESTRO generates a visual tree structure with comprehensive details:
-
-```
-🎼 WORKFLOW PLAN: Implement user authentication
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-📊 Overview
-  Scale:           MEDIUM
-  Total Time:      7.5h estimated
-  Optimized:       6.0h (20% savings through parallelization)
-  Tasks:           8 tasks
-  Stop Points:     2 stop points for approval
-  Agents:          MON, ROR, TRA, EUS, KIL, BAS, DRA, APO
-
-📋 Phases
-
-  Phase 1: Requirements Analysis
-  ├── Task 1 (MON): Analyze functional requirements [1.0h]
-  └── Task 2 (MON): Analyze non-functional requirements [1.0h] (parallel)
-
-  Phase 2: Technical Design (STOP POINT 1)
-  ├── Task 3 (ROR): Create technical design [2.0h]
-  └── Task 4 (ROR): Document architecture decisions [1.0h]
-
-  Phase 3: Implementation
-  ├── Task 5 (EUS): Decompose into atomic tasks [0.5h]
-  └── Task 6 (KIL): Implement feature functionality [4.8h] → BAS 6-phase gates
-
-  Phase 4: Code Review (STOP POINT 2)
-  ├── Task 7 (DRA): Review implementation against design [1.5h]
-  └── Task 8 (APO): Document API and comments [1.0h] (parallel)
-
-⚠️  Execute this workflow? (yes/no):
-```
-
-### Time Optimization
-
-AJ MAESTRO analyzes and optimizes workflow execution:
-
-- **Parallelization Opportunities:** Identifies tasks that can run simultaneously
-- **Dependency Analysis:** Determines optimal task execution order
-- **Time Savings:** Calculates optimized duration vs. sequential execution
-- **Agent Utilization:** Efficiently coordinates agent workload
-
-**Example:** 8 tasks totaling 10h sequential time can complete in 6h with parallelization (40% time savings).
-
-### Scale-Based Workflows
-
-#### Small Scale (0 stop points, 1-4h)
-- **Use Case:** Simple bug fixes, small features affecting 1-2 files
-- **Phases:** 2 phases (Investigation → Implementation)
-- **Agents:** MON, TRA, KIL, BAS
-- **Workflow:**
-  1. Quick analysis and planning
-  2. Direct implementation with BAS quality gates
-- **Time:** 1-4 hours estimated
+**Characteristics:**
+- **Phases:** 2 (Analysis → Implementation)
 - **Stop Points:** 0 (fast iteration)
+- **Agents:** Developer persona (general Claude) + BAS validation
+- **Time:** 1-4 hours
 
-#### Medium Scale (2 stop points, 4-8h)
-- **Use Case:** Features, refactoring affecting 3-5 files
-- **Phases:** 4 phases (Requirements → Design → Implementation → Review)
-- **Agents:** MON, ROR, TRA, EUS, KIL, BAS, DRA, APO
-- **Stop Points:**
-  - **Stop 1:** Design approval (after Phase 2)
-  - **Stop 2:** Final review (after Phase 4)
-- **Time:** 4-8 hours estimated
-- **Parallelization:** 15-25% time savings
+**Start with:** Direct implementation or `/trinity-start`
 
-#### Large Scale (4 stop points, >8h)
-- **Use Case:** Major features, architecture changes affecting 6+ files
-- **Phases:** 6 phases (Requirements → Design → Planning → Implementation → Testing → Review)
-- **Agents:** All 11 agents coordinated
-- **Stop Points:**
-  - **Stop 1:** Requirements approval (after Phase 1)
-  - **Stop 2:** Design approval (after Phase 2)
-  - **Stop 3:** Plan approval (after Phase 3)
-  - **Stop 4:** Final review with JUNO audit (after Phase 6)
-- **Time:** >8 hours estimated
-- **Parallelization:** 30-40% time savings
+---
 
-## The 11-Agent Team
+### Medium Tasks (3-5 files, 4-8 hours)
+
+**When to use:**
+- New features with moderate scope
+- Refactoring multiple components
+- API changes
+- Performance optimizations affecting several files
+
+**Workflow:**
+```
+Phase 1: Requirements Analysis (MON)
+├── Analyze functional requirements
+├── Define acceptance criteria (Given/When/Then format)
+├── Identify risks and dependencies
+└── Determine scale confirmation
+
+📋 STOP POINT 1: Review requirements
+   User approval required before design phase
+
+Phase 2: Technical Design (ROR)
+├── Create function signatures (≤2 parameters)
+├── Define error handling strategy
+├── Document architecture decisions (ADR)
+└── Define Design Doc compliance criteria
+
+📋 STOP POINT 2: Review design
+   User approval required before implementation
+
+Phase 3: Implementation Planning (TRA)
+├── Break design into implementation tasks
+├── Sequence tasks by dependencies
+├── Identify parallelization opportunities
+└── Define BAS quality gate checkpoints
+
+Phase 4: Implementation (Developer persona + BAS)
+├── Implement following design
+├── Write tests (TDD cycle for each task)
+├── BAS 6-phase validation after each commit:
+│   1. Linting (auto-fix)
+│   2. Structure validation
+│   3. Build verification
+│   4. Testing (all tests pass)
+│   5. Coverage check (≥80%)
+│   6. Best practices review
+└── Commit atomically (1 task = 1 commit)
+
+Phase 5: Code Review (DRA)
+├── Validate Design Doc compliance (≥70% required)
+├── Check code quality standards
+├── Verify test coverage
+└── Approve for completion
+```
+
+**Characteristics:**
+- **Phases:** 5 (Requirements → Design → Planning → Implementation → Review)
+- **Stop Points:** 2 (after requirements, after design)
+- **Agents:** MON → ROR → TRA → Developer + BAS → DRA
+- **Time:** 4-8 hours
+- **Parallelization:** 15-25% time savings through task independence
+
+**Start with:** `/trinity-requirements`
+
+---
+
+### Large Tasks (6+ files, >8 hours)
+
+**When to use:**
+- Major features with wide impact
+- Architecture changes
+- System refactoring
+- Multi-component features
+
+**Workflow:**
+```
+Phase 1: Requirements Analysis (MON)
+├── Analyze functional requirements
+├── Analyze non-functional requirements (performance, security, etc.)
+├── Define comprehensive acceptance criteria
+├── Risk assessment and mitigation strategies
+└── Dependency mapping
+
+📋 STOP POINT 1: Review requirements
+   User approval required before design phase
+
+Phase 2: Technical Design (ROR)
+├── Create comprehensive Design Doc
+│   ├── Function signatures with types
+│   ├── Input/output contracts
+│   ├── Error handling strategy
+│   └── Architecture overview
+├── Write Architecture Decision Records (ADRs)
+│   ├── Decision rationale
+│   ├── Alternatives considered
+│   └── Trade-offs and implications
+└── Define Design Doc compliance criteria
+
+📋 STOP POINT 2: Review design
+   User approval required before planning phase
+
+Phase 3: Strategic Planning (TRA)
+├── Break design into high-level tasks
+├── Create 3-phase implementation structure:
+│   1. Setup (infrastructure, scaffolding)
+│   2. Core (main functionality)
+│   3. Finalize (polish, edge cases)
+├── Identify dependencies and sequencing
+├── Estimate timelines
+└── Plan BAS quality gate integration points
+
+📋 STOP POINT 3: Review plan
+   User approval required before decomposition
+
+Phase 4: Task Decomposition (EUS)
+├── Break strategic plan into atomic tasks
+│   └── Each task: ≤2 hours, single responsibility
+├── Plan TDD cycles for each task:
+│   └── RED (write test) → GREEN (implement) → REFACTOR (clean)
+├── Define commit strategy (1 task = 1 commit)
+└── Create task execution sequence
+
+Phase 5: Implementation (KIL + BAS)
+For each atomic task:
+├── RED: Write failing test
+├── GREEN: Implement minimal code to pass
+├── REFACTOR: Clean up and optimize
+├── BAS 6-phase validation:
+│   1. Linting (ESLint/Prettier with auto-fix)
+│   2. Structure validation
+│   3. Build verification
+│   4. Testing (all tests must pass)
+│   5. Coverage check (≥80% required)
+│   6. Best practices review
+└── Commit (atomic, 1 task = 1 commit)
+
+Phase 6: Code Review (DRA)
+├── Validate Design Doc compliance (≥70% acceptance criteria met)
+├── Review code quality against standards
+├── Verify comprehensive test coverage
+├── Check for technical debt
+└── Approve or request changes
+
+Phase 7: Final Audit (JUNO)
+├── Comprehensive quality audit
+├── Verify all BAS phases passed
+├── Check documentation completeness
+├── Validate compliance score
+└── Generate audit report (trinity/reports/)
+
+📋 STOP POINT 4: Final review
+   User approval for completion
+```
+
+**Characteristics:**
+- **Phases:** 7 (Requirements → Design → Planning → Decomposition → Implementation → Review → Audit)
+- **Stop Points:** 4 (requirements, design, plan, final)
+- **Agents:** MON → ROR → TRA → EUS → KIL + BAS → DRA → JUNO
+- **Time:** >8 hours
+- **Parallelization:** 30-40% time savings through atomic task independence
+
+**Start with:** `/trinity-requirements`
+
+---
+
+## BAS Quality Gates (All Workflows)
+
+Every implementation phase includes BAS 6-phase validation:
+
+### Phase 1: Linting ✨
+- ESLint/Prettier auto-fix enabled
+- Code formatting consistency
+- Basic syntax validation
+
+### Phase 2: Structure 🏗️
+- File organization validation
+- Import/export consistency
+- Dependency structure
+
+### Phase 3: Build ⚙️
+- TypeScript compilation
+- Build process verification
+- No build errors
+
+### Phase 4: Testing ✅
+- All tests must pass
+- Unit tests for new code
+- Integration tests where applicable
+
+### Phase 5: Coverage 📊
+- Minimum 80% code coverage
+- Critical paths fully tested
+- Edge cases validated
+
+### Phase 6: Best Practices 🎯
+- Design principles followed
+- No code duplication (DRY)
+- Function complexity limits (≤2 params, <200 lines, ≤4 nesting)
+- Error handling present
+
+**Note:** BAS gates are manual checkpoints where Claude (as BAS) reviews your code. If you have CI/CD enabled (via EIN), these can be automated.
+
+---
+
+## Trinity Agents Quick Reference
 
 **Planning Layer:**
-- **MON** - Requirements analysis
-- **ROR** - Technical design & ADRs
-- **TRA** - Work planning
-- **EUS** - Task decomposition
+- **MON** - Requirements analysis and scale determination
+- **ROR** - Technical design and ADR documentation
+- **TRA** - Strategic work planning and sequencing
+- **EUS** - Atomic task decomposition (1 task = 1 commit)
 
 **Execution Layer:**
-- **KIL** - TDD implementation (RED-GREEN-REFACTOR)
-- **BAS** - 6-phase quality gate
-- **DRA** - Code review & Design Doc compliance
+- **KIL** - TDD implementation specialist (RED-GREEN-REFACTOR)
+- **BAS** - 6-phase quality gate validator
+- **DRA** - Code review and Design Doc compliance
 
 **Support Layer:**
-- **APO** - API documentation
-- **BON** - Dependency management
-- **CAP** - Configuration files
-- **URO** - Code refactoring
+- **APO** - API documentation and inline comments
+- **BON** - Dependency management and security
+- **CAP** - Configuration and environment files
+- **URO** - Code refactoring and technical debt reduction
 
-## Workflow + Execution
+**Audit Layer:**
+- **JUNO** - Comprehensive quality audits and compliance reports
 
-Complete end-to-end process:
+---
 
-1. **Plan** - Generate workflow with `trinity orchestrate`
-2. **Review** - Examine phases, tasks, dependencies, time estimates
-3. **Approve** - Confirm workflow before execution (or adjust scale/complexity)
-4. **Execute** - AJ MAESTRO coordinates agent team through workflow
-5. **Stop Points** - User approval required at each stop point
-6. **Quality Gates** - BAS validates at each implementation phase
-7. **Complete** - Final review, documentation, and archival
+## Decision Tree: Which Workflow?
+
+```
+Start: What are you building?
+│
+├─ Affects 1-2 files? → SMALL workflow (2 phases, 0 stop points)
+│  └─ Direct implementation with BAS gates
+│
+├─ Affects 3-5 files? → MEDIUM workflow (5 phases, 2 stop points)
+│  └─ /trinity-requirements → Design approval → Implementation
+│
+└─ Affects 6+ files? → LARGE workflow (7 phases, 4 stop points)
+   └─ Full planning workflow with comprehensive validation
+```
+
+**Complexity Factors:**
+- How many files will change?
+- Does this affect the architecture?
+- Is there uncertainty in the approach?
+- Will this require significant testing?
+
+**When in doubt:** Start with `/trinity-requirements` and let MON determine the scale.
+
+---
 
 ## Example Usage
 
-### Interactive Planning Session
+### Example 1: Small Task
+```
+User: "Fix the date validation bug in UserForm component"
 
-```bash
-$ trinity orchestrate
+Claude: This looks like a Small task (1 file, <1 hour). Let's proceed directly:
 
-🎼 AJ MAESTRO Workflow Planning
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Investigation title: Add JWT token refresh functionality
-Investigation type (bug/feature/performance/security/technical): feature
-Investigation scale (SMALL/MEDIUM/LARGE): MEDIUM
-Complexity (1-10): 6
-Files affected: src/auth/token-service.ts,src/middleware/auth.ts
-
-Generating workflow plan...
-
-[Displays workflow plan with tree visualization - see example above]
-
-⚠️  Execute this workflow? (yes/no): yes
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Phase 1: Requirements Analysis
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-✓ Task 1: Analyze functional requirements (MON) [1.0h] COMPLETE
-✓ Task 2: Analyze non-functional requirements (MON) [1.0h] COMPLETE
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Phase 2: Technical Design
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🔄 Task 3: Create technical design (ROR) [in progress...]
+1. Analysis: Date validation is currently allowing invalid formats
+2. Implementation:
+   - Write failing test for date edge cases (RED)
+   - Fix validation logic (GREEN)
+   - Refactor for clarity (REFACTOR)
+3. BAS validation: All 6 phases pass ✅
+4. Commit: "fix(UserForm): validate date format edge cases"
 ```
 
-### CLI with All Parameters
+### Example 2: Medium Task
+```
+User: "Add JWT token refresh functionality"
 
-```bash
-# Generate workflow without prompts
-trinity orchestrate \
-  --title "Optimize database query performance" \
-  --type performance \
-  --scale LARGE \
-  --complexity 8 \
-  --files "src/database/,src/models/" \
-  --execute
+Claude (as MON): This is a Medium-scale task (affects 3 files: auth service, middleware, types).
+
+📋 Requirements:
+- Functional: Automatic token refresh on expiry
+- Acceptance criteria:
+  ✅ Given an expired token
+  ✅ When the user makes an authenticated request
+  ✅ Then the system automatically refreshes the token
+- Risks: Race conditions in concurrent requests
+
+[STOP POINT 1] - Approve requirements?
+
+User: Approved
+
+Claude (as ROR): Creating technical design...
+[Design Doc with function signatures, ADR for refresh strategy]
+
+[STOP POINT 2] - Approve design?
+
+User: Approved
+
+Claude (as TRA): Creating implementation plan...
+[3-phase plan with 6 tasks, BAS gate checkpoints]
+
+Claude: Beginning implementation with BAS validation...
+[KIL + BAS execute tasks with TDD]
+
+Claude (as DRA): Reviewing implementation...
+[Design Doc compliance: 85% ✅, Code quality: PASS ✅]
+
+Complete! ✅
 ```
 
-### Check Progress of Running Workflow
+### Example 3: Large Task
+```
+User: "Implement user authentication system with email verification"
 
-```bash
-trinity orchestrate --progress
+Claude (as MON): This is a Large-scale task (8+ files, complex workflow).
+
+Use /trinity-requirements to begin comprehensive analysis...
 ```
 
-Shows:
-- Overall progress bar
-- Phase-by-phase completion
-- Current task status
-- Time elapsed vs. estimated
-- Next stop point
-
-## Usage
-
-Describe your implementation task and AJ MAESTRO will:
-1. Determine scale (Small/Medium/Large) or accept your scale
-2. Generate visual workflow plan with time estimates
-3. Coordinate appropriate planning agents
-4. Execute with quality gates and stop points
-5. Ensure compliance, testing, and documentation
-
-## Best Practices
-
-1. **Start with Planning:** Always visualize workflow before execution
-2. **Honest Complexity Ratings:** Accurate ratings improve time estimates and agent coordination
-3. **Review Stop Points:** Use stop points to validate direction and catch issues early
-4. **Trust the Process:** Let agents handle implementation details, you handle approvals
-5. **Learn from Workflows:** Completed workflows improve future estimates through learning system
+---
 
 ## Related Commands
 
-- `/trinity-plan` - TRA strategic planning (complementary to orchestrate)
-- `/trinity-crisis` - Crisis recovery with guided protocols
-- `/trinity-learning-status --dashboard` - View workflow optimization metrics
+- `/trinity-requirements` - Start with MON requirements analysis
+- `/trinity-design` - Create technical design with ROR
+- `/trinity-plan` - Strategic planning with TRA
+- `/trinity-decompose` - Atomic task breakdown with EUS
+- `/trinity-start` - Guided workflow selection
+- `/trinity-workorder` - Create structured work order for tracking
 
-## Source Files
+---
 
-- `src/cli/commands/orchestrate.ts` - CLI command implementation
-- `src/coordination/AJMaestro.ts` - Workflow plan generator (778 lines)
-- `src/coordination/WorkflowVisualizer.ts` - Tree visualization (469 lines)
-- `src/coordination/types.ts` - Workflow type definitions
+## What would you like to build?
 
-## What would you like AJ MAESTRO to orchestrate?
-
-Describe your implementation task to begin workflow planning. AJ MAESTRO will generate a visual workflow plan with time estimates, parallelization analysis, and agent assignments.
+Describe your task and Claude will help you select the appropriate workflow and guide you through each phase with manual approval at stop points.
