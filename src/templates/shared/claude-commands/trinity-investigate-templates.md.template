@@ -470,11 +470,20 @@ Every investigation should reference the Design Doc:
 
 ### 4. Archive When Complete
 
+**IMPORTANT:** Archiving is handled automatically by the `/trinity-end` command.
+
+**Do NOT manually move files to archive.** When you're ready to end your session:
+
 ```bash
-# Move completed investigation to archive
-mv trinity/investigations/[investigation].md \
-   trinity/archive/investigations/[YYYY-MM]/
+/trinity-end
 ```
+
+This command will:
+- Archive all completed investigations to `trinity/archive/investigations/`
+- Archive work orders to `trinity/archive/work-orders/`
+- Archive reports to `trinity/archive/reports/`
+- Archive session logs to `trinity/archive/sessions/`
+- Organize archives by date (YYYY-MM format)
 
 ## Integration with Workflow Orchestration
 
