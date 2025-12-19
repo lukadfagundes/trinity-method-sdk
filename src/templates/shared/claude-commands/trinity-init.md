@@ -395,34 +395,185 @@ Suggestions:
 **Example:** Frontend changes don't need backend context. Adaptive placement ensures agents get only relevant context.
 
 ## Initialization Process
-1. **TAN (Structure Specialist)** - Verify Trinity structure:
-   - Check that all folders exist (they should from deploy)
-   - Verify folder permissions
-   - Report any structural issues (don't create folders - they already exist)
 
-2. **ZEN (Knowledge Base Specialist)** - Populate Trinity documentation:
-   - Analyze existing codebase
-   - POPULATE trinity/knowledge-base/ARCHITECTURE.md with detailed architecture analysis
-   - POPULATE trinity/knowledge-base/ISSUES.md with discovered issues
-   - POPULATE trinity/knowledge-base/To-do.md with identified tasks
-   - POPULATE trinity/knowledge-base/Technical-Debt.md with technical debt assessment
-   - Update existing Trinity.md if needed
+### Phase 1: TAN (Structure Specialist) - Verify Trinity structure
+- Check that all folders exist (they should from deploy)
+- Verify folder permissions
+- Report any structural issues (don't create folders - they already exist)
 
-3. **INO (Context Specialist)** - Establish context hierarchy:
-   - Analyze codebase context and complexity
-   - UPDATE existing CLAUDE.md files with project-specific instructions
-   - POPULATE trinity/knowledge-base/ISSUES.md database structure
-   - Verify CLAUDE.md hierarchy is complete
+### Phase 2: ZEN (Knowledge Base Specialist) - Populate Trinity documentation
+- Analyze existing codebase
+- POPULATE trinity/knowledge-base/ARCHITECTURE.md with detailed architecture analysis
+- POPULATE trinity/knowledge-base/ISSUES.md with discovered issues
+- POPULATE trinity/knowledge-base/To-do.md with identified tasks
+- POPULATE trinity/knowledge-base/Technical-Debt.md with technical debt assessment
+- Update existing Trinity.md if needed
 
-4. **JUNO (Quality Auditor)** - Perform comprehensive audit:
-   - Verify all folders exist and are writable
-   - Verify all documentation files are populated (not empty)
-   - Validate CLAUDE.md hierarchy completeness
-   - Check that knowledge base documents have real content
-   - Generate audit report in trinity/reports/
-   - Report findings to user with compliance score
+### Phase 3: INO (Context Specialist) - Establish context hierarchy
+- Analyze codebase context and complexity
+- UPDATE existing CLAUDE.md files with project-specific instructions
+- POPULATE trinity/knowledge-base/ISSUES.md database structure
+- Verify CLAUDE.md hierarchy is complete
 
-**Outcome:** Trinity Method fully integrated and audited, ready for first workflow with v2.0 features activated.
+### Phase 4: JUNO (Quality Auditor) - Perform comprehensive audit
+- Verify all folders exist and are writable
+- Verify all documentation files are populated (not empty)
+- Validate CLAUDE.md hierarchy completeness
+- Check that knowledge base documents have real content
+- Generate audit report in trinity/reports/
+- Report findings to user with compliance score
+
+### Phase 5: EIN (CI/CD Specialist) - Review CI/CD and Pre-commit Configuration
+
+**MANDATORY STEP:** Check for CI/CD files and invoke EIN if present.
+
+**File Detection (Use Bash tool to check):**
+
+1. **Check for GitHub Actions workflows:**
+   ```bash
+   ls .github/workflows/ci.yml 2>/dev/null && echo "CI FOUND" || echo "CI NOT_FOUND"
+   ls .github/workflows/cd.yml 2>/dev/null && echo "CD FOUND" || echo "CD NOT_FOUND"
+   ```
+
+2. **Check for pre-commit configuration:**
+   ```bash
+   ls .pre-commit-config.yaml 2>/dev/null && echo "FOUND" || echo "NOT_FOUND"
+   ```
+
+**Decision Tree:**
+
+- **IF any CI/CD files exist (ci.yml, cd.yml, OR pre-commit config):**
+  - ✅ **Invoke EIN** - Adopt EIN (CI/CD Specialist) persona
+  - Continue with "EIN's Responsibilities" below
+  - Include EIN's work in JUNO's audit report
+
+- **IF no CI/CD files exist:**
+  - ⏭️ **Skip EIN phase** - No CI/CD templates to review
+  - Add to JUNO report: "EIN Phase: Skipped (no CI/CD templates deployed)"
+  - Inform user they can set up CI/CD later with `/trinity-cicd`
+  - Continue to "Post-Init Next Steps"
+
+**EIN's Responsibilities (Review & Customize Deployed Templates):**
+
+**IMPORTANT:** Templates were already deployed by `trinity deploy`. EIN's job is to:
+1. **Review** the deployed files
+2. **Customize** them for the detected framework/runtime
+3. **Validate** configuration is correct
+4. **Provide** activation instructions
+
+**1. GitHub Actions CI Workflow** (if `.github/workflows/ci.yml` exists):
+   - **Read** the deployed ci.yml file
+   - **Verify** all 6 BAS quality gate phases are present:
+     - Phase 1: Linting with auto-fix
+     - Phase 2: Structure validation
+     - Phase 3: Build validation
+     - Phase 4: Testing (all tests pass)
+     - Phase 5: Coverage check (≥80%)
+     - Phase 6: Best practices validation
+   - **Customize** for detected runtime (Node.js, Flutter, Python, etc.)
+   - **Validate** triggers are correct (push to main/dev, pull requests)
+   - **Confirm** coverage threshold enforcement is configured
+
+**2. GitHub Actions CD Workflow** (if `.github/workflows/cd.yml` exists):
+   - **Read** the deployed cd.yml file
+   - **Verify** deployment stages (CI gate → build → staging → production)
+   - **Validate** CI workflow is called as prerequisite
+   - **Customize** deployment commands for project type
+   - **Confirm** environment protection is documented
+   - **Validate** artifact management (upload/download between jobs)
+
+**3. Pre-commit Hooks** (if `.pre-commit-config.yaml` exists):
+   - **Read** the deployed .pre-commit-config.yaml file
+   - **Verify** all hooks are configured:
+     - Standard hooks (trailing whitespace, YAML/JSON validation, etc.)
+     - ESLint with auto-fix
+     - TypeScript type checking (if applicable)
+     - Jest for changed files
+   - **Customize** for project framework (remove TypeScript hooks if not TypeScript project)
+   - **Provide** installation instructions
+
+**EIN Output Format:**
+
+After reviewing and customizing CI/CD files, EIN should report:
+
+```
+### Phase 5: EIN (CI/CD Specialist) - CI/CD Configuration ✅
+
+**Files Reviewed & Customized:**
+- .github/workflows/ci.yml ✅
+  - Status: Ready (customized for {{FRAMEWORK}})
+  - BAS 6-phase quality gates configured
+  - Runtime: {{DETECTED_RUNTIME}}
+  - Coverage: ≥80% enforced
+
+- .github/workflows/cd.yml ✅
+  - Status: Ready (deployment commands customized)
+  - Staging: Auto-deploy on main branch
+  - Production: Deploy via version tags (v*)
+  - Environments: Require setup (see instructions below)
+
+- .pre-commit-config.yaml ✅ (if deployed)
+  - Status: Ready (customized for {{FRAMEWORK}})
+  - Hooks: Linting, type checking, tests
+  - Activation: Requires local install (see instructions below)
+
+**Customizations Applied:**
+- ✅ Detected framework: {{FRAMEWORK}}
+- ✅ Configured runtime: {{DETECTED_RUNTIME}}
+- ✅ Adjusted build commands for framework
+- ✅ Configured test commands
+- ✅ Set coverage threshold to 80%
+
+**Activation Instructions:**
+
+📋 **Step 1: Activate GitHub Actions Workflows**
+```bash
+# Workflows are already in place, just commit and push
+git add .github/workflows/ci.yml .github/workflows/cd.yml
+git commit -m "Activate Trinity CI/CD pipelines"
+git push
+```
+
+📋 **Step 2: Set Up GitHub Environments** (Required for CD)
+1. Go to: Repository Settings → Environments
+2. Create "staging" environment:
+   - No protection rules needed
+3. Create "production" environment:
+   - ✅ Enable "Required reviewers" (add team members)
+   - ⏱️ Optional: "Wait timer" (e.g., 5 minutes before deploy)
+
+📋 **Step 3: Activate Pre-commit Hooks** (Optional but Recommended)
+```bash
+# Install pre-commit framework
+pip install pre-commit
+
+# Activate hooks in repository
+pre-commit install
+
+# Test hooks (optional)
+pre-commit run --all-files
+```
+
+📋 **Step 4: Monitor First Run**
+- CI will run automatically on next push
+- Check: https://github.com/{{USER}}/{{REPO}}/actions
+- All 6 BAS phases should pass
+
+💡 **What happens now:**
+- Every commit/PR runs through CI quality gates
+- Push to main → Auto-deploy to staging
+- Create version tag (v1.0.0) → Deploy to production (with approval)
+- Pre-commit hooks validate locally before push
+
+**Ready to activate!** Follow the steps above to enable Trinity quality automation.
+```
+
+**Include in JUNO Report:**
+- Add "EIN Phase: Complete" to audit summary
+- Document which CI/CD files were reviewed
+- Include activation instructions
+
+**Outcome:** Trinity Method fully integrated, audited, and CI/CD templates reviewed (if deployed).
 
 **Note:** This command should be run once after initial deployment. The deployment created the structure; this command populates it with project-specific content.
 

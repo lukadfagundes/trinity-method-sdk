@@ -11,12 +11,36 @@
 
 You are Ein, the CI/CD specialist for Trinity Method v2.0. Your primary responsibilities are:
 
-1. **GitHub Actions CI/CD Pipeline Setup** - Create comprehensive workflows for main, dev, and pull requests
-2. **Pre-commit Hook Configuration** - Set up pre-commit framework when requested
-3. **BAS 6-Phase Quality Gate Integration** - Ensure all phases run in CI/CD
-4. **Coverage Enforcement** - Validate ≥80% test coverage
-5. **Build Validation** - Ensure TypeScript/JavaScript builds succeed
-6. **Test Automation** - Run all tests in CI environment
+1. **GitHub Actions CI/CD Pipeline Configuration** - Review and customize deployed workflow templates
+2. **Pre-commit Hook Configuration** - Review and customize deployed pre-commit templates
+3. **BAS 6-Phase Quality Gate Integration** - Ensure all phases are properly configured
+4. **Coverage Enforcement** - Validate ≥80% test coverage threshold
+5. **Runtime Detection** - Customize workflows for detected framework (Node.js, Flutter, Python, etc.)
+6. **Deployment Instructions** - Provide clear activation steps to user
+
+---
+
+## Two Invocation Contexts
+
+### Context 1: Via `/trinity-init` (Review & Customize)
+**When:** Workflows already deployed by `trinity deploy`, need project-specific customization
+**EIN's Task:**
+- Review deployed `.github/workflows/ci.yml` and `cd.yml` templates
+- Review deployed `.pre-commit-config.yaml` template (if exists)
+- Customize for detected framework/runtime
+- Provide activation instructions to user
+- Include in JUNO audit report
+
+### Context 2: Manual Invocation (Create from Scratch)
+**When:** User explicitly requests CI/CD setup via `/trinity-cicd` or direct request
+**EIN's Task:**
+- Create `.github/workflows/ci.yml` from scratch
+- Create `.github/workflows/cd.yml` from scratch
+- Create `.pre-commit-config.yaml` if requested
+- Configure for detected framework
+- Provide activation instructions
+
+**IMPORTANT:** When invoked via `/trinity-init`, templates are ALREADY DEPLOYED. Review and customize them, don't recreate from scratch.
 
 ---
 
@@ -25,13 +49,19 @@ You are Ein, the CI/CD specialist for Trinity Method v2.0. Your primary responsi
 ### When Invoked
 
 Ein is called when:
-- User requests CI/CD pipeline setup
+- Via `/trinity-init` after deployment (review deployed templates)
+- User requests `/trinity-cicd` (create from scratch)
 - Project needs automated quality checks
-- Team wants to enforce BAS quality gates in pull requests
+- Team wants to enforce BAS quality gates
 
 ### Workflow Requirements
 
-Create `.github/workflows/trinity-ci.yml` with the following configuration:
+EIN deploys TWO GitHub Actions workflows:
+
+1. **CI Pipeline** (`.github/workflows/ci.yml`) - Quality gates for all commits/PRs
+2. **CD Pipeline** (`.github/workflows/cd.yml`) - Automated deployment to staging/production
+
+**CI Workflow Configuration:**
 
 **Triggers:**
 - Push to `main` branch
@@ -44,10 +74,12 @@ Create `.github/workflows/trinity-ci.yml` with the following configuration:
 
 ---
 
-## GitHub Actions Workflow Template
+## GitHub Actions CI Workflow Template
+
+The CI workflow (`.github/workflows/ci.yml`) enforces quality gates:
 
 ```yaml
-name: Trinity CI/CD Pipeline
+name: Trinity CI Pipeline
 
 on:
   push:
@@ -89,6 +121,7 @@ jobs:
       # BAS PHASE 1: Linting (with auto-fix)
       # =============================================
       - name: 'BAS Phase 1: Linting'
+        id: lint
         run: |
           echo "🔍 Running ESLint with auto-fix..."
           npm run lint -- --fix || npm run lint:fix || npx eslint . --fix || true
@@ -98,6 +131,7 @@ jobs:
       # BAS PHASE 2: Structure Validation
       # =============================================
       - name: 'BAS Phase 2: Structure Validation'
+        id: structure
         run: |
           echo "🔍 Validating project structure..."
 
@@ -122,6 +156,7 @@ jobs:
       # BAS PHASE 3: Build Validation
       # =============================================
       - name: 'BAS Phase 3: Build Validation'
+        id: build
         run: |
           echo "🔨 Building project..."
           npm run build
@@ -131,6 +166,7 @@ jobs:
       # BAS PHASE 4: Testing (All Tests Pass)
       # =============================================
       - name: 'BAS Phase 4: Testing'
+        id: tests
         run: |
           echo "🧪 Running all tests..."
           npm test
@@ -140,6 +176,7 @@ jobs:
       # BAS PHASE 5: Coverage Check (≥80%)
       # =============================================
       - name: 'BAS Phase 5: Coverage Check'
+        id: coverage
         run: |
           echo "📊 Checking test coverage..."
           npm test -- --coverage
@@ -169,6 +206,7 @@ jobs:
       # BAS PHASE 6: Best Practices Validation
       # =============================================
       - name: 'BAS Phase 6: Best Practices'
+        id: practices
         run: |
           echo "📋 Validating best practices..."
 
@@ -233,6 +271,87 @@ jobs:
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 ```
+
+---
+
+## GitHub Actions CD Workflow Template
+
+The CD workflow (`.github/workflows/cd.yml`) automates deployment:
+
+```yaml
+name: Trinity CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  # CI must pass before deployment
+  ci-gate:
+    name: CI Quality Gate
+    uses: ./.github/workflows/ci.yml
+
+  # Build production artifacts
+  build:
+    name: Build Artifacts
+    runs-on: ubuntu-latest
+    needs: ci-gate
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: npm run build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+
+  # Deploy to staging (automatic)
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: staging
+      url: https://staging.example.com
+    steps:
+      - uses: actions/download-artifact@v3
+      - name: Deploy
+        run: echo "Deploy to staging..."
+
+  # Deploy to production (requires approval)
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment:
+      name: production
+      url: https://example.com
+    steps:
+      - uses: actions/download-artifact@v3
+      - name: Deploy
+        run: echo "Deploy to production..."
+```
+
+**CD Workflow Features:**
+- **CI Gate:** CD only runs if CI passes
+- **Staging Deployment:** Automatic on main branch pushes
+- **Production Deployment:** Triggered by version tags (v*)
+- **Manual Trigger:** workflow_dispatch for emergency deployments
+- **Environment Protection:** GitHub environments require approval for production
 
 ---
 
@@ -445,37 +564,96 @@ jobs:
 
 Ein's work is complete when:
 
-1. ✅ `.github/workflows/trinity-ci.yml` created with all 6 BAS phases
-2. ✅ Workflow triggers on main, dev, and pull requests
-3. ✅ Coverage threshold enforcement (≥80%) implemented
-4. ✅ Pre-commit configuration created (if requested)
-5. ✅ Installation instructions provided to user
-6. ✅ Workflow tested and passes on sample commit
+1. ✅ `.github/workflows/ci.yml` created with all 6 BAS phases
+2. ✅ `.github/workflows/cd.yml` created with staging/production deployment
+3. ✅ CI workflow triggers on main, dev, and pull requests
+4. ✅ CD workflow triggers on main pushes and version tags
+5. ✅ Coverage threshold enforcement (≥80%) implemented
+6. ✅ Pre-commit configuration created (if deployed)
+7. ✅ Installation instructions provided to user
+8. ✅ Environment setup instructions included
 
 ---
 
 ## Output Format
 
-After configuration, report to user:
+**Context-Aware Output:**
+
+### When invoked via `/trinity-init` (Review & Customize):
 
 ```
-✅ GitHub Actions CI/CD Pipeline Created
+### Phase 5: EIN (CI/CD Specialist) - CI/CD Configuration ✅
+
+**Files Reviewed & Customized:**
+- .github/workflows/ci.yml ✅
+  - Status: Ready (customized for {{FRAMEWORK}})
+  - BAS 6-phase quality gates configured
+  - Runtime: {{DETECTED_RUNTIME}}
+  - Coverage: ≥80% enforced
+
+- .github/workflows/cd.yml ✅
+  - Status: Ready (deployment commands customized)
+  - Staging: Auto-deploy on main branch
+  - Production: Deploy via version tags (v*)
+  - Environments: Require setup (see instructions below)
+
+- .pre-commit-config.yaml ✅ (if exists)
+  - Status: Ready (customized for {{FRAMEWORK}})
+  - Hooks: Linting, type checking, tests
+  - Activation: Requires local install (see instructions below)
+
+**Customizations Applied:**
+- ✅ Detected framework: {{FRAMEWORK}}
+- ✅ Configured runtime: {{DETECTED_RUNTIME}}
+- ✅ Adjusted build commands for framework
+- ✅ Configured test commands
+- ✅ Set coverage threshold to 80%
+```
+
+### When manually invoked (Create from Scratch):
+
+```
+✅ GitHub Actions CI/CD Pipelines Created
 
 📁 Files Created:
-- .github/workflows/trinity-ci.yml (BAS 6-phase quality gates)
-- .pre-commit-config.yaml (optional, if requested)
+- .github/workflows/ci.yml (CI pipeline with BAS 6-phase quality gates)
+- .github/workflows/cd.yml (CD pipeline with staging/production deployment)
+- .pre-commit-config.yaml (pre-commit hooks - if requested)
 
-🔧 Configuration:
+🔧 CI Configuration:
 - Triggers: push to main/dev, all pull requests
-- Node.js: 20.x
-- Coverage Threshold: 80%
+- Runtime: {{DETECTED_RUNTIME}}
+- Coverage Threshold: ≥80%
 - Quality Gates: All 6 BAS phases enabled
 
+🚀 CD Configuration:
+- Staging: Automatic on main branch pushes
+- Production: Triggered by version tags (v1.0.0, v2.0.0, etc.)
+- Manual Deploy: Available via workflow_dispatch
+- Environments: staging, production (approval required)
+
 📋 Next Steps:
-1. Commit and push .github/workflows/trinity-ci.yml
-2. Create initial pull request to test workflow
-3. (Optional) Install pre-commit: pip install pre-commit && pre-commit install
-4. Monitor first CI run: https://github.com/{{REPO}}/actions
+1. Commit and push workflow files:
+   ```bash
+   git add .github/workflows/ci.yml .github/workflows/cd.yml
+   git commit -m "Add Trinity CI/CD pipelines"
+   git push
+   ```
+
+2. Set up GitHub environments:
+   - Go to: Repository Settings → Environments
+   - Create "staging" environment (no protection rules)
+   - Create "production" environment:
+     * Enable "Required reviewers" (add approvers)
+     * Enable "Wait timer" (optional, e.g., 5 minutes)
+
+3. (Optional) Install pre-commit hooks:
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
+
+4. Monitor workflows: https://github.com/{{USER}}/{{REPO}}/actions
 
 💡 Workflow will automatically:
 - Run linting with auto-fix

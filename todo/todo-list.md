@@ -2,180 +2,134 @@
 
 ## CLI Command Optimization
 
-### ⚠️ OPTIMIZE: `update` Command
+### ✅ COMPLETE: `update` Command
 
 **File:** `src/cli/commands/update.ts`
 
-**Current Status:** 60% functional - Incomplete implementation
+**Status:** **COMPLETED** - Option A (Full Implementation) + Comprehensive Tests
 
-**Issues:**
-1. Agent update code is incomplete (cuts off at line 100)
-2. No rollback mechanism on failure
-3. Limited error handling
-4. Incomplete backup/restore logic
+**What Was Accomplished:**
+- ✅ Complete 12-step update process with progress indicators
+- ✅ Full agent update logic (18 agents across 5 subdirectories)
+- ✅ Slash command updates (16 commands with categorization)
+- ✅ Work order template updates (6 templates)
+- ✅ SDK-managed knowledge base updates (5 files)
+- ✅ User file preservation (ARCHITECTURE.md, To-do.md, ISSUES.md, Technical-Debt.md)
+- ✅ Automatic rollback mechanism on failure
+- ✅ 7-point verification system
+- ✅ Functional dry-run preview mode
+- ✅ Complete error handling with backup preservation
+- ✅ ESM/CommonJS compatibility for both runtime and tests
 
-**What It Currently Does:**
-- ✅ Checks if Trinity is deployed
-- ✅ Reads current version from `trinity/VERSION`
-- ✅ Compares with SDK package.json version
-- ✅ Backs up user files (ARCHITECTURE.md, To-do.md, ISSUES.md)
-- ✅ Updates templates and Trinity.md
-- ❌ Agent update logic incomplete (stops at line 100)
-- ❌ No verification after update
-- ❌ No rollback if update fails
+**Test Coverage:**
+- ✅ 15 integration tests (100% pass rate)
+- ✅ Pre-flight checks, version detection, dry-run mode
+- ✅ Backup/restore, structure verification, user file preservation
+- ✅ Error handling with process.exit mocking
+- ✅ Test infrastructure: helpers, mocks (ora, chalk, inquirer)
+- ✅ Jest configuration with CommonJS support
+- ✅ SDK path auto-detection for test and production environments
 
-**Two Options for Resolution:**
+**Files Created:**
+- `tests/helpers/test-helpers.ts` (161 lines)
+- `tests/integration/cli/commands/update.test.ts` (270+ lines, 15 tests)
+- `tests/__mocks__/ora.ts`, `chalk.ts`, `inquirer.ts`
+- `src/cli/utils/get-sdk-path.ts` (path resolution helper)
+- `jest.config.js`, `tsconfig.test.json`
 
-### Option A: Finish Implementation (Recommended if updates are critical)
-
-**Effort:** 1-2 days
-
-**Tasks:**
-1. Complete agent update logic (line 100+)
-   - Copy all agent files from SDK templates
-   - Preserve user customizations (if any)
-   - Update .claude/agents/ directory
-
-2. Add rollback mechanism
-   - If any update step fails, restore from backup
-   - Clean rollback on Ctrl+C
-
-3. Add verification
-   - Validate updated files exist
-   - Check folder structure integrity
-   - Verify version was updated
-
-4. Improve error handling
-   - Better error messages
-   - Handle file permission issues
-   - Handle concurrent update attempts
-
-5. Add dry-run mode validation
-   - Actually preview changes (currently broken)
-
-**Implementation Checklist:**
-- [ ] Complete agent update code (lines 100+)
-- [ ] Add file integrity verification
-- [ ] Implement rollback on failure
-- [ ] Test update with real project
-- [ ] Add progress indicators
-- [ ] Handle edge cases (partial updates, conflicts)
-
----
-
-### Option B: Simplify to Message (Recommended for MVP)
-
-**Effort:** 1 hour
-
-**Approach:**
-Replace entire update command with simple message:
-
-```typescript
-export async function update(options: UpdateOptions): Promise<void> {
-  console.log(chalk.blue.bold('\n🔄 Trinity Method SDK - Update\n'));
-
-  // Check if Trinity exists
-  const trinityExists = await fs.pathExists('trinity');
-  if (!trinityExists) {
-    console.error(chalk.red('❌ Trinity Method not deployed in this project'));
-    console.error(chalk.blue('   Use: trinity deploy to install\n'));
-    process.exit(1);
-  }
-
-  console.log(chalk.yellow('To update Trinity Method:'));
-  console.log(chalk.gray('  1. Backup your custom knowledge base files'));
-  console.log(chalk.gray('     (trinity/knowledge-base/ARCHITECTURE.md, ISSUES.md, etc.)'));
-  console.log(chalk.gray('  2. Run: ') + chalk.cyan('trinity deploy --force'));
-  console.log(chalk.gray('  3. Restore your custom files\n'));
-
-  console.log(chalk.blue('💡 This ensures a clean update with latest SDK changes\n'));
-}
-```
-
-**Benefits:**
-- No complex update logic to maintain
-- Users get clean deployment
-- Forces users to backup custom work
-- Simpler mental model
-
-**Tradeoff:**
-- Manual backup/restore required
-- More steps for user
-
----
-
-## Recommendation
-
-**Choose Option B (Simplify)** unless you have specific requirements for automated updates.
-
-**Rationale:**
-- Update command is rarely used (most users stay on deployed version)
-- `deploy --force` already does 95% of update work
-- Less code to maintain = fewer bugs
-- Users should be deliberate about updates anyway
-
----
-
-## Related Files to Check
-
-After choosing an option, verify no other code references the update command's expected behavior:
-
-- [ ] Check README.md for update instructions
-- [ ] Check documentation files in `docs/`
-- [ ] Search for "trinity update" in all .md files
-- [ ] Update package.json scripts if any reference update
-
----
-
-**Priority:** MEDIUM
-**Decision Required:** Choose Option A or B
-**Assigned To:** TBD
-**Due Date:** TBD
+**Completed:** 2025-12-18
 
 ---
 
 ## Slash Command Integration
 
-### ⚠️ TODO: Integrate EIN Agent into `/trinity-init` Command
+### ✅ COMPLETE: Integrate EIN Agent into `/trinity-init` Command + CI/CD Templates
 
-**File:** `.claude/commands/trinity-init.md`
+**File:** `src/templates/shared/claude-commands/trinity-init.md`
 
-**Current Status:** EIN (CI/CD Specialist) agent exists but is not called by any slash command
+**Status:** **COMPLETED** - EIN integrated as conditional Phase 5 with template support
 
-**Issue:**
-- EIN agent (`deployment/ein-cicd.md`) is 1 of 18 agents but has no slash command integration
-- `/trinity-init` currently uses TAN → ZEN → INO → JUNO workflow
-- EIN is completely skipped despite being a deployment specialist
+**What Was Accomplished:**
+- ✅ Created EIN-ready GitHub Actions template with BAS 6-phase quality gates
+  - `src/templates/ci/github-actions-trinity.yml.template`
+  - All 6 BAS phases: Linting, Structure, Build, Testing, Coverage (≥80%), Best Practices
+  - Triggers: push to main/dev, all pull requests
+  - Node.js 20.x, Codecov integration, quality summary
+- ✅ Updated pre-commit configuration template for EIN
+  - `src/templates/linting/nodejs/.pre-commit-config.yaml.template`
+  - ESLint with auto-fix, TypeScript type checking
+  - Pre-commit framework hooks (trailing whitespace, YAML/JSON validation, detect private keys)
+  - Jest for changed files
+- ✅ Integrated EIN as Phase 5 in `/trinity-init` workflow
+  - Conditional invocation: Only if `.github/workflows/trinity-ci.yml` or `.pre-commit-config.yaml` exists
+  - Detection logic documented
+  - EIN responsibilities defined
+  - Installation instructions included
+  - Fallback: User can invoke `/trinity-cicd` manually later
+- ✅ Build successful - all templates compile correctly
 
-**What EIN Should Do:**
-- Configure CI/CD pipelines (GitHub Actions, GitLab CI, etc.)
-- Set up pre-commit hooks for code quality
-- Configure automated testing workflows
-- Deploy coverage reporting integration
-- Set up automated deployment pipelines
+**Implementation Details:**
+- **Conditional Logic:** EIN only runs if CI/CD or pre-commit templates were deployed during `trinity deploy`
+- **EIN Responsibilities:**
+  1. Configure GitHub Actions with BAS 6-phase gates
+  2. Set up pre-commit hooks with ESLint, TypeScript, and Jest
+  3. Provide installation instructions to user
+  4. Validate coverage threshold (≥80%)
+- **Workflow:** TAN → ZEN → INO → JUNO → EIN (conditional)
 
-**Recommended Integration Point:**
-Add EIN as Phase 5 (after JUNO audit):
+**Files Modified/Created:**
+- Created: `src/templates/ci/github-actions-trinity.yml.template` (201 lines)
+- Updated: `src/templates/linting/nodejs/.pre-commit-config.yaml.template` (52 lines)
+- Updated: `src/templates/shared/claude-commands/trinity-init.md` (added Phase 5 section)
+- Optimized: `src/templates/agents/deployment/ein-cicd.md.template` (added missing step IDs)
 
-```
-1. TAN - Verify structure
-2. ZEN - Populate knowledge base
-3. INO - Establish context
-4. JUNO - Audit deployment
-5. EIN - Configure CI/CD (NEW)
-```
+**EIN Optimization:**
+- ✅ Fixed missing `id:` parameters in GitHub Actions workflow template (lines 92, 102, 127, 137, 147, 177)
+- ✅ Added `id: lint`, `id: structure`, `id: build`, `id: tests`, `id: coverage`, `id: practices`
+- ✅ Ensures Trinity Quality Summary step can reference `${{ steps.*.outcome }}`
+- ✅ Build successful after optimization
 
-**Implementation Tasks:**
-- [ ] Review EIN agent persona file (`.claude/agents/deployment/ein-cicd.md`)
-- [ ] Add EIN phase to `/trinity-init` command workflow
-- [ ] Define specific EIN responsibilities for init workflow
-- [ ] Update slash-commands-analysis.md with EIN integration
-- [ ] Test `/trinity-init` with EIN included
+**Post-Test-Run Fixes (2025-12-18):**
+- ✅ **Fixed EIN Invocation in `/trinity-init`**
+  - Issue: EIN was never called despite CI/CD files being deployed
+  - Added mandatory file detection step with explicit Bash commands
+  - Made instructions clearer: "Check for files THEN invoke EIN"
+  - Updated EIN output format to be framework-agnostic
+  - Added requirement to include EIN phase in JUNO audit report
+- ✅ **Fixed Framework Misdetection**
+  - Issue: Flutter project detected as Node.js due to package.json from Trinity SDK
+  - Reordered detection logic: Check Flutter/Rust/Go BEFORE package.json
+  - Prevents false positives when Trinity SDK creates package.json
+  - New detection order: Flutter → Rust → Go → Node.js → Python
+- ✅ **Renamed Workflows to Standard Conventions + Added CD Pipeline**
+  - Issue: Workflow named `trinity-ci.yml` (non-standard), missing CD pipeline entirely
+  - Renamed: `github-actions-trinity.yml.template` → `ci.yml.template`
+  - Created: `cd.yml.template` (staging/production deployment with approval gates)
+  - Updated all references across codebase (7+ files)
+  - CI workflow: Quality gates for all commits/PRs
+  - CD workflow: Automatic staging deployment, approval-gated production deployment
+  - Updated deploy-ci.ts to deploy both ci.yml and cd.yml
+  - Updated /trinity-init detection to check for both workflows
+  - Updated EIN agent template with CD workflow documentation
+- ✅ **Clarified EIN's Role: Review & Customize (Not Create from Scratch)**
+  - Issue: EIN's responsibilities were unclear - should it create or review templates?
+  - Added "Two Invocation Contexts" section to EIN agent template
+  - Context 1: `/trinity-init` → Review & customize already-deployed templates
+  - Context 2: Manual invocation → Create workflows from scratch
+  - Updated /trinity-init to emphasize templates are ALREADY DEPLOYED
+  - EIN now clearly reads, verifies, customizes, and validates existing files
+  - Updated output format to show "Reviewed & Customized" status
+  - Emphasized activation instructions (commit, push, setup environments)
+- ✅ **Added `trinity/reports/` Directory to Deployment**
+  - Issue: JUNO creates audit reports in trinity/reports/ but directory wasn't deployed
+  - Added `trinity/reports/` to deploy.ts directory creation (line 342)
+  - Updated directory count from 11 → 12
+  - Updated templates/README.md deployment structure documentation
+  - Prevents JUNO from needing to create directory during initialization
+  - Verified: TAN and JUNO templates already expected this directory
+- ✅ Build successful after all fixes
 
-**Priority:** LOW
-**Effort:** 1-2 hours
-**Assigned To:** TBD
-**Due Date:** TBD
+**Completed:** 2025-12-18
 
 ---
 
@@ -292,12 +246,12 @@ Claude will guide you through a multi-phase workflow, sequentially adopting diff
 
 ### ⚠️ TODO: Implement Test Coverage for Remaining CLI Commands
 
-**Current Status:** All tests deleted during major cleanup (38 test files removed)
+**Current Status:** Update command tests completed (15 tests passing)
 
 **Issue:**
 - Previous tests were for deleted systems (analytics, benchmarks, cache, learning, coordination, agents, wizard)
-- No tests exist for the 3 remaining CLI commands: `deploy`, `update`, `crisis`
-- Zero test coverage for actual deployed functionality
+- Only 1 of 2 remaining CLI commands has tests: `update` ✅
+- Deploy command still needs test coverage
 
 **What Needs Testing:**
 
@@ -319,29 +273,18 @@ Claude will guide you through a multi-phase workflow, sequentially adopting diff
 - Integration tests: Full deployment to temp directory, verify all files/folders created
 - E2E tests: Deploy to real project structure, verify functionality
 
-#### 2. Update Command (`src/cli/commands/update.ts`)
-**Critical Paths:**
-- Version comparison logic
-- Backup and restore of user files (ARCHITECTURE.md, To-do.md, ISSUES.md)
-- Template updates
-- Agent updates
-- Rollback on failure
+#### 2. Update Command (`src/cli/commands/update.ts`) ✅ **COMPLETED**
+**Status:** Full test coverage implemented (15 integration tests passing)
+- ✅ Version comparison logic tested
+- ✅ Backup and restore of user files tested
+- ✅ Template updates tested
+- ✅ Agent updates tested
+- ✅ Rollback on failure tested
+- ✅ Pre-flight checks, dry-run mode, structure verification
+- ✅ Edge cases: Missing directories, missing VERSION file, user file preservation
 
-**Test Types Needed:**
-- Unit tests: Version comparison, backup/restore logic
-- Integration tests: Update from v1.0.0 to v1.1.0 with user file preservation
-- Edge cases: Partial updates, concurrent update attempts
-
-#### 3. Crisis Command (`src/cli/commands/crisis.ts`)
-**Critical Paths:**
-- Crisis detection logic
-- Recovery protocol execution
-- Session documentation
-- Validation checks
-
-**Test Types Needed:**
-- Unit tests: Crisis detector, recovery protocols, validator
-- Integration tests: Full crisis workflow from detection to recovery
+#### 3. Crisis Command - ❌ **DELETED**
+**Status:** Command was removed from codebase - no tests needed
 
 **Implementation Plan:**
 
@@ -375,18 +318,16 @@ Claude will guide you through a multi-phase workflow, sequentially adopting diff
 - [ ] Integration test: Deployment with CI/CD templates
 - [ ] E2E test: Deploy to React project, verify structure
 
-### Phase 3: Update Command Tests (2-3 hours)
-- [ ] Unit tests for version comparison
-- [ ] Unit tests for backup/restore logic
-- [ ] Integration test: Update from older version
-- [ ] Integration test: User file preservation
-- [ ] Test rollback on failure
+### Phase 3: Update Command Tests ✅ **COMPLETED**
+- ✅ Unit tests for version comparison
+- ✅ Unit tests for backup/restore logic
+- ✅ Integration test: Update from older version
+- ✅ Integration test: User file preservation
+- ✅ Test rollback on failure
+- ✅ 15 integration tests with 100% pass rate
 
-### Phase 4: Crisis Command Tests (2-3 hours)
-- [ ] Unit tests for crisis detector
-- [ ] Unit tests for recovery protocols
-- [ ] Unit tests for validator
-- [ ] Integration test: Full crisis workflow
+### Phase 4: Crisis Command Tests - ❌ **DELETED**
+- N/A - Crisis command was removed from codebase
 
 ### Phase 5: CI/CD Integration (1 hour)
 - [ ] Set up GitHub Actions workflow

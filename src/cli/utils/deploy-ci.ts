@@ -38,19 +38,28 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
 
     const templatesPath = path.join(__dirname, '../../templates/ci');
 
-    // GitHub Actions
+    // GitHub Actions - Deploy both CI and CD workflows
     if (platform === 'github' || platform === 'unknown') {
       try {
         await fs.ensureDir('.github/workflows');
-        const githubTemplate = path.join(templatesPath, 'github-actions.yml');
 
-        if (await fs.pathExists(githubTemplate)) {
-          const content = await fs.readFile(githubTemplate, 'utf8');
-          await fs.writeFile('.github/workflows/trinity-ci.yml', content);
-          stats.deployed.push('.github/workflows/trinity-ci.yml');
+        // Deploy CI workflow
+        const ciTemplate = path.join(templatesPath, 'ci.yml.template');
+        if (await fs.pathExists(ciTemplate)) {
+          const content = await fs.readFile(ciTemplate, 'utf8');
+          await fs.writeFile('.github/workflows/ci.yml', content);
+          stats.deployed.push('.github/workflows/ci.yml');
+        }
+
+        // Deploy CD workflow
+        const cdTemplate = path.join(templatesPath, 'cd.yml.template');
+        if (await fs.pathExists(cdTemplate)) {
+          const content = await fs.readFile(cdTemplate, 'utf8');
+          await fs.writeFile('.github/workflows/cd.yml', content);
+          stats.deployed.push('.github/workflows/cd.yml');
         }
       } catch (error: any) {
-        stats.errors.push({ file: '.github/workflows/trinity-ci.yml', error: error.message });
+        stats.errors.push({ file: '.github/workflows/ci.yml or cd.yml', error: error.message });
       }
     }
 

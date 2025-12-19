@@ -339,12 +339,13 @@ export async function deploy(options: DeployOptions): Promise<void> {
     await fs.ensureDir('trinity/patterns');
     await fs.ensureDir('trinity/work-orders');
     await fs.ensureDir('trinity/templates');
+    await fs.ensureDir('trinity/reports');
     await fs.ensureDir('trinity/investigations/plans');
     await fs.ensureDir('trinity/archive/work-orders');
     await fs.ensureDir('trinity/archive/investigations');
     await fs.ensureDir('trinity/archive/reports');
     await fs.ensureDir('trinity/archive/sessions');
-    deploymentStats.directories += 11;
+    deploymentStats.directories += 12;
 
      // Claude Code directories
     await fs.ensureDir('.claude/agents/leadership');

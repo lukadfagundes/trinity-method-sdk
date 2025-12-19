@@ -93,8 +93,29 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
   };
 
   try {
+    // Check for Flutter FIRST (before package.json)
+    // This prevents false positives when Trinity SDK creates package.json
+    if (await exists(path.join(targetDir, 'pubspec.yaml'))) {
+      result.language = 'Dart';
+      result.framework = 'Flutter';
+      result.sourceDir = 'lib';
+    }
+    // Check for Rust
+    else if (await exists(path.join(targetDir, 'Cargo.toml'))) {
+      result.language = 'Rust';
+      result.framework = 'Generic';
+      result.sourceDir = 'src';
+    }
+    // Check for Go
+    else if (await exists(path.join(targetDir, 'go.mod'))) {
+      result.language = 'Go';
+      result.framework = 'Generic';
+      result.sourceDir = '.';
+    }
     // Check for Node.js/JavaScript
-    if (await exists(path.join(targetDir, 'package.json'))) {
+    // IMPORTANT: Check this AFTER other language-specific files to avoid false positives
+    // (Trinity SDK installation may create package.json in non-Node projects)
+    else if (await exists(path.join(targetDir, 'package.json'))) {
       result.language = 'JavaScript/TypeScript';
 
       const pkgPath = path.join(targetDir, 'package.json');
@@ -126,12 +147,6 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
         result.packageManager = 'npm';
       }
     }
-    // Check for Flutter
-    else if (await exists(path.join(targetDir, 'pubspec.yaml'))) {
-      result.language = 'Dart';
-      result.framework = 'Flutter';
-      result.sourceDir = 'lib';
-    }
     // Check for Python
     else if (
       await exists(path.join(targetDir, 'requirements.txt')) ||
@@ -150,18 +165,6 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
       }
 
       result.sourceDir = 'app';
-    }
-    // Check for Rust
-    else if (await exists(path.join(targetDir, 'Cargo.toml'))) {
-      result.language = 'Rust';
-      result.framework = 'Generic';
-      result.sourceDir = 'src';
-    }
-    // Check for Go
-    else if (await exists(path.join(targetDir, 'go.mod'))) {
-      result.language = 'Go';
-      result.framework = 'Generic';
-      result.sourceDir = '.';
     }
   } catch (error: any) {
     console.error('Error detecting stack:', error.message);

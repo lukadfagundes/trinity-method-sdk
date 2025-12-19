@@ -809,6 +809,7 @@ project-root/
 │   │   ├── TESTING-PRINCIPLES.md       # knowledge-base/TESTING-PRINCIPLES.md.template
 │   │   ├── AI-DEVELOPMENT-GUIDE.md     # knowledge-base/AI-DEVELOPMENT-GUIDE.md.template
 │   │   └── DOCUMENTATION-CRITERIA.md   # knowledge-base/DOCUMENTATION-CRITERIA.md.template
+│   ├── reports/                        # JUNO audit reports (directory only)
 │   └── templates/
 │       ├── INVESTIGATION-TEMPLATE.md   # work-orders/INVESTIGATION-TEMPLATE.md
 │       ├── IMPLEMENTATION-TEMPLATE.md  # work-orders/IMPLEMENTATION-TEMPLATE.md
