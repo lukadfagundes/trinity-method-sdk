@@ -347,7 +347,7 @@ This file extends and enforces the global requirements defined in `../CLAUDE.md`
 - Technology stack specifications
 - Quality gate requirements
 
-For technology-specific implementation details, see: `../source/CLAUDE.md`
+For technology-specific implementation details, see: `../src/CLAUDE.md`
 
 ---
 
@@ -356,9 +356,9 @@ For technology-specific implementation details, see: `../source/CLAUDE.md`
 This file enforces Trinity Method protocols for all development work.
 
 **Parent Context**: [../CLAUDE.md](../CLAUDE.md) - Project overview and global requirements
-**Child Context**: [../source/CLAUDE.md](../source/CLAUDE.md) - Framework-specific implementation rules
+**Child Context**: [../src/CLAUDE.md](../src/CLAUDE.md) - Framework-specific implementation rules
 **Related Resources**:
-- [Agent Directory](../claude/EMPLOYEE-DIRECTORY.md) - 19-agent Trinity team guide
+- [Agent Directory](../.claude/EMPLOYEE-DIRECTORY.md) - 19-agent Trinity team guide
 - [Architecture Documentation](knowledge-base/ARCHITECTURE.md) - System architecture and patterns
 - [Known Issues](knowledge-base/ISSUES.md) - Issue patterns and resolutions
 - [Technical Debt](knowledge-base/Technical-Debt.md) - Debt tracking and reduction plans

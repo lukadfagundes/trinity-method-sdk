@@ -532,7 +532,7 @@ pre-commit install
 **Trinity Method Context Files**:
 - [../CLAUDE.md](../CLAUDE.md) - Project overview and global requirements
 - [../trinity/CLAUDE.md](../trinity/CLAUDE.md) - Trinity Method enforcement and protocols
-- [../source/CLAUDE.md](../source/CLAUDE.md) - Framework-specific implementation rules
+- [../src/CLAUDE.md](../src/CLAUDE.md) - Framework-specific implementation rules
 
 **Knowledge Base**:
 - [Investigation Protocols](../trinity/CLAUDE.md#investigation-protocols) - Investigation-first methodology

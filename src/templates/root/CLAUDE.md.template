@@ -24,11 +24,11 @@ Project-specific overview, architecture, and living documentation references.
 Enforces Trinity Method protocols: investigation-first development, quality gates, crisis management.
 
 ### 3. Technology-Specific Context
-**File**: [source/CLAUDE.md](source/CLAUDE.md)
+**File**: [{{SOURCE_DIR}}/CLAUDE.md]({{SOURCE_DIR}}/CLAUDE.md)
 Framework-specific debugging standards, performance optimization, testing patterns.
 
 ### 4. Agent Directory
-**File**: [claude/EMPLOYEE-DIRECTORY.md](claude/EMPLOYEE-DIRECTORY.md)
+**File**: [.claude/EMPLOYEE-DIRECTORY.md](.claude/EMPLOYEE-DIRECTORY.md)
 Complete guide to the 19-agent Trinity team and workflow orchestration.
 
 ---
