@@ -53,3 +53,4 @@ trinity/
 
 # Trinity Method deployment files
 node_modules/
+settings.local.json
