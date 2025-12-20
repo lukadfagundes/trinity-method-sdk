@@ -25,17 +25,12 @@ export async function updateGitignore(spinner: Spinner): Promise<boolean> {
     }
 
     // Trinity files to ignore
-    const trinityIgnores = [
-      '',
-      '# Trinity Method deployment files',
-      'node_modules/',
-      'trinity/',
-    ];
+    const trinityIgnores = ['', '# Trinity Method deployment files', 'node_modules/', 'trinity/'];
 
     // Check if Trinity section already exists
     if (!gitignoreContent.includes('# Trinity Method deployment files')) {
       // Append Trinity ignores
-      const newContent = gitignoreContent.trim() + '\n' + trinityIgnores.join('\n') + '\n';
+      const newContent = `${gitignoreContent.trim()}\n${trinityIgnores.join('\n')}\n`;
       await fs.writeFile(gitignorePath, newContent);
       spinner.succeed('.gitignore updated with Trinity exclusions');
       return true;

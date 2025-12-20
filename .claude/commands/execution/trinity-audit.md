@@ -17,6 +17,7 @@ description: Launch comprehensive codebase audit with JUNO
 `/trinity-audit` invokes **JUNO (Quality Auditor)** to perform deep analysis of a codebase. JUNO reads through the entire project, analyzes architecture, identifies patterns, and produces a comprehensive audit report.
 
 **What JUNO Provides:**
+
 - Complete codebase understanding
 - Architecture analysis and patterns
 - Technology stack identification
@@ -106,6 +107,7 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 ### Phase 1: Project Discovery
 
 **What JUNO Checks:**
+
 - Project type (web app, library, CLI, API, etc.)
 - Technology stack (languages, frameworks, libraries)
 - Build system (package.json, Cargo.toml, requirements.txt, etc.)
@@ -119,6 +121,7 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 ### Phase 2: Architecture Analysis
 
 **What JUNO Analyzes:**
+
 - Directory structure and organization
 - Architectural patterns (MVC, microservices, monolith, etc.)
 - Component relationships and dependencies
@@ -132,6 +135,7 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 ### Phase 3: Code Quality Assessment
 
 **What JUNO Evaluates:**
+
 - Code organization and structure
 - Naming conventions and consistency
 - Code complexity (cyclomatic complexity, nesting depth)
@@ -146,6 +150,7 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 ### Phase 4: Technology Stack Analysis
 
 **What JUNO Identifies:**
+
 - Programming languages used
 - Frameworks and libraries
 - Development dependencies vs production dependencies
@@ -160,6 +165,7 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 ### Phase 5: Security Analysis
 
 **What JUNO Checks:**
+
 - Common vulnerabilities (OWASP Top 10)
 - Authentication and authorization patterns
 - Input validation and sanitization
@@ -174,6 +180,7 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 ### Phase 6: Testing Assessment
 
 **What JUNO Evaluates:**
+
 - Test coverage (if tests exist)
 - Test types (unit, integration, e2e)
 - Test quality and completeness
@@ -187,6 +194,7 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 ### Phase 7: Data Flow Analysis
 
 **What JUNO Maps:**
+
 - How data enters the system (API endpoints, file uploads, etc.)
 - How data flows through components
 - Where data is stored (databases, files, cache)
@@ -200,14 +208,18 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 ### Phase 8: Recommendations & Next Steps
 
 **What JUNO Provides:**
+
 - Priority issues to address
 - Quick wins (easy improvements)
 - Refactoring opportunities
 - Security fixes needed
 - Documentation gaps
 - Suggested workflow for making changes
+- **Work order files created in trinity/work-orders/**
 
-**Deliverable:** Actionable recommendations with priorities
+**Deliverable:** Actionable recommendations with priorities + Work order files
+
+**IMPORTANT:** JUNO must create actual work order files (WO-\*.md) in trinity/work-orders/ for each CRITICAL and HIGH priority issue identified. Each work order must be a complete, actionable document following Trinity work order format.
 
 ---
 
@@ -233,11 +245,13 @@ JUNO's audit report is saved to `trinity/reports/CODEBASE-AUDIT-{date}.md` with 
 **Overall Assessment:** {rating}/10
 
 ### Key Findings:
+
 - {finding-1}
 - {finding-2}
 - {finding-3}
 
 ### Critical Issues:
+
 - {issue-1}
 - {issue-2}
 
@@ -246,9 +260,11 @@ JUNO's audit report is saved to `trinity/reports/CODEBASE-AUDIT-{date}.md` with 
 ## 1. Project Overview
 
 ### What This Project Does
+
 {high-level-description}
 
 ### Technology Stack
+
 - **Languages:** {languages}
 - **Frameworks:** {frameworks}
 - **Database:** {database}
@@ -256,7 +272,9 @@ JUNO's audit report is saved to `trinity/reports/CODEBASE-AUDIT-{date}.md` with 
 
 ### Project Structure
 ```
+
 {directory-tree}
+
 ```
 
 ---
@@ -416,7 +434,7 @@ Based on this audit, the following work orders are recommended:
 
 ### Example 1: Unfamiliar GitHub Repository
 
-```
+````
 User: Just cloned https://github.com/someone/payment-processor
       I have no idea what this code does. Can you audit it?
 
@@ -531,14 +549,17 @@ Performing security audit...
    - Issue: User input concatenated directly into SQL query
    ```javascript
    const query = `SELECT * FROM payments WHERE user_id = ${userId}`;
-   ```
-   - Recommendation: Use parameterized queries
+````
+
+- Recommendation: Use parameterized queries
 
 2. **Hardcoded Secrets** - Severity: CRITICAL 🔴
    - Location: src/config/stripe.js:3
+
    ```javascript
-   const STRIPE_SECRET_KEY = "sk_live_abc123...";
+   const STRIPE_SECRET_KEY = 'sk_live_abc123...';
    ```
+
    - Recommendation: Move to environment variables immediately
 
 3. **Missing Input Validation** - Severity: MEDIUM 🟡
@@ -552,6 +573,7 @@ Performing security audit...
    ```javascript
    router.post('/:id/refund', refundPayment); // No auth check!
    ```
+
    - Recommendation: Add authMiddleware
 
 **Dependency Vulnerabilities:**
@@ -566,6 +588,7 @@ Analyzing test coverage...
 **Test Coverage:** 42% ⚠️
 
 **Tests Found:**
+
 - Unit tests: 18 tests in test/unit/
 - Integration tests: 5 tests in test/integration/
 - E2E tests: None
@@ -585,6 +608,7 @@ Analyzing test coverage...
 Mapping data flow...
 
 **Data Entry Points:**
+
 1. POST /api/payments/create
    - Accepts: { amount, currency, customerId, paymentMethod }
    - Validation: Stripe library validates card data
@@ -596,10 +620,12 @@ Mapping data flow...
    - Authentication: None (public endpoint with signature check)
 
 **Data Storage:**
+
 - PostgreSQL database (5 tables: users, payments, transactions, refunds, webhooks)
 - Redis cache (payment status, user sessions)
 
 **Data Flow:**
+
 ```
 User Request → Express Router → Auth Middleware → Controller
     ↓
@@ -675,6 +701,7 @@ Generating recommendations...
 **JUNO: Audit Complete** ✅
 
 **Summary:**
+
 - Project Type: Payment processing REST API
 - Technology: Node.js + Express + PostgreSQL + Stripe
 - Overall Assessment: 6.5/10 (needs security fixes)
@@ -685,11 +712,13 @@ Generating recommendations...
 `trinity/reports/CODEBASE-AUDIT-2025-12-19.md`
 
 **Work Orders Created:**
+
 - WO-XXX-fix-security-vulnerabilities (CRITICAL priority, 2 hours)
 - WO-XXX-update-stripe-dependency (HIGH priority, 1 hour)
 - WO-XXX-improve-test-coverage (HIGH priority, 4 hours)
 
 **Next Steps:**
+
 1. Review the full audit report in trinity/reports/
 2. Fix critical security issues immediately (WO-XXX)
 3. Run updated tests to ensure no regressions
@@ -697,6 +726,7 @@ Generating recommendations...
 
 **Recommendation:** Start with WO-XXX-fix-security-vulnerabilities
 Run: /trinity-orchestrate @WO-XXX-fix-security-vulnerabilities.md
+
 ```
 
 ---
@@ -704,6 +734,7 @@ Run: /trinity-orchestrate @WO-XXX-fix-security-vulnerabilities.md
 ### Example 2: Focused Audit on Authentication
 
 ```
+
 User: /trinity-audit "Focus on authentication and authorization system"
 
 JUNO: Beginning focused audit on authentication system...
@@ -725,12 +756,14 @@ JUNO: Beginning focused audit on authentication system...
 🔴 Password reset tokens never expire
 
 **Recommendations:**
+
 1. Move JWT_SECRET to environment variable
 2. Add express-rate-limit to login endpoint
 3. Set 1-hour expiration on password reset tokens
 4. Add 2FA support (recommended for payment system)
 
 [Full audit report saved to trinity/reports/ with auth deep-dive section]
+
 ```
 
 ---
@@ -738,6 +771,7 @@ JUNO: Beginning focused audit on authentication system...
 ### Example 3: Quick Audit (Large Codebase)
 
 ```
+
 User: /trinity-audit --quick
 
 JUNO: Performing quick audit (high-level overview only)...
@@ -749,12 +783,14 @@ JUNO: Performing quick audit (high-level overview only)...
 **Stack:** React + Node.js + MongoDB + Redis
 
 **High-Level Assessment:**
+
 - Architecture: Microservices (5 services)
 - Quality Score: 7/10
 - Security Score: 6/10
 - Test Coverage: 68%
 
 **Top 3 Issues:**
+
 1. 🔴 2 microservices missing authentication
 2. 🟡 MongoDB queries missing input sanitization
 3. 🟢 Large bundle size (3.2MB uncompressed)
@@ -763,6 +799,7 @@ JUNO: Performing quick audit (high-level overview only)...
 Run: /trinity-audit (without --quick flag)
 
 [Quick summary saved to trinity/reports/QUICK-AUDIT-{date}.md]
+
 ```
 
 ---
@@ -771,21 +808,97 @@ Run: /trinity-audit (without --quick flag)
 
 ### After Audit, Create Work Orders
 
-JUNO automatically creates recommended work orders based on audit findings:
+**CRITICAL INSTRUCTION FOR JUNO:**
 
-```bash
-# After audit completes, work orders created in trinity/work-orders/:
+After completing the 8-phase audit, JUNO MUST create actual work order files in `trinity/work-orders/` for each CRITICAL and HIGH priority issue. DO NOT just mention work orders in the report - CREATE THE ACTUAL FILES.
 
-WO-001-fix-security-vulnerabilities.md
-WO-002-update-dependencies.md
-WO-003-improve-test-coverage.md
-WO-004-refactor-high-complexity-functions.md
+**Work Order Creation Process:**
+
+1. **Identify Issues Requiring Work Orders:**
+   - All CRITICAL priority issues → Create work orders
+   - All HIGH priority issues → Create work orders
+   - MEDIUM priority (optional, use judgment)
+
+2. **Work Order Naming Convention:**
 ```
 
-**Execute work orders:**
+WO-AUDIT-XXX-{short-description}-YYYY-MM-DD.md
+
+Examples:
+WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md
+WO-AUDIT-002-refactor-deploy-ts-2025-12-20.md
+WO-AUDIT-003-update-dependencies-2025-12-20.md
+
+````
+
+3. **Work Order Content (Required Sections):**
+```markdown
+# Work Order: WO-AUDIT-XXX
+
+## Title
+{Clear, actionable title}
+
+## Type
+{Security Fix | Bug Fix | Code Quality | Performance | Maintenance}
+
+## Priority
+{CRITICAL | HIGH | MEDIUM}
+
+## Description
+{2-3 paragraphs explaining the issue, why it matters, and context}
+
+## Affected Components
+- List specific files, line numbers, functions affected
+
+## Impact Assessment
+- Risk level
+- User impact
+- Security implications (if any)
+
+## Acceptance Criteria
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+## Tasks
+1. Task 1
+2. Task 2
+3. Task 3
+
+## Estimated Effort
+{Time estimate: "15 minutes" | "1 hour" | "3-5 hours"}
+
+## Testing
+- Test requirements
+- Verification steps
+
+## Dependencies
+- Other work orders that must be completed first
+- External dependencies
+
+## Notes
+- Additional context
+- References to documentation
+````
+
+4. **After Creating Work Order Files:**
+   Report to user which work orders were created and where they're located.
+
+**Example Output After Audit:**
+
 ```bash
-/trinity-orchestrate @WO-001-fix-security-vulnerabilities.md
+✅ Audit Complete
+
+Created 3 work order files in trinity/work-orders/:
+1. WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md (CRITICAL)
+2. WO-AUDIT-002-refactor-deploy-ts-2025-12-20.md (CRITICAL)
+3. WO-AUDIT-003-update-dependencies-2025-12-20.md (HIGH)
+
+Execute work orders with:
+/trinity-orchestrate @WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md
 ```
+
+**DO NOT** just document work orders in the audit report without creating the actual files. Users expect ready-to-execute work order files after the audit.
 
 ---
 
@@ -797,6 +910,7 @@ Throughout your work session, reference the audit report:
 **Investigation:** Why is the payment endpoint slow?
 
 **Reference:** See CODEBASE-AUDIT-2025-12-19.md
+
 - Phase 7 (Data Flow Analysis) shows N+1 query pattern
 - Recommendation #4 suggests adding database indexes
 
@@ -809,15 +923,18 @@ Throughout your work session, reference the audit report:
 ## Related Commands
 
 ### Discovery & Planning
+
 - `/trinity-audit` - Comprehensive codebase audit (this command)
 - `/trinity-start` - Begin development session
 - `/trinity-workorder` - Create work order from audit findings
 
 ### Execution
+
 - `/trinity-orchestrate @WO-XXX.md` - Execute work orders from audit
 - `/trinity-create-investigation` - Investigate issues found in audit
 
 ### Verification
+
 - `/trinity-verify` - Verify Trinity installation (different from codebase audit)
 
 ---
@@ -827,6 +944,7 @@ Throughout your work session, reference the audit report:
 **Primary Use:** Comprehensive codebase audit with JUNO's 8-phase analysis
 
 **Key Points:**
+
 1. **JUNO performs 8-phase comprehensive analysis**
 2. **Delivers complete understanding of the codebase**
 3. **Identifies security issues and technical debt**
@@ -835,6 +953,7 @@ Throughout your work session, reference the audit report:
 6. **Execute immediately when invoked** - no pre-flight checks needed
 
 **Typical Workflow:**
+
 ```bash
 # Clone repository (familiar or unfamiliar)
 git clone https://github.com/someone/project.git

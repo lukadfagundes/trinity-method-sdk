@@ -206,8 +206,11 @@ When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysi
 - Security fixes needed
 - Documentation gaps
 - Suggested workflow for making changes
+- **Work order files created in trinity/work-orders/**
 
-**Deliverable:** Actionable recommendations with priorities
+**Deliverable:** Actionable recommendations with priorities + Work order files
+
+**IMPORTANT:** JUNO must create actual work order files (WO-*.md) in trinity/work-orders/ for each CRITICAL and HIGH priority issue identified. Each work order must be a complete, actionable document following Trinity work order format.
 
 ---
 
@@ -771,21 +774,94 @@ Run: /trinity-audit (without --quick flag)
 
 ### After Audit, Create Work Orders
 
-JUNO automatically creates recommended work orders based on audit findings:
+**CRITICAL INSTRUCTION FOR JUNO:**
 
+After completing the 8-phase audit, JUNO MUST create actual work order files in `trinity/work-orders/` for each CRITICAL and HIGH priority issue. DO NOT just mention work orders in the report - CREATE THE ACTUAL FILES.
+
+**Work Order Creation Process:**
+
+1. **Identify Issues Requiring Work Orders:**
+   - All CRITICAL priority issues → Create work orders
+   - All HIGH priority issues → Create work orders
+   - MEDIUM priority (optional, use judgment)
+
+2. **Work Order Naming Convention:**
+   ```
+   WO-AUDIT-XXX-{short-description}-YYYY-MM-DD.md
+
+   Examples:
+   WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md
+   WO-AUDIT-002-refactor-deploy-ts-2025-12-20.md
+   WO-AUDIT-003-update-dependencies-2025-12-20.md
+   ```
+
+3. **Work Order Content (Required Sections):**
+   ```markdown
+   # Work Order: WO-AUDIT-XXX
+
+   ## Title
+   {Clear, actionable title}
+
+   ## Type
+   {Security Fix | Bug Fix | Code Quality | Performance | Maintenance}
+
+   ## Priority
+   {CRITICAL | HIGH | MEDIUM}
+
+   ## Description
+   {2-3 paragraphs explaining the issue, why it matters, and context}
+
+   ## Affected Components
+   - List specific files, line numbers, functions affected
+
+   ## Impact Assessment
+   - Risk level
+   - User impact
+   - Security implications (if any)
+
+   ## Acceptance Criteria
+   - [ ] Criterion 1
+   - [ ] Criterion 2
+   - [ ] Criterion 3
+
+   ## Tasks
+   1. Task 1
+   2. Task 2
+   3. Task 3
+
+   ## Estimated Effort
+   {Time estimate: "15 minutes" | "1 hour" | "3-5 hours"}
+
+   ## Testing
+   - Test requirements
+   - Verification steps
+
+   ## Dependencies
+   - Other work orders that must be completed first
+   - External dependencies
+
+   ## Notes
+   - Additional context
+   - References to documentation
+   ```
+
+4. **After Creating Work Order Files:**
+   Report to user which work orders were created and where they're located.
+
+**Example Output After Audit:**
 ```bash
-# After audit completes, work orders created in trinity/work-orders/:
+✅ Audit Complete
 
-WO-001-fix-security-vulnerabilities.md
-WO-002-update-dependencies.md
-WO-003-improve-test-coverage.md
-WO-004-refactor-high-complexity-functions.md
+Created 3 work order files in trinity/work-orders/:
+1. WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md (CRITICAL)
+2. WO-AUDIT-002-refactor-deploy-ts-2025-12-20.md (CRITICAL)
+3. WO-AUDIT-003-update-dependencies-2025-12-20.md (HIGH)
+
+Execute work orders with:
+/trinity-orchestrate @WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md
 ```
 
-**Execute work orders:**
-```bash
-/trinity-orchestrate @WO-001-fix-security-vulnerabilities.md
-```
+**DO NOT** just document work orders in the audit report without creating the actual files. Users expect ready-to-execute work order files after the audit.
 
 ---
 

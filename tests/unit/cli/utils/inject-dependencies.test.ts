@@ -15,7 +15,7 @@ describe('injectLintingDependencies', () => {
 
   beforeEach(async () => {
     originalCwd = process.cwd();
-    testDir = path.join(process.cwd(), '.tmp-test-inject-deps-' + Date.now());
+    testDir = path.join(process.cwd(), `.tmp-test-inject-deps-${Date.now()}`);
     await fs.ensureDir(testDir);
     process.chdir(testDir);
   });

@@ -17,7 +17,7 @@ describe('deploy-linting', () => {
 
   beforeEach(async () => {
     originalCwd = process.cwd();
-    testDir = path.join(process.cwd(), '.tmp-test-deploy-linting-' + Date.now());
+    testDir = path.join(process.cwd(), `.tmp-test-deploy-linting-${Date.now()}`);
     await fs.ensureDir(testDir);
     process.chdir(testDir);
 
@@ -294,7 +294,9 @@ describe('deploy-linting', () => {
 
       const config = await fs.readJson('.eslintrc.json');
       // Should not duplicate
-      expect(config.extends.filter((e: string) => e === 'plugin:@typescript-eslint/recommended').length).toBe(1);
+      expect(
+        config.extends.filter((e: string) => e === 'plugin:@typescript-eslint/recommended').length
+      ).toBe(1);
       expect(config.plugins.filter((p: string) => p === '@typescript-eslint').length).toBe(1);
     });
   });

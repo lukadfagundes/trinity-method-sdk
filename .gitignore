@@ -8,6 +8,7 @@ coverage/
 test-results/
 *.lcov
 .nyc_output
+.tmp-test-*
 
 # Production
 dist/

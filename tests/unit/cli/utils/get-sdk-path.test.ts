@@ -7,7 +7,11 @@
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import fs from 'fs-extra';
 import path from 'path';
-import { getSDKPath, getTemplatesPath, getPackageJsonPath } from '../../../../src/cli/utils/get-sdk-path.js';
+import {
+  getSDKPath,
+  getTemplatesPath,
+  getPackageJsonPath,
+} from '../../../../src/cli/utils/get-sdk-path.js';
 
 describe('get-sdk-path', () => {
   let testDir: string;
@@ -15,7 +19,7 @@ describe('get-sdk-path', () => {
 
   beforeEach(async () => {
     originalCwd = process.cwd();
-    testDir = path.join(process.cwd(), '.tmp-test-sdk-path-' + Date.now());
+    testDir = path.join(process.cwd(), `.tmp-test-sdk-path-${Date.now()}`);
     await fs.ensureDir(testDir);
     process.chdir(testDir);
   });

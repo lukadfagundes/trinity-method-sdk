@@ -15,7 +15,7 @@ describe('detectStack', () => {
 
   beforeEach(async () => {
     originalCwd = process.cwd();
-    testDir = path.join(process.cwd(), '.tmp-test-detect-stack-' + Date.now());
+    testDir = path.join(process.cwd(), `.tmp-test-detect-stack-${Date.now()}`);
     await fs.ensureDir(testDir);
     process.chdir(testDir);
   });
@@ -76,7 +76,7 @@ describe('detectStack', () => {
     it('should detect React project', async () => {
       await fs.writeJson('package.json', {
         name: 'my-app',
-        dependencies: { react: '^18.0.0' }
+        dependencies: { react: '^18.0.0' },
       });
 
       const stack = await detectStack();
@@ -89,7 +89,7 @@ describe('detectStack', () => {
     it('should detect Next.js project', async () => {
       await fs.writeJson('package.json', {
         name: 'my-app',
-        dependencies: { next: '^14.0.0', react: '^18.0.0' }
+        dependencies: { next: '^14.0.0', react: '^18.0.0' },
       });
 
       const stack = await detectStack();
@@ -100,7 +100,7 @@ describe('detectStack', () => {
     it('should detect Vue project', async () => {
       await fs.writeJson('package.json', {
         name: 'my-app',
-        dependencies: { vue: '^3.0.0' }
+        dependencies: { vue: '^3.0.0' },
       });
 
       const stack = await detectStack();
@@ -111,7 +111,7 @@ describe('detectStack', () => {
     it('should detect Angular project', async () => {
       await fs.writeJson('package.json', {
         name: 'my-app',
-        dependencies: { '@angular/core': '^17.0.0' }
+        dependencies: { '@angular/core': '^17.0.0' },
       });
 
       const stack = await detectStack();
@@ -123,7 +123,7 @@ describe('detectStack', () => {
     it('should detect Express project', async () => {
       await fs.writeJson('package.json', {
         name: 'my-app',
-        dependencies: { express: '^4.0.0' }
+        dependencies: { express: '^4.0.0' },
       });
 
       const stack = await detectStack();
@@ -134,7 +134,7 @@ describe('detectStack', () => {
     it('should detect generic Node.js project', async () => {
       await fs.writeJson('package.json', {
         name: 'my-app',
-        dependencies: { lodash: '^4.0.0' }
+        dependencies: { lodash: '^4.0.0' },
       });
 
       const stack = await detectStack();
@@ -333,7 +333,7 @@ describe('detectStack', () => {
       const customDir = path.join(testDir, 'custom');
       await fs.ensureDir(customDir);
       await fs.writeJson(path.join(customDir, 'package.json'), {
-        dependencies: { react: '^18.0.0' }
+        dependencies: { react: '^18.0.0' },
       });
 
       const stack = await detectStack(customDir);
@@ -355,7 +355,7 @@ describe('detectStack', () => {
     it('should prioritize Flutter over Node.js when both files exist', async () => {
       await fs.writeFile('pubspec.yaml', 'name: my_app\n');
       await fs.writeJson('package.json', {
-        dependencies: { react: '^18.0.0' }
+        dependencies: { react: '^18.0.0' },
       });
 
       const stack = await detectStack();

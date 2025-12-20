@@ -13,7 +13,13 @@ import {
   getScriptsForTools,
   getPostInstallInstructions,
 } from '../../utils/linting-tools.js';
-import type { DeployOptions, DeployConfig, Stack, LintingTool, PostInstallInstruction } from './types.js';
+import type {
+  DeployOptions,
+  DeployConfig,
+  Stack,
+  LintingTool,
+  PostInstallInstruction,
+} from './types.js';
 
 /**
  * Prompt user for deployment configuration
@@ -72,7 +78,7 @@ export async function promptConfiguration(
       message: 'Setup linting configuration?',
       choices: [
         {
-          name: 'Recommended (Best practices for ' + stack.framework + ')',
+          name: `Recommended (Best practices for ${stack.framework})`,
           value: 'recommended',
         },
         {
@@ -127,7 +133,7 @@ export async function promptConfiguration(
         name: 'tools',
         message: 'Select tools to configure:',
         choices: availableTools.map((tool) => ({
-          name: `${tool.name} (${tool.file})${tool.description ? ' - ' + tool.description : ''}`,
+          name: `${tool.name} (${tool.file})${tool.description ? ` - ${tool.description}` : ''}`,
           value: tool.id,
           checked: tool.recommended,
         })),
@@ -139,10 +145,7 @@ export async function promptConfiguration(
 
     if (selectedLintingTools.length > 0) {
       enableLinting = true;
-      console.log(
-        chalk.green('\n✔ Selected:'),
-        selectedLintingTools.map((t) => t.name).join(', ')
-      );
+      console.log(chalk.green('\n✔ Selected:'), selectedLintingTools.map((t) => t.name).join(', '));
 
       // Show configuration summary
       console.log(chalk.cyan('\n📦 Configuration summary:'));

@@ -34,7 +34,10 @@ interface DependencyMetrics {
  * @param framework - Detected framework (Node.js, Flutter, React, Python, Rust)
  * @returns Collected metrics
  */
-async function collectCodebaseMetrics(sourceDir: string, framework: string): Promise<CodebaseMetrics> {
+async function collectCodebaseMetrics(
+  sourceDir: string,
+  framework: string
+): Promise<CodebaseMetrics> {
   console.log(`   Collecting metrics from ${sourceDir} (${framework})...`);
 
   const metrics: any = {
@@ -77,7 +80,10 @@ async function collectCodebaseMetrics(sourceDir: string, framework: string): Pro
     metrics.hackComments = await countPattern(sourceDir, /\/\/\s*HACK|#\s*HACK/gi);
     metrics.todoCount = metrics.todoComments + metrics.fixmeComments + metrics.hackComments;
 
-    metrics.consoleStatements = await countPattern(sourceDir, /console\.(log|warn|error|debug|info)/gi);
+    metrics.consoleStatements = await countPattern(
+      sourceDir,
+      /console\.(log|warn|error|debug|info)/gi
+    );
     metrics.commentedCodeBlocks = await countCommentedCode(sourceDir);
 
     // File Complexity Metrics
@@ -109,7 +115,6 @@ async function collectCodebaseMetrics(sourceDir: string, framework: string): Pro
     // Framework-Specific
     metrics.frameworkVersion = await detectFrameworkVersion(framework);
     metrics.packageManager = await detectPackageManager();
-
   } catch (error: any) {
     console.error('   Error collecting metrics:', error.message);
     throw error;
@@ -125,14 +130,20 @@ async function collectCodebaseMetrics(sourceDir: string, framework: string): Pro
  * @returns Count of matches
  */
 async function countPattern(dir: string, pattern: RegExp): Promise<number> {
-  if (!await fs.pathExists(dir)) {
+  if (!(await fs.pathExists(dir))) {
     return 0;
   }
 
   try {
     // Get all source files
     const files = globSync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
-      ignore: ['**/node_modules/**', '**/build/**', '**/.dart_tool/**', '**/dist/**', '**/__pycache__/**']
+      ignore: [
+        '**/node_modules/**',
+        '**/build/**',
+        '**/.dart_tool/**',
+        '**/dist/**',
+        '**/__pycache__/**',
+      ],
     });
 
     let count = 0;
@@ -157,13 +168,19 @@ async function countPattern(dir: string, pattern: RegExp): Promise<number> {
  * @returns Estimated count of commented code blocks
  */
 async function countCommentedCode(dir: string): Promise<number> {
-  if (!await fs.pathExists(dir)) {
+  if (!(await fs.pathExists(dir))) {
     return 0;
   }
 
   try {
     const files = globSync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
-      ignore: ['**/node_modules/**', '**/build/**', '**/.dart_tool/**', '**/dist/**', '**/__pycache__/**']
+      ignore: [
+        '**/node_modules/**',
+        '**/build/**',
+        '**/.dart_tool/**',
+        '**/dist/**',
+        '**/__pycache__/**',
+      ],
     });
 
     let blockCount = 0;
@@ -198,20 +215,26 @@ async function countCommentedCode(dir: string): Promise<number> {
  * @returns File complexity metrics
  */
 async function analyzeFileComplexity(dir: string): Promise<FileComplexityMetrics> {
-  if (!await fs.pathExists(dir)) {
+  if (!(await fs.pathExists(dir))) {
     return {
       totalFiles: 0,
       filesOver500: 0,
       filesOver1000: 0,
       filesOver3000: 0,
       avgFileLength: 0,
-      largestFiles: []
+      largestFiles: [],
     };
   }
 
   try {
     const files = globSync(`${dir}/**/*.{js,jsx,ts,tsx,dart,py,rs}`, {
-      ignore: ['**/node_modules/**', '**/build/**', '**/.dart_tool/**', '**/dist/**', '**/__pycache__/**']
+      ignore: [
+        '**/node_modules/**',
+        '**/build/**',
+        '**/.dart_tool/**',
+        '**/dist/**',
+        '**/__pycache__/**',
+      ],
     });
 
     const fileSizes: Array<{ file: string; lines: number }> = [];
@@ -242,7 +265,7 @@ async function analyzeFileComplexity(dir: string): Promise<FileComplexityMetrics
       filesOver1000,
       filesOver3000,
       avgFileLength: files.length > 0 ? Math.round(totalLines / files.length) : 0,
-      largestFiles
+      largestFiles,
     };
   } catch (error: any) {
     console.error(`   Error analyzing file complexity: ${error.message}`);
@@ -252,7 +275,7 @@ async function analyzeFileComplexity(dir: string): Promise<FileComplexityMetrics
       filesOver1000: 0,
       filesOver3000: 0,
       avgFileLength: 0,
-      largestFiles: []
+      largestFiles: [],
     };
   }
 }
@@ -267,7 +290,7 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
     dependencies: {},
     dependencyCount: 0,
     devDependencies: {},
-    devDependencyCount: 0
+    devDependencyCount: 0,
   };
 
   try {
@@ -286,13 +309,13 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
         const yaml = await fs.readFile('pubspec.yaml', 'utf8');
 
         // Parse dependencies section (handle both simple and nested entries)
-        const depMatch = yaml.match(/dependencies:\s*\n((?:  [^\s].*\n(?:    .*\n)*)*)/);
-        const devDepMatch = yaml.match(/dev_dependencies:\s*\n((?:  [^\s].*\n(?:    .*\n)*)*)/);
+        const depMatch = yaml.match(/dependencies:\s*\n((?: {2}[^\s].*\n(?: {4}.*\n)*)*)/);
+        const devDepMatch = yaml.match(/dev_dependencies:\s*\n((?: {2}[^\s].*\n(?: {4}.*\n)*)*)/);
 
         if (depMatch) {
           // Count top-level dependencies (lines starting with 2 spaces, not 4+)
           const deps = depMatch[1].split('\n').filter((line: string) => {
-            return line.match(/^  [^\s]/) && line.trim().length > 0;
+            return line.match(/^ {2}[^\s]/) && line.trim().length > 0;
           });
           result.dependencyCount = deps.length;
           deps.forEach((dep: string) => {
@@ -303,7 +326,7 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
 
         if (devDepMatch) {
           const devDeps = devDepMatch[1].split('\n').filter((line: string) => {
-            return line.match(/^  [^\s]/) && line.trim().length > 0;
+            return line.match(/^ {2}[^\s]/) && line.trim().length > 0;
           });
           result.devDependencyCount = devDeps.length;
           devDeps.forEach((dep: string) => {
@@ -316,7 +339,9 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
       // Parse requirements.txt
       if (await fs.pathExists('requirements.txt')) {
         const reqs = await fs.readFile('requirements.txt', 'utf8');
-        const deps = reqs.split('\n').filter((line: string) => line.trim().length > 0 && !line.startsWith('#'));
+        const deps = reqs
+          .split('\n')
+          .filter((line: string) => line.trim().length > 0 && !line.startsWith('#'));
         result.dependencyCount = deps.length;
         deps.forEach((dep: string) => {
           const [name] = dep.split(/[=<>]/);
@@ -343,7 +368,9 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
         }
 
         if (devDepMatch) {
-          const devDeps = devDepMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
+          const devDeps = devDepMatch[1]
+            .split('\n')
+            .filter((line: string) => line.trim().length > 0);
           result.devDependencyCount = devDeps.length;
           devDeps.forEach((dep: string) => {
             const [name] = dep.trim().split(/\s*[={]/);
@@ -365,7 +392,10 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
  */
 async function getCommitCount(): Promise<number> {
   try {
-    const count = execSync('git rev-list --count HEAD', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+    const count = execSync('git rev-list --count HEAD', {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    });
     return parseInt(count.trim(), 10);
   } catch (error) {
     return 0;
@@ -378,8 +408,14 @@ async function getCommitCount(): Promise<number> {
  */
 async function getContributorCount(): Promise<number> {
   try {
-    const output = execSync('git shortlog -sn --all', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
-    const lines = output.trim().split('\n').filter(line => line.length > 0);
+    const output = execSync('git shortlog -sn --all', {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    });
+    const lines = output
+      .trim()
+      .split('\n')
+      .filter((line) => line.length > 0);
     return lines.length;
   } catch (error) {
     return 1;
@@ -392,7 +428,10 @@ async function getContributorCount(): Promise<number> {
  */
 async function getLastCommitDate(): Promise<string> {
   try {
-    const date = execSync('git log -1 --format=%cI', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+    const date = execSync('git log -1 --format=%cI', {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    });
     return date.trim();
   } catch (error) {
     return 'Unknown';
@@ -419,7 +458,10 @@ async function detectFrameworkVersion(framework: string): Promise<string> {
         }
 
         // Fall back to Node.js version
-        const nodeVersion = execSync('node --version', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+        const nodeVersion = execSync('node --version', {
+          encoding: 'utf8',
+          stdio: ['pipe', 'pipe', 'ignore'],
+        });
         return nodeVersion.trim();
       }
     } else if (framework === 'Flutter') {
@@ -429,10 +471,16 @@ async function detectFrameworkVersion(framework: string): Promise<string> {
         if (match) return match[1];
       }
     } else if (framework === 'Python') {
-      const version = execSync('python --version 2>&1', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+      const version = execSync('python --version 2>&1', {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      });
       return version.trim().replace('Python ', '');
     } else if (framework === 'Rust') {
-      const version = execSync('rustc --version', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+      const version = execSync('rustc --version', {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      });
       return version.trim().replace('rustc ', '');
     }
   } catch (error) {
@@ -463,5 +511,5 @@ export {
   analyzeFileComplexity,
   parseDependencies,
   detectFrameworkVersion,
-  detectPackageManager
+  detectPackageManager,
 };

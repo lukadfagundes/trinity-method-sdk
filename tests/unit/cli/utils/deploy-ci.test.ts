@@ -16,7 +16,7 @@ describe('deploy-ci', () => {
 
   beforeEach(async () => {
     originalCwd = process.cwd();
-    testDir = path.join(process.cwd(), '.tmp-test-deploy-ci-' + Date.now());
+    testDir = path.join(process.cwd(), `.tmp-test-deploy-ci-${Date.now()}`);
     await fs.ensureDir(testDir);
     process.chdir(testDir);
 
@@ -35,10 +35,7 @@ describe('deploy-ci', () => {
       path.join(templatesPath, 'cd.yml.template'),
       'name: CD\non:\n  release:\njobs:\n  deploy:\n    runs-on: ubuntu-latest'
     );
-    await fs.writeFile(
-      path.join(templatesPath, 'gitlab-ci.yml'),
-      'stages:\n  - test\n  - deploy'
-    );
+    await fs.writeFile(path.join(templatesPath, 'gitlab-ci.yml'), 'stages:\n  - test\n  - deploy');
     await fs.writeFile(
       path.join(templatesPath, 'generic-ci.yml'),
       'version: 1\nsteps:\n  - run: npm test'
