@@ -1,0 +1,22 @@
+# Trinity Method SDK - Pre-commit Quality Gates
+# Ensures code quality before each commit
+
+echo "🔱 Trinity Method Pre-commit Quality Gates"
+echo ""
+
+# Stage 1: Lint staged files
+echo "📋 Stage 1: Linting staged files..."
+npx lint-staged
+
+# Stage 2: Type check
+echo ""
+echo "📋 Stage 2: Type checking..."
+npm run type-check
+
+# Stage 3: Run tests
+echo ""
+echo "📋 Stage 3: Running tests..."
+npm test -- --bail --passWithNoTests
+
+echo ""
+echo "✅ All quality gates passed! Ready to commit."
