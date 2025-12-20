@@ -284,11 +284,16 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
       // Parse pubspec.yaml
       if (await fs.pathExists('pubspec.yaml')) {
         const yaml = await fs.readFile('pubspec.yaml', 'utf8');
-        const depMatch = yaml.match(/dependencies:\s*\n((?:  \w+:.*\n)*)/);
-        const devDepMatch = yaml.match(/dev_dependencies:\s*\n((?:  \w+:.*\n)*)/);
+
+        // Parse dependencies section (handle both simple and nested entries)
+        const depMatch = yaml.match(/dependencies:\s*\n((?:  [^\s].*\n(?:    .*\n)*)*)/);
+        const devDepMatch = yaml.match(/dev_dependencies:\s*\n((?:  [^\s].*\n(?:    .*\n)*)*)/);
 
         if (depMatch) {
-          const deps = depMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
+          // Count top-level dependencies (lines starting with 2 spaces, not 4+)
+          const deps = depMatch[1].split('\n').filter((line: string) => {
+            return line.match(/^  [^\s]/) && line.trim().length > 0;
+          });
           result.dependencyCount = deps.length;
           deps.forEach((dep: string) => {
             const [name] = dep.trim().split(':');
@@ -297,7 +302,9 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
         }
 
         if (devDepMatch) {
-          const devDeps = devDepMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
+          const devDeps = devDepMatch[1].split('\n').filter((line: string) => {
+            return line.match(/^  [^\s]/) && line.trim().length > 0;
+          });
           result.devDependencyCount = devDeps.length;
           devDeps.forEach((dep: string) => {
             const [name] = dep.trim().split(':');
@@ -320,14 +327,17 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
       // Parse Cargo.toml
       if (await fs.pathExists('Cargo.toml')) {
         const toml = await fs.readFile('Cargo.toml', 'utf8');
-        const depMatch = toml.match(/\[dependencies\]\s*\n((?:\w+\s*=.*\n)*)/);
-        const devDepMatch = toml.match(/\[dev-dependencies\]\s*\n((?:\w+\s*=.*\n)*)/);
+
+        // Match dependencies section - handle both simple (=) and complex ({) syntax
+        // Also handle last line without trailing newline
+        const depMatch = toml.match(/\[dependencies\]\s*\n((?:\w+\s*[={].*(?:\n|$))*)/);
+        const devDepMatch = toml.match(/\[dev-dependencies\]\s*\n((?:\w+\s*[={].*(?:\n|$))*)/);
 
         if (depMatch) {
           const deps = depMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
           result.dependencyCount = deps.length;
           deps.forEach((dep: string) => {
-            const [name] = dep.trim().split(/\s*=/);
+            const [name] = dep.trim().split(/\s*[={]/);
             result.dependencies[name] = 'latest';
           });
         }
@@ -336,7 +346,7 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
           const devDeps = devDepMatch[1].split('\n').filter((line: string) => line.trim().length > 0);
           result.devDependencyCount = devDeps.length;
           devDeps.forEach((dep: string) => {
-            const [name] = dep.trim().split(/\s*=/);
+            const [name] = dep.trim().split(/\s*[={]/);
             result.devDependencies[name] = 'latest';
           });
         }
@@ -437,9 +447,10 @@ async function detectFrameworkVersion(framework: string): Promise<string> {
  * @returns Package manager name
  */
 async function detectPackageManager(): Promise<string> {
-  if (await fs.pathExists('package-lock.json')) return 'npm';
-  if (await fs.pathExists('yarn.lock')) return 'yarn';
+  // Check in priority order (pnpm should be checked before npm/yarn)
   if (await fs.pathExists('pnpm-lock.yaml')) return 'pnpm';
+  if (await fs.pathExists('yarn.lock')) return 'yarn';
+  if (await fs.pathExists('package-lock.json')) return 'npm';
   if (await fs.pathExists('pubspec.yaml')) return 'pub';
   if (await fs.pathExists('requirements.txt')) return 'pip';
   if (await fs.pathExists('Cargo.toml')) return 'cargo';
