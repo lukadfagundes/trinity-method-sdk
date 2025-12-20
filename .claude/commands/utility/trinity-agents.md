@@ -1,0 +1,165 @@
+---
+description: Display Trinity agent directory and information
+---
+
+Display the Trinity Method Agent Directory with all 19 specialized agents.
+
+**Important:** Claude doesn't "delegate" to agents. When you invoke an agent or slash command, Claude adopts that agent's persona and expertise to help you. All agents are Claude with specialized context and responsibilities.
+
+## Agent Organization
+
+Agents are organized in 5 subdirectories by role:
+
+### 1. Leadership Team (3 agents)
+Located in: `.claude/agents/leadership/`
+- **ALY (Chief Technology Officer)** - Strategic planning and architecture decisions
+- **AJ MAESTRO (Orchestration Lead)** - Workflow planning and agent coordination
+- **AJ CC (Code Coordinator)** - Code quality and implementation oversight
+
+### 2. Deployment Team (4 agents)
+Located in: `.claude/agents/deployment/`
+- **TAN (Structure Specialist)** - Trinity infrastructure deployment and verification
+- **ZEN (Knowledge Base Specialist)** - Documentation and knowledge management
+- **INO (Context Specialist)** - CLAUDE.md hierarchy and ISSUES.md database
+- **EIN (CI/CD Specialist)** - Continuous integration and deployment pipelines
+
+### 3. Audit Team (1 agent)
+Located in: `.claude/agents/audit/`
+- **JUNO (Quality Auditor)** - Comprehensive codebase audits (invoke with `/trinity-audit`) and deployment validation
+
+### 4. Planning Team (4 agents)
+Located in: `.claude/agents/planning/`
+- **MON (Requirements Analyst)** - Scale determination and acceptance criteria
+- **ROR (Design Architect)** - Technical design and ADR documentation
+- **TRA (Work Planner)** - Implementation sequencing and BAS quality gates
+- **EUS (Task Decomposer)** - Atomic task breakdown following TDD
+
+### 5. AJ Implementation Team (7 agents)
+Located in: `.claude/agents/aj-team/`
+- **KIL (Task Executor)** - TDD implementation specialist (RED-GREEN-REFACTOR)
+- **BAS (Quality Gate)** - 6-phase validation (Lint, Structure, Build, Test, Coverage, Practices)
+- **DRA (Code Reviewer)** - Design Doc compliance validation
+- **APO (Documentation Specialist)** - Project documentation management (invoke with `/trinity-docs`), API docs, and inline comments
+- **BON (Dependency Manager)** - Package management and security
+- **CAP (Configuration Specialist)** - Environment and configuration files
+- **URO (Refactoring Specialist)** - Code refactoring and technical debt reduction
+
+## Usage
+
+Ask which agent you want to learn more about, and Claude will read that agent's template from `.claude/agents/{subdirectory}/` and provide a detailed summary of their capabilities and responsibilities.
+
+**Example:** "Tell me about MON's requirements analysis process"
+
+---
+
+## Common Workflows with Agents
+
+### 1. Unfamiliar Codebase Workflow
+```bash
+/trinity-audit              # JUNO analyzes codebase
+/trinity-docs @audit-report # APO updates documentation
+```
+**Use Case:** Just cloned an unfamiliar repository and need to understand it
+
+---
+
+### 2. Feature Development Workflow
+```bash
+/trinity-orchestrate @WO-XXX.md  # AJ MAESTRO coordinates agents
+```
+**Use Case:** Implementing a feature with formal work order
+**Agents Involved:** MON → ROR → TRA → EUS → KIL + BAS → DRA → JUNO
+
+---
+
+### 3. Documentation Maintenance
+```bash
+/trinity-docs  # APO reviews and updates all documentation
+```
+**Use Case:** Regular documentation reviews, pre-release updates
+**Agents Involved:** APO (standalone)
+
+---
+
+### 4. Session Recovery
+```bash
+/trinity-continue  # ALY recovers session state
+```
+**Use Case:** Context window limit reached, interruption occurred
+**Agents Involved:** ALY (session state analysis)
+
+---
+
+## Quick Agent Lookup
+
+| Agent | Role | When to Use | File Location |
+|-------|------|-------------|---------------|
+| **ALY** | CTO | Strategic decisions, stop point reviews | leadership/aly-cto.md |
+| **AJ MAESTRO** | Orchestrator | Coordinate Medium/Large workflows | leadership/aj-maestro.md |
+| **AJ CC** | Continuity | Session recovery, investigations | leadership/aj-cc.md |
+| **TAN** | Structure | Deploy Trinity folders (init only) | deployment/tan-structure.md |
+| **ZEN** | Knowledge | Populate knowledge base (init only) | deployment/zen-knowledge.md |
+| **INO** | Context | CLAUDE.md hierarchy (init only) | deployment/ino-context.md |
+| **EIN** | CI/CD | GitHub Actions setup (init only) | deployment/ein-cicd.md |
+| **MON** | Requirements | Extract requirements, determine scale | planning/mon-requirements.md |
+| **ROR** | Design | Technical design, ADRs | planning/ror-design.md |
+| **TRA** | Planner | Work plans, phase breakdown | planning/tra-planner.md |
+| **EUS** | Decomposer | Break into atomic tasks | planning/eus-decomposer.md |
+| **KIL** | Executor | TDD implementation | aj-team/kil-task-executor.md |
+| **BAS** | Quality Gate | 6-phase validation | aj-team/bas-quality-gate.md |
+| **DRA** | Reviewer | Code review, compliance | aj-team/dra-code-reviewer.md |
+| **APO** | Documentation | API docs, comments | aj-team/apo-documentation-specialist.md |
+| **BON** | Dependencies | Package management | aj-team/bon-dependency-manager.md |
+| **CAP** | Configuration | Config files, env vars | aj-team/cap-configuration-specialist.md |
+| **URO** | Refactoring | Code optimization | aj-team/uro-refactoring-specialist.md |
+| **JUNO** | Auditor | Deployment verification | audit/juno-auditor.md |
+
+---
+
+## Agent Selection Flowchart
+
+```
+What do you need?
+
+├─ Deploy Trinity → TAN, ZEN, INO (+ EIN if CI/CD)
+│
+├─ Start new work → ALY (determines scale) → AJ MAESTRO
+│
+├─ Resume interrupted work → AJ CC (session recovery)
+│
+├─ Investigation only → AJ CC (read-only analysis)
+│
+└─ Specific task:
+    │
+    ├─ Extract requirements → MON
+    ├─ Create design → ROR
+    ├─ Plan work → TRA
+    ├─ Break into tasks → EUS
+    ├─ Implement code → KIL
+    ├─ Validate quality → BAS
+    ├─ Review code → DRA
+    ├─ Write docs → APO
+    ├─ Manage packages → BON
+    ├─ Configure app → CAP
+    ├─ Refactor code → URO
+    └─ Audit deployment → JUNO
+```
+
+---
+
+---
+
+## Agent Naming Standard
+
+**Format**: `**AGENT** - Full Title (Acronym)`
+
+**Examples**:
+- **ALY** - Chief Technology Officer (CTO)
+- **AJ MAESTRO** - Implementation Orchestrator
+- **AJ CC** - Continuous Context Specialist
+- **MON** - Requirements Analyst
+- **KIL** - Task Executor
+
+**Consistency**: All agent references across Trinity use this format for clarity.
+
+---

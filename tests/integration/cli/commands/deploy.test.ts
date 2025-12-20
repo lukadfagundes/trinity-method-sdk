@@ -14,7 +14,7 @@
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import fs from 'fs-extra';
 import path from 'path';
-import { deploy } from '../../../../src/cli/commands/deploy.js';
+import { deploy } from '../../../../src/cli/commands/deploy/index.js';
 import {
   createTempDir,
   cleanupTempDir,

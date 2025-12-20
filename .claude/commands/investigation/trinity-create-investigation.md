@@ -1,0 +1,232 @@
+---
+description: Launch the Investigation Wizard to create structured investigations
+---
+
+Launch the Trinity Method Investigation Wizard to create a structured investigation interactively.
+
+**Investigation Wizard Flow:**
+
+**Step 1: Investigation Type**
+Ask user to select:
+- Bug Investigation
+- Feature Analysis
+- Performance Investigation
+- Security Audit
+- Technical Debt Assessment
+- Architecture Review
+- Custom Investigation
+
+**Step 2: Investigation Details**
+Gather:
+- Investigation title
+- Problem statement
+- Affected components/files
+- Priority (Low/Medium/High/Critical)
+- Estimated complexity
+
+**Step 3: Objectives**
+Define investigation objectives (numbered list):
+- What questions need answering?
+- What hypotheses to test?
+- What outcomes are expected?
+
+**Step 4: Scope**
+Determine investigation scope:
+- Files to analyze
+- Time constraints
+- Resource limits
+- Out-of-scope items
+
+**Step 5: Success Criteria**
+Define completion criteria:
+- What constitutes a successful investigation?
+- Required deliverables
+- Acceptance criteria
+
+**Step 6: Template Selection**
+Offer templates based on investigation type:
+- Standard templates (from trinity/templates/investigations/)
+- Custom templates (from user's template library)
+- Generate new template
+
+**Step 7: Review & Create**
+Show investigation summary and confirm creation.
+
+**Output:**
+Create investigation file at:
+`trinity/investigations/INV-XXX-{title}.md`
+
+**Post-Creation:**
+Ask if user wants to:
+- Start investigation immediately with `/trinity-orchestrate @INV-XXX-{title}.md`
+- Generate investigation plan first (/trinity-plan-investigation)
+- Schedule for later
+
+**Orchestration:**
+Once investigation is created in `trinity/investigations/`, execute it:
+
+```bash
+/trinity-orchestrate @INV-001-example-investigation.md
+```
+
+**AJ MAESTRO** picks up the investigation from `trinity/investigations/` and orchestrates the investigation, leaving findings in `trinity/reports/`.
+
+**CRITICAL: Investigation Protocol**
+⚠️ **INVESTIGATIONS ARE READ-ONLY OPERATIONS**
+
+When executing an investigation:
+- **NO file modifications allowed**
+- **NO code implementations**
+- **NO fixes applied**
+- **ONLY analyze, document, and report findings**
+
+Investigation deliverables:
+- Findings document (what was discovered)
+- Root cause analysis
+- Recommendations (what SHOULD be done)
+- Impact assessment
+
+**Implementation happens SEPARATELY** only after user explicitly requests it based on investigation findings.
+
+---
+
+## Investigation Naming Convention
+
+**Format**: `INV-XXX-{brief-description}.md`
+
+**Components**:
+- **INV**: Investigation prefix (always uppercase)
+- **XXX**: Three-digit sequential number (001, 002, 003...)
+- **brief-description**: Lowercase, hyphenated
+
+**Examples**:
+```
+INV-001-performance-bottleneck-analysis.md
+INV-012-authentication-flow-review.md
+INV-025-database-query-optimization.md
+```
+
+**Auto-Numbering**: System scans `trinity/investigations/` and assigns next number
+
+---
+
+## Real-World Examples
+
+### Example 1: Bug Investigation
+**Title:** "JWT token refresh fails after 24 hours"
+**Template:** Bug Investigation (`bug.md`)
+**Investigation Type:** Bug/Defect
+**Priority:** High
+
+**Key Findings:**
+- Used Five Whys analysis to discover hardcoded 24h token expiration limit
+- Root cause: Configuration constant set during initial development
+- No test coverage for long-lived sessions
+
+**Outcome:**
+- Fixed expiration logic to use configurable value
+- Added tests for token refresh at various time intervals
+- Pattern learned: "Always check for hardcoded time limits in authentication code"
+
+---
+
+### Example 2: Performance Investigation
+**Title:** "Dashboard loads in 8 seconds (target <2s)"
+**Template:** Performance Investigation (`performance.md`)
+**Investigation Type:** Performance Optimization
+**Priority:** Critical
+
+**Key Findings:**
+- Chrome DevTools profiling revealed N+1 query pattern
+- User data loaded individually in loop (500+ queries per page load)
+- No database indexes on frequently queried columns
+
+**Outcome:**
+- Added eager loading to fetch all user data in single query
+- Created compound index on user lookup columns
+- Page load reduced to 1.8s (78% improvement)
+- Set up performance budget alerts to prevent regressions
+
+---
+
+### Example 3: Security Investigation
+**Title:** "SQL injection vulnerability in user search endpoint"
+**Template:** Security Investigation (`security.md`)
+**Investigation Type:** Security Audit
+**Priority:** Critical
+
+**Key Findings:**
+- CVSS Score: 9.1 (Critical)
+- Proof-of-concept demonstrated full database access
+- User input concatenated directly into SQL queries
+- Attack vector: Network-based, no authentication required
+
+**Outcome:**
+- Replaced string concatenation with parameterized queries
+- Added input validation and sanitization layer
+- Implemented Web Application Firewall (WAF) rules
+- Security audit passed, no similar vulnerabilities found
+
+---
+
+### Example 4: Technical Investigation
+**Title:** "Choose state management solution for React dashboard"
+**Template:** Technical Investigation (`technical.md`)
+**Investigation Type:** Architecture Decision
+**Priority:** Medium
+
+**Key Findings:**
+- Evaluated 3 options: Redux, Zustand, React Context
+- Decision matrix weighted: simplicity (30%), performance (25%), learning curve (20%)
+- Zustand scored highest (8.2/10) vs Redux (7.1/10) and Context (6.8/10)
+
+**Outcome:**
+- Architecture Decision Record (ADR) documented choice
+- Zustand selected for lightweight API and minimal boilerplate
+- Migration plan: 3 phases over 2 weeks
+- Team training completed, implementation successful
+
+---
+
+### Example 5: Feature Investigation
+**Title:** "Add two-factor authentication for user accounts"
+**Template:** Feature Investigation (`feature.md`)
+**Investigation Type:** New Feature
+**Priority:** High
+
+**Key Findings:**
+- 12 user stories defined with acceptance criteria
+- Epic breakdown: Setup (2 stories), Core (6 stories), Polish (4 stories)
+- 4-phase implementation plan with rollout strategy
+- Feature flag for gradual deployment (10% → 50% → 100%)
+
+**Outcome:**
+- Successfully launched to 100% of users
+- 40% adoption rate in first 30 days (exceeded 25% target)
+- No security incidents reported
+- User satisfaction (NPS): +15 points
+
+---
+
+## Template Selection Guide
+
+**Use this decision tree:**
+
+```
+Is it a defect or broken functionality?
+  → YES: Use Bug Investigation Template
+
+Is it slow or using too many resources?
+  → YES: Use Performance Investigation Template
+
+Is it a security vulnerability or audit finding?
+  → YES: Use Security Investigation Template
+
+Is it an architecture decision or technical design question?
+  → YES: Use Technical Investigation Template
+
+Is it new functionality or a feature request?
+  → YES: Use Feature Investigation Template
+```
+
+---

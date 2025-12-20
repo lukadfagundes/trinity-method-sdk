@@ -116,35 +116,41 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
     // IMPORTANT: Check this AFTER other language-specific files to avoid false positives
     // (Trinity SDK installation may create package.json in non-Node projects)
     else if (await exists(path.join(targetDir, 'package.json'))) {
-      result.language = 'JavaScript/TypeScript';
+      try {
+        const pkgPath = path.join(targetDir, 'package.json');
+        const pkgContent = await fs.readFile(pkgPath, 'utf8');
+        const pkg = JSON.parse(pkgContent);
 
-      const pkgPath = path.join(targetDir, 'package.json');
-      const pkgContent = await fs.readFile(pkgPath, 'utf8');
-      const pkg = JSON.parse(pkgContent);
+        result.language = 'JavaScript/TypeScript';
 
-      // Detect framework
-      if (pkg.dependencies?.react) {
-        result.framework = 'React';
-      } else if (pkg.dependencies?.vue) {
-        result.framework = 'Vue';
-      } else if (pkg.dependencies?.['@angular/core']) {
-        result.framework = 'Angular';
-        result.sourceDir = 'src/app';
-      } else if (pkg.dependencies?.next) {
-        result.framework = 'Next.js';
-      } else if (pkg.dependencies?.express) {
-        result.framework = 'Express';
-      } else {
-        result.framework = 'Node.js';
-      }
+        // Detect framework (check Next.js BEFORE React since Next.js includes React)
+        if (pkg.dependencies?.next) {
+          result.framework = 'Next.js';
+        } else if (pkg.dependencies?.react) {
+          result.framework = 'React';
+        } else if (pkg.dependencies?.vue) {
+          result.framework = 'Vue';
+        } else if (pkg.dependencies?.['@angular/core']) {
+          result.framework = 'Angular';
+          result.sourceDir = 'src/app';
+        } else if (pkg.dependencies?.express) {
+          result.framework = 'Express';
+        } else {
+          result.framework = 'Node.js';
+        }
 
-      // Detect package manager
-      if (await exists(path.join(targetDir, 'pnpm-lock.yaml'))) {
-        result.packageManager = 'pnpm';
-      } else if (await exists(path.join(targetDir, 'yarn.lock'))) {
-        result.packageManager = 'yarn';
-      } else {
-        result.packageManager = 'npm';
+        // Detect package manager
+        if (await exists(path.join(targetDir, 'pnpm-lock.yaml'))) {
+          result.packageManager = 'pnpm';
+        } else if (await exists(path.join(targetDir, 'yarn.lock'))) {
+          result.packageManager = 'yarn';
+        } else {
+          result.packageManager = 'npm';
+        }
+      } catch (parseError: any) {
+        console.error('Error parsing package.json:', parseError.message);
+        // If package.json is malformed, treat as unknown project
+        // (keep default result.language = 'Unknown', result.framework = 'Generic')
       }
     }
     // Check for Python

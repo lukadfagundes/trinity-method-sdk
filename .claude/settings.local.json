@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm test:*)",
+      "Bash(node dist/cli/index.js deploy:*)",
+      "Bash(node dist/cli/index.js update:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

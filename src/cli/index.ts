@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import { deploy } from './commands/deploy.js';
+import { deploy } from './commands/deploy/index.js';
 import { update } from './commands/update.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';

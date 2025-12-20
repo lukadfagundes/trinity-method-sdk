@@ -1,0 +1,549 @@
+---
+description: Resume work after interruption (ALY reviews state)
+---
+
+Resume Trinity Method workflow after interruption.
+
+**Context:** User experienced a crash or is returning to an existing session with incomplete work.
+
+**When to use:**
+- Work orders in trinity/work-orders/ haven't been completed
+- Reports in trinity/reports/ haven't been analyzed
+- Session files in trinity/sessions/ need review
+- User needs to pick up where they left off
+
+**Process:**
+1. **ALY (CTO)** reviews all current work:
+   - Check trinity/sessions/ for active session files
+   - Review trinity/work-orders/ for incomplete work orders
+   - Analyze trinity/reports/ for unprocessed reports
+
+2. **ALY provides session summary:**
+   - Last known state of work
+   - Incomplete tasks
+   - Next recommended actions
+   - Which agent should continue the work
+
+3. **Resume workflow** with appropriate agent based on ALY's recommendation
+
+**Outcome:** User understands current state and can continue work seamlessly.
+## Example Session Recovery Scenarios
+
+### Scenario 1: Mid-Implementation Crash (Tasks in Progress)
+
+**User runs**: `/trinity-continue`
+
+**ALY State Detection Process**:
+
+1. **Git History Analysis**:
+```bash
+git status
+# Output: 3 modified files, no commits since last session
+
+git log --oneline -5
+# Shows last commit was 2 hours ago
+```
+
+2. **Work Order Checking**:
+```bash
+cat trinity/work-orders/WO-042-jwt-refresh-implementation.md
+# Status: IN PROGRESS
+# Last updated: 2 hours ago
+# Progress: Task 3/7
+```
+
+3. **Session File Reading**:
+```bash
+cat trinity/sessions/SESSION-2025-12-18-14-30.md
+# Last entry: "Implementing middleware integration (50% complete)"
+# Interrupted: Context window limit reached
+```
+
+4. **Knowledge Base Review**:
+```bash
+cat trinity/knowledge-base/To-do.md
+# Shows 4 remaining tasks for JWT implementation
+```
+
+**ALY Recovery Report**:
+
+```markdown
+# Session Recovery Analysis
+
+**Session ID**: SESSION-2025-12-18-14-30
+**Interruption Cause**: Context window limit reached
+**Time Since Last Activity**: 2 hours 15 minutes
+
+## Current State
+
+**Work Order**: WO-042 - JWT Refresh Token Implementation
+**Scale**: MEDIUM (4 files)
+**Progress**: 43% complete (3/7 tasks done)
+
+### Completed
+✅ Task 1: Token generation logic (auth.service.ts)
+✅ Task 2: Refresh endpoint created (auth.middleware.ts)
+✅ Task 3: Type definitions (auth.types.ts) - PARTIALLY COMPLETE
+
+### In Progress
+⏸️ Task 3: Middleware integration - 50% complete
+   - File modified: src/middleware/auth.middleware.ts
+   - Uncommitted changes: 47 lines added
+
+### Pending
+⏭️ Task 4: Error handling and validation
+⏭️ Task 5: Unit tests (auth.service.test.ts)
+⏭️ Task 6: Integration tests
+⏭️ Task 7: Documentation updates
+
+## Uncommitted Changes
+```bash
+src/middleware/auth.middleware.ts    | 47 ++++++++++++++
+src/services/auth.service.ts         | 12 ++--
+src/types/auth.types.ts              | 8 +++
+3 files changed, 64 insertions(+), 3 deletions(-)
+```
+
+## Recovery Options
+
+**Option 1: Resume with AJ MAESTRO (RECOMMENDED)**
+- Continue Medium-scale workflow
+- Pick up at Task 3 (finish middleware integration)
+- BAS quality gates will validate all changes
+- Estimated time to complete: 2-3 hours
+
+**Option 2: Review and Restart**
+- Review all uncommitted changes
+- Decide if current approach is correct
+- Potentially restart with new design
+- Estimated time: 4-5 hours (includes redesign)
+
+**Option 3: Manual Completion**
+- You finish implementation yourself
+- No quality gates or validation
+- Risk of missing edge cases
+- Estimated time: Unknown
+
+## Recommendation
+
+**Resume with AJ MAESTRO** - Your current implementation looks solid. Middleware integration is 50% done. Continue with quality gates to ensure proper validation and testing.
+
+**Next Steps**:
+1. I'll hand off to AJ MAESTRO
+2. AJ MAESTRO will invoke KIL to complete Task 3
+3. BAS will validate the middleware integration
+4. Continue with Tasks 4-7
+5. Final DRA review before completion
+
+Shall I proceed with Option 1?
+```
+
+**User**: "Yes, resume with AJ MAESTRO"
+
+**ALY Handoff to AJ MAESTRO**:
+```json
+{
+  "context": "session_recovery",
+  "work_order": "WO-042",
+  "scale": "MEDIUM",
+  "current_task": 3,
+  "total_tasks": 7,
+  "progress": 43,
+  "uncommitted_files": [
+    "src/middleware/auth.middleware.ts",
+    "src/services/auth.service.ts",
+    "src/types/auth.types.ts"
+  ],
+  "next_action": "complete_task_3_middleware_integration",
+  "quality_gates_required": true
+}
+```
+
+---
+
+### Scenario 2: No Active Work (Clean State)
+
+**User runs**: `/trinity-continue`
+
+**ALY State Detection**:
+
+1. **Git Status**: Working directory clean, no uncommitted changes
+2. **Work Orders**: No IN PROGRESS work orders found
+3. **Session Files**: Last session closed properly 3 days ago
+4. **To-Do**: Empty task list
+
+**ALY Recovery Report**:
+
+```markdown
+# Session Recovery Analysis
+
+**Session ID**: N/A (No active session)
+**Last Session**: SESSION-2025-12-15-10-00 (closed 3 days ago)
+
+## Current State
+
+**Work Orders**: None in progress
+**Uncommitted Changes**: None
+**Active Tasks**: None
+**Session Status**: Clean slate - ready for new work
+
+## Last Session Summary
+
+The previous session (3 days ago) was completed successfully:
+- Work Order: WO-038 - User authentication refactoring
+- Status: ✅ COMPLETED
+- Commits: 7 commits pushed to main
+- Knowledge Base: Updated with authentication patterns
+
+## Recovery Options
+
+**Option 1: Start New Work**
+- No recovery needed
+- Begin fresh workflow with `/trinity-start`
+- Or create new work order with `/trinity-workorder`
+
+**Option 2: Review Backlog**
+- Check trinity/work-orders/ for pending work orders
+- Prioritize and select next task
+- Begin implementation
+
+**Option 3: Continue from Backlog**
+- 3 pending work orders found:
+  - WO-040: Add pagination to user list (MEDIUM priority)
+  - WO-041: Implement email notifications (LOW priority)
+  - WO-043: Refactor validation utilities (TECH DEBT)
+
+## Recommendation
+
+No recovery needed - your last session closed cleanly. You're ready to start new work!
+
+**Next Steps**:
+1. Run `/trinity-start` to begin new workflow, OR
+2. Review pending work orders and select one to implement, OR
+3. Create new work order for a specific task
+
+What would you like to work on?
+```
+
+---
+
+### Scenario 3: Uncommitted Changes (Need Decision)
+
+**User runs**: `/trinity-continue`
+
+**ALY State Detection**:
+
+1. **Git Status**: 5 files modified, no work order found
+2. **Session Files**: No recent session file
+3. **Work Orders**: No active work orders
+4. **Last Commit**: 12 hours ago
+
+**ALY Recovery Report**:
+
+```markdown
+# Session Recovery Analysis
+
+**Session ID**: Unknown (no session file found)
+**Last Commit**: 12 hours ago
+**Uncommitted Changes**: 5 files
+
+## Current State
+
+⚠️ **WARNING**: Uncommitted changes detected but no active work order found
+
+### Uncommitted Files
+```bash
+git status
+On branch feature/user-settings
+
+Changes not staged for commit:
+  modified:   src/components/UserSettings.tsx
+  modified:   src/components/ProfileForm.tsx
+  modified:   src/services/user.service.ts
+  modified:   src/types/user.types.ts
+  modified:   src/styles/settings.css
+
+5 files changed, 234 insertions(+), 87 deletions(-)
+```
+
+### Analysis
+- **Scale**: Appears to be MEDIUM (5 files)
+- **Type**: Feature implementation (user settings)
+- **Quality Gates**: ❌ None run (no work order = no BAS validation)
+- **Tests**: Unknown if tests were written
+- **Session File**: ❌ Not found (manual work outside Trinity?)
+
+## Recovery Options
+
+**Option 1: Create Work Order and Validate (RECOMMENDED)**
+```
+Create WO-044 for these changes:
+1. Document what was implemented
+2. Run BAS quality gates on existing code
+3. Ensure tests exist and pass
+4. Get DRA compliance review
+5. Create proper commit with context
+
+Estimated time: 1 hour
+```
+
+**Option 2: Commit As-Is (NOT RECOMMENDED)**
+```
+⚠️ Risk: No quality validation
+- Changes weren't tested with BAS
+- No compliance review
+- May have issues
+
+Only choose if:
+- You're confident in the changes
+- Tests were written manually
+- This was experimental/spike work
+```
+
+**Option 3: Discard Changes**
+```
+git reset --hard HEAD
+
+Use if:
+- These were experimental changes
+- You want to start fresh
+- Implementation didn't work out
+```
+
+**Option 4: Stash and Review**
+```
+git stash
+git stash show -p
+
+Review changes, then decide:
+- Apply and create work order (Option 1)
+- Discard (Option 3)
+```
+
+## Recommendation
+
+**Create Work Order** - These changes appear substantial (234 insertions). Running them through proper quality gates will ensure they meet project standards.
+
+**Next Steps**:
+1. I'll create WO-044: User Settings Feature Implementation
+2. Document current changes in work order
+3. Run BAS quality gates (linting, tests, coverage)
+4. Fix any issues found
+5. Get DRA compliance review
+6. Create proper commit with full context
+
+This will take ~1 hour but ensures quality. Proceed?
+```
+
+**User**: "Yes, create the work order"
+
+**ALY Creates Work Order**:
+```markdown
+# WO-044: User Settings Feature Implementation (Retroactive)
+
+**Type**: Implementation (Retroactive Quality Check)
+**Priority**: MEDIUM
+**Status**: IN PROGRESS (retroactive validation)
+**Created**: 2025-12-18
+
+## Context
+
+Uncommitted changes found for user settings feature. Running retroactive quality validation before commit.
+
+## Files Modified (5 files)
+- src/components/UserSettings.tsx
+- src/components/ProfileForm.tsx
+- src/services/user.service.ts
+- src/types/user.types.ts
+- src/styles/settings.css
+
+## Tasks
+1. Review implementation for completeness
+2. Run BAS Phase 1: Linting
+3. Run BAS Phase 2: Type checking
+4. Run BAS Phase 3: Build verification
+5. Run BAS Phase 4: Unit tests (create if missing)
+6. Run BAS Phase 5: Coverage check
+7. DRA compliance review
+8. Create commit with proper documentation
+
+Estimated time: 1 hour
+```
+
+---
+
+## How ALY Recovers State
+
+ALY uses a multi-source approach to reconstruct session context:
+
+### 1. Git History Analysis
+```bash
+# Check working directory status
+git status
+
+# Review recent commits
+git log --oneline -10
+
+# Check current branch
+git branch --show-current
+
+# See what changed since last commit
+git diff HEAD
+```
+
+**Information Gathered**:
+- Uncommitted changes (files and line counts)
+- Last commit time and message
+- Current branch context
+- Divergence from main/master
+
+### 2. Work Order Checking
+```bash
+# List all work orders
+ls -lt trinity/work-orders/
+
+# Find IN PROGRESS work orders
+grep -r "Status: IN PROGRESS" trinity/work-orders/
+
+# Read most recent work order
+cat trinity/work-orders/WO-042-*.md
+```
+
+**Information Gathered**:
+- Active work order details
+- Task breakdown and progress
+- Expected deliverables
+- Estimated time remaining
+
+### 3. Session File Reading
+```bash
+# Find most recent session file
+ls -lt trinity/sessions/ | head -1
+
+# Read session log
+cat trinity/sessions/SESSION-2025-12-18-14-30.md
+```
+
+**Information Gathered**:
+- Last activity timestamp
+- What was being worked on
+- Progress notes
+- Interruption reason (if recorded)
+
+### 4. Knowledge Base Review
+```bash
+# Check active tasks
+cat trinity/knowledge-base/To-do.md
+
+# Review known issues
+cat trinity/knowledge-base/ISSUES.md
+
+# Check recent decisions
+tail -20 trinity/knowledge-base/ARCHITECTURE.md
+```
+
+**Information Gathered**:
+- Pending tasks
+- Known blockers
+- Recent architectural decisions
+- Technical debt context
+
+### 5. Build & Test State
+```bash
+# Check if tests pass
+npm test 2>&1 | head -20
+
+# Verify build works
+npm run build 2>&1 | tail -10
+```
+
+**Information Gathered**:
+- Test failures (if any)
+- Build errors (if any)
+- Current code health
+
+### 6. Branch Analysis
+```bash
+# Check if branch is ahead/behind
+git status -sb
+
+# See unpushed commits
+git log origin/main..HEAD --oneline
+```
+
+**Information Gathered**:
+- Sync status with remote
+- Unpushed work
+- Collaboration context
+
+---
+
+---
+
+## Session vs Work Order State
+
+### Session State
+**What**: Your current context and environment
+- Uncommitted changes
+- Open files
+- Terminal history
+- In-memory variables
+
+**Persisted In**: `trinity/sessions/SESSION-{timestamp}.md`
+
+### Work Order State
+**What**: Progress on specific task
+- Completed tasks (checkboxes)
+- Current phase
+- Blockers/issues
+
+**Persisted In**: `trinity/work-orders/WO-XXX-{title}.md`
+
+### Key Difference
+
+**Session** = Your working environment (volatile)
+**Work Order** = Task progress (persistent)
+
+**Example**:
+- Session lost → Use /trinity-continue to recover environment
+- Work Order paused → Status saved in WO file, resume anytime
+
+---
+
+---
+
+## /trinity-continue vs /trinity-end
+
+### Key Difference
+
+**/trinity-continue**: Resume interrupted work
+**/trinity-end**: Close session completely
+
+### When to Use Each
+
+**Use /trinity-continue** when:
+- ✅ Session was interrupted (context loss, crash)
+- ✅ Want to resume where you left off
+- ✅ Have uncommitted changes to review
+
+**Use /trinity-end** when:
+- ✅ All work complete
+- ✅ Ready to stop working
+- ✅ Want to archive session and clean up
+
+### What Each Does
+
+**/trinity-continue**:
+- Analyzes current state (git, work orders, sessions)
+- Provides recovery options
+- Resumes with AJ MAESTRO or AJ CC
+
+**/trinity-end**:
+- Creates session summary
+- Updates knowledge base
+- Archives work to trinity/archive/
+- Clears session state
+
+**Don't Use /trinity-end** if you're just taking a break - context will be lost!
+
+---

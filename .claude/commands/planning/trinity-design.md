@@ -1,0 +1,347 @@
+---
+description: Create technical design using ROR (Design Architect)
+---
+
+# Trinity Technical Design - ROR
+
+**Agent:** ROR (Design Architect)
+**Role:** Technical design, ADRs, and Design Doc creation
+
+## What ROR Does
+
+1. **Design Doc Creation:**
+   - Input/Output contracts
+   - Function signatures with ≤2 parameters
+   - Error handling strategy
+   - Architecture decisions
+
+2. **Design Principles:**
+   - **Functions:** ≤2 parameters (use objects for more)
+   - **Length:** <200 lines per function
+   - **Nesting:** ≤4 levels deep
+   - **Async:** Always wrap in try-catch
+   - **DRY:** No code duplication
+
+3. **Architecture Decision Records (ADRs):**
+   - Why this approach?
+   - Alternatives considered
+   - Trade-offs and implications
+
+4. **Design Doc Compliance:**
+   - DRA will validate implementation matches design
+   - ≥70% acceptance criteria met required
+
+## Output Format
+
+ROR produces structured JSON handoff:
+```json
+{
+  "designDoc": {
+    "functions": [
+      {
+        "name": "functionName",
+        "parameters": ["param1", "param2"],
+        "returns": "ReturnType",
+        "throws": ["Error1", "Error2"]
+      }
+    ],
+    "architecture": "description",
+    "errorHandling": "strategy"
+  },
+  "adr": {
+    "decision": "chosen approach",
+    "alternatives": ["alt1", "alt2"],
+    "rationale": "why this approach"
+  },
+  "compliance": ["criterion1", "criterion2"]
+}
+```
+
+## ROR Agent Capabilities
+
+ROR specializes in technical design following Trinity principles:
+- **Design-First Development:** Comprehensive design before implementation prevents rework
+- **ADR Documentation:** Architecture Decision Records capture rationale and trade-offs
+- **Design Doc Compliance:** DRA validates implementation matches design (≥70% required)
+- **Function Constraints:** ≤2 parameters, <200 lines, ≤4 nesting levels
+
+## Integration with Trinity Workflow
+
+ROR's technical design follows MON's requirements analysis:
+
+1. **After MON:** Requirements analysis complete with acceptance criteria
+2. **ROR Design (Claude adopts ROR persona):** Creates technical design with ADRs
+3. **Design Doc:** Comprehensive function signatures, error handling, architecture
+4. **Design Approval:** User reviews design (STOP POINT in Medium/Large workflows)
+5. **Handoff to TRA:** Design feeds into implementation planning
+
+**Example in Medium-scale workflow:**
+```
+Phase 2: Technical Design (STOP POINT)
+├── Create technical design with function signatures
+└── Document architecture decisions (ADR)
+
+Output: JSON handoff with design doc, ADR, compliance criteria
+User approval required before Phase 3 (Planning)
+```
+
+**See Also:** `/trinity-orchestrate` for complete workflow planning
+
+## Technical Investigation Template
+
+For architecture decisions and design choices, use Technical Investigation Template:
+- Architecture options analysis
+- Decision matrix with weighted criteria
+- ADR format documentation
+- Trade-offs and consequences
+- Implementation strategy
+
+**See:** `/trinity-investigate-templates` for Technical template structure
+
+## Usage
+
+**Provide requirements and Claude (as ROR) will create technical design:**
+
+What are the requirements? (Or provide MON's output)
+
+**For complete workflow planning:**
+
+Use `/trinity-orchestrate` to plan your implementation with ROR design as a key phase
+
+---
+
+## Architecture Decision Record (ADR) Example
+
+### ADR-003: Redis for Session Storage
+
+**Status**: Accepted
+**Date**: 2025-12-15
+**Deciders**: Development Team, ALY (CTO)
+**Technical Story**: WO-042 - JWT Refresh Token Implementation
+
+---
+
+#### Context
+
+We need to store refresh tokens securely with the following requirements:
+- Fast lookup by token hash (<10ms)
+- Automatic expiration after 7 days
+- Support for token family tracking (breach detection)
+- Scalable to 100k+ active sessions
+- High availability (99.9% uptime)
+
+Current system stores sessions in PostgreSQL, but refresh token lookups are becoming a bottleneck as user base grows.
+
+---
+
+#### Decision
+
+We will use **Redis** as the primary storage for refresh tokens, with PostgreSQL as backup for audit logging.
+
+**Implementation**:
+- Redis stores active refresh tokens (TTL: 7 days)
+- PostgreSQL stores refresh token audit log (permanent record)
+- Token families tracked in Redis Sets
+- Breach detection via Redis WATCH/MULTI transactions
+
+---
+
+#### Alternatives Considered
+
+##### Alternative 1: PostgreSQL Only (Current System)
+**Pros**:
+- Already in use
+- ACID guarantees
+- Familiar to team
+- Backup/recovery established
+
+**Cons**:
+- Slower lookups (~50ms vs <10ms)
+- Manual TTL management required
+- Increased database load
+- Doesn't scale well for session data
+
+**Why Rejected**: Performance doesn't meet <10ms requirement, especially under load
+
+---
+
+##### Alternative 2: Memcached
+**Pros**:
+- Very fast (<5ms lookups)
+- Simple key-value store
+- Easy to set up
+
+**Cons**:
+- No persistence (data loss on restart)
+- No data structures (Sets for token families)
+- No TTL update capability
+- No transactions for breach detection
+
+**Why Rejected**: Lack of persistence and data structures makes token family tracking difficult
+
+---
+
+##### Alternative 3: DynamoDB
+**Pros**:
+- Managed service (no ops burden)
+- Auto-scaling
+- TTL built-in
+- High availability
+
+**Cons**:
+- AWS lock-in
+- Higher cost ($50-200/month estimated)
+- Latency variability (10-50ms)
+- Requires AWS infrastructure changes
+
+**Why Rejected**: Cost and AWS lock-in outweigh benefits for our use case
+
+---
+
+##### Alternative 4: Redis (Selected)
+**Pros**:
+- Extremely fast (<10ms, often <2ms)
+- TTL built-in (EXPIRE command)
+- Data structures (Sets for token families)
+- Transactions (WATCH/MULTI for breach detection)
+- Persistence options (RDB + AOF)
+- Widely adopted (team familiar)
+
+**Cons**:
+- Additional infrastructure to manage
+- Memory-bound (more expensive than disk)
+- Requires Redis Cluster for HA
+- Learning curve for advanced features
+
+**Why Selected**: Best balance of performance, features, and operational complexity
+
+---
+
+#### Rationale
+
+Redis meets all requirements while providing significant performance improvements:
+
+1. **Performance**: <10ms lookups (vs 50ms PostgreSQL)
+   - Measured: 2-5ms average in load testing
+   - 10x faster than current system
+
+2. **Automatic Expiration**: Native TTL support
+   - `EXPIRE token_hash 604800` (7 days)
+   - No cleanup jobs needed
+
+3. **Token Families**: Redis Sets
+   - `SADD family:{id} token_hash`
+   - O(1) lookups, O(N) family invalidation
+
+4. **Breach Detection**: Transactions
+   ```redis
+   WATCH token:hash
+   GET token:hash
+   MULTI
+   DEL token:hash
+   SADD breached_families family_id
+   EXEC
+   ```
+
+5. **Scalability**: Tested to 500k sessions
+   - Memory usage: ~50MB per 100k tokens
+   - Can scale to 1M+ tokens on modest hardware
+
+6. **High Availability**: Redis Sentinel or Cluster
+   - Automatic failover
+   - 99.9%+ uptime achievable
+
+---
+
+#### Consequences
+
+##### Positive
+- ✅ **10x performance improvement** (50ms → 2-5ms)
+- ✅ **Reduced PostgreSQL load** (offload session reads)
+- ✅ **Simpler TTL management** (automatic expiration)
+- ✅ **Better scalability** (memory-based, easily sharded)
+- ✅ **Improved user experience** (faster auth refresh)
+
+##### Negative
+- ⚠️ **Additional infrastructure** (Redis server/cluster)
+- ⚠️ **Operational complexity** (one more system to monitor)
+- ⚠️ **Memory cost** (~$20/month for 500k tokens)
+- ⚠️ **Data durability risk** (Redis persistence config critical)
+- ⚠️ **Migration required** (move existing tokens from PostgreSQL)
+
+##### Mitigations
+1. **Infrastructure**: Use managed Redis (e.g., Redis Cloud, AWS ElastiCache)
+2. **Monitoring**: Add Redis metrics to existing monitoring stack
+3. **Cost**: Start with single instance, scale only if needed
+4. **Durability**: Configure AOF (Append-Only File) + daily RDB snapshots
+5. **Migration**: Gradual migration with dual-write period (1 week)
+
+---
+
+#### Implementation Plan
+
+**Phase 1: Setup** (1 week)
+- Provision Redis instance
+- Configure persistence (AOF + RDB)
+- Set up monitoring
+
+**Phase 2: Dual-Write** (1 week)
+- Write tokens to both Redis and PostgreSQL
+- Read from Redis (fallback to PostgreSQL)
+- Monitor error rates
+
+**Phase 3: Migration** (1 week)
+- Backfill existing tokens from PostgreSQL to Redis
+- Verify data consistency
+- Monitor performance improvements
+
+**Phase 4: Cleanup** (1 week)
+- Remove PostgreSQL token reads
+- Keep audit logging in PostgreSQL
+- Archive old PostgreSQL tokens
+
+**Total Time**: 4 weeks
+**Rollback Plan**: Revert to PostgreSQL-only reads if Redis fails
+
+---
+
+#### Metrics for Success
+
+**Performance**:
+- ✅ Token lookup latency <10ms (p95)
+- ✅ Token refresh latency <100ms (p95)
+
+**Reliability**:
+- ✅ Redis availability >99.9%
+- ✅ Zero data loss during failover
+
+**Scalability**:
+- ✅ Support 500k active sessions
+- ✅ Handle 1000 req/sec refresh rate
+
+**Cost**:
+- ✅ Infrastructure cost <$50/month
+
+---
+
+#### Related Decisions
+
+- ADR-001: JWT for Authentication (provides context for why refresh tokens needed)
+- ADR-002: PostgreSQL as Primary Database (explains why PostgreSQL retained for audit)
+- ADR-004: Rate Limiting Strategy (depends on Redis for rate limit counters)
+
+---
+
+#### References
+
+- [Redis Documentation](https://redis.io/docs/)
+- [Redis Persistence](https://redis.io/topics/persistence)
+- [OAuth 2.0 Refresh Tokens](https://tools.ietf.org/html/rfc6749#section-6)
+- Internal: Load Testing Results (docs/performance/redis-vs-postgresql.md)
+
+---
+
+**Decision Date**: 2025-12-15
+**Implemented**: 2025-12-22
+**Status**: ✅ In Production (monitoring metrics)
+

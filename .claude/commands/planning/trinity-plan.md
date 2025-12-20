@@ -1,0 +1,201 @@
+---
+description: Create implementation plan using TRA (Work Planner)
+---
+
+# Trinity Work Planning - TRA
+
+**Agent:** TRA (Work Planner)
+**Role:** Implementation sequencing, BAS quality gates, and timeline estimation
+
+## What TRA Does
+
+1. **Implementation Sequencing:**
+   - Determines optimal task order
+   - Identifies dependencies
+   - Plans for parallelization opportunities
+
+2. **BAS Quality Gate Integration:**
+   - **Phase 1:** Linting (auto-fix enabled)
+   - **Phase 2:** Structure validation
+   - **Phase 3:** Build validation
+   - **Phase 4:** Testing (all tests pass)
+   - **Phase 5:** Coverage check (≥80%)
+   - **Phase 6:** Final review (best practices)
+
+3. **Timeline Estimation:**
+   - Task complexity scoring
+   - Dependency chains
+   - Realistic time estimates
+
+4. **Stop Points (Scale-Based):**
+   - Small: 0 stop points
+   - Medium: 2 stop points (design, final)
+   - Large: 4 stop points (requirements, design, plan, final)
+
+## Output Format
+
+TRA produces structured JSON handoff:
+```json
+{
+  "tasks": [
+    {
+      "id": 1,
+      "description": "task description",
+      "dependencies": [],
+      "estimatedTime": "30min",
+      "basGates": ["lint", "build", "test", "coverage"]
+    }
+  ],
+  "sequence": [1, 2, 3],
+  "parallelizable": [[4, 5]],
+  "stopPoints": ["design", "final"],
+  "totalEstimate": "2 hours"
+}
+```
+
+## Integration with Trinity Workflow
+
+TRA's strategic planning bridges design and implementation:
+
+**TRA's Planning Role:**
+- Requirements breakdown into implementation phases
+- 3-phase implementation structure (Setup → Core → Finalize)
+- High-level task identification with dependencies
+- Risk assessment and mitigation strategies
+- Resource allocation and timeline estimation
+- BAS quality gate integration points
+
+**Workflow Context:**
+
+1. **After ROR:** Technical design complete with function signatures
+2. **TRA Planning (Claude adopts TRA persona):** Creates strategic implementation plan
+3. **Plan Output:** JSON handoff with tasks, sequence, stop points, time estimates
+4. **Handoff to EUS:** Strategic plan feeds into atomic task decomposition
+
+**See Also:** `/trinity-orchestrate` for complete workflow planning guidance
+
+## Usage
+
+**Provide design and Claude (as TRA) will create implementation plan:**
+
+What is the technical design? (Or provide ROR's output)
+
+**For complete workflow planning:**
+
+Use `/trinity-orchestrate` to plan your implementation approach with TRA as a key planning phase
+
+## Related Commands
+
+- `/trinity-orchestrate` - Complete workflow planning guidance
+- `/trinity-design` - ROR technical design (input to TRA)
+- `/trinity-decompose` - EUS atomic task decomposition (follows TRA)
+
+---
+
+## Complexity Scoring Guide
+
+Rate each task on complexity (1-10 scale):
+
+### Scoring Criteria
+
+**1-3 (Low)**:
+- Simple CRUD operations
+- Configuration changes
+- Documentation updates
+- Straightforward refactoring
+
+**4-6 (Medium)**:
+- Business logic implementation
+- API integrations
+- Database migrations
+- Multi-step workflows
+
+**7-10 (High)**:
+- Complex algorithms
+- Security-critical features
+- Performance optimization
+- Large-scale refactoring
+
+### Complexity Factors
+
+Add +1-2 points for each:
+- External dependencies (APIs, services)
+- Security requirements (auth, payments, PII)
+- Performance requirements (<100ms, high throughput)
+- Complex state management
+- Cross-cutting concerns
+
+**Example**:
+- "Add user field" = 2 (Low)
+- "JWT refresh tokens" = 6 (Medium: auth + API + security)
+- "Real-time notification system" = 9 (High: WebSockets + state + performance)
+
+---
+
+## Task Parallelization
+
+### Identifying Parallel Tasks
+
+Tasks can run in parallel if:
+- ✅ No shared file modifications
+- ✅ No data dependencies
+- ✅ Independent test suites
+
+Tasks must be sequential if:
+- ❌ One modifies file that other reads
+- ❌ One creates interface that other implements
+- ❌ One's output is other's input
+
+### Parallelization Examples
+
+**Example 1: Authentication Module**
+
+Sequential (WRONG):
+```
+1. Create auth service → 2 hours
+2. Create auth middleware → 1 hour  
+3. Add types → 30 min
+4. Write tests → 2 hours
+Total: 5.5 hours
+```
+
+Parallel (CORRECT):
+```
+Phase 1 (Parallel):
+- Create auth service (2 hours)
+- Create auth middleware (1 hour)
+- Add types (30 min)
+Bottleneck: 2 hours
+
+Phase 2 (Parallel):
+- Test auth service (1 hour)
+- Test auth middleware (1 hour)
+Bottleneck: 1 hour
+
+Total: 3 hours (42% faster)
+```
+
+**Example 2: API Endpoints**
+
+```
+Parallel Tasks (no dependencies):
+├─ POST /users endpoint (1 hour)
+├─ GET /users/:id endpoint (45 min)
+├─ PUT /users/:id endpoint (1 hour)
+└─ DELETE /users/:id endpoint (45 min)
+
+Bottleneck: 1 hour (vs 3.5 hours sequential)
+Speedup: 71%
+```
+
+**Dependencies Require Sequencing**:
+```
+1. Create User model (must finish first)
+   ↓
+2. Parallel tasks can start:
+   ├─ UserService (uses model)
+   ├─ UserController (uses model)
+   └─ User validation (uses model)
+```
+
+---
