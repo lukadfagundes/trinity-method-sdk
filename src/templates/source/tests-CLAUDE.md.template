@@ -1,0 +1,432 @@
+# CLAUDE.md - Testing Standards
+## {{PROJECT_NAME}} - Test Suite
+
+**Testing Framework:** {{TEST_FRAMEWORK}}
+**Test Directory:** tests/
+**Coverage Target:** 80%+
+
+---
+
+## Test Organization
+
+### Directory Structure
+```
+tests/
+├── unit/           # Unit tests (isolated function/class tests)
+├── integration/    # Integration tests (multiple components)
+├── e2e/           # End-to-end tests (full workflow tests)
+├── helpers/       # Test helpers and utilities
+└── __mocks__/     # Mock implementations
+```
+
+### Naming Conventions
+- **Test files**: `*.test.ts` or `*.spec.ts`
+- **Test suites**: `describe('ComponentName', () => {...})`
+- **Test cases**: `it('should behave in specific way', () => {...})`
+- **Setup/Teardown**: `beforeEach`, `afterEach`, `beforeAll`, `afterAll`
+
+---
+
+## Test Writing Standards
+
+### Test Structure (AAA Pattern)
+```typescript
+describe('Feature Name', () => {
+  it('should do something specific', () => {
+    // Arrange - Set up test data and conditions
+    const input = 'test input';
+    const expected = 'expected output';
+
+    // Act - Execute the function/method being tested
+    const result = functionUnderTest(input);
+
+    // Assert - Verify the result matches expectations
+    expect(result).toBe(expected);
+  });
+});
+```
+
+### Test Isolation
+- **Each test must be independent** - No shared state between tests
+- **Use beforeEach/afterEach** - Clean up after each test
+- **Mock external dependencies** - Database, APIs, file system, etc.
+- **Avoid test order dependency** - Tests should pass in any order
+
+### Test Coverage Requirements
+```typescript
+// All exported functions must have tests
+export function criticalFunction() {
+  // Must have: happy path + edge cases + error cases
+}
+
+// All classes must have tests
+export class ImportantClass {
+  // Must test: constructor + all public methods + error states
+}
+
+// Integration tests must cover:
+// - Happy path workflows
+// - Error handling paths
+// - Edge cases and boundary conditions
+```
+
+---
+
+## Test Categories
+
+### Unit Tests (`tests/unit/`)
+**Purpose:** Test individual functions/methods in isolation
+
+```typescript
+import { describe, it, expect } from '@jest/globals';
+import { parseInput } from '../../src/utils/parser.js';
+
+describe('parseInput', () => {
+  it('should parse valid input correctly', () => {
+    const result = parseInput('valid-input');
+    expect(result).toEqual({ valid: true, data: 'valid-input' });
+  });
+
+  it('should handle invalid input', () => {
+    expect(() => parseInput(null)).toThrow('Input cannot be null');
+  });
+
+  it('should handle edge cases', () => {
+    expect(parseInput('')).toEqual({ valid: false, data: '' });
+  });
+});
+```
+
+### Integration Tests (`tests/integration/`)
+**Purpose:** Test multiple components working together
+
+```typescript
+import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { createTempDir, cleanupTempDir } from '../helpers/test-helpers.js';
+
+describe('Feature Integration', () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it('should complete full workflow', async () => {
+    // Test multiple components working together
+    const result = await completeWorkflow(testDir);
+    expect(result.success).toBe(true);
+  });
+});
+```
+
+### End-to-End Tests (`tests/e2e/`)
+**Purpose:** Test complete user workflows from start to finish
+
+```typescript
+describe('User Workflow - E2E', () => {
+  it('should complete typical user journey', async () => {
+    // Simulate real user interaction
+    // Test entire system working together
+    // Verify final outcome
+  });
+});
+```
+
+---
+
+## Mocking Standards
+
+### Mock External Dependencies
+```typescript
+// __mocks__/external-library.ts
+export const mockedFunction = jest.fn(() => 'mocked value');
+
+// In test file
+import { mockedFunction } from 'external-library';
+
+describe('Component using external library', () => {
+  it('should use mocked dependency', () => {
+    const result = componentUnderTest();
+    expect(mockedFunction).toHaveBeenCalled();
+  });
+});
+```
+
+### Mock File System Operations
+```typescript
+import fs from 'fs-extra';
+jest.mock('fs-extra');
+
+describe('File operations', () => {
+  it('should handle file writes', async () => {
+    await writeFile('test.txt', 'content');
+    expect(fs.writeFile).toHaveBeenCalledWith('test.txt', 'content');
+  });
+});
+```
+
+---
+
+## Test Helpers (`tests/helpers/`)
+
+### Common Test Utilities
+```typescript
+// tests/helpers/test-helpers.ts
+
+/**
+ * Create temporary directory for testing
+ */
+export async function createTempDir(): Promise<string> {
+  const tempDir = path.join(os.tmpdir(), `test-${Date.now()}`);
+  await fs.ensureDir(tempDir);
+  return tempDir;
+}
+
+/**
+ * Cleanup temporary directory after testing
+ */
+export async function cleanupTempDir(dir: string): Promise<void> {
+  await fs.remove(dir);
+}
+
+/**
+ * Create mock data for testing
+ */
+export function createMockData(overrides = {}) {
+  return {
+    id: 'test-id',
+    name: 'Test Name',
+    ...overrides
+  };
+}
+```
+
+---
+
+## Async Testing
+
+### Async/Await Pattern
+```typescript
+describe('Async operations', () => {
+  it('should handle async functions', async () => {
+    const result = await asyncFunction();
+    expect(result).toBeDefined();
+  });
+
+  it('should handle async errors', async () => {
+    await expect(failingAsyncFunction()).rejects.toThrow('Expected error');
+  });
+});
+```
+
+### Timeout Configuration
+```typescript
+describe('Long running tests', () => {
+  it('should complete within timeout', async () => {
+    // Extend timeout for this test
+    const result = await longRunningOperation();
+    expect(result).toBeDefined();
+  }, 10000); // 10 second timeout
+});
+```
+
+---
+
+## Error Testing
+
+### Expected Errors
+```typescript
+describe('Error handling', () => {
+  it('should throw for invalid input', () => {
+    expect(() => functionThatThrows('invalid')).toThrow('Invalid input');
+  });
+
+  it('should handle async errors', async () => {
+    await expect(asyncFunctionThatThrows()).rejects.toThrow('Async error');
+  });
+});
+```
+
+### Error Message Validation
+```typescript
+it('should throw with specific message', () => {
+  expect(() => functionUnderTest()).toThrow(/specific pattern in message/);
+});
+```
+
+---
+
+## Coverage Requirements
+
+### Minimum Coverage Thresholds
+- **Statements:** 80%
+- **Branches:** 75%
+- **Functions:** 80%
+- **Lines:** 80%
+
+### Critical Code Paths
+- **100% coverage required for:**
+  - Authentication/Authorization
+  - Security-related code
+  - Payment processing
+  - Data validation
+  - Error handling
+
+### Coverage Exclusions
+```typescript
+/* istanbul ignore next */
+function debugOnlyFunction() {
+  // Development/debugging only - excluded from coverage
+}
+```
+
+---
+
+## Test Data Management
+
+### Test Fixtures
+```typescript
+// tests/fixtures/sample-data.ts
+export const validUserData = {
+  id: '123',
+  email: 'test@example.com',
+  name: 'Test User'
+};
+
+export const invalidUserData = {
+  id: null,
+  email: 'invalid-email',
+  name: ''
+};
+```
+
+### Factory Functions
+```typescript
+// tests/helpers/factories.ts
+export function createUser(overrides = {}) {
+  return {
+    id: generateId(),
+    email: 'test@example.com',
+    createdAt: new Date(),
+    ...overrides
+  };
+}
+```
+
+---
+
+## Performance Testing
+
+### Performance Benchmarks
+```typescript
+describe('Performance tests', () => {
+  it('should complete operation within time limit', async () => {
+    const startTime = Date.now();
+
+    await performanceIntensiveOperation();
+
+    const duration = Date.now() - startTime;
+    expect(duration).toBeLessThan(1000); // Must complete within 1 second
+  });
+});
+```
+
+---
+
+## Continuous Integration
+
+### CI Test Requirements
+- **All tests must pass** before merging
+- **Coverage must meet thresholds** (80%+)
+- **No test skipping** with `.skip` or `x` prefix in CI
+- **Test performance** - Flag tests taking >5 seconds
+
+### Local Testing Commands
+```bash
+# Run all tests
+npm test
+
+# Run specific test file
+npm test -- path/to/test.test.ts
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+
+# Run tests by category
+npm run test:unit
+npm run test:integration
+npm run test:e2e
+```
+
+---
+
+## Test Debugging
+
+### Debug Output
+```typescript
+describe('Debugging tests', () => {
+  it('should help debug failures', () => {
+    const input = complexInput();
+    console.log('Input:', JSON.stringify(input, null, 2));
+
+    const result = functionUnderTest(input);
+    console.log('Result:', JSON.stringify(result, null, 2));
+
+    expect(result).toMatchSnapshot();
+  });
+});
+```
+
+### Focused Testing
+```typescript
+// Run only this test during debugging
+it.only('should debug this specific case', () => {
+  // Your test code
+});
+
+// Skip this test temporarily
+it.skip('should fix this later', () => {
+  // Broken test
+});
+```
+
+---
+
+## Best Practices
+
+### DO ✅
+- Write tests **before or alongside** implementation (TDD)
+- Test **behavior**, not implementation details
+- Use **descriptive test names** explaining what's being tested
+- Keep tests **simple and focused** (one assertion per test when possible)
+- Mock **external dependencies** (APIs, databases, file system)
+- Clean up **after each test** (temp files, database records, etc.)
+- Run tests **frequently** during development
+
+### DON'T ❌
+- Don't **skip tests** without good reason and a TODO comment
+- Don't test **implementation details** (internal variables, private methods)
+- Don't create **test dependencies** (Test A must run before Test B)
+- Don't **hard-code dates/times** (use relative times or freeze time)
+- Don't **commit commented-out tests** (fix or remove them)
+- Don't **ignore failing tests** (fix them or document the issue)
+- Don't **test external libraries** (assume they work, test your usage)
+
+---
+
+## Related Files
+- **Test Configuration**: `jest.config.js`, `tsconfig.test.json`
+- **Test Helpers**: `tests/helpers/test-helpers.ts`
+- **Mocks**: `tests/__mocks__/`
+- **Coverage Reports**: `coverage/`
+
+---
+
+*This CLAUDE.md file provides testing standards for {{PROJECT_NAME}}. All tests must follow these conventions to ensure consistency and maintainability.*

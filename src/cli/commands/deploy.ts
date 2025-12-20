@@ -523,6 +523,30 @@ export async function deploy(options: DeployOptions): Promise<void> {
       spinner.warn(`Source CLAUDE.md template not found for ${stack.framework}`);
     }
 
+    // STEP 6.7: Deploy tests/CLAUDE.md
+    const testsCLAUDETemplate = path.join(templatesPath, 'source', 'tests-CLAUDE.md.template');
+    if (await fs.pathExists(testsCLAUDETemplate) && await fs.pathExists('tests')) {
+      spinner = ora('Deploying tests/CLAUDE.md...').start();
+      const testsContent = await fs.readFile(testsCLAUDETemplate, 'utf8');
+
+      // Determine test framework from package.json or config files
+      let testFramework = 'Generic';
+      if (await fs.pathExists('package.json')) {
+        const pkg = JSON.parse(await fs.readFile('package.json', 'utf8'));
+        if (pkg.devDependencies?.jest || pkg.dependencies?.jest) testFramework = 'Jest';
+        else if (pkg.devDependencies?.vitest || pkg.dependencies?.vitest) testFramework = 'Vitest';
+        else if (pkg.devDependencies?.mocha || pkg.dependencies?.mocha) testFramework = 'Mocha';
+        else if (pkg.devDependencies?.pytest) testFramework = 'Pytest';
+      }
+
+      const testsProcessed = processTemplate(testsContent, { ...variables, TEST_FRAMEWORK: testFramework });
+      await fs.writeFile('tests/CLAUDE.md', testsProcessed);
+      deploymentStats.files++;
+      spinner.succeed('tests/CLAUDE.md deployed');
+    } else if (await fs.pathExists('tests')) {
+      spinner.warn('tests/CLAUDE.md template not found');
+    }
+
     // STEP 7: Deploy agent configurations [WO#007 + v2.0]
     spinner = ora('Deploying Claude Code agents...').start();
 
@@ -886,11 +910,15 @@ export async function deploy(options: DeployOptions): Promise<void> {
     console.log(chalk.white(`   Files Created: ${deploymentStats.files}`));
 
     // Display CLAUDE.md deployment summary
-    const claudeMdCount = 2 + stack.sourceDirs.length;
+    const hasTests = await fs.pathExists('tests/CLAUDE.md');
+    const claudeMdCount = 2 + stack.sourceDirs.length + (hasTests ? 1 : 0);
     const sourceDirsList = stack.sourceDirs.length > 3
       ? `${stack.sourceDirs.slice(0, 3).join(', ')}... (${stack.sourceDirs.length} total)`
       : stack.sourceDirs.join(', ');
-    console.log(chalk.white(`   CLAUDE.md Files: ${claudeMdCount} (root + trinity + ${sourceDirsList})`));
+    const claudeMdSummary = hasTests
+      ? `root + trinity + tests + ${sourceDirsList}`
+      : `root + trinity + ${sourceDirsList}`;
+    console.log(chalk.white(`   CLAUDE.md Files: ${claudeMdCount} (${claudeMdSummary})`));
 
     const totalComponents = deploymentStats.directories + deploymentStats.agents +
                            deploymentStats.templates + deploymentStats.files;
