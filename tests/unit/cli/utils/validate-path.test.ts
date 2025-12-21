@@ -6,7 +6,11 @@
 import path from 'path';
 import fs from 'fs-extra';
 import os from 'os';
-import { validatePath, validateNotSymlink, safeCopy } from '../../../../src/cli/utils/validate-path.js';
+import {
+  validatePath,
+  validateNotSymlink,
+  safeCopy,
+} from '../../../../src/cli/utils/validate-path.js';
 
 describe('Path Validation Utility', () => {
   let tempDir: string;
@@ -44,23 +48,23 @@ describe('Path Validation Utility', () => {
     });
 
     it('should reject path traversal with ../', () => {
-      expect(() => validatePath('../../../etc/passwd', tempDir))
-        .toThrow(/Path traversal detected/);
+      expect(() => validatePath('../../../etc/passwd', tempDir)).toThrow(/Path traversal detected/);
     });
 
     it('should reject path traversal hidden in middle', () => {
-      expect(() => validatePath('trinity/../../../etc/passwd', tempDir))
-        .toThrow(/Path traversal detected/);
+      expect(() => validatePath('trinity/../../../etc/passwd', tempDir)).toThrow(
+        /Path traversal detected/
+      );
     });
 
     it('should reject absolute Unix paths', () => {
-      expect(() => validatePath('/etc/passwd', tempDir))
-        .toThrow(/Absolute paths are not allowed/);
+      expect(() => validatePath('/etc/passwd', tempDir)).toThrow(/Absolute paths are not allowed/);
     });
 
     it('should reject absolute Windows paths', () => {
-      expect(() => validatePath('C:\\Windows\\System32', tempDir))
-        .toThrow(/Absolute paths are not allowed/);
+      expect(() => validatePath('C:\\Windows\\System32', tempDir)).toThrow(
+        /Absolute paths are not allowed/
+      );
     });
 
     it('should handle empty path', () => {
@@ -79,8 +83,7 @@ describe('Path Validation Utility', () => {
     });
 
     it('should reject parent directory reference', () => {
-      expect(() => validatePath('..', tempDir))
-        .toThrow(/Path traversal detected/);
+      expect(() => validatePath('..', tempDir)).toThrow(/Path traversal detected/);
     });
   });
 
@@ -108,11 +111,11 @@ describe('Path Validation Utility', () => {
           await fs.writeFile(testFile, 'content');
           await fs.symlink(testFile, testSymlink);
 
-          await expect(validateNotSymlink(testSymlink))
-            .rejects.toThrow(/Symlink detected/);
+          await expect(validateNotSymlink(testSymlink)).rejects.toThrow(/Symlink detected/);
         } catch (err) {
           // Skip test if symlinks not supported (needs admin on Windows)
-          if ((err as NodeJS.ErrnoException).code === 'EPERM') {
+          const error = err as { code?: string };
+          if (error.code === 'EPERM') {
             console.log('Skipping symlink test - requires admin privileges on Windows');
             return;
           }
@@ -124,8 +127,7 @@ describe('Path Validation Utility', () => {
         await fs.writeFile(testFile, 'content');
         await fs.symlink(testFile, testSymlink);
 
-        await expect(validateNotSymlink(testSymlink))
-          .rejects.toThrow(/Symlink detected/);
+        await expect(validateNotSymlink(testSymlink)).rejects.toThrow(/Symlink detected/);
       }
     });
 
@@ -138,10 +140,10 @@ describe('Path Validation Utility', () => {
           await fs.ensureDir(testDir);
           await fs.symlink(testDir, testSymlink, 'dir');
 
-          await expect(validateNotSymlink(testSymlink))
-            .rejects.toThrow(/Symlink detected/);
+          await expect(validateNotSymlink(testSymlink)).rejects.toThrow(/Symlink detected/);
         } catch (err) {
-          if ((err as NodeJS.ErrnoException).code === 'EPERM') {
+          const error = err as { code?: string };
+          if (error.code === 'EPERM') {
             console.log('Skipping symlink test - requires admin privileges on Windows');
             return;
           }
@@ -153,8 +155,7 @@ describe('Path Validation Utility', () => {
         await fs.ensureDir(testDir);
         await fs.symlink(testDir, testSymlink);
 
-        await expect(validateNotSymlink(testSymlink))
-          .rejects.toThrow(/Symlink detected/);
+        await expect(validateNotSymlink(testSymlink)).rejects.toThrow(/Symlink detected/);
       }
     });
   });
@@ -188,13 +189,15 @@ describe('Path Validation Utility', () => {
       const sourceFile = path.join(tempDir, 'source.txt');
       await fs.writeFile(sourceFile, 'content');
 
-      await expect(safeCopy('source.txt', '../outside.txt', tempDir))
-        .rejects.toThrow(/Path traversal detected/);
+      await expect(safeCopy('source.txt', '../outside.txt', tempDir)).rejects.toThrow(
+        /Path traversal detected/
+      );
     });
 
     it('should reject copying from parent directory', async () => {
-      await expect(safeCopy('../outside.txt', 'dest.txt', tempDir))
-        .rejects.toThrow(/Path traversal detected/);
+      await expect(safeCopy('../outside.txt', 'dest.txt', tempDir)).rejects.toThrow(
+        /Path traversal detected/
+      );
     });
 
     it('should reject symlink source', async () => {
@@ -207,10 +210,12 @@ describe('Path Validation Utility', () => {
           await fs.writeFile(targetFile, 'content');
           await fs.symlink(targetFile, symlinkFile);
 
-          await expect(safeCopy('link.txt', 'dest.txt', tempDir))
-            .rejects.toThrow(/Symlink detected/);
+          await expect(safeCopy('link.txt', 'dest.txt', tempDir)).rejects.toThrow(
+            /Symlink detected/
+          );
         } catch (err) {
-          if ((err as NodeJS.ErrnoException).code === 'EPERM') {
+          const error = err as { code?: string };
+          if (error.code === 'EPERM') {
             console.log('Skipping symlink test - requires admin privileges on Windows');
             return;
           }
@@ -222,8 +227,7 @@ describe('Path Validation Utility', () => {
         await fs.writeFile(targetFile, 'content');
         await fs.symlink(targetFile, symlinkFile);
 
-        await expect(safeCopy('link.txt', 'dest.txt', tempDir))
-          .rejects.toThrow(/Symlink detected/);
+        await expect(safeCopy('link.txt', 'dest.txt', tempDir)).rejects.toThrow(/Symlink detected/);
       }
     });
 
@@ -240,29 +244,29 @@ describe('Path Validation Utility', () => {
         await fs.symlink(targetFile, symlinkFile);
 
         // Note: safeCopy will reject symlinks before copying
-        await expect(safeCopy('sourcedir', 'destdir', tempDir))
-          .rejects.toThrow(/Symlink detected/);
+        await expect(safeCopy('sourcedir', 'destdir', tempDir)).rejects.toThrow(/Symlink detected/);
       }
     });
   });
 
   describe('Security Tests', () => {
     it('should prevent null byte injection', () => {
-      expect(() => validatePath('trinity\0/etc/passwd', tempDir))
-        .toThrow();
+      expect(() => validatePath('trinity\0/etc/passwd', tempDir)).toThrow();
     });
 
     it('should prevent Unicode path traversal', () => {
       // Note: path.normalize handles Unicode properly
       // Testing with a path that actually goes outside the project
-      expect(() => validatePath('trinity/../../outside', tempDir))
-        .toThrow(/Path traversal detected/);
+      expect(() => validatePath('trinity/../../outside', tempDir)).toThrow(
+        /Path traversal detected/
+      );
     });
 
     it('should handle Windows UNC paths', () => {
       if (process.platform === 'win32') {
-        expect(() => validatePath('\\\\server\\share\\file', tempDir))
-          .toThrow(/Absolute paths are not allowed/);
+        expect(() => validatePath('\\\\server\\share\\file', tempDir)).toThrow(
+          /Absolute paths are not allowed/
+        );
       }
     });
 

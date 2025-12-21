@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import chalk from 'chalk';
+import { validatePath } from './validate-path.js';
 
 export async function injectLintingDependencies(
   dependencies: string[],
@@ -21,9 +22,7 @@ async function injectNodeDependencies(
   const packageJsonPath = 'package.json';
 
   if (!(await fs.pathExists(packageJsonPath))) {
-    console.warn(
-      chalk.yellow('   Warning: package.json not found, skipping dependency injection')
-    );
+    console.warn(chalk.yellow('   Warning: package.json not found, skipping dependency injection'));
     return;
   }
 
@@ -67,5 +66,7 @@ async function injectPythonDependencies(dependencies: string[]): Promise<void> {
     }
   });
 
-  await fs.writeFile(requirementsPath, content);
+  // Validate destination path for security
+  const validatedPath = validatePath(requirementsPath);
+  await fs.writeFile(validatedPath, content);
 }

@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { processTemplate } from './template-processor.js';
+import { validatePath } from './validate-path.js';
 import { LintingTool, Stack } from '../types.js';
 
 export async function deployLintingTool(
@@ -73,7 +74,10 @@ async function deployESLint(
   const templatePath = path.join(templateDir, templateFile);
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
-  await fs.writeFile('.eslintrc.json', processed);
+
+  // Validate destination path for security
+  const destPath = validatePath('.eslintrc.json');
+  await fs.writeFile(destPath, processed);
 }
 
 async function deployPrettier(
@@ -84,7 +88,10 @@ async function deployPrettier(
   const templatePath = path.join(templateDir, '.prettierrc.json.template');
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
-  await fs.writeFile('.prettierrc.json', processed);
+
+  // Validate destination path for security
+  const destPath = validatePath('.prettierrc.json');
+  await fs.writeFile(destPath, processed);
 }
 
 async function deployPreCommit(
@@ -95,7 +102,10 @@ async function deployPreCommit(
   const templatePath = path.join(templateDir, '.pre-commit-config.yaml.template');
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
-  await fs.writeFile('.pre-commit-config.yaml', processed);
+
+  // Validate destination path for security
+  const destPath = validatePath('.pre-commit-config.yaml');
+  await fs.writeFile(destPath, processed);
 }
 
 async function deployTypeScriptESLint(
@@ -131,12 +141,18 @@ async function deployPythonTool(
     const templatePath = path.join(templateDir, 'pyproject.toml.template');
     const content = await fs.readFile(templatePath, 'utf8');
     const processed = processTemplate(content, variables);
-    await fs.writeFile('pyproject.toml', processed);
+
+    // Validate destination path for security
+    const destPath = validatePath('pyproject.toml');
+    await fs.writeFile(destPath, processed);
   } else if (tool.id === 'flake8') {
     const templatePath = path.join(templateDir, '.flake8.template');
     const content = await fs.readFile(templatePath, 'utf8');
     const processed = processTemplate(content, variables);
-    await fs.writeFile('.flake8', processed);
+
+    // Validate destination path for security
+    const destPath = validatePath('.flake8');
+    await fs.writeFile(destPath, processed);
   }
 }
 
@@ -148,7 +164,10 @@ async function deployDartAnalyzer(
   const templatePath = path.join(templateDir, 'analysis_options.yaml.template');
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
-  await fs.writeFile('analysis_options.yaml', processed);
+
+  // Validate destination path for security
+  const destPath = validatePath('analysis_options.yaml');
+  await fs.writeFile(destPath, processed);
 }
 
 async function deployRustTool(
@@ -160,5 +179,8 @@ async function deployRustTool(
   const templatePath = path.join(templateDir, `${filename}.template`);
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
-  await fs.writeFile(filename, processed);
+
+  // Validate destination path for security
+  const destPath = validatePath(filename);
+  await fs.writeFile(destPath, processed);
 }

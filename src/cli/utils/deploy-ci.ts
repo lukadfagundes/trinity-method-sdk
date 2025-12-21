@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { validatePath } from './validate-path.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -47,7 +48,10 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
         const ciTemplate = path.join(templatesPath, 'ci.yml.template');
         if (await fs.pathExists(ciTemplate)) {
           const content = await fs.readFile(ciTemplate, 'utf8');
-          await fs.writeFile('.github/workflows/ci.yml', content);
+
+          // Validate destination path for security
+          const destPath = validatePath('.github/workflows/ci.yml');
+          await fs.writeFile(destPath, content);
           stats.deployed.push('.github/workflows/ci.yml');
         }
 
@@ -55,7 +59,10 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
         const cdTemplate = path.join(templatesPath, 'cd.yml.template');
         if (await fs.pathExists(cdTemplate)) {
           const content = await fs.readFile(cdTemplate, 'utf8');
-          await fs.writeFile('.github/workflows/cd.yml', content);
+
+          // Validate destination path for security
+          const destPath = validatePath('.github/workflows/cd.yml');
+          await fs.writeFile(destPath, content);
           stats.deployed.push('.github/workflows/cd.yml');
         }
       } catch (error: unknown) {
@@ -81,7 +88,9 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
           if (gitlabCIExists && !options.force) {
             stats.skipped.push('.gitlab-ci.yml (already exists)');
           } else {
-            await fs.writeFile('.gitlab-ci.yml', content);
+            // Validate destination path for security
+            const destPath = validatePath('.gitlab-ci.yml');
+            await fs.writeFile(destPath, content);
             stats.deployed.push('.gitlab-ci.yml');
           }
         }
@@ -98,7 +107,10 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
 
       if (await fs.pathExists(genericTemplate)) {
         const content = await fs.readFile(genericTemplate, 'utf8');
-        await fs.writeFile('trinity/templates/ci/generic-ci.yml', content);
+
+        // Validate destination path for security
+        const destPath = validatePath('trinity/templates/ci/generic-ci.yml');
+        await fs.writeFile(destPath, content);
         stats.deployed.push('trinity/templates/ci/generic-ci.yml');
       }
     } catch (error: unknown) {

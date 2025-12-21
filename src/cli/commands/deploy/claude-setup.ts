@@ -5,6 +5,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { processTemplate } from '../../utils/template-processor.js';
+import { validatePath } from '../../utils/validate-path.js';
 import type { Spinner } from './types.js';
 
 /**
@@ -45,7 +46,10 @@ export async function deployClaudeSetup(
   if (await fs.pathExists(employeeDirectoryTemplate)) {
     const content = await fs.readFile(employeeDirectoryTemplate, 'utf8');
     const processed = processTemplate(content, variables);
-    await fs.writeFile('.claude/EMPLOYEE-DIRECTORY.md', processed);
+
+    // Validate destination path for security
+    const destPath = validatePath('.claude/EMPLOYEE-DIRECTORY.md');
+    await fs.writeFile(destPath, processed);
     filesDeployed++;
     spinner.succeed('Employee Directory deployed');
   } else {

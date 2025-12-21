@@ -5,6 +5,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { processTemplate } from '../../utils/template-processor.js';
+import { validatePath } from '../../utils/validate-path.js';
 import type { Stack, CodebaseMetrics, Spinner } from './types.js';
 
 /**
@@ -46,7 +47,10 @@ export async function deployKnowledgeBase(
     if (await fs.pathExists(templatePath)) {
       const content = await fs.readFile(templatePath, 'utf8');
       const processed = processTemplate(content, variables);
-      await fs.writeFile(`trinity/knowledge-base/${template}`, processed);
+
+      // Validate destination path for security
+      const destPath = validatePath(`trinity/knowledge-base/${template}`);
+      await fs.writeFile(destPath, processed);
       filesDeployed++;
     }
   }
@@ -73,7 +77,9 @@ export async function deployKnowledgeBase(
         .replace(/\{\{FILE_COUNT\}\}/g, String(metrics?.totalFiles || 0))
         .replace(/\{\{DEPENDENCY_COUNT\}\}/g, String(metrics?.dependencyCount || 0));
 
-      await fs.writeFile(archPath, archContent);
+      // Validate path for security
+      const validatedArchPath = validatePath(archPath);
+      await fs.writeFile(validatedArchPath, archContent);
 
       spinner.succeed('Knowledge base enriched with project data');
     } else {

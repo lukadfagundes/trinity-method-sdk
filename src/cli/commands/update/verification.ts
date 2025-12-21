@@ -6,6 +6,7 @@
 
 import fs from 'fs-extra';
 import { Ora } from 'ora';
+import { validatePath } from '../../utils/validate-path.js';
 
 /** Verification checks to run after update */
 const VERIFICATION_CHECKS = [
@@ -55,6 +56,9 @@ export async function verifyUpdateDeployment(spinner: Ora, expectedVersion: stri
  */
 export async function updateVersionFile(spinner: Ora, version: string): Promise<void> {
   spinner.start('Updating version file...');
-  await fs.writeFile('trinity/VERSION', version);
+
+  // Validate destination path for security
+  const destPath = validatePath('trinity/VERSION');
+  await fs.writeFile(destPath, version);
   spinner.succeed('Version file updated');
 }

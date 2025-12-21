@@ -5,6 +5,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { processTemplate } from '../../utils/template-processor.js';
+import { validatePath } from '../../utils/validate-path.js';
 import type { Spinner } from './types.js';
 
 /**
@@ -56,7 +57,10 @@ export async function deployAgents(
       if (await fs.pathExists(templatePath)) {
         const content = await fs.readFile(templatePath, 'utf8');
         const processed = processTemplate(content, variables);
-        await fs.writeFile(`.claude/agents/${dir}/${agent}`, processed);
+
+        // Validate destination path for security
+        const destPath = validatePath(`.claude/agents/${dir}/${agent}`);
+        await fs.writeFile(destPath, processed);
         agentsDeployed++;
       }
     }

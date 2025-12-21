@@ -4,6 +4,7 @@
 
 import fs from 'fs-extra';
 import chalk from 'chalk';
+import { validatePath } from '../../utils/validate-path.js';
 import type { Spinner } from './types.js';
 
 /**
@@ -31,7 +32,10 @@ export async function updateGitignore(spinner: Spinner): Promise<boolean> {
     if (!gitignoreContent.includes('# Trinity Method deployment files')) {
       // Append Trinity ignores
       const newContent = `${gitignoreContent.trim()}\n${trinityIgnores.join('\n')}\n`;
-      await fs.writeFile(gitignorePath, newContent);
+
+      // Validate destination path for security
+      const validatedPath = validatePath(gitignorePath);
+      await fs.writeFile(validatedPath, newContent);
       spinner.succeed('.gitignore updated with Trinity exclusions');
       return true;
     } else {

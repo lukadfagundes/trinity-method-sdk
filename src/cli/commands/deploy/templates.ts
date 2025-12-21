@@ -5,6 +5,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { processTemplate } from '../../utils/template-processor.js';
+import { validatePath } from '../../utils/validate-path.js';
 import type { Spinner } from './types.js';
 
 /**
@@ -43,7 +44,10 @@ export async function deployTemplates(
       const content = await fs.readFile(templatePath, 'utf8');
       const processed = processTemplate(content, variables);
       const deployedName = template.replace('.template', '');
-      await fs.writeFile(`trinity/templates/work-orders/${deployedName}`, processed);
+
+      // Validate destination path for security
+      const destPath = validatePath(`trinity/templates/work-orders/${deployedName}`);
+      await fs.writeFile(destPath, processed);
       templatesDeployed++;
     }
   }
@@ -70,7 +74,10 @@ export async function deployTemplates(
       const content = await fs.readFile(templatePath, 'utf8');
       const processed = processTemplate(content, variables);
       const deployedName = template.replace('.template', '');
-      await fs.writeFile(`trinity/templates/investigations/${deployedName}`, processed);
+
+      // Validate destination path for security
+      const destPath = validatePath(`trinity/templates/investigations/${deployedName}`);
+      await fs.writeFile(destPath, processed);
       templatesDeployed++;
     }
   }
@@ -91,7 +98,10 @@ export async function deployTemplates(
       const content = await fs.readFile(templatePath, 'utf8');
       const processed = processTemplate(content, variables);
       const deployedName = template.replace('.template', '');
-      await fs.writeFile(`trinity/templates/documentation/${deployedName}`, processed);
+
+      // Validate destination path for security
+      const destPath = validatePath(`trinity/templates/documentation/${deployedName}`);
+      await fs.writeFile(destPath, processed);
       templatesDeployed++;
     }
   }

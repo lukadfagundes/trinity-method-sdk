@@ -6,6 +6,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import { processTemplate } from '../../utils/template-processor.js';
+import { validatePath } from '../../utils/validate-path.js';
 import type { Stack, Spinner } from './types.js';
 
 /**
@@ -35,7 +36,10 @@ export async function deployRootFiles(
   if (await fs.pathExists(trinityRootTemplate)) {
     const content = await fs.readFile(trinityRootTemplate, 'utf8');
     const processed = processTemplate(content, variables);
-    await fs.writeFile('TRINITY.md', processed);
+
+    // Validate destination path for security
+    const destPath = validatePath('TRINITY.md');
+    await fs.writeFile(destPath, processed);
     filesDeployed++;
   }
 
@@ -44,12 +48,16 @@ export async function deployRootFiles(
   if (await fs.pathExists(claudeRootTemplate)) {
     const content = await fs.readFile(claudeRootTemplate, 'utf8');
     const processed = processTemplate(content, variables);
-    await fs.writeFile('CLAUDE.md', processed);
+
+    // Validate destination path for security
+    const destPath = validatePath('CLAUDE.md');
+    await fs.writeFile(destPath, processed);
     filesDeployed++;
   }
 
   // VERSION file
-  await fs.writeFile('trinity/VERSION', pkgVersion || '1.0.0');
+  const versionPath = validatePath('trinity/VERSION');
+  await fs.writeFile(versionPath, pkgVersion || '1.0.0');
   filesDeployed++;
 
   spinner.succeed('Root files created');
@@ -61,7 +69,10 @@ export async function deployRootFiles(
   if (await fs.pathExists(trinityCLAUDETemplate)) {
     const content = await fs.readFile(trinityCLAUDETemplate, 'utf8');
     const processed = processTemplate(content, variables);
-    await fs.writeFile('trinity/CLAUDE.md', processed);
+
+    // Validate destination path for security
+    const destPath = validatePath('trinity/CLAUDE.md');
+    await fs.writeFile(destPath, processed);
     filesDeployed++;
     spinner.succeed('Trinity CLAUDE.md deployed');
   } else {
@@ -71,12 +82,12 @@ export async function deployRootFiles(
   // Deploy source directory CLAUDE.md to ALL detected directories
   const frameworkMap: Record<string, string> = {
     'Node.js': 'nodejs-CLAUDE.md.template',
-    'Flutter': 'flutter-CLAUDE.md.template',
-    'React': 'react-CLAUDE.md.template',
+    Flutter: 'flutter-CLAUDE.md.template',
+    React: 'react-CLAUDE.md.template',
     'Next.js': 'react-CLAUDE.md.template',
-    'Python': 'python-CLAUDE.md.template',
-    'Rust': 'rust-CLAUDE.md.template',
-    'Unknown': 'base-CLAUDE.md.template',
+    Python: 'python-CLAUDE.md.template',
+    Rust: 'rust-CLAUDE.md.template',
+    Unknown: 'base-CLAUDE.md.template',
   };
 
   const templateName = frameworkMap[stack.framework] || 'base-CLAUDE.md.template';
@@ -99,7 +110,10 @@ export async function deployRootFiles(
       if (await fs.pathExists(sourceDir)) {
         // Process template with this specific source directory
         const processed = processTemplate(content, { ...variables, SOURCE_DIR: sourceDir });
-        await fs.writeFile(`${sourceDir}/CLAUDE.md`, processed);
+
+        // Validate destination path for security
+        const destPath = validatePath(`${sourceDir}/CLAUDE.md`);
+        await fs.writeFile(destPath, processed);
         filesDeployed++;
         deployedCount++;
         spinner.succeed(`${sourceDir}/CLAUDE.md deployed`);
@@ -135,7 +149,10 @@ export async function deployRootFiles(
       ...variables,
       TEST_FRAMEWORK: testFramework,
     });
-    await fs.writeFile('tests/CLAUDE.md', testsProcessed);
+
+    // Validate destination path for security
+    const destPath = validatePath('tests/CLAUDE.md');
+    await fs.writeFile(destPath, testsProcessed);
     filesDeployed++;
     spinner.succeed('tests/CLAUDE.md deployed');
   } else if (await fs.pathExists('tests')) {
