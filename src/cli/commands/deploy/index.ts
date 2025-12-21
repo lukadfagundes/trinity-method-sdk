@@ -91,7 +91,8 @@ export async function deploy(options: DeployOptions): Promise<void> {
     if (!options.skipAudit) {
       metrics = await collectMetrics(stack, spinner);
     } else {
-      metrics = { totalFiles: 0, todoCount: 0, filesOver500: 0, dependencyCount: 0 };
+      const { createEmptyMetrics } = await import('../../utils/codebase-metrics.js');
+      metrics = createEmptyMetrics();
     }
 
     // Prepare template variables
@@ -122,13 +123,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
     progress.rootFilesDeployed += kbFiles;
 
     // STEP 6: Deploy root files and CLAUDE.md hierarchy
-    const rootFiles = await deployRootFiles(
-      templatesPath,
-      variables,
-      stack,
-      pkg.version,
-      spinner
-    );
+    const rootFiles = await deployRootFiles(templatesPath, variables, stack, pkg.version, spinner);
     progress.rootFilesDeployed += rootFiles;
 
     // STEP 7: Deploy agent configurations
@@ -176,10 +171,12 @@ export async function deploy(options: DeployOptions): Promise<void> {
 
     // SUCCESS: Display deployment summary
     await displaySummary(progress, options, stack, metrics);
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (spinner) spinner.fail();
-    console.error(chalk.red('\n❌ Deployment failed:'), error.message);
-    if (error.message === 'Deployment cancelled by user') {
+    const { isError, getErrorMessage } = await import('../../utils/errors.js');
+    const message = getErrorMessage(error);
+    console.error(chalk.red('\n❌ Deployment failed:'), message);
+    if (message === 'Deployment cancelled by user') {
       return;
     }
     throw error;

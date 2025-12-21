@@ -95,9 +95,10 @@ export async function rollbackFromBackup(backupDir: string): Promise<void> {
 
     rollbackSpinner.succeed('Rollback complete - Original state restored');
     console.log('');
-  } catch (rollbackError: any) {
+  } catch (rollbackError: unknown) {
     rollbackSpinner.fail('Rollback failed');
-    console.error(chalk.red(`\n❌ CRITICAL: Rollback failed: ${rollbackError.message}`));
+    const { getErrorMessage } = await import('../../utils/errors.js');
+    console.error(chalk.red(`\n❌ CRITICAL: Rollback failed: ${getErrorMessage(rollbackError)}`));
     console.error(chalk.yellow(`\n⚠️  Backup preserved at: ${backupDir}`));
     console.error(chalk.blue(`   Manually restore from backup if needed\n`));
     throw rollbackError;

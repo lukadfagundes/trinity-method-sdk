@@ -55,7 +55,9 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
    `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
    b. **JUNO Audit Report** (automatic verification):
    `trinity/reports/AUDIT-WO-042-{date}.md`
-6. **Move completed work order** from `trinity/work-orders/` to `trinity/sessions/`
+6. 🚨 **CRITICAL: MOVE completed work order** from `trinity/work-orders/` to `trinity/sessions/`
+   - **MANDATORY STEP** - Execute: `mv trinity/work-orders/WO-XXX-*.md trinity/sessions/`
+   - **Verify work order NO LONGER exists in trinity/work-orders/**
 7. **Reports remain** in `trinity/reports/` until session end
 8. **Run `/trinity-end`** when session complete to archive all session files
 
@@ -91,7 +93,9 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 6. **Investigation Report Created:**
    `trinity/reports/INV-015-findings-{date}.md`
    (See investigation template for required sections)
-7. **Move completed investigation** from `trinity/investigations/` to `trinity/sessions/`
+7. 🚨 **CRITICAL: MOVE completed investigation** from `trinity/investigations/` to `trinity/sessions/`
+   - **MANDATORY STEP** - Execute: `mv trinity/investigations/INV-XXX-*.md trinity/sessions/`
+   - **Verify investigation NO LONGER exists in trinity/investigations/**
 8. **Report remains** in `trinity/reports/` until session end
 9. **Run `/trinity-end`** when session complete to archive all session files
 
@@ -350,11 +354,11 @@ Please address WO-043 before marking WO-042 complete.
 
 ---
 
-## After Task Completion Workflow
+## ⚠️ CRITICAL: After Task Completion Workflow - MANDATORY STEPS
 
-### When You've Completed a Work Order or Investigation
+### 🚨 When You've Completed a Work Order or Investigation - DO NOT SKIP 🚨
 
-**Step 1: Verify Deliverables Created**
+**Step 1: Verify Deliverables Created** ✅
 
 **Work Orders:**
 
@@ -366,17 +370,37 @@ Please address WO-043 before marking WO-042 complete.
 - [ ] Findings report in `trinity/reports/INV-XXX-findings-{date}.md`
 - [ ] All required sections completed (summary, findings, root cause, recommendations, evidence)
 
-**Step 2: Move Completed File to Sessions**
+**Step 2: 🚨 MOVE THE COMPLETED FILE TO SESSIONS/ 🚨** ✅
+
+**THIS STEP IS MANDATORY - Work orders left in trinity/work-orders/ are considered INCOMPLETE.**
 
 ```bash
-# Work Order Example
+# Work Order Example - EXECUTE THIS IMMEDIATELY AFTER CREATING DELIVERABLE
 mv trinity/work-orders/WO-042-jwt-refresh.md trinity/sessions/
 
-# Investigation Example
+# Investigation Example - EXECUTE THIS IMMEDIATELY AFTER CREATING FINDINGS REPORT
 mv trinity/investigations/INV-015-performance-analysis.md trinity/sessions/
 ```
 
-**Step 3: Continue Working or End Session**
+**Step 3: Verify File Locations** ✅
+
+**CRITICAL VERIFICATION - If this fails, the task is NOT complete:**
+
+**For Work Orders:**
+
+- [ ] Work order file NOW EXISTS in: `trinity/sessions/WO-XXX-*.md`
+- [ ] Deliverable report exists in: `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-*.md`
+- [ ] Work order file NO LONGER EXISTS in: `trinity/work-orders/`
+
+**For Investigations:**
+
+- [ ] Investigation file NOW EXISTS in: `trinity/sessions/INV-XXX-*.md`
+- [ ] Findings report exists in: `trinity/reports/INV-XXX-findings-*.md`
+- [ ] Investigation file NO LONGER EXISTS in: `trinity/investigations/`
+
+**If any verification fails, STOP and fix immediately before proceeding.**
+
+**Step 4: Continue Working or End Session**
 
 **If continuing work in same session:**
 

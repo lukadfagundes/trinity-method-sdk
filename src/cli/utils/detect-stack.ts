@@ -4,32 +4,61 @@ import { Stack } from '../types.js';
 
 // Common source directory names
 const COMMON_SOURCE_DIRS = [
-  'src', 'lib', 'app', 'backend', 'frontend',
-  'server', 'client', 'database', 'packages', 'apps'
+  'src',
+  'lib',
+  'app',
+  'backend',
+  'frontend',
+  'server',
+  'client',
+  'database',
+  'packages',
+  'apps',
 ];
 
 // Nested directory patterns (2-level and 3-level)
 const NESTED_PATTERNS: string[][] = [
   // 2-level patterns - backend variations
-  ['backend', 'src'], ['backend', 'lib'], ['backend', 'app'],
+  ['backend', 'src'],
+  ['backend', 'lib'],
+  ['backend', 'app'],
   // 2-level patterns - frontend variations
-  ['frontend', 'src'], ['frontend', 'lib'], ['frontend', 'app'],
+  ['frontend', 'src'],
+  ['frontend', 'lib'],
+  ['frontend', 'app'],
   // 2-level patterns - server/client variations
-  ['server', 'src'], ['server', 'lib'], ['server', 'app'],
-  ['client', 'src'], ['client', 'lib'], ['client', 'app'],
+  ['server', 'src'],
+  ['server', 'lib'],
+  ['server', 'app'],
+  ['client', 'src'],
+  ['client', 'lib'],
+  ['client', 'app'],
   // 2-level patterns - src nested
-  ['src', 'backend'], ['src', 'frontend'], ['src', 'database'], ['src', 'server'], ['src', 'client'],
+  ['src', 'backend'],
+  ['src', 'frontend'],
+  ['src', 'database'],
+  ['src', 'server'],
+  ['src', 'client'],
 
   // 3-level patterns - src nested deeply
-  ['src', 'backend', 'src'], ['src', 'backend', 'lib'], ['src', 'backend', 'app'],
-  ['src', 'frontend', 'src'], ['src', 'frontend', 'lib'], ['src', 'frontend', 'app'],
-  ['src', 'database', 'src'], ['src', 'database', 'lib'],
+  ['src', 'backend', 'src'],
+  ['src', 'backend', 'lib'],
+  ['src', 'backend', 'app'],
+  ['src', 'frontend', 'src'],
+  ['src', 'frontend', 'lib'],
+  ['src', 'frontend', 'app'],
+  ['src', 'database', 'src'],
+  ['src', 'database', 'lib'],
 
   // 3-level patterns - frontend/backend with app
-  ['frontend', 'app', 'lib'], ['frontend', 'app', 'src'],
-  ['backend', 'app', 'lib'], ['backend', 'app', 'src'],
-  ['server', 'app', 'lib'], ['server', 'app', 'src'],
-  ['client', 'app', 'lib'], ['client', 'app', 'src']
+  ['frontend', 'app', 'lib'],
+  ['frontend', 'app', 'src'],
+  ['backend', 'app', 'lib'],
+  ['backend', 'app', 'src'],
+  ['server', 'app', 'lib'],
+  ['server', 'app', 'src'],
+  ['client', 'app', 'lib'],
+  ['client', 'app', 'src'],
 ];
 
 /**
@@ -89,7 +118,7 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
     framework: 'Generic',
     sourceDir: 'src',
     sourceDirs: [],
-    packageManager: 'npm'
+    packageManager: 'npm',
   };
 
   try {
@@ -147,17 +176,18 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
         } else {
           result.packageManager = 'npm';
         }
-      } catch (parseError: any) {
-        console.error('Error parsing package.json:', parseError.message);
+      } catch (parseError: unknown) {
+        const { getErrorMessage } = await import('../utils/errors.js');
+        console.error('Error parsing package.json:', getErrorMessage(parseError));
         // If package.json is malformed, treat as unknown project
         // (keep default result.language = 'Unknown', result.framework = 'Generic')
       }
     }
     // Check for Python
     else if (
-      await exists(path.join(targetDir, 'requirements.txt')) ||
-      await exists(path.join(targetDir, 'setup.py')) ||
-      await exists(path.join(targetDir, 'pyproject.toml'))
+      (await exists(path.join(targetDir, 'requirements.txt'))) ||
+      (await exists(path.join(targetDir, 'setup.py'))) ||
+      (await exists(path.join(targetDir, 'pyproject.toml')))
     ) {
       result.language = 'Python';
       result.framework = 'Generic';
@@ -172,8 +202,9 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
 
       result.sourceDir = 'app';
     }
-  } catch (error: any) {
-    console.error('Error detecting stack:', error.message);
+  } catch (error: unknown) {
+    const { getErrorMessage } = await import('../utils/errors.js');
+    console.error('Error detecting stack:', getErrorMessage(error));
   }
 
   // Detect all source directories (monorepo support)

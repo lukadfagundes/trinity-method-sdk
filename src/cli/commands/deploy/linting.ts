@@ -41,9 +41,10 @@ export async function deployLinting(
       }
 
       spinner.succeed(`Linting configuration deployed (${lintingTools.length} tools)`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       spinner.fail('Linting configuration deployment failed');
-      console.error(chalk.yellow(`   Warning: ${error.message}`));
+      const { getErrorMessage } = await import('../../utils/errors.js');
+      console.error(chalk.yellow(`   Warning: ${getErrorMessage(error)}`));
     }
   }
 
@@ -54,9 +55,10 @@ export async function deployLinting(
     try {
       await injectLintingDependencies(lintingDependencies, lintingScripts, stack.framework);
       spinner.succeed('Linting dependencies added to project configuration');
-    } catch (error: any) {
+    } catch (error: unknown) {
       spinner.fail('Dependency injection failed');
-      console.error(chalk.yellow(`   Warning: ${error.message}`));
+      const { getErrorMessage } = await import('../../utils/errors.js');
+      console.error(chalk.yellow(`   Warning: ${getErrorMessage(error)}`));
     }
   }
 

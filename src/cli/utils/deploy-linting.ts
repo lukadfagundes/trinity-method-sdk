@@ -7,7 +7,7 @@ export async function deployLintingTool(
   tool: LintingTool,
   stack: Stack,
   templatesPath: string,
-  variables: Record<string, any>
+  variables: Record<string, string | number>
 ): Promise<void> {
   const frameworkDir = getFrameworkDirectory(stack.framework);
   const templateDir = path.join(templatesPath, 'linting', frameworkDir);
@@ -45,11 +45,11 @@ export async function deployLintingTool(
 function getFrameworkDirectory(framework: string): string {
   const frameworkMap: Record<string, string> = {
     'Node.js': 'nodejs',
-    'React': 'nodejs',
+    React: 'nodejs',
     'Next.js': 'nodejs',
-    'Python': 'python',
-    'Flutter': 'flutter',
-    'Rust': 'rust',
+    Python: 'python',
+    Flutter: 'flutter',
+    Rust: 'rust',
   };
   return frameworkMap[framework] || 'nodejs';
 }
@@ -58,13 +58,13 @@ async function deployESLint(
   tool: LintingTool,
   stack: Stack,
   templateDir: string,
-  variables: Record<string, any>
+  variables: Record<string, string | number>
 ): Promise<void> {
   let templateFile: string;
 
   if (stack.language === 'TypeScript') {
     templateFile = '.eslintrc-typescript.json.template';
-  } else if ((stack as any).moduleType === 'esm') {
+  } else if ('moduleType' in stack && (stack as { moduleType?: string }).moduleType === 'esm') {
     templateFile = '.eslintrc-esm.json.template';
   } else {
     templateFile = '.eslintrc-commonjs.json.template';
@@ -79,7 +79,7 @@ async function deployESLint(
 async function deployPrettier(
   tool: LintingTool,
   templateDir: string,
-  variables: Record<string, any>
+  variables: Record<string, string | number>
 ): Promise<void> {
   const templatePath = path.join(templateDir, '.prettierrc.json.template');
   const content = await fs.readFile(templatePath, 'utf8');
@@ -90,7 +90,7 @@ async function deployPrettier(
 async function deployPreCommit(
   tool: LintingTool,
   templateDir: string,
-  variables: Record<string, any>
+  variables: Record<string, string | number>
 ): Promise<void> {
   const templatePath = path.join(templateDir, '.pre-commit-config.yaml.template');
   const content = await fs.readFile(templatePath, 'utf8');
@@ -102,7 +102,7 @@ async function deployTypeScriptESLint(
   tool: LintingTool,
   stack: Stack,
   templateDir: string,
-  variables: Record<string, any>
+  variables: Record<string, string | number>
 ): Promise<void> {
   // Modify existing .eslintrc.json to add TypeScript support
   const eslintPath = '.eslintrc.json';
@@ -124,7 +124,7 @@ async function deployTypeScriptESLint(
 async function deployPythonTool(
   tool: LintingTool,
   templateDir: string,
-  variables: Record<string, any>
+  variables: Record<string, string | number>
 ): Promise<void> {
   if (tool.id === 'black' || tool.id === 'isort') {
     // Both go in pyproject.toml
@@ -143,7 +143,7 @@ async function deployPythonTool(
 async function deployDartAnalyzer(
   tool: LintingTool,
   templateDir: string,
-  variables: Record<string, any>
+  variables: Record<string, string | number>
 ): Promise<void> {
   const templatePath = path.join(templateDir, 'analysis_options.yaml.template');
   const content = await fs.readFile(templatePath, 'utf8');
@@ -154,7 +154,7 @@ async function deployDartAnalyzer(
 async function deployRustTool(
   tool: LintingTool,
   templateDir: string,
-  variables: Record<string, any>
+  variables: Record<string, string | number>
 ): Promise<void> {
   const filename = tool.id === 'clippy' ? 'clippy.toml' : 'rustfmt.toml';
   const templatePath = path.join(templateDir, `${filename}.template`);

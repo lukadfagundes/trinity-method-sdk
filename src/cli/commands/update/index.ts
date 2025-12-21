@@ -100,7 +100,7 @@ export async function update(options: UpdateOptions): Promise<void> {
 
     // SUCCESS: Display summary
     displayUpdateSummary(stats, versionInfo.currentVersion, versionInfo.latestVersion);
-  } catch (error: any) {
+  } catch (error: unknown) {
     // ROLLBACK on failure
     if (spinner) {
       spinner.fail('Update failed');
@@ -112,12 +112,13 @@ export async function update(options: UpdateOptions): Promise<void> {
     if (backupDir) {
       try {
         await rollbackFromBackup(backupDir);
-      } catch (rollbackError: any) {
+      } catch (rollbackError: unknown) {
         // Rollback error already logged in rollbackFromBackup
       }
     }
 
-    console.error(chalk.red(`Error: ${error.message}\n`));
+    const { getErrorMessage } = await import('../../utils/errors.js');
+    console.error(chalk.red(`Error: ${getErrorMessage(error)}\n`));
     console.error(chalk.blue('💡 Try running: trinity deploy --force for a clean reinstall\n'));
     process.exit(1);
   }

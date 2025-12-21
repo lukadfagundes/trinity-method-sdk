@@ -29,6 +29,44 @@ interface DependencyMetrics {
 }
 
 /**
+ * Create an empty CodebaseMetrics object with default values
+ */
+export function createEmptyMetrics(): CodebaseMetrics {
+  return {
+    // Code Quality Metrics
+    todoCount: 0,
+    todoComments: 0,
+    fixmeComments: 0,
+    hackComments: 0,
+    consoleStatements: 0,
+    commentedCodeBlocks: 0,
+
+    // File Complexity Metrics
+    totalFiles: 0,
+    filesOver500: 0,
+    filesOver1000: 0,
+    filesOver3000: 0,
+    avgFileLength: 0,
+    largestFiles: [],
+
+    // Dependency Metrics
+    dependencies: {},
+    dependencyCount: 0,
+    devDependencies: {},
+    devDependencyCount: 0,
+
+    // Git Metrics
+    commitCount: 0,
+    contributors: 0,
+    lastCommitDate: 'Unknown',
+
+    // Framework-Specific
+    frameworkVersion: 'Unknown',
+    packageManager: 'Unknown',
+  };
+}
+
+/**
  * Main entry point for metrics collection
  * @param sourceDir - Source code directory (src/, lib/, app/)
  * @param framework - Detected framework (Node.js, Flutter, React, Python, Rust)
@@ -40,7 +78,7 @@ async function collectCodebaseMetrics(
 ): Promise<CodebaseMetrics> {
   console.log(`   Collecting metrics from ${sourceDir} (${framework})...`);
 
-  const metrics: any = {
+  const metrics: CodebaseMetrics = {
     // Code Quality Metrics
     todoCount: 0,
     todoComments: 0,
@@ -115,8 +153,9 @@ async function collectCodebaseMetrics(
     // Framework-Specific
     metrics.frameworkVersion = await detectFrameworkVersion(framework);
     metrics.packageManager = await detectPackageManager();
-  } catch (error: any) {
-    console.error('   Error collecting metrics:', error.message);
+  } catch (error: unknown) {
+    const { getErrorMessage } = await import('./errors.js');
+    console.error('   Error collecting metrics:', getErrorMessage(error));
     throw error;
   }
 
@@ -156,8 +195,9 @@ async function countPattern(dir: string, pattern: RegExp): Promise<number> {
     }
 
     return count;
-  } catch (error: any) {
-    console.error(`   Error counting pattern: ${error.message}`);
+  } catch (error: unknown) {
+    const { getErrorMessage } = await import('./errors.js');
+    console.error(`   Error counting pattern: ${getErrorMessage(error)}`);
     return 0;
   }
 }
@@ -203,8 +243,9 @@ async function countCommentedCode(dir: string): Promise<number> {
     }
 
     return blockCount;
-  } catch (error: any) {
-    console.error(`   Error counting commented code: ${error.message}`);
+  } catch (error: unknown) {
+    const { getErrorMessage } = await import('./errors.js');
+    console.error(`   Error counting commented code: ${getErrorMessage(error)}`);
     return 0;
   }
 }
@@ -267,8 +308,9 @@ async function analyzeFileComplexity(dir: string): Promise<FileComplexityMetrics
       avgFileLength: files.length > 0 ? Math.round(totalLines / files.length) : 0,
       largestFiles,
     };
-  } catch (error: any) {
-    console.error(`   Error analyzing file complexity: ${error.message}`);
+  } catch (error: unknown) {
+    const { getErrorMessage } = await import('./errors.js');
+    console.error(`   Error analyzing file complexity: ${getErrorMessage(error)}`);
     return {
       totalFiles: 0,
       filesOver500: 0,
@@ -379,8 +421,9 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
         }
       }
     }
-  } catch (error: any) {
-    console.error(`   Error parsing dependencies: ${error.message}`);
+  } catch (error: unknown) {
+    const { getErrorMessage } = await import('./errors.js');
+    console.error(`   Error parsing dependencies: ${getErrorMessage(error)}`);
   }
 
   return result;

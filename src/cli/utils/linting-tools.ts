@@ -40,14 +40,11 @@ export const lintingTools: Record<string, LintingTool[]> = {
       description: 'TypeScript-specific linting',
       file: 'extends typescript in .eslintrc.json',
       recommended: false, // Only if TypeScript detected
-      dependencies: [
-        '@typescript-eslint/parser@^6.7.0',
-        '@typescript-eslint/eslint-plugin@^6.7.0',
-      ],
+      dependencies: ['@typescript-eslint/parser@^6.7.0', '@typescript-eslint/eslint-plugin@^6.7.0'],
     },
   ],
 
-  'React': [
+  React: [
     {
       id: 'eslint',
       name: 'ESLint',
@@ -86,14 +83,11 @@ export const lintingTools: Record<string, LintingTool[]> = {
       description: 'TypeScript-specific linting',
       file: 'extends typescript in .eslintrc.json',
       recommended: false,
-      dependencies: [
-        '@typescript-eslint/parser@^6.7.0',
-        '@typescript-eslint/eslint-plugin@^6.7.0',
-      ],
+      dependencies: ['@typescript-eslint/parser@^6.7.0', '@typescript-eslint/eslint-plugin@^6.7.0'],
     },
   ],
 
-  'Python': [
+  Python: [
     {
       id: 'black',
       name: 'Black',
@@ -128,7 +122,7 @@ export const lintingTools: Record<string, LintingTool[]> = {
     },
   ],
 
-  'Flutter': [
+  Flutter: [
     {
       id: 'dartanalyzer',
       name: 'Dart Analyzer',
@@ -147,7 +141,7 @@ export const lintingTools: Record<string, LintingTool[]> = {
     },
   ],
 
-  'Rust': [
+  Rust: [
     {
       id: 'clippy',
       name: 'Clippy',
@@ -181,14 +175,14 @@ export function getToolsForFramework(framework: string, language: string): Linti
 
   if (language === 'TypeScript') {
     return tools.map((tool) => {
-      if ((tool as any).requiresTypeScript) {
+      if (tool.requiresTypeScript) {
         return { ...tool, recommended: true };
       }
       return tool;
     });
   }
 
-  return tools.filter((tool) => !(tool as any).requiresTypeScript);
+  return tools.filter((tool) => !tool.requiresTypeScript);
 }
 
 export function getRecommendedTools(framework: string, language: string): LintingTool[] {
@@ -210,15 +204,17 @@ export function getScriptsForTools(selectedTools: LintingTool[]): Record<string,
   return scripts;
 }
 
-export function getPostInstallInstructions(selectedTools: LintingTool[], framework: string): PostInstallInstruction[] {
+export function getPostInstallInstructions(
+  selectedTools: LintingTool[],
+  framework: string
+): PostInstallInstruction[] {
   const instructions: PostInstallInstruction[] = [];
 
   selectedTools.forEach((tool) => {
-    const postInstall = (tool as any).postInstall;
-    if (postInstall) {
+    if (tool.postInstall) {
       instructions.push({
-        command: postInstall,
-        description: `Setup ${tool.name}`
+        command: tool.postInstall,
+        description: `Setup ${tool.name}`,
       });
     }
   });

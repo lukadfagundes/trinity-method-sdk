@@ -13,10 +13,7 @@ import type { DeployOptions, Spinner } from './types.js';
  * @param spinner - Spinner instance for status updates
  * @returns Number of files deployed
  */
-export async function deployCICD(
-  options: DeployOptions,
-  spinner: Spinner
-): Promise<number> {
+export async function deployCICD(options: DeployOptions, spinner: Spinner): Promise<number> {
   if (!options.ciDeploy) {
     return 0;
   }
@@ -44,15 +41,16 @@ export async function deployCICD(
 
     if (ciStats.errors.length > 0) {
       spinner.warn('Some CI/CD templates failed to deploy');
-      ciStats.errors.forEach((err: any) => {
+      ciStats.errors.forEach((err: { file?: string; error?: string; general?: string }) => {
         console.log(chalk.red(`   ✗ ${err.file || 'Error'}: ${err.error}`));
       });
     }
 
     return ciStats.deployed.length;
-  } catch (error: any) {
+  } catch (error: unknown) {
     spinner.fail('CI/CD template deployment failed');
-    console.error(chalk.yellow(`   Warning: ${error.message}`));
+    const { getErrorMessage } = await import('../../utils/errors.js');
+    console.error(chalk.yellow(`   Warning: ${getErrorMessage(error)}`));
     return 0;
   }
 }

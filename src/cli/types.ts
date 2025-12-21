@@ -31,6 +31,8 @@ export interface LintingTool {
   recommended?: boolean;
   dependencies?: string[];
   scripts?: Record<string, string>;
+  requiresTypeScript?: boolean;
+  postInstall?: string;
 }
 
 export interface PostInstallInstruction {
@@ -41,17 +43,42 @@ export interface PostInstallInstruction {
 export interface Stack {
   framework: string;
   language: string;
-  sourceDir: string;           // Primary source directory (for backward compatibility)
-  sourceDirs: string[];        // All detected source directories (monorepo support)
+  sourceDir: string; // Primary source directory (for backward compatibility)
+  sourceDirs: string[]; // All detected source directories (monorepo support)
   packageManager?: string;
 }
 
 export interface CodebaseMetrics {
-  totalFiles: number;
+  // Code Quality Metrics
   todoCount: number;
+  todoComments: number;
+  fixmeComments: number;
+  hackComments: number;
+  consoleStatements: number;
+  commentedCodeBlocks: number;
+
+  // File Complexity Metrics
+  totalFiles: number;
   filesOver500: number;
+  filesOver1000: number;
+  filesOver3000: number;
+  avgFileLength: number;
+  largestFiles: Array<{ file: string; lines: number }>;
+
+  // Dependency Metrics
+  dependencies: Record<string, string>;
   dependencyCount: number;
-  [key: string]: any;
+  devDependencies: Record<string, string>;
+  devDependencyCount: number;
+
+  // Git Metrics
+  commitCount: number;
+  contributors: number;
+  lastCommitDate: string;
+
+  // Framework-Specific
+  frameworkVersion: string;
+  packageManager: string;
 }
 
 export interface DeploymentStats {

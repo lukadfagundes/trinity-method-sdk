@@ -54,10 +54,11 @@ export async function installSDK(spinner: Spinner): Promise<boolean> {
       console.log(chalk.yellow('   Run: npm init -y && npm install trinity-method-sdk'));
       return false;
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     spinner.warn('SDK installation skipped');
+    const { getErrorMessage } = await import('../../utils/errors.js');
     console.log(chalk.yellow(`   Install manually: npm install trinity-method-sdk`));
-    console.log(chalk.gray(`   Error: ${error.message}`));
+    console.log(chalk.gray(`   Error: ${getErrorMessage(error)}`));
     return false;
   }
 }

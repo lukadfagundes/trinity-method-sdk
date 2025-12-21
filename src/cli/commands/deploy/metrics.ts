@@ -34,11 +34,7 @@ export async function collectMetrics(stack: Stack, spinner: Spinner): Promise<Co
     console.log(chalk.yellow('  Some metrics collection failed, continuing...'));
 
     // Return minimal metrics
-    return {
-      totalFiles: 0,
-      todoCount: 0,
-      filesOver500: 0,
-      dependencyCount: 0,
-    };
+    const { createEmptyMetrics } = await import('../../utils/codebase-metrics.js');
+    return createEmptyMetrics();
   }
 }

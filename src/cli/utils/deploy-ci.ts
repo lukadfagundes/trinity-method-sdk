@@ -29,7 +29,7 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
   const stats: CIDeploymentStats = {
     deployed: [],
     skipped: [],
-    errors: []
+    errors: [],
   };
 
   try {
@@ -58,8 +58,12 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
           await fs.writeFile('.github/workflows/cd.yml', content);
           stats.deployed.push('.github/workflows/cd.yml');
         }
-      } catch (error: any) {
-        stats.errors.push({ file: '.github/workflows/ci.yml or cd.yml', error: error.message });
+      } catch (error: unknown) {
+        const { getErrorMessage } = await import('./errors.js');
+        stats.errors.push({
+          file: '.github/workflows/ci.yml or cd.yml',
+          error: getErrorMessage(error),
+        });
       }
     }
 
@@ -81,8 +85,9 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
             stats.deployed.push('.gitlab-ci.yml');
           }
         }
-      } catch (error: any) {
-        stats.errors.push({ file: '.gitlab-ci.yml', error: error.message });
+      } catch (error: unknown) {
+        const { getErrorMessage } = await import('./errors.js');
+        stats.errors.push({ file: '.gitlab-ci.yml', error: getErrorMessage(error) });
       }
     }
 
@@ -96,13 +101,18 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
         await fs.writeFile('trinity/templates/ci/generic-ci.yml', content);
         stats.deployed.push('trinity/templates/ci/generic-ci.yml');
       }
-    } catch (error: any) {
-      stats.errors.push({ file: 'trinity/templates/ci/generic-ci.yml', error: error.message });
+    } catch (error: unknown) {
+      const { getErrorMessage } = await import('./errors.js');
+      stats.errors.push({
+        file: 'trinity/templates/ci/generic-ci.yml',
+        error: getErrorMessage(error),
+      });
     }
 
     return stats;
-  } catch (error: any) {
-    stats.errors.push({ general: error.message });
+  } catch (error: unknown) {
+    const { getErrorMessage } = await import('./errors.js');
+    stats.errors.push({ general: getErrorMessage(error) });
     return stats;
   }
 }

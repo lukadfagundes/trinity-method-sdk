@@ -38,9 +38,10 @@ export async function updateGitignore(spinner: Spinner): Promise<boolean> {
       spinner.info('.gitignore already contains Trinity exclusions');
       return false;
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     spinner.warn('.gitignore update failed');
-    console.error(chalk.yellow(`   Warning: ${error.message}`));
+    const { getErrorMessage } = await import('../../utils/errors.js');
+    console.error(chalk.yellow(`   Warning: ${getErrorMessage(error)}`));
     return false;
   }
 }

@@ -1,24 +1,44 @@
 import { Stack, CodebaseMetrics } from '../types.js';
 
-export function processTemplate(content: string, variables: Record<string, any>): string {
+export function processTemplate(
+  content: string,
+  variables: Record<string, string | number>
+): string {
   let processed = content;
+
+  // Helper to convert values to strings
+  const toString = (value: string | number | undefined): string => {
+    return value !== undefined ? String(value) : '';
+  };
 
   // Replace all placeholders with provided variables
   // Use variables directly, with fallbacks for backwards compatibility
   const placeholders: Record<string, string> = {
-    PROJECT_NAME: variables.PROJECT_NAME || variables.projectName || 'Unknown Project',
-    TECH_STACK: variables.TECH_STACK || variables.techStack || 'Unknown',
-    FRAMEWORK: variables.FRAMEWORK || variables.framework || 'Generic',
-    SOURCE_DIR: variables.SOURCE_DIR || variables.sourceDir || 'src',
-    DEPLOYMENT_TIMESTAMP: variables.DEPLOYMENT_TIMESTAMP || variables.timestamp || new Date().toISOString(),
-    LANGUAGE: variables.LANGUAGE || variables.language || 'Unknown',
-    PACKAGE_MANAGER: variables.PACKAGE_MANAGER || variables.packageManager || 'npm',
-    TRINITY_VERSION: variables.TRINITY_VERSION || '1.0.0',
-    TECHNOLOGY_STACK: variables.TECHNOLOGY_STACK || variables.TECH_STACK || variables.techStack || 'Unknown',
-    PRIMARY_FRAMEWORK: variables.PRIMARY_FRAMEWORK || variables.FRAMEWORK || variables.framework || 'Generic',
-    CURRENT_DATE: variables.CURRENT_DATE || new Date().toISOString().split('T')[0],
-    PROJECT_VAR_NAME: variables.PROJECT_VAR_NAME || (variables.PROJECT_NAME || variables.projectName || 'project').toLowerCase().replace(/[^a-z0-9]/g, ''),
-    TRINITY_HOME: variables.TRINITY_HOME || process.env.TRINITY_HOME || 'C:/Users/lukaf/Desktop/Dev Work/trinity-method',
+    PROJECT_NAME: toString(variables.PROJECT_NAME || variables.projectName) || 'Unknown Project',
+    TECH_STACK: toString(variables.TECH_STACK || variables.techStack) || 'Unknown',
+    FRAMEWORK: toString(variables.FRAMEWORK || variables.framework) || 'Generic',
+    SOURCE_DIR: toString(variables.SOURCE_DIR || variables.sourceDir) || 'src',
+    DEPLOYMENT_TIMESTAMP:
+      toString(variables.DEPLOYMENT_TIMESTAMP || variables.timestamp) || new Date().toISOString(),
+    LANGUAGE: toString(variables.LANGUAGE || variables.language) || 'Unknown',
+    PACKAGE_MANAGER: toString(variables.PACKAGE_MANAGER || variables.packageManager) || 'npm',
+    TRINITY_VERSION: toString(variables.TRINITY_VERSION) || '1.0.0',
+    TECHNOLOGY_STACK:
+      toString(variables.TECHNOLOGY_STACK || variables.TECH_STACK || variables.techStack) ||
+      'Unknown',
+    PRIMARY_FRAMEWORK:
+      toString(variables.PRIMARY_FRAMEWORK || variables.FRAMEWORK || variables.framework) ||
+      'Generic',
+    CURRENT_DATE: toString(variables.CURRENT_DATE) || new Date().toISOString().split('T')[0],
+    PROJECT_VAR_NAME:
+      toString(variables.PROJECT_VAR_NAME) ||
+      String(variables.PROJECT_NAME || variables.projectName || 'project')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, ''),
+    TRINITY_HOME:
+      toString(variables.TRINITY_HOME) ||
+      process.env.TRINITY_HOME ||
+      'C:/Users/lukaf/Desktop/Dev Work/trinity-method',
   };
 
   // Replace each placeholder
@@ -38,7 +58,7 @@ export function extractVariables(stack: Stack, projectName: string): Record<stri
     sourceDir: stack.sourceDir,
     language: stack.language,
     packageManager: stack.packageManager || 'npm',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 
@@ -47,7 +67,7 @@ export function extractVariables(stack: Stack, projectName: string): Record<stri
  * @param metrics - Collected codebase metrics
  * @returns Formatted metric variables
  */
-export function formatMetrics(metrics?: CodebaseMetrics): Record<string, any> {
+export function formatMetrics(metrics?: CodebaseMetrics): Record<string, string | number> {
   if (!metrics || Object.keys(metrics).length === 0) {
     // Return placeholders if no metrics collected (--skip-audit)
     return {
@@ -99,29 +119,29 @@ export function formatMetrics(metrics?: CodebaseMetrics): Record<string, any> {
   return {
     // Code Quality - Scriptable
     TODO_COUNT: metrics.todoCount || 0,
-    TODO_COMMENTS: (metrics as any).todoComments || 0,
-    FIXME_COUNT: (metrics as any).fixmeComments || 0,
-    HACK_COUNT: (metrics as any).hackComments || 0,
-    CONSOLE_COUNT: (metrics as any).consoleStatements || 0,
-    COMMENTED_BLOCKS: (metrics as any).commentedCodeBlocks || 0,
+    TODO_COMMENTS: metrics.todoComments || 0,
+    FIXME_COUNT: metrics.fixmeComments || 0,
+    HACK_COUNT: metrics.hackComments || 0,
+    CONSOLE_COUNT: metrics.consoleStatements || 0,
+    COMMENTED_BLOCKS: metrics.commentedCodeBlocks || 0,
 
     // File Complexity - Scriptable
     TOTAL_FILES: metrics.totalFiles || 0,
     FILES_500: metrics.filesOver500 || 0,
-    FILES_1000: (metrics as any).filesOver1000 || 0,
-    FILES_3000: (metrics as any).filesOver3000 || 0,
-    AVG_LENGTH: Math.round((metrics as any).avgFileLength || 0),
+    FILES_1000: metrics.filesOver1000 || 0,
+    FILES_3000: metrics.filesOver3000 || 0,
+    AVG_LENGTH: Math.round(metrics.avgFileLength || 0),
 
     // Dependencies - Scriptable
     DEPENDENCY_COUNT: metrics.dependencyCount || 0,
-    DEV_DEPENDENCY_COUNT: (metrics as any).devDependencyCount || 0,
-    FRAMEWORK_VERSION: (metrics as any).frameworkVersion || 'Unknown',
-    PACKAGE_MANAGER: (metrics as any).packageManager || 'Unknown',
+    DEV_DEPENDENCY_COUNT: metrics.devDependencyCount || 0,
+    FRAMEWORK_VERSION: metrics.frameworkVersion || 'Unknown',
+    PACKAGE_MANAGER: metrics.packageManager || 'Unknown',
 
     // Git - Scriptable
-    COMMIT_COUNT: (metrics as any).commitCount || 0,
-    CONTRIBUTOR_COUNT: (metrics as any).contributors || 1,
-    LAST_COMMIT: (metrics as any).lastCommitDate || 'Unknown',
+    COMMIT_COUNT: metrics.commitCount || 0,
+    CONTRIBUTOR_COUNT: metrics.contributors || 1,
+    LAST_COMMIT: metrics.lastCommitDate || 'Unknown',
 
     // Agent-only metrics (always placeholders)
     OVERALL_COVERAGE: '{{OVERALL_COVERAGE}}',
