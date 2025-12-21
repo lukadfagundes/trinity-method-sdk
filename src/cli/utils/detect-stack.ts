@@ -177,8 +177,8 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
           result.packageManager = 'npm';
         }
       } catch (parseError: unknown) {
-        const { getErrorMessage } = await import('../utils/errors.js');
-        console.error('Error parsing package.json:', getErrorMessage(parseError));
+        const { displayError, getErrorMessage } = await import('../utils/errors.js');
+        displayError(`Error parsing package.json: ${getErrorMessage(parseError)}`);
         // If package.json is malformed, treat as unknown project
         // (keep default result.language = 'Unknown', result.framework = 'Generic')
       }
@@ -203,8 +203,8 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
       result.sourceDir = 'app';
     }
   } catch (error: unknown) {
-    const { getErrorMessage } = await import('../utils/errors.js');
-    console.error('Error detecting stack:', getErrorMessage(error));
+    const { displayWarning, getErrorMessage } = await import('../utils/errors.js');
+    displayWarning(`Error detecting stack: ${getErrorMessage(error)}`);
   }
 
   // Detect all source directories (monorepo support)

@@ -7,7 +7,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { Ora } from 'ora';
-import chalk from 'chalk';
 
 /** User-managed files that need backup */
 const USER_FILES = [
@@ -97,10 +96,11 @@ export async function rollbackFromBackup(backupDir: string): Promise<void> {
     console.log('');
   } catch (rollbackError: unknown) {
     rollbackSpinner.fail('Rollback failed');
-    const { getErrorMessage } = await import('../../utils/errors.js');
-    console.error(chalk.red(`\n❌ CRITICAL: Rollback failed: ${getErrorMessage(rollbackError)}`));
-    console.error(chalk.yellow(`\n⚠️  Backup preserved at: ${backupDir}`));
-    console.error(chalk.blue(`   Manually restore from backup if needed\n`));
+    const { displayError, displayWarning, displayInfo, getErrorMessage } =
+      await import('../../utils/errors.js');
+    displayError(`CRITICAL: Rollback failed: ${getErrorMessage(rollbackError)}`);
+    displayWarning(`Backup preserved at: ${backupDir}`);
+    displayInfo('Manually restore from backup if needed');
     throw rollbackError;
   }
 }

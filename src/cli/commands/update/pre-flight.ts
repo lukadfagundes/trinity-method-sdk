@@ -6,7 +6,6 @@
 
 import fs from 'fs-extra';
 import { Ora } from 'ora';
-import chalk from 'chalk';
 
 /**
  * Run pre-flight checks to ensure Trinity Method is deployed
@@ -20,8 +19,9 @@ export async function runUpdatePreflightChecks(spinner: Ora): Promise<void> {
   const trinityExists = await fs.pathExists('trinity');
   if (!trinityExists) {
     spinner.fail('Trinity Method not deployed');
-    console.error(chalk.red('❌ Trinity Method not deployed in this project'));
-    console.error(chalk.blue('   Use: trinity deploy to install\n'));
+    const { displayError, displayInfo } = await import('../../utils/errors.js');
+    displayError('Trinity Method not deployed in this project');
+    displayInfo('Use: trinity deploy to install');
     process.exit(1);
   }
 
@@ -29,8 +29,9 @@ export async function runUpdatePreflightChecks(spinner: Ora): Promise<void> {
   const claudeExists = await fs.pathExists('.claude');
   if (!claudeExists) {
     spinner.fail('.claude directory not found');
-    console.error(chalk.red('❌ .claude directory not found'));
-    console.error(chalk.blue('   Trinity deployment appears incomplete\n'));
+    const { displayError, displayInfo } = await import('../../utils/errors.js');
+    displayError('.claude directory not found');
+    displayInfo('Trinity deployment appears incomplete');
     process.exit(1);
   }
 

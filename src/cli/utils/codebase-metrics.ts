@@ -154,8 +154,8 @@ async function collectCodebaseMetrics(
     metrics.frameworkVersion = await detectFrameworkVersion(framework);
     metrics.packageManager = await detectPackageManager();
   } catch (error: unknown) {
-    const { getErrorMessage } = await import('./errors.js');
-    console.error('   Error collecting metrics:', getErrorMessage(error));
+    const { displayError, getErrorMessage } = await import('./errors.js');
+    displayError(`Error collecting metrics: ${getErrorMessage(error)}`);
     throw error;
   }
 
@@ -196,8 +196,8 @@ async function countPattern(dir: string, pattern: RegExp): Promise<number> {
 
     return count;
   } catch (error: unknown) {
-    const { getErrorMessage } = await import('./errors.js');
-    console.error(`   Error counting pattern: ${getErrorMessage(error)}`);
+    const { displayWarning, getErrorMessage } = await import('./errors.js');
+    displayWarning(`Error counting pattern: ${getErrorMessage(error)}`);
     return 0;
   }
 }
@@ -244,8 +244,8 @@ async function countCommentedCode(dir: string): Promise<number> {
 
     return blockCount;
   } catch (error: unknown) {
-    const { getErrorMessage } = await import('./errors.js');
-    console.error(`   Error counting commented code: ${getErrorMessage(error)}`);
+    const { displayWarning, getErrorMessage } = await import('./errors.js');
+    displayWarning(`Error counting commented code: ${getErrorMessage(error)}`);
     return 0;
   }
 }
@@ -309,8 +309,8 @@ async function analyzeFileComplexity(dir: string): Promise<FileComplexityMetrics
       largestFiles,
     };
   } catch (error: unknown) {
-    const { getErrorMessage } = await import('./errors.js');
-    console.error(`   Error analyzing file complexity: ${getErrorMessage(error)}`);
+    const { displayWarning, getErrorMessage } = await import('./errors.js');
+    displayWarning(`Error analyzing file complexity: ${getErrorMessage(error)}`);
     return {
       totalFiles: 0,
       filesOver500: 0,
@@ -422,8 +422,8 @@ async function parseDependencies(framework: string): Promise<DependencyMetrics> 
       }
     }
   } catch (error: unknown) {
-    const { getErrorMessage } = await import('./errors.js');
-    console.error(`   Error parsing dependencies: ${getErrorMessage(error)}`);
+    const { displayWarning, getErrorMessage } = await import('./errors.js');
+    displayWarning(`Error parsing dependencies: ${getErrorMessage(error)}`);
   }
 
   return result;

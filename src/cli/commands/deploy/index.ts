@@ -173,9 +173,9 @@ export async function deploy(options: DeployOptions): Promise<void> {
     await displaySummary(progress, options, stack, metrics);
   } catch (error: unknown) {
     if (spinner) spinner.fail();
-    const { isError, getErrorMessage } = await import('../../utils/errors.js');
+    const { displayError, getErrorMessage } = await import('../../utils/errors.js');
     const message = getErrorMessage(error);
-    console.error(chalk.red('\n❌ Deployment failed:'), message);
+    displayError(`Deployment failed: ${message}`);
     if (message === 'Deployment cancelled by user') {
       return;
     }

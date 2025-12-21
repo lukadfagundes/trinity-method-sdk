@@ -49,8 +49,8 @@ export async function deployCICD(options: DeployOptions, spinner: Spinner): Prom
     return ciStats.deployed.length;
   } catch (error: unknown) {
     spinner.fail('CI/CD template deployment failed');
-    const { getErrorMessage } = await import('../../utils/errors.js');
-    console.error(chalk.yellow(`   Warning: ${getErrorMessage(error)}`));
+    const { displayWarning, getErrorMessage } = await import('../../utils/errors.js');
+    displayWarning(getErrorMessage(error));
     return 0;
   }
 }

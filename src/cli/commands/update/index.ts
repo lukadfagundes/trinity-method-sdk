@@ -117,9 +117,9 @@ export async function update(options: UpdateOptions): Promise<void> {
       }
     }
 
-    const { getErrorMessage } = await import('../../utils/errors.js');
-    console.error(chalk.red(`Error: ${getErrorMessage(error)}\n`));
-    console.error(chalk.blue('💡 Try running: trinity deploy --force for a clean reinstall\n'));
+    const { displayError, displayInfo, getErrorMessage } = await import('../../utils/errors.js');
+    displayError(getErrorMessage(error));
+    displayInfo('Try running: trinity deploy --force for a clean reinstall');
     process.exit(1);
   }
 }

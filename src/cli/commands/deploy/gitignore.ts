@@ -3,7 +3,6 @@
  */
 
 import fs from 'fs-extra';
-import chalk from 'chalk';
 import { validatePath } from '../../utils/validate-path.js';
 import type { Spinner } from './types.js';
 
@@ -44,8 +43,8 @@ export async function updateGitignore(spinner: Spinner): Promise<boolean> {
     }
   } catch (error: unknown) {
     spinner.warn('.gitignore update failed');
-    const { getErrorMessage } = await import('../../utils/errors.js');
-    console.error(chalk.yellow(`   Warning: ${getErrorMessage(error)}`));
+    const { displayWarning, getErrorMessage } = await import('../../utils/errors.js');
+    displayWarning(getErrorMessage(error));
     return false;
   }
 }
