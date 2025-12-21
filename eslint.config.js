@@ -11,6 +11,7 @@ export default [
       'node_modules/',
       'coverage/',
       'test-results/',
+      'docs/',
       '*.config.js',
       '.eslintrc.js',
     ],

@@ -1,0 +1,258 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>trinity-method-sdk</title><meta name="description" content="Documentation for trinity-method-sdk"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">trinity-method-sdk</a><div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>trinity-method-sdk</h1></div><div class="tsd-panel tsd-typography"><h1 id="trinity-method-sdk" class="tsd-anchor-link">Trinity Method SDK<a href="#trinity-method-sdk" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><p><a href="https://www.npmjs.com/package/@trinity-method/cli"><img src="https://img.shields.io/npm/v/@trinity-method/cli?color=success" alt="npm version"></a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D16.9.0-brightgreen" alt="Node.js Version"></a>
+<a href="https://github.com/lukadfagundes/trinity-method-sdk"><img src="https://img.shields.io/badge/AI%20Agent-Claude%20Code-blue" alt="AI Agents"></a></p>
+<blockquote>
+<p>Investigation-first development methodology for Claude Code</p>
+</blockquote>
+<hr>
+<h2 id="why-trinity-method-exists" class="tsd-anchor-link">Why Trinity Method Exists<a href="#why-trinity-method-exists" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="the-problem-with-traditional-ai-assisted-development" class="tsd-anchor-link">The Problem with Traditional AI-Assisted Development<a href="#the-problem-with-traditional-ai-assisted-development" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>AI coding assistants are powerful, but without structure they become expensive guessing machines:</p>
+<p><strong>❌ Jump-to-Code Anti-Pattern:</strong></p>
+<ul>
+<li>AI generates code without understanding the problem</li>
+<li>No investigation phase → immediate implementation</li>
+<li>Context lost between sessions → repeated mistakes</li>
+<li>No institutional knowledge → every session starts from zero</li>
+<li>Inconsistent quality → success depends on prompt luck</li>
+<li>Manual quality setup → 50 minutes configuring linters per project</li>
+</ul>
+<p><strong>The Cost:</strong></p>
+<ul>
+<li>Developers waste time debugging AI-generated code that solves the wrong problem</li>
+<li>Teams lose hard-won lessons when developers leave</li>
+<li>Technical debt accumulates invisibly</li>
+<li>Code quality varies wildly across sessions</li>
+</ul>
+<h3 id="our-philosophy-investigation-first-development" class="tsd-anchor-link">Our Philosophy: Investigation-First Development<a href="#our-philosophy-investigation-first-development" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Trinity Method rejects &quot;prompt and pray&quot; development. Instead, we enforce <strong>systematic investigation before implementation</strong>:</p>
+<p><strong>1. Investigation-First Principle</strong></p>
+<pre><code><span class="hl-0">WRONG</span><span class="hl-1">: </span><span class="hl-2">&quot;Build authentication&quot;</span><span class="hl-1"> → </span><span class="hl-3">AI</span><span class="hl-1"> </span><span class="hl-4">generates</span><span class="hl-1"> </span><span class="hl-4">code</span><span class="hl-1"> → </span><span class="hl-4">Debug</span><span class="hl-1"> </span><span class="hl-4">for</span><span class="hl-1"> </span><span class="hl-4">hours</span><br/><span class="hl-0">RIGHT</span><span class="hl-1">: </span><span class="hl-2">&quot;Investigate authentication requirements&quot;</span><span class="hl-1"> → </span><span class="hl-4">Understand</span><span class="hl-1"> </span><span class="hl-4">problem</span><span class="hl-1"> → </span><span class="hl-4">Design</span><span class="hl-1"> </span><span class="hl-4">solution</span><span class="hl-1"> → </span><span class="hl-4">Implement</span><span class="hl-1"> </span><span class="hl-4">correctly</span>
+</code><button>Copy</button></pre>
+
+<p><strong>2. Evidence-Based Decisions</strong>
+Every decision backed by documentation, codebase metrics, and historical patterns. No guessing.</p>
+<p><strong>3. Knowledge Preservation</strong>
+Lessons learned persist across sessions through institutional memory. Agents get smarter over time.</p>
+<p><strong>4. Systematic Quality Assurance</strong>
+Quality isn't aspirational—it's systematically enforced through automated gates (BAS 6-phase validation).</p>
+<h3 id="the-trinity-transformation" class="tsd-anchor-link">The Trinity Transformation<a href="#the-trinity-transformation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p><strong>✅ With Trinity Method:</strong></p>
+<ul>
+<li><strong>Investigation before coding</strong> → Understand the problem first</li>
+<li><strong>Persistent knowledge base</strong> → Learn from every session</li>
+<li><strong>Automated quality enforcement</strong> → BAS gates ensure standards</li>
+<li><strong>11-agent team coordination</strong> → Right specialist for each task</li>
+<li><strong>Institutional memory</strong> → Patterns, strategies, and lessons preserved</li>
+<li><strong>90-second deployment</strong> → Complete development environment instantly</li>
+</ul>
+<hr>
+<h2 id="what-is-trinity-method-sdk" class="tsd-anchor-link">What is Trinity Method SDK?<a href="#what-is-trinity-method-sdk" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Trinity Method SDK is a <strong>production-ready development methodology</strong> that transforms AI-assisted coding from random generation into systematic engineering.</p>
+<h3 id="core-philosophy" class="tsd-anchor-link">Core Philosophy<a href="#core-philosophy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p><strong>Trinity Method enforces three pillars:</strong></p>
+<ol>
+<li>
+<p><strong>Investigation-First Development</strong></p>
+<ul>
+<li>Systematic investigation using MON (Requirements), ROR (Design), TRA (Planning)</li>
+<li>Evidence-based decisions backed by documentation and metrics</li>
+<li>Scale-based workflows: SMALL (0 stop points) → MEDIUM (2 stop points) → LARGE (4 stop points)</li>
+</ul>
+</li>
+<li>
+<p><strong>Knowledge Preservation</strong></p>
+<ul>
+<li>Learning system captures patterns from every investigation</li>
+<li>Cross-session persistence through filesystem storage</li>
+<li>Agent knowledge sharing via pub/sub bus (≥0.8 confidence threshold)</li>
+</ul>
+</li>
+<li>
+<p><strong>Systematic Quality Assurance</strong></p>
+<ul>
+<li>BAS 6-phase quality gate: Lint → Structure → Build → Test → Coverage (≥80%) → Review</li>
+<li>Crisis management system for 5 crisis types (build, test, error, performance, security)</li>
+<li>Automated codebase metrics collection and technical debt tracking</li>
+</ul>
+</li>
+</ol>
+<h3 id="the-11-agent-team" class="tsd-anchor-link">The 11-Agent Team<a href="#the-11-agent-team" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Trinity coordinates <strong>11 specialized agents</strong> through intelligent orchestration:</p>
+<p><strong>Planning Layer:</strong></p>
+<ul>
+<li><strong>MON</strong> - Requirements Analyst (functional &amp; non-functional requirements)</li>
+<li><strong>ROR</strong> - Design Architect (technical design, ADRs)</li>
+<li><strong>TRA</strong> - Work Planner (implementation sequencing, BAS integration)</li>
+<li><strong>EUS</strong> - Task Decomposer (atomic task breakdown)</li>
+</ul>
+<p><strong>Execution Layer:</strong></p>
+<ul>
+<li><strong>KIL</strong> - Task Executor (TDD implementation: RED → GREEN → REFACTOR)</li>
+<li><strong>BAS</strong> - Quality Gate (6-phase validation enforcer)</li>
+<li><strong>DRA</strong> - Code Reviewer (design doc compliance, quality escalation)</li>
+</ul>
+<p><strong>Support Layer:</strong></p>
+<ul>
+<li><strong>APO</strong> - Documentation Specialist (API docs, inline comments)</li>
+<li><strong>BON</strong> - Dependency Manager (package security, version management)</li>
+<li><strong>CAP</strong> - Configuration Specialist (env vars, config files)</li>
+<li><strong>URO</strong> - Refactoring Specialist (technical debt reduction)</li>
+</ul>
+<p><strong>Leadership:</strong></p>
+<ul>
+<li><strong>ALY</strong> - Chief Technology Officer (investigation orchestration, strategic coordination)</li>
+</ul>
+<p><em>(Note: AJ MAESTRO is deprecated v1.0 orchestrator, replaced by ALY in v2.0)</em></p>
+<h3 id="what-gets-deployed" class="tsd-anchor-link">What Gets Deployed<a href="#what-gets-deployed" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Trinity deploys <strong>75+ production-ready components</strong> in 90 seconds:</p>
+<p><strong>Methodology Infrastructure:</strong></p>
+<ul>
+<li><code>trinity/</code> - Complete Trinity Method structure</li>
+<li><code>trinity/work-orders/</code> - 6 work order templates (Investigation, Implementation, Analysis, Audit, Pattern, Verification)</li>
+<li><code>trinity/knowledge-base/</code> - 5 documentation files (ARCHITECTURE, ISSUES, To-do, Technical-Debt, Trinity)</li>
+<li><code>trinity/investigations/</code> - Investigation artifacts with guided questions</li>
+<li><code>trinity/archive/</code> - Session history and crisis reports</li>
+</ul>
+<p><strong>Agent System:</strong></p>
+<ul>
+<li><code>.claude/agents/</code> - 18 agent markdown files (11 agents deployed to user projects)</li>
+<li><code>.claude/commands/</code> - 25 Trinity slash commands</li>
+<li><code>.claude/EMPLOYEE-DIRECTORY.md</code> - Agent selection guide</li>
+</ul>
+<p><strong>Context Hierarchy:</strong></p>
+<ul>
+<li>Root <code>CLAUDE.md</code> - Global project context</li>
+<li><code>trinity/CLAUDE.md</code> - Trinity Method enforcement</li>
+<li><code>src/CLAUDE.md</code> - Technology-specific rules</li>
+</ul>
+<p><strong>Quality Automation:</strong></p>
+<ul>
+<li>Linting tools (ESLint, Prettier, Black, Flake8, Clippy, Rustfmt)</li>
+<li>Pre-commit hooks (Python's pre-commit framework for ALL languages)</li>
+<li>Automatic dependency injection to package.json/requirements.txt</li>
+<li>Real codebase metrics: TODO counts, console statements, file complexity, git metrics</li>
+</ul>
+<hr>
+<h2 id="how-trinity-works" class="tsd-anchor-link">How Trinity Works<a href="#how-trinity-works" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="quick-start-90-seconds-to-production" class="tsd-anchor-link">Quick Start (90 Seconds to Production)<a href="#quick-start-90-seconds-to-production" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-5"># Navigate to your project</span><br/><span class="hl-6">cd</span><span class="hl-1"> </span><span class="hl-2">your-project</span><br/><br/><span class="hl-5"># Deploy Trinity Method</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">@trinity-method/cli</span><span class="hl-1"> </span><span class="hl-2">deploy</span>
+</code><button type="button">Copy</button></pre>
+
+<p><strong>Interactive Wizard:</strong></p>
+<ol>
+<li>✅ <strong>Stack Detection</strong>: Automatically detects framework (Node.js, Python, Rust, Flutter, Go)</li>
+<li>✅ <strong>Linting Setup</strong>: Choose &quot;Recommended&quot; for one-click best practices</li>
+<li>✅ <strong>Deploy</strong>: 90-second deployment with full infrastructure</li>
+<li>✅ <strong>Install Dependencies</strong>: <code>npm install</code> (or <code>pip install -r requirements-dev.txt</code>)</li>
+<li>✅ <strong>Setup Pre-commit</strong>: <code>pip install pre-commit &amp;&amp; pre-commit install</code></li>
+</ol>
+<p><strong>Result:</strong> Production-ready development environment with 11 agents, 25 commands, quality gates, and documentation.</p>
+<h3 id="the-investigation-workflow" class="tsd-anchor-link">The Investigation Workflow<a href="#the-investigation-workflow" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Trinity enforces investigation-first through scale-based workflows:</p>
+<h4 id="small-scale-1-2-files-0-stop-points" class="tsd-anchor-link">SMALL Scale (1-2 files, 0 stop points)<a href="#small-scale-1-2-files-0-stop-points" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="bash"><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">investigate</span><span class="hl-1"> </span><span class="hl-7">--type</span><span class="hl-1"> </span><span class="hl-2">technical</span><br/><span class="hl-5"># Direct execution by KIL with BAS quality gate</span><br/><span class="hl-5"># Fast iteration for simple tasks</span>
+</code><button type="button">Copy</button></pre>
+
+<h4 id="medium-scale-3-5-files-2-stop-points" class="tsd-anchor-link">MEDIUM Scale (3-5 files, 2 stop points)<a href="#medium-scale-3-5-files-2-stop-points" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="bash"><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">investigate</span><span class="hl-1"> </span><span class="hl-7">--type</span><span class="hl-1"> </span><span class="hl-2">feature</span><br/><span class="hl-5"># Stop 1: Design approval (ROR)</span><br/><span class="hl-5"># Implementation by KIL with BAS gates</span><br/><span class="hl-5"># Stop 2: Final review (DRA + user approval)</span>
+</code><button type="button">Copy</button></pre>
+
+<h4 id="large-scale-6-files-4-stop-points" class="tsd-anchor-link">LARGE Scale (6+ files, 4 stop points)<a href="#large-scale-6-files-4-stop-points" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="bash"><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">investigate</span><span class="hl-1"> </span><span class="hl-7">--type</span><span class="hl-1"> </span><span class="hl-2">architecture</span><br/><span class="hl-5"># Stop 1: Requirements review (MON)</span><br/><span class="hl-5"># Stop 2: Design approval (ROR)</span><br/><span class="hl-5"># Stop 3: Plan approval (TRA)</span><br/><span class="hl-5"># Implementation with full BAS 6-phase gates</span><br/><span class="hl-5"># Stop 4: Comprehensive review (DRA + JUNO audit)</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="key-features-in-action" class="tsd-anchor-link">Key Features in Action<a href="#key-features-in-action" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><h4 id="1-investigation-templates-with-guided-questions" class="tsd-anchor-link">1. Investigation Templates with Guided Questions<a href="#1-investigation-templates-with-guided-questions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>Create investigations with Trinity Method's systematic approach:</p>
+<pre><code class="bash"><span class="hl-5"># Crisis investigation with guided recovery</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">create-investigation</span><span class="hl-1"> </span><span class="hl-7">--template</span><span class="hl-1"> </span><span class="hl-2">crisis</span><br/><br/><span class="hl-5"># Performance analysis with profiling questions</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">create-investigation</span><span class="hl-1"> </span><span class="hl-7">--template</span><span class="hl-1"> </span><span class="hl-2">performance</span><br/><br/><span class="hl-5"># Security assessment with CVSS scoring</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">create-investigation</span><span class="hl-1"> </span><span class="hl-7">--template</span><span class="hl-1"> </span><span class="hl-2">security</span>
+</code><button type="button">Copy</button></pre>
+
+<p>Each template includes Trinity-guided questions ensuring comprehensive investigation.</p>
+<h4 id="2-crisis-management-system" class="tsd-anchor-link">2. Crisis Management System<a href="#2-crisis-management-system" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>Automated detection and guided recovery for 5 crisis types:</p>
+<pre><code class="bash"><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">crisis</span><br/><br/><span class="hl-5"># Detects: BUILD_FAILURE, TEST_FAILURE, ERROR_PATTERN,</span><br/><span class="hl-5">#          PERFORMANCE_DEGRADATION, SECURITY_VULNERABILITY</span><br/><span class="hl-5"># Guides: Step-by-step recovery with validation</span><br/><span class="hl-5"># Archives: Crisis reports to trinity/archive/crisis/</span>
+</code><button type="button">Copy</button></pre>
+
+<h4 id="3-learning-system-visibility" class="tsd-anchor-link">3. Learning System Visibility<a href="#3-learning-system-visibility" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>Monitor institutional knowledge growth:</p>
+<pre><code class="bash"><span class="hl-5"># View learned patterns with confidence scores</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">knowledge</span><br/><br/><span class="hl-5"># Export learning data</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">knowledge</span><span class="hl-1"> </span><span class="hl-7">--export</span><br/><br/><span class="hl-5"># Display system metrics</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">analytics</span><span class="hl-1"> </span><span class="hl-7">--period</span><span class="hl-1"> </span><span class="hl-2">30d</span>
+</code><button type="button">Copy</button></pre>
+
+<h4 id="4-workflow-visualization" class="tsd-anchor-link">4. Workflow Visualization<a href="#4-workflow-visualization" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>See complete investigation plan before execution:</p>
+<pre><code class="bash"><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">orchestrate</span><br/><br/><span class="hl-5"># Displays:</span><br/><span class="hl-5"># - Investigation scale (SMALL/MEDIUM/LARGE)</span><br/><span class="hl-5"># - All phases with agents assigned</span><br/><span class="hl-5"># - Stop points for user review</span><br/><span class="hl-5"># - Task dependencies and parallelization</span><br/><span class="hl-5"># - Estimated duration</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="commands-reference" class="tsd-anchor-link">Commands Reference<a href="#commands-reference" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-5"># Core Commands</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">deploy</span><span class="hl-1">          </span><span class="hl-5"># Deploy Trinity to project</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">investigate</span><span class="hl-1">     </span><span class="hl-5"># Create investigation</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">status</span><span class="hl-1">          </span><span class="hl-5"># Check deployment status</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">update</span><span class="hl-1">          </span><span class="hl-5"># Update to latest version</span><br/><br/><span class="hl-5"># Quality &amp; Monitoring</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">crisis</span><span class="hl-1">          </span><span class="hl-5"># Crisis detection and recovery</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">analytics</span><span class="hl-1">       </span><span class="hl-5"># Performance analytics</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">benchmark</span><span class="hl-1">       </span><span class="hl-5"># Performance benchmarks</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">cache-stats</span><span class="hl-1">     </span><span class="hl-5"># Cache effectiveness metrics</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">learning-status</span><span class="hl-1"> </span><span class="hl-5"># Learning system status</span><br/><br/><span class="hl-5"># Session Management</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">review</span><span class="hl-1">          </span><span class="hl-5"># Review session history</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">dashboard</span><span class="hl-1">       </span><span class="hl-5"># Launch web dashboard</span><br/><br/><span class="hl-5"># Development</span><br/><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">analyze</span><span class="hl-1"> &lt;</span><span class="hl-2">fil</span><span class="hl-1">e&gt;  </span><span class="hl-5"># Quick code analysis</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="linting-code-quality-85-90-time-savings" class="tsd-anchor-link">Linting &amp; Code Quality (85-90% Time Savings)<a href="#linting-code-quality-85-90-time-savings" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p><strong>Before Trinity (Manual Setup): ~50 minutes per project</strong></p>
+<ol>
+<li>Research tools for your framework</li>
+<li>Install dependencies</li>
+<li>Create configuration files</li>
+<li>Configure pre-commit hooks</li>
+<li>Test and debug configuration</li>
+</ol>
+<p><strong>With Trinity (Automated): ~6 minutes per project</strong></p>
+<ol>
+<li>Select &quot;Recommended&quot; during deployment (30 seconds)</li>
+<li>Run <code>npm install</code> (3-5 minutes)</li>
+<li>Setup pre-commit: <code>pip install pre-commit &amp;&amp; pre-commit install</code> (30 seconds)</li>
+</ol>
+<p><strong>Supported Frameworks:</strong></p>
+<ul>
+<li><strong>Node.js/React</strong>: ESLint + Prettier + Pre-commit</li>
+<li><strong>Python</strong>: Black + Flake8 + isort + Pre-commit</li>
+<li><strong>Flutter</strong>: Dart Analyzer + Pre-commit</li>
+<li><strong>Rust</strong>: Clippy + Rustfmt + Pre-commit</li>
+</ul>
+<hr>
+<h2 id="designed-for-claude-code" class="tsd-anchor-link">Designed for Claude Code<a href="#designed-for-claude-code" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Trinity Method SDK is built exclusively for <a href="https://claude.com/claude-code">Claude Code</a>, Anthropic's AI pair programming environment.</p>
+<h3 id="why-claude-code" class="tsd-anchor-link">Why Claude Code?<a href="#why-claude-code" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li><strong>Deep Integration</strong>: Trinity's 11 agents leverage Claude Code's agent architecture</li>
+<li><strong>Slash Commands</strong>: Built-in <code>/trinity-*</code> commands for instant workflow access</li>
+<li><strong>Hooks System</strong>: Pre/post-action automation via Claude Code hooks</li>
+<li><strong>Quality Focus</strong>: Exceptional single-agent experience optimized for Claude</li>
+</ul>
+<h3 id="other-ai-assistants" class="tsd-anchor-link">Other AI Assistants?<a href="#other-ai-assistants" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>The Trinity Method <strong>philosophy</strong> is agent-agnostic, but this SDK is optimized for Claude Code's capabilities. Want to use Trinity with Cursor, Copilot, or others? We welcome contributions! See <a href="media/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+<hr>
+<h2 id="examples-documentation" class="tsd-anchor-link">Examples &amp; Documentation<a href="#examples-documentation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="real-world-deployments" class="tsd-anchor-link">Real-World Deployments<a href="#real-world-deployments" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="bash"><span class="hl-5"># Node.js/Express API</span><br/><span class="hl-6">cd</span><span class="hl-1"> </span><span class="hl-2">my-api</span><span class="hl-1"> &amp;&amp; </span><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">deploy</span><br/><span class="hl-5"># Result: API with ESLint, Prettier, pre-commit, 11 agents, quality gates</span><br/><br/><span class="hl-5"># Python/Django Project</span><br/><span class="hl-6">cd</span><span class="hl-1"> </span><span class="hl-2">my-django</span><span class="hl-1"> &amp;&amp; </span><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">deploy</span><br/><span class="hl-5"># Result: Django with Black, Flake8, isort, pre-commit, full Trinity infrastructure</span><br/><br/><span class="hl-5"># Flutter Mobile App</span><br/><span class="hl-6">cd</span><span class="hl-1"> </span><span class="hl-2">my-flutter-app</span><span class="hl-1"> &amp;&amp; </span><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">deploy</span><br/><span class="hl-5"># Result: Flutter with Dart Analyzer, pre-commit, investigation templates</span><br/><br/><span class="hl-5"># Rust CLI Tool</span><br/><span class="hl-6">cd</span><span class="hl-1"> </span><span class="hl-2">my-rust-cli</span><span class="hl-1"> &amp;&amp; </span><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">deploy</span><br/><span class="hl-5"># Result: Rust with Clippy, Rustfmt, pre-commit, crisis management</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="documentation" class="tsd-anchor-link">Documentation<a href="#documentation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p><strong>Core Methodology:</strong></p>
+<ul>
+<li><a href="docs/methodology/investigation-first-complete.md">Investigation-First Development</a></li>
+<li><a href="docs/methodology/trinity-framework.md">Trinity Framework</a></li>
+<li><a href="docs/agents/agent-selection-guide.md">Agent Selection Guide</a></li>
+</ul>
+<p><strong>Workflows:</strong></p>
+<ul>
+<li><a href="docs/workflows/deploy-workflow.md">Deployment Workflow</a></li>
+<li><a href="docs/workflows/investigation-workflow.md">Investigation Workflow</a></li>
+<li><a href="docs/workflows/session-workflow.md">Session Workflow</a></li>
+</ul>
+<p><strong>Best Practices:</strong></p>
+<ul>
+<li><a href="docs/best-practices.md">Testing Standards</a></li>
+<li><a href="docs/best-practices.md#caching-strategies">Caching Strategies</a></li>
+<li><a href="docs/quality-standards.md">Quality Standards</a> <em>(WO-023)</em></li>
+</ul>
+<h3 id="after-deployment" class="tsd-anchor-link">After Deployment<a href="#after-deployment" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Your project contains:</p>
+<ul>
+<li><code>.claude/EMPLOYEE-DIRECTORY.md</code> - Complete agent reference</li>
+<li><code>trinity/knowledge-base/Trinity.md</code> - Project-specific Trinity guide</li>
+<li><code>trinity/knowledge-base/ARCHITECTURE.md</code> - System architecture with metrics</li>
+<li><code>trinity/templates/</code> - 6 work order templates for complex tasks</li>
+</ul>
+<hr>
+<h2 id="contributing" class="tsd-anchor-link">Contributing<a href="#contributing" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Trinity Method SDK is open source and welcomes contributions!</p>
+<p><strong>Ways to Contribute:</strong></p>
+<ul>
+<li>🐛 Report bugs and issues</li>
+<li>💡 Suggest new features or agent improvements</li>
+<li>📝 Improve documentation</li>
+<li>🔧 Submit pull requests</li>
+<li>⭐ Star the repository if you find it useful</li>
+</ul>
+<p><strong>Development Setup:</strong></p>
+<pre><code class="bash"><span class="hl-5"># Clone repository</span><br/><span class="hl-6">git</span><span class="hl-1"> </span><span class="hl-2">clone</span><span class="hl-1"> </span><span class="hl-2">https://github.com/lukadfagundes/trinity-method-sdk.git</span><br/><span class="hl-6">cd</span><span class="hl-1"> </span><span class="hl-2">trinity-method-sdk</span><br/><br/><span class="hl-5"># Install dependencies</span><br/><span class="hl-6">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><br/><br/><span class="hl-5"># Build SDK</span><br/><span class="hl-6">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">build</span><br/><br/><span class="hl-5"># Test locally</span><br/><span class="hl-6">npm</span><span class="hl-1"> </span><span class="hl-2">link</span><br/><span class="hl-6">trinity</span><span class="hl-1"> </span><span class="hl-2">deploy</span>
+</code><button type="button">Copy</button></pre>
+
+<p>See <a href="media/CONTRIBUTING.md">CONTRIBUTING.md</a> for detailed guidelines.</p>
+<hr>
+<h2 id="license" class="tsd-anchor-link">License<a href="#license" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>MIT License - see <a href="media/LICENSE">LICENSE</a> for details</p>
+<hr>
+<h2 id="links" class="tsd-anchor-link">Links<a href="#links" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><strong>npm Package</strong>: <a href="https://www.npmjs.com/package/@trinity-method/cli">@trinity-method/cli</a></li>
+<li><strong>GitHub</strong>: <a href="https://github.com/lukadfagundes/trinity-method-sdk">lukadfagundes/trinity-method-sdk</a></li>
+<li><strong>Documentation</strong>: <a href="media/docs">docs/</a></li>
+<li><strong>Issues</strong>: <a href="https://github.com/lukadfagundes/trinity-method-sdk/issues">GitHub Issues</a></li>
+</ul>
+<hr>
+<p><strong>Built with ❤️ by the Trinity Method Team</strong></p>
+<p><em>Trinity Method: Investigation-first development for the AI age</em></p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#trinity-method-sdk"><span>Trinity <wbr/>Method <wbr/>SDK</span></a><ul><li><a href="#why-trinity-method-exists"><span>Why <wbr/>Trinity <wbr/>Method <wbr/>Exists</span></a></li><li><ul><li><a href="#the-problem-with-traditional-ai-assisted-development"><span>The <wbr/>Problem with <wbr/>Traditional <wbr/>AI-<wbr/>Assisted <wbr/>Development</span></a></li><li><a href="#our-philosophy-investigation-first-development"><span>Our <wbr/>Philosophy: <wbr/>Investigation-<wbr/>First <wbr/>Development</span></a></li><li><a href="#the-trinity-transformation"><span>The <wbr/>Trinity <wbr/>Transformation</span></a></li></ul></li><li><a href="#what-is-trinity-method-sdk"><span>What is <wbr/>Trinity <wbr/>Method <wbr/>SDK?</span></a></li><li><ul><li><a href="#core-philosophy"><span>Core <wbr/>Philosophy</span></a></li><li><a href="#the-11-agent-team"><span>The 11-<wbr/>Agent <wbr/>Team</span></a></li><li><a href="#what-gets-deployed"><span>What <wbr/>Gets <wbr/>Deployed</span></a></li></ul></li><li><a href="#how-trinity-works"><span>How <wbr/>Trinity <wbr/>Works</span></a></li><li><ul><li><a href="#quick-start-90-seconds-to-production"><span>Quick <wbr/>Start (90 <wbr/>Seconds to <wbr/>Production)</span></a></li><li><a href="#the-investigation-workflow"><span>The <wbr/>Investigation <wbr/>Workflow</span></a></li><li><ul><li><a href="#small-scale-1-2-files-0-stop-points"><span>SMALL <wbr/>Scale (1-<wbr/>2 files, 0 stop points)</span></a></li><li><a href="#medium-scale-3-5-files-2-stop-points"><span>MEDIUM <wbr/>Scale (3-<wbr/>5 files, 2 stop points)</span></a></li><li><a href="#large-scale-6-files-4-stop-points"><span>LARGE <wbr/>Scale (6+ files, 4 stop points)</span></a></li></ul></li><li><a href="#key-features-in-action"><span>Key <wbr/>Features in <wbr/>Action</span></a></li><li><ul><li><a href="#1-investigation-templates-with-guided-questions"><span>1. <wbr/>Investigation <wbr/>Templates with <wbr/>Guided <wbr/>Questions</span></a></li><li><a href="#2-crisis-management-system"><span>2. <wbr/>Crisis <wbr/>Management <wbr/>System</span></a></li><li><a href="#3-learning-system-visibility"><span>3. <wbr/>Learning <wbr/>System <wbr/>Visibility</span></a></li><li><a href="#4-workflow-visualization"><span>4. <wbr/>Workflow <wbr/>Visualization</span></a></li></ul></li><li><a href="#commands-reference"><span>Commands <wbr/>Reference</span></a></li><li><a href="#linting-code-quality-85-90-time-savings"><span>Linting &amp; <wbr/>Code <wbr/>Quality (85-<wbr/>90% <wbr/>Time <wbr/>Savings)</span></a></li></ul></li><li><a href="#designed-for-claude-code"><span>Designed for <wbr/>Claude <wbr/>Code</span></a></li><li><ul><li><a href="#why-claude-code"><span>Why <wbr/>Claude <wbr/>Code?</span></a></li><li><a href="#other-ai-assistants"><span>Other <wbr/>AI <wbr/>Assistants?</span></a></li></ul></li><li><a href="#examples-documentation"><span>Examples &amp; <wbr/>Documentation</span></a></li><li><ul><li><a href="#real-world-deployments"><span>Real-<wbr/>World <wbr/>Deployments</span></a></li><li><a href="#documentation"><span>Documentation</span></a></li><li><a href="#after-deployment"><span>After <wbr/>Deployment</span></a></li></ul></li><li><a href="#contributing"><span>Contributing</span></a></li><li><a href="#license"><span>License</span></a></li><li><a href="#links"><span>Links</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">trinity-method-sdk</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

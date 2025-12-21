@@ -1,42 +1,545 @@
 # Contributing to Trinity Method SDK
 
-Thank you for your interest in contributing to Trinity Method SDK!
+Thank you for your interest in contributing to the Trinity Method SDK! This document provides guidelines and instructions for contributing to the project.
 
-## Current Status
+---
+
+## Table of Contents
+
+- [Code of Conduct](#code-of-conduct)
+- [Development Setup](#development-setup)
+- [Development Workflow](#development-workflow)
+- [Code Standards](#code-standards)
+- [Testing](#testing)
+- [Pull Request Process](#pull-request-process)
+- [Release Process](#release-process)
+- [Documentation](#documentation)
+- [Getting Help](#getting-help)
+
+---
+
+## Code of Conduct
+
+This project follows a code of conduct to ensure a welcoming and inclusive environment for all contributors. By participating, you agree to uphold this standard.
+
+**Expected Behavior:**
+
+- Be respectful and considerate
+- Welcome diverse perspectives and experiences
+- Focus on constructive feedback
+- Prioritize the community's best interests
+
+---
+
+## Development Setup
+
+### Prerequisites
+
+- **Node.js:** 16.9.0 or higher
+- **npm:** 8.0.0 or higher
+- **Git:** 2.0 or higher
+
+### Initial Setup
+
+1. **Fork and Clone:**
+
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/trinity-method-sdk.git
+   cd trinity-method-sdk
+   ```
+
+2. **Install Dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+3. **Verify Installation:**
+
+   ```bash
+   npm run type-check  # TypeScript compilation check
+   npm run lint        # ESLint verification
+   npm test            # Run all tests
+   npm run build       # Build the project
+   ```
+
+4. **Set Up Git Hooks:**
+   ```bash
+   npm run prepare     # Sets up Husky pre-commit hooks
+   ```
+
+All commands should pass without errors before you begin development.
+
+---
+
+## Development Workflow
+
+### 1. Create a Feature Branch
+
+```bash
+git checkout -b feature/your-feature-name
+# or
+git checkout -b fix/bug-description
+```
+
+**Branch Naming Conventions:**
+
+- `feature/` - New features
+- `fix/` - Bug fixes
+- `docs/` - Documentation updates
+- `refactor/` - Code refactoring
+- `test/` - Test additions or updates
+- `chore/` - Maintenance tasks
+
+### 2. Make Changes
+
+- Write clean, readable code
+- Follow existing code style
+- Add/update tests for your changes
+- Update documentation as needed
+
+### 3. Run Quality Checks
+
+Before committing, ensure all checks pass:
+
+```bash
+npm run type-check  # TypeScript type checking
+npm run lint        # Linting (auto-fix with npm run lint:fix)
+npm test            # All tests must pass
+npm run build       # Build must succeed
+```
+
+### 4. Commit Changes
+
+We use **Conventional Commits** for all commit messages:
+
+```bash
+git commit -m "feat(cli): add new command for X"
+git commit -m "fix(deploy): resolve template copy issue"
+git commit -m "docs(readme): update installation instructions"
+git commit -m "test(utils): add unit tests for validation"
+```
+
+**Commit Types:**
+
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation only
+- `style:` - Code style (formatting, missing semicolons, etc.)
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks
+- `perf:` - Performance improvements
+
+### 5. Push and Create Pull Request
+
+```bash
+git push origin feature/your-feature-name
+```
+
+Then create a pull request on GitHub.
+
+---
+
+## Code Standards
+
+### TypeScript
+
+- **Strict Mode:** All code must compile with TypeScript strict mode enabled
+- **Type Safety:** Avoid `any` types; use proper type annotations
+- **Interfaces:** Prefer interfaces over type aliases for object shapes
+- **Exports:** Use named exports over default exports
+
+**Example:**
+
+```typescript
+// Good
+export interface UserOptions {
+  name: string;
+  email: string;
+}
+
+export function createUser(options: UserOptions): User {
+  // Implementation
+}
+
+// Avoid
+export default function (options: any) {
+  // Implementation
+}
+```
+
+### ESLint Rules
+
+The project uses ESLint 9 with flat config. Key rules:
+
+- **No unused variables** (except prefixed with `_`)
+- **Consistent code formatting** (enforced by Prettier)
+- **No console statements** in production code (use proper logging)
+- **Proper error handling** (no empty catch blocks)
+
+Run linting:
+
+```bash
+npm run lint        # Check for issues
+npm run lint:fix    # Auto-fix issues
+```
+
+### Code Coverage
+
+- **Minimum coverage:** 80% (target: 96%+)
+- **Unit tests:** Required for all new functions
+- **Integration tests:** Required for CLI commands and major features
+- **Edge cases:** Must be tested
+
+Check coverage:
+
+```bash
+npm run test:coverage
+```
+
+### File Organization
+
+```
+src/
+├── cli/              # CLI-specific code
+│   ├── commands/     # Command implementations
+│   ├── utils/        # Utility functions
+│   └── types.ts      # Type definitions
+├── templates/        # File templates
+└── index.ts          # Main entry point
+
+tests/
+├── unit/             # Unit tests (mirrors src/ structure)
+├── integration/      # Integration tests
+└── fixtures/         # Test fixtures and mocks
+```
+
+---
+
+## Testing
+
+### Test Structure
+
+We use **Jest** with **ts-jest** for all testing.
+
+**Test Types:**
+
+1. **Unit Tests** (`tests/unit/`)
+   - Test individual functions in isolation
+   - Mock external dependencies
+   - Fast execution
+
+2. **Integration Tests** (`tests/integration/`)
+   - Test CLI commands end-to-end
+   - Test module interactions
+   - Use real filesystem (with cleanup)
+
+### Writing Tests
+
+**Example Unit Test:**
+
+```typescript
+import { validatePath } from '../../src/cli/utils/validate-path.js';
+
+describe('validatePath', () => {
+  it('should accept valid absolute paths', () => {
+    expect(validatePath('/valid/path')).toBe(true);
+  });
+
+  it('should reject relative paths', () => {
+    expect(validatePath('../relative')).toBe(false);
+  });
+
+  it('should handle edge cases', () => {
+    expect(validatePath('')).toBe(false);
+    expect(validatePath(null as any)).toBe(false);
+  });
+});
+```
+
+**Example Integration Test:**
+
+```typescript
+import { deploy } from '../../src/cli/commands/deploy/index.js';
+
+describe('deploy command', () => {
+  it('should create Trinity directory structure', async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'test-'));
+
+    await deploy({ targetDir: tempDir });
+
+    expect(await fs.pathExists(path.join(tempDir, 'trinity'))).toBe(true);
+
+    await fs.remove(tempDir); // Cleanup
+  });
+});
+```
+
+### Running Tests
+
+```bash
+npm test                    # Run all tests
+npm run test:unit          # Run unit tests only
+npm run test:integration   # Run integration tests only
+npm run test:coverage      # Run with coverage report
+npm run test:watch         # Run in watch mode
+```
+
+### Coverage Requirements
+
+- **Overall coverage:** ≥80% (target: 96%+)
+- **New code:** 100% coverage required
+- **Critical paths:** Must have edge case coverage
+- **Error handling:** All error paths must be tested
+
+---
+
+## Pull Request Process
+
+### Before Submitting
+
+Ensure all of the following pass:
+
+- [ ] All tests pass (`npm test`)
+- [ ] Linting passes (`npm run lint`)
+- [ ] Type checking passes (`npm run type-check`)
+- [ ] Build succeeds (`npm run build`)
+- [ ] Test coverage ≥80%
+- [ ] Documentation updated (if needed)
+- [ ] CHANGELOG.md updated (if user-facing change)
+
+### PR Requirements
+
+1. **Title:** Use conventional commit format
+   - Example: `feat(cli): add new investigation command`
+
+2. **Description:** Include:
+   - What changed and why
+   - Link to related issue (if applicable)
+   - Breaking changes (if any)
+   - Screenshots (for UI changes)
+
+3. **Size:** Keep PRs focused and manageable
+   - Prefer smaller, focused PRs over large ones
+   - One feature/fix per PR
+
+4. **Tests:** All new code must have tests
+   - Unit tests for functions
+   - Integration tests for features
+
+### Review Process
+
+1. **Automated Checks:**
+   - CI/CD pipeline runs all tests
+   - Linting and type checking
+   - Coverage report generated
+
+2. **Code Review:**
+   - At least one maintainer approval required
+   - Address all review comments
+   - Keep discussion professional and constructive
+
+3. **Merge:**
+   - Squash and merge preferred
+   - Delete branch after merge
+
+### What We Look For
+
+- **Code Quality:** Clean, readable, maintainable
+- **Test Coverage:** Comprehensive tests
+- **Documentation:** Clear inline comments and updated docs
+- **Performance:** No unnecessary performance regressions
+- **Security:** No security vulnerabilities introduced
+
+---
+
+## Release Process
+
+### Versioning
+
+We follow **Semantic Versioning** (semver):
+
+- **MAJOR:** Breaking changes (v1.0.0 → v2.0.0)
+- **MINOR:** New features, backward compatible (v1.0.0 → v1.1.0)
+- **PATCH:** Bug fixes, backward compatible (v1.0.0 → v1.0.1)
+
+### Release Checklist
+
+1. **Update Version:**
+
+   ```bash
+   npm version [major|minor|patch]
+   ```
+
+2. **Update CHANGELOG.md:**
+   - Document all changes since last release
+   - Group by type (Features, Fixes, Breaking Changes)
+
+3. **Test Thoroughly:**
+
+   ```bash
+   npm test
+   npm run build
+   ```
+
+4. **Publish:**
+
+   ```bash
+   npm publish
+   ```
+
+5. **Tag Release:**
+   ```bash
+   git tag -a v1.0.0 -m "Release v1.0.0"
+   git push --tags
+   ```
+
+---
+
+## Documentation
+
+### API Documentation
+
+- **TypeDoc:** We use TypeDoc for API documentation
+- **Generate docs:** `npm run docs:generate`
+- **Output:** `docs/` directory (committed to repo)
+
+### JSDoc Comments
+
+All public functions should have JSDoc comments:
+
+````typescript
+/**
+ * Validates a file path for security and correctness
+ *
+ * @param filePath - The path to validate
+ * @param options - Validation options
+ * @returns True if valid, false otherwise
+ * @throws {ValidationError} If path contains dangerous patterns
+ *
+ * @example
+ * ```typescript
+ * const isValid = validatePath('/safe/path');
+ * ```
+ */
+export function validatePath(filePath: string, options?: ValidationOptions): boolean {
+  // Implementation
+}
+````
+
+### ADRs (Architectural Decision Records)
+
+Major architectural decisions are documented in `docs/adr/`:
+
+- **Template:** `docs/adr/template.md`
+- **Format:** ADR-XXX-title.md
+- **Required sections:** Context, Decision, Consequences, Alternatives
+
+---
+
+## Getting Help
+
+### Resources
+
+- **Documentation:** [README.md](README.md)
+- **API Docs:** [docs/](docs/)
+- **Issues:** [GitHub Issues](https://github.com/lukadfagundes/trinity-method-sdk/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/lukadfagundes/trinity-method-sdk/discussions)
+
+### Asking Questions
+
+Before asking:
+
+1. Check existing documentation
+2. Search closed issues
+3. Review ADRs for design decisions
+
+When asking:
+
+- Provide context and examples
+- Include error messages (if applicable)
+- Describe what you've tried
+
+### Reporting Bugs
+
+Use the bug report template and include:
+
+- **Description:** Clear description of the bug
+- **Reproduction steps:** Minimal steps to reproduce
+- **Expected behavior:** What should happen
+- **Actual behavior:** What actually happens
+- **Environment:** Node version, OS, npm version
+- **Logs:** Relevant error messages
+
+### Suggesting Features
+
+Use the feature request template and include:
+
+- **Use case:** Why is this needed?
+- **Proposed solution:** How should it work?
+- **Alternatives:** Other approaches considered
+- **Impact:** Who benefits from this?
+
+---
+
+## Contributing Support for Other AI Agents
 
 Trinity Method SDK v1.0.0 is built for [Claude Code](https://claude.com/claude-code).
-
-## Contributing Support for Other Agents
 
 We welcome contributions to add support for other AI coding agents (Cursor, GitHub Copilot, Aider, etc.).
 
 ### Guidelines
 
-1. **Agent-Specific Templates**: Create templates in `packages/cli/templates/[agent-name]/`
+1. **Agent-Specific Templates**: Create templates in `src/templates/[agent-name]/`
 2. **Context Files**: Each agent needs its own context file format (e.g., cursor-rules.md, copilot-instructions.md)
 3. **Agent Configuration**: Add agent config to deployment logic
 4. **Documentation**: Update README with agent-specific instructions
 5. **Testing**: Test full deployment for your agent
 
-### How to Contribute
+---
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/add-cursor-support`)
-3. Implement your changes
-4. Test thoroughly
-5. Submit a pull request
+## Project Structure
 
-### Code Style
+```
+trinity-method-sdk/
+├── .claude/                 # Claude Code slash commands
+├── dist/                    # Compiled output (generated)
+├── docs/                    # API documentation (generated)
+│   └── adr/                 # Architectural Decision Records
+├── src/                     # Source code
+│   ├── cli/                 # CLI implementation
+│   │   ├── commands/        # Command implementations
+│   │   ├── utils/           # Utility functions
+│   │   └── types.ts         # Type definitions
+│   ├── templates/           # File templates
+│   └── index.ts             # Main entry point
+├── tests/                   # Test files
+│   ├── unit/                # Unit tests
+│   ├── integration/         # Integration tests
+│   └── fixtures/            # Test fixtures
+├── trinity/                 # Trinity Method documentation
+│   ├── knowledge-base/      # Living documentation
+│   ├── work-orders/         # Active work orders
+│   └── sessions/            # Session artifacts
+├── CHANGELOG.md             # Change log
+├── CONTRIBUTING.md          # This file
+├── LICENSE                  # MIT license
+├── README.md                # Project overview
+├── package.json             # Package configuration
+└── tsconfig.json            # TypeScript configuration
+```
 
-- 2-space indentation
-- camelCase for functions and variables
-- Clear, descriptive naming
-- ESLint compliant (when ESLint config is added)
-
-### Questions?
-
-Open an issue at: https://github.com/lukadfagundes/trinity-method-sdk/issues
+---
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing to Trinity Method SDK, you agree that your contributions will be licensed under the MIT License.
+
+---
+
+## Acknowledgments
+
+Thank you for contributing to the Trinity Method SDK! Your efforts help improve the development experience for teams using investigation-first methodology.
+
+For questions or clarification, please open a GitHub Discussion or contact the maintainers.

@@ -16,6 +16,7 @@
 AI coding assistants are powerful, but without structure they become expensive guessing machines:
 
 **❌ Jump-to-Code Anti-Pattern:**
+
 - AI generates code without understanding the problem
 - No investigation phase → immediate implementation
 - Context lost between sessions → repeated mistakes
@@ -24,6 +25,7 @@ AI coding assistants are powerful, but without structure they become expensive g
 - Manual quality setup → 50 minutes configuring linters per project
 
 **The Cost:**
+
 - Developers waste time debugging AI-generated code that solves the wrong problem
 - Teams lose hard-won lessons when developers leave
 - Technical debt accumulates invisibly
@@ -34,6 +36,7 @@ AI coding assistants are powerful, but without structure they become expensive g
 Trinity Method rejects "prompt and pray" development. Instead, we enforce **systematic investigation before implementation**:
 
 **1. Investigation-First Principle**
+
 ```
 WRONG: "Build authentication" → AI generates code → Debug for hours
 RIGHT: "Investigate authentication requirements" → Understand problem → Design solution → Implement correctly
@@ -51,6 +54,7 @@ Quality isn't aspirational—it's systematically enforced through automated gate
 ### The Trinity Transformation
 
 **✅ With Trinity Method:**
+
 - **Investigation before coding** → Understand the problem first
 - **Persistent knowledge base** → Learn from every session
 - **Automated quality enforcement** → BAS gates ensure standards
@@ -88,32 +92,37 @@ Trinity Method SDK is a **production-ready development methodology** that transf
 Trinity coordinates **11 specialized agents** through intelligent orchestration:
 
 **Planning Layer:**
+
 - **MON** - Requirements Analyst (functional & non-functional requirements)
 - **ROR** - Design Architect (technical design, ADRs)
 - **TRA** - Work Planner (implementation sequencing, BAS integration)
 - **EUS** - Task Decomposer (atomic task breakdown)
 
 **Execution Layer:**
+
 - **KIL** - Task Executor (TDD implementation: RED → GREEN → REFACTOR)
 - **BAS** - Quality Gate (6-phase validation enforcer)
 - **DRA** - Code Reviewer (design doc compliance, quality escalation)
 
 **Support Layer:**
+
 - **APO** - Documentation Specialist (API docs, inline comments)
 - **BON** - Dependency Manager (package security, version management)
 - **CAP** - Configuration Specialist (env vars, config files)
 - **URO** - Refactoring Specialist (technical debt reduction)
 
 **Leadership:**
+
 - **ALY** - Chief Technology Officer (investigation orchestration, strategic coordination)
 
-*(Note: AJ MAESTRO is deprecated v1.0 orchestrator, replaced by ALY in v2.0)*
+_(Note: AJ MAESTRO is deprecated v1.0 orchestrator, replaced by ALY in v2.0)_
 
 ### What Gets Deployed
 
 Trinity deploys **75+ production-ready components** in 90 seconds:
 
 **Methodology Infrastructure:**
+
 - `trinity/` - Complete Trinity Method structure
 - `trinity/work-orders/` - 6 work order templates (Investigation, Implementation, Analysis, Audit, Pattern, Verification)
 - `trinity/knowledge-base/` - 5 documentation files (ARCHITECTURE, ISSUES, To-do, Technical-Debt, Trinity)
@@ -121,16 +130,19 @@ Trinity deploys **75+ production-ready components** in 90 seconds:
 - `trinity/archive/` - Session history and crisis reports
 
 **Agent System:**
+
 - `.claude/agents/` - 18 agent markdown files (11 agents deployed to user projects)
 - `.claude/commands/` - 25 Trinity slash commands
 - `.claude/EMPLOYEE-DIRECTORY.md` - Agent selection guide
 
 **Context Hierarchy:**
+
 - Root `CLAUDE.md` - Global project context
 - `trinity/CLAUDE.md` - Trinity Method enforcement
 - `src/CLAUDE.md` - Technology-specific rules
 
 **Quality Automation:**
+
 - Linting tools (ESLint, Prettier, Black, Flake8, Clippy, Rustfmt)
 - Pre-commit hooks (Python's pre-commit framework for ALL languages)
 - Automatic dependency injection to package.json/requirements.txt
@@ -151,6 +163,7 @@ npx @trinity-method/cli deploy
 ```
 
 **Interactive Wizard:**
+
 1. ✅ **Stack Detection**: Automatically detects framework (Node.js, Python, Rust, Flutter, Go)
 2. ✅ **Linting Setup**: Choose "Recommended" for one-click best practices
 3. ✅ **Deploy**: 90-second deployment with full infrastructure
@@ -164,6 +177,7 @@ npx @trinity-method/cli deploy
 Trinity enforces investigation-first through scale-based workflows:
 
 #### SMALL Scale (1-2 files, 0 stop points)
+
 ```bash
 npx trinity investigate --type technical
 # Direct execution by KIL with BAS quality gate
@@ -171,6 +185,7 @@ npx trinity investigate --type technical
 ```
 
 #### MEDIUM Scale (3-5 files, 2 stop points)
+
 ```bash
 npx trinity investigate --type feature
 # Stop 1: Design approval (ROR)
@@ -179,6 +194,7 @@ npx trinity investigate --type feature
 ```
 
 #### LARGE Scale (6+ files, 4 stop points)
+
 ```bash
 npx trinity investigate --type architecture
 # Stop 1: Requirements review (MON)
@@ -277,6 +293,7 @@ npx trinity analyze <file>  # Quick code analysis
 ### Linting & Code Quality (85-90% Time Savings)
 
 **Before Trinity (Manual Setup): ~50 minutes per project**
+
 1. Research tools for your framework
 2. Install dependencies
 3. Create configuration files
@@ -284,11 +301,13 @@ npx trinity analyze <file>  # Quick code analysis
 5. Test and debug configuration
 
 **With Trinity (Automated): ~6 minutes per project**
+
 1. Select "Recommended" during deployment (30 seconds)
 2. Run `npm install` (3-5 minutes)
 3. Setup pre-commit: `pip install pre-commit && pre-commit install` (30 seconds)
 
 **Supported Frameworks:**
+
 - **Node.js/React**: ESLint + Prettier + Pre-commit
 - **Python**: Black + Flake8 + isort + Pre-commit
 - **Flutter**: Dart Analyzer + Pre-commit
@@ -338,23 +357,27 @@ cd my-rust-cli && npx trinity deploy
 ### Documentation
 
 **Core Methodology:**
+
 - [Investigation-First Development](docs/methodology/investigation-first-complete.md)
 - [Trinity Framework](docs/methodology/trinity-framework.md)
 - [Agent Selection Guide](docs/agents/agent-selection-guide.md)
 
 **Workflows:**
+
 - [Deployment Workflow](docs/workflows/deploy-workflow.md)
 - [Investigation Workflow](docs/workflows/investigation-workflow.md)
 - [Session Workflow](docs/workflows/session-workflow.md)
 
 **Best Practices:**
+
 - [Testing Standards](docs/best-practices.md)
 - [Caching Strategies](docs/best-practices.md#caching-strategies)
-- [Quality Standards](docs/quality-standards.md) *(WO-023)*
+- [Quality Standards](docs/quality-standards.md) _(WO-023)_
 
 ### After Deployment
 
 Your project contains:
+
 - `.claude/EMPLOYEE-DIRECTORY.md` - Complete agent reference
 - `trinity/knowledge-base/Trinity.md` - Project-specific Trinity guide
 - `trinity/knowledge-base/ARCHITECTURE.md` - System architecture with metrics
@@ -367,6 +390,7 @@ Your project contains:
 Trinity Method SDK is open source and welcomes contributions!
 
 **Ways to Contribute:**
+
 - 🐛 Report bugs and issues
 - 💡 Suggest new features or agent improvements
 - 📝 Improve documentation
@@ -374,6 +398,7 @@ Trinity Method SDK is open source and welcomes contributions!
 - ⭐ Star the repository if you find it useful
 
 **Development Setup:**
+
 ```bash
 # Clone repository
 git clone https://github.com/lukadfagundes/trinity-method-sdk.git
@@ -402,13 +427,26 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ## Links
 
+### Project Resources
+
 - **npm Package**: [@trinity-method/cli](https://www.npmjs.com/package/@trinity-method/cli)
 - **GitHub**: [lukadfagundes/trinity-method-sdk](https://github.com/lukadfagundes/trinity-method-sdk)
-- **Documentation**: [docs/](docs/)
 - **Issues**: [GitHub Issues](https://github.com/lukadfagundes/trinity-method-sdk/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/lukadfagundes/trinity-method-sdk/discussions)
+
+### Documentation
+
+- **API Documentation**: [docs/](docs/) - Generated TypeDoc API reference
+- **Contributing Guide**: [CONTRIBUTING.md](CONTRIBUTING.md) - Development setup, workflow, and standards
+- **Architectural Decisions**: [docs/adr/](docs/adr/) - ADRs documenting major technical decisions
+  - [ADR-001: CLI Architecture](docs/adr/ADR-001-cli-architecture.md)
+  - [ADR-002: Template System Design](docs/adr/ADR-002-template-system-design.md)
+  - [ADR-003: ESLint Flat Config](docs/adr/ADR-003-eslint-flat-config.md)
+  - [ADR-004: Test Strategy](docs/adr/ADR-004-test-strategy.md)
+- **Changelog**: [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
 
 ---
 
 **Built with ❤️ by the Trinity Method Team**
 
-*Trinity Method: Investigation-first development for the AI age*
+_Trinity Method: Investigation-first development for the AI age_
