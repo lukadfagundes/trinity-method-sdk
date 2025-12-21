@@ -25,6 +25,8 @@ import { updateKnowledgeBase } from './knowledge-base.js';
 import { verifyUpdateDeployment, updateVersionFile } from './verification.js';
 import { displayUpdateSummary, displayDryRunPreview } from './summary.js';
 import { UpdateStats } from './types.js';
+import { UpdateError } from '../../utils/error-classes.js';
+import { errorHandler } from '../../utils/error-handler.js';
 
 /**
  * Update Trinity Method SDK deployment to latest version
@@ -79,6 +81,13 @@ export async function update(options: UpdateOptions): Promise<void> {
     // STEP 4: Create backup
     backupDir = await createUpdateBackup(spinner);
 
+    // Register cleanup for backup directory
+    errorHandler.registerCleanup('Remove backup directory', async () => {
+      if (backupDir) {
+        await cleanupBackup(backupDir, ora());
+      }
+    });
+
     // STEP 5-8: Update components
     await updateAgents(spinner, stats);
     await updateCommands(spinner, stats);
@@ -97,6 +106,7 @@ export async function update(options: UpdateOptions): Promise<void> {
     // STEP 12: Cleanup backup
     await cleanupBackup(backupDir, spinner);
     backupDir = null; // Mark as cleaned up
+    errorHandler.clearCleanup(); // Clear cleanup since we did it manually
 
     // SUCCESS: Display summary
     displayUpdateSummary(stats, versionInfo.currentVersion, versionInfo.latestVersion);
@@ -117,9 +127,18 @@ export async function update(options: UpdateOptions): Promise<void> {
       }
     }
 
-    const { displayError, displayInfo, getErrorMessage } = await import('../../utils/errors.js');
-    displayError(getErrorMessage(error));
+    // Import error utilities
+    const { displayInfo, getErrorMessage } = await import('../../utils/errors.js');
     displayInfo('Try running: trinity deploy --force for a clean reinstall');
-    process.exit(1);
+
+    // Re-throw as UpdateError if it's not already a Trinity error
+    if (error instanceof UpdateError) {
+      throw error;
+    }
+
+    throw new UpdateError(`Update failed: ${getErrorMessage(error)}`, {
+      originalError: error,
+      backupDir: backupDir || 'none',
+    });
   }
 }

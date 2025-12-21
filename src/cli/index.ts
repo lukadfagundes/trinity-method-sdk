@@ -2,6 +2,7 @@
 import { program } from 'commander';
 import { deploy } from './commands/deploy/index.js';
 import { update } from './commands/update.js';
+import { errorHandler } from './utils/error-handler.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -28,13 +29,13 @@ program
   .option('--force', 'Overwrite existing Trinity deployment')
   .option('--skip-audit', 'Skip codebase metrics collection (faster, uses placeholders)')
   .option('--ci-deploy', 'Deploy CI/CD workflow templates for automated testing')
-  .action(deploy);
+  .action(errorHandler.wrap(deploy));
 
 program
   .command('update')
   .description('Update Trinity Method to latest version')
   .option('--all', 'Update all registered Trinity projects')
   .option('--dry-run', 'Preview changes without writing files')
-  .action(update);
+  .action(errorHandler.wrap(update));
 
 program.parse();
