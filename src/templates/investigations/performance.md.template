@@ -533,6 +533,53 @@ describe('Performance: getUserOrders', () => {
 
 ---
 
+## 📋 DELIVERABLE REQUIREMENTS
+
+### Investigation Report Format
+**Filename:** `INV-{{investigationId}}-findings-[TIMESTAMP].md`
+**Location:** `trinity/reports/`
+
+### Required Sections
+1. **Investigation Summary** - Performance issue overview and user impact
+2. **Findings** - Bottleneck analysis, profiling results, and root cause
+3. **Performance Metrics** - Before/after comparison with specific measurements
+4. **Optimization Strategy** - Detailed approach with expected improvements
+5. **Testing Results** - Load test results, benchmarks, and validation data
+6. **Recommendations** - Work orders to create, monitoring to add, long-term improvements
+
+### Evidence to Provide
+- Profiling screenshots (CPU, memory, network)
+- APM traces showing bottlenecks
+- Before/after benchmark results (p50, p95, p99)
+- Database query execution plans (EXPLAIN ANALYZE)
+- Load test results with graphs
+- Resource utilization metrics
+
+---
+
+## ✅ AFTER COMPLETION
+
+When investigation is complete:
+1. **Create Investigation Report:**
+   - [ ] Save findings report to `trinity/reports/INV-{{investigationId}}-findings-[TIMESTAMP].md`
+   - [ ] Include all required sections listed above
+   - [ ] Attach all evidence and supporting documentation
+
+2. **Move Investigation File:**
+   - [ ] Move this investigation file (INV-{{investigationId}}.md) to `trinity/sessions/`
+   - [ ] Keep report in `trinity/reports/` until end of session
+
+3. **Session Cleanup:**
+   - [ ] Run `/trinity-end` to archive both investigation and report
+   - [ ] Investigation will be archived to `trinity/archive/investigations/YYYY-MM-DD/`
+   - [ ] Report will be archived to `trinity/archive/reports/YYYY-MM-DD/`
+
+4. **Clean Slate:**
+   - [ ] Verify `trinity/sessions/` is empty (ready for next session)
+   - [ ] Verify `trinity/reports/` is empty (ready for next session)
+
+---
+
 ## 📚 Reference Documentation
 
 **Trinity Method Core:**

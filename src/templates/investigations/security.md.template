@@ -628,6 +628,59 @@ security:
 
 ---
 
+## 📋 DELIVERABLE REQUIREMENTS
+
+### Investigation Report Format
+**Filename:** `INV-{{investigationId}}-findings-[TIMESTAMP].md`
+**Location:** `trinity/reports/`
+
+### Required Sections
+1. **Investigation Summary** - Vulnerability overview, type, and severity (CVSS score)
+2. **Findings** - Complete vulnerability analysis with proof of concept
+3. **Impact Assessment** - Confidentiality, integrity, availability impacts
+4. **Remediation Strategy** - Immediate, short-term, and long-term fixes
+5. **Fix Validation** - Security tests confirming vulnerability is resolved
+6. **Recommendations** - Prevention strategy, security controls to add, monitoring requirements
+
+### Evidence to Provide
+- Proof of concept (PoC) code demonstrating vulnerability
+- CVSS v3.1 scoring breakdown
+- Security scan results (before/after)
+- Code changes with security review
+- Penetration test results validating fix
+- Log analysis showing no exploitation
+
+---
+
+## ✅ AFTER COMPLETION
+
+When investigation is complete:
+1. **Create Investigation Report:**
+   - [ ] Save findings report to `trinity/reports/INV-{{investigationId}}-findings-[TIMESTAMP].md`
+   - [ ] Include all required sections listed above
+   - [ ] Attach all evidence and supporting documentation
+   - [ ] **CRITICAL:** Ensure report does NOT contain sensitive exploit details that could enable attacks
+
+2. **Move Investigation File:**
+   - [ ] Move this investigation file (INV-{{investigationId}}.md) to `trinity/sessions/`
+   - [ ] Keep report in `trinity/reports/` until end of session
+
+3. **Session Cleanup:**
+   - [ ] Run `/trinity-end` to archive both investigation and report
+   - [ ] Investigation will be archived to `trinity/archive/investigations/YYYY-MM-DD/`
+   - [ ] Report will be archived to `trinity/archive/reports/YYYY-MM-DD/`
+
+4. **Clean Slate:**
+   - [ ] Verify `trinity/sessions/` is empty (ready for next session)
+   - [ ] Verify `trinity/reports/` is empty (ready for next session)
+
+5. **Security-Specific Actions:**
+   - [ ] Notify security team of findings
+   - [ ] Update threat model if applicable
+   - [ ] Review disclosure timeline (for public vulnerabilities)
+
+---
+
 ## 📚 Trinity Method Reference Documentation
 
 **Trinity Method Core:**

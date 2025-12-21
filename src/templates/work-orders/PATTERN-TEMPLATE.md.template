@@ -160,6 +160,45 @@ Probable_Matches:
 
 ---
 
+## ✅ AFTER COMPLETION
+
+### ⚠️ CRITICAL: Complete ALL Steps Below - NO EXCEPTIONS
+
+**Step 1: Create Completion Report** ✅
+   - [ ] Pattern deliverable created in `${PROJECT_REPORTS}/`
+   - [ ] Follow format: `PATTERN-[NAME]-[TIMESTAMP].md`
+   - [ ] JUNO audit report generated automatically (if applicable)
+   - [ ] All deliverables include required sections listed above
+
+**Step 2: 🚨 MOVE THIS WORK ORDER FILE 🚨** ✅
+   - [ ] **IMMEDIATELY** move this file from `trinity/work-orders/` to `trinity/sessions/`
+   - [ ] **THIS STEP IS MANDATORY** - Work orders left in trinity/work-orders/ are considered incomplete
+
+   **Execute this exact command:**
+   ```bash
+   mv trinity/work-orders/{{workOrderFilename}} trinity/sessions/
+   ```
+
+**Step 3: Verify File Locations** ✅
+   - [ ] This work order file NOW EXISTS in: `trinity/sessions/{{workOrderFilename}}`
+   - [ ] Completion report exists in: `${PROJECT_REPORTS}/PATTERN-[NAME]-[TIMESTAMP].md`
+   - [ ] This work order NO LONGER EXISTS in: `trinity/work-orders/`
+
+   **If any verification fails, the work order is NOT complete. Fix immediately.**
+
+**Step 4: Session Cleanup (when entire session complete):**
+   - [ ] When session is complete, run `/trinity-end`
+   - [ ] trinity-end will archive ALL files from `trinity/sessions/` and `${PROJECT_REPORTS}/`
+   - [ ] Next session starts with empty sessions/ and reports/ folders
+
+**Archive Destination (via trinity-end):**
+- Work order → `trinity/archive/work-orders/YYYY-MM-DD/`
+- Completion report → `trinity/archive/reports/YYYY-MM-DD/`
+- JUNO audit report → `trinity/archive/reports/YYYY-MM-DD/` (if applicable)
+- Session summary → `trinity/archive/sessions/YYYY-MM-DD/`
+
+---
+
 ## SUCCESS CRITERIA
 
 ### For Pattern EXTRACTION:

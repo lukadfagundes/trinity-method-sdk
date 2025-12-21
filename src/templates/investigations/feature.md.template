@@ -491,6 +491,53 @@ describe('Feature E2E', () => {
 
 ---
 
+## 📋 DELIVERABLE REQUIREMENTS
+
+### Investigation Report Format
+**Filename:** `INV-{{investigationId}}-findings-[TIMESTAMP].md`
+**Location:** `trinity/reports/`
+
+### Required Sections
+1. **Investigation Summary** - Feature analysis overview and business value
+2. **Findings** - Technical feasibility, user requirements, and acceptance criteria
+3. **Design & Architecture** - Proposed architecture, API design, and data models
+4. **Implementation Plan** - Phased implementation approach with estimates
+5. **Success Metrics** - User adoption, technical performance, and business metrics
+6. **Recommendations** - Work orders to create, dependencies to address, risks to mitigate
+
+### Evidence to Provide
+- User research findings or stakeholder feedback
+- Wireframes/mockups (links to Figma, screenshots)
+- API design documentation
+- Complexity estimates (XS/S/M/L/XL per component)
+- Competitive analysis or market research
+- Performance/scalability requirements
+
+---
+
+## ✅ AFTER COMPLETION
+
+When investigation is complete:
+1. **Create Investigation Report:**
+   - [ ] Save findings report to `trinity/reports/INV-{{investigationId}}-findings-[TIMESTAMP].md`
+   - [ ] Include all required sections listed above
+   - [ ] Attach all evidence and supporting documentation
+
+2. **Move Investigation File:**
+   - [ ] Move this investigation file (INV-{{investigationId}}.md) to `trinity/sessions/`
+   - [ ] Keep report in `trinity/reports/` until end of session
+
+3. **Session Cleanup:**
+   - [ ] Run `/trinity-end` to archive both investigation and report
+   - [ ] Investigation will be archived to `trinity/archive/investigations/YYYY-MM-DD/`
+   - [ ] Report will be archived to `trinity/archive/reports/YYYY-MM-DD/`
+
+4. **Clean Slate:**
+   - [ ] Verify `trinity/sessions/` is empty (ready for next session)
+   - [ ] Verify `trinity/reports/` is empty (ready for next session)
+
+---
+
 ## 🔄 Future Enhancements
 
 **Phase 2 Ideas:**

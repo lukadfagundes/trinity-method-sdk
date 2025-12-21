@@ -47,8 +47,16 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 2. Work order saved to: `trinity/work-orders/WO-XXX-{task-name}.md`
 3. Execute: `/trinity-orchestrate @WO-042-jwt-refresh.md`
 4. **AJ MAESTRO** selects agents and orchestrates execution
-5. **JUNO** automatically verifies completion
-6. Audit report saved to: `trinity/reports/AUDIT-WO-042-{date}.md`
+5. **TWO DELIVERABLES CREATED:**
+   a. **Implementation Report** (from work order template):
+      `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
+   b. **JUNO Audit Report** (automatic verification):
+      `trinity/reports/AUDIT-WO-042-{date}.md`
+6. 🚨 **CRITICAL: MOVE completed work order** from `trinity/work-orders/` to `trinity/sessions/`
+   - **MANDATORY STEP** - Execute: `mv trinity/work-orders/WO-XXX-*.md trinity/sessions/`
+   - **Verify work order NO LONGER exists in trinity/work-orders/**
+7. **Reports remain** in `trinity/reports/` until session end
+8. **Run `/trinity-end`** when session complete to archive all session files
 
 **Example:**
 ```bash
@@ -76,8 +84,14 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 3. Execute: `/trinity-orchestrate @INV-015-performance-analysis.md`
 4. **AJ MAESTRO** coordinates READ-ONLY investigation
 5. Findings documented (no code changes)
-6. **JUNO** audits investigation completeness
-7. Report saved to: `trinity/reports/INV-015-findings-{date}.md`
+6. **Investigation Report Created:**
+   `trinity/reports/INV-015-findings-{date}.md`
+   (See investigation template for required sections)
+7. 🚨 **CRITICAL: MOVE completed investigation** from `trinity/investigations/` to `trinity/sessions/`
+   - **MANDATORY STEP** - Execute: `mv trinity/investigations/INV-XXX-*.md trinity/sessions/`
+   - **Verify investigation NO LONGER exists in trinity/investigations/**
+8. **Report remains** in `trinity/reports/` until session end
+9. **Run `/trinity-end`** when session complete to archive all session files
 
 ⚠️ **CRITICAL:** Investigations are READ-ONLY operations. No code changes during investigation phase. Implementation happens separately after investigation is complete.
 
@@ -313,6 +327,99 @@ Please address WO-043 before marking WO-042 complete.
       ├─ Update knowledge base
       └─ Create session summary
 ```
+
+---
+
+## ⚠️ CRITICAL: After Task Completion Workflow - MANDATORY STEPS
+
+### 🚨 When You've Completed a Work Order or Investigation - DO NOT SKIP 🚨
+
+**Step 1: Verify Deliverables Created** ✅
+
+**Work Orders:**
+- [ ] Implementation report in `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
+- [ ] JUNO audit report in `trinity/reports/AUDIT-WO-XXX-{date}.md` (if applicable)
+
+**Investigations:**
+- [ ] Findings report in `trinity/reports/INV-XXX-findings-{date}.md`
+- [ ] All required sections completed (summary, findings, root cause, recommendations, evidence)
+
+**Step 2: 🚨 MOVE THE COMPLETED FILE TO SESSIONS/ 🚨** ✅
+
+**THIS STEP IS MANDATORY - Work orders left in trinity/work-orders/ are considered INCOMPLETE.**
+
+```bash
+# Work Order Example - EXECUTE THIS IMMEDIATELY AFTER CREATING DELIVERABLE
+mv trinity/work-orders/WO-042-jwt-refresh.md trinity/sessions/
+
+# Investigation Example - EXECUTE THIS IMMEDIATELY AFTER CREATING FINDINGS REPORT
+mv trinity/investigations/INV-015-performance-analysis.md trinity/sessions/
+```
+
+**Step 3: Verify File Locations** ✅
+
+**CRITICAL VERIFICATION - If this fails, the task is NOT complete:**
+
+**For Work Orders:**
+- [ ] Work order file NOW EXISTS in: `trinity/sessions/WO-XXX-*.md`
+- [ ] Deliverable report exists in: `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-*.md`
+- [ ] Work order file NO LONGER EXISTS in: `trinity/work-orders/`
+
+**For Investigations:**
+- [ ] Investigation file NOW EXISTS in: `trinity/sessions/INV-XXX-*.md`
+- [ ] Findings report exists in: `trinity/reports/INV-XXX-findings-*.md`
+- [ ] Investigation file NO LONGER EXISTS in: `trinity/investigations/`
+
+**If any verification fails, STOP and fix immediately before proceeding.**
+
+**Step 4: Continue Working or End Session**
+
+**If continuing work in same session:**
+- Reports remain in `trinity/reports/` (available for reference)
+- Completed WOs/INVs in `trinity/sessions/` (out of active work queue)
+- Proceed with next task
+
+**If session is complete:**
+```bash
+/trinity-end
+```
+
+This will:
+- Archive ALL files from `trinity/sessions/` → `trinity/archive/sessions/YYYY-MM-DD/`
+- Archive ALL files from `trinity/reports/` → `trinity/archive/reports/YYYY-MM-DD/`
+- Archive completed work orders → `trinity/archive/work-orders/YYYY-MM-DD/`
+- Archive completed investigations → `trinity/archive/investigations/YYYY-MM-DD/`
+- Create session summary in `trinity/archive/sessions/YYYY-MM-DD/`
+- **Result:** Clean `trinity/sessions/` and `trinity/reports/` folders for next session
+
+---
+
+## Session File Organization
+
+**Active Session:**
+```
+trinity/
+├── work-orders/          # Active work orders (not yet completed)
+├── investigations/       # Active investigations (not yet completed)
+├── sessions/            # Completed WOs/INVs (awaiting archival)
+├── reports/             # All session reports (awaiting archival)
+```
+
+**After /trinity-end:**
+```
+trinity/
+├── work-orders/          # EMPTY (all active work complete or in-progress only)
+├── investigations/       # EMPTY (all active investigations complete or in-progress only)
+├── sessions/            # EMPTY (all archived)
+├── reports/             # EMPTY (all archived)
+├── archive/
+│   ├── work-orders/YYYY-MM-DD/    # Completed work orders
+│   ├── investigations/YYYY-MM-DD/ # Completed investigations
+│   ├── reports/YYYY-MM-DD/        # All session reports
+│   └── sessions/YYYY-MM-DD/       # Session summaries
+```
+
+**Clean Slate:** Every new session starts with empty sessions/ and reports/ folders.
 
 ---
 

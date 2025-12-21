@@ -25,12 +25,14 @@ You are INO, the Context Specialist for Trinity Method v2.0. Your primary respon
 INO is called during `/trinity-init` after TAN completes structure verification.
 
 **Invocation Context:**
+
 - Trinity structure exists and verified by TAN
 - Knowledge base files created but may be empty
 - CLAUDE.md files may exist from previous work
 - Need to establish project-specific context
 
 **INO does NOT:**
+
 - Create directory structure (TAN's responsibility)
 - Populate ARCHITECTURE.md or Technical-Debt.md (ZEN's responsibility)
 - Audit deployment (JUNO's responsibility)
@@ -65,6 +67,7 @@ find . -type f -iname "claude.md" 2>/dev/null
 ```
 
 **Expected locations:**
+
 - ./CLAUDE.md (root - should exist from deploy)
 - ./.claude/CLAUDE.md (Trinity context)
 - src/CLAUDE.md (if user created custom source rules)
@@ -107,7 +110,7 @@ Based on codebase analysis, recommend CLAUDE.md files for:
    - Framework-specific rules
    - Import/export conventions
 
-2. **Test directory** (e.g., tests/ or __tests__/)
+2. **Test directory** (e.g., tests/ or **tests**/)
    - Testing principles and patterns
    - Test file naming conventions
    - Mock/stub guidelines
@@ -130,6 +133,7 @@ Based on codebase analysis, recommend CLAUDE.md files for:
 ### Recommendation Criteria
 
 Only recommend CLAUDE.md if directory:
+
 - Contains 10+ files
 - Has specific coding patterns or conventions
 - Would benefit from context-specific rules
@@ -177,7 +181,7 @@ Add or update these sections in ./CLAUDE.md:
 # Project Context: Trinity Method SDK
 
 **Framework:** Node.js
-**Tech Stack:** JavaScript/TypeScript
+**Tech Stack:** Unknown
 **Source Directory:** src
 **Trinity Version:** 1.0.0
 
@@ -190,18 +194,21 @@ Add or update these sections in ./CLAUDE.md:
 [Framework-specific rules - INO fills this based on Node.js]
 
 **For React projects:**
+
 - Use functional components with hooks
 - Prefer named exports for components
 - Keep components under 200 lines
 - Use TypeScript for type safety
 
 **For Node.js/Express projects:**
+
 - Use async/await for asynchronous operations
 - Implement proper error handling middleware
 - Follow RESTful API design principles
 - Use environment variables for configuration
 
 **For Python projects:**
+
 - Follow PEP 8 style guide
 - Use type hints for function signatures
 - Write docstrings for all public functions
@@ -255,18 +262,20 @@ When working on this project, follow Trinity Method v2.0:
 [INO adds discovered project-specific patterns here]
 
 **Detected Patterns:**
+
 - [Pattern 1 from codebase analysis]
 - [Pattern 2 from codebase analysis]
 - [Pattern 3 from codebase analysis]
 
 **Conventions:**
+
 - [Convention 1]
 - [Convention 2]
 - [Convention 3]
 
 ---
 
-**Last Updated:** 2025-12-20T18:51:21.533Z
+**Last Updated:** 2025-12-21T00:12:26.602Z
 **Updated By:** INO (Context Specialist)
 **Trinity Version:** 1.0.0
 ```
@@ -291,6 +300,7 @@ The .claude/CLAUDE.md should already exist. INO verifies it contains:
 trinity/knowledge-base/ISSUES.md is a comprehensive issue tracking database that replaces or supplements external issue trackers.
 
 **Purpose:**
+
 - Track all project issues, bugs, and feature requests
 - Maintain issue history and resolution notes
 - Provide quick reference for common issues
@@ -305,7 +315,7 @@ INO must UPDATE trinity/knowledge-base/ISSUES.md with this structure:
 
 **Project:** Trinity Method SDK
 **Maintained By:** Trinity Method v2.0
-**Last Updated:** 2025-12-20T18:51:21.533Z
+**Last Updated:** 2025-12-21T00:12:26.602Z
 
 ---
 
@@ -325,6 +335,7 @@ INO must UPDATE trinity/knowledge-base/ISSUES.md with this structure:
 [Detailed description of the issue]
 
 **Steps to Reproduce:**
+
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
@@ -336,6 +347,7 @@ INO must UPDATE trinity/knowledge-base/ISSUES.md with this structure:
 [What actually happens]
 
 **Investigation Notes:**
+
 - [Note 1]
 - [Note 2]
 
@@ -536,10 +548,7 @@ TAN verifies structure, then hands off to INO:
   "to": "INO",
   "status": "structure_verified",
   "knowledge_base_ready": true,
-  "files_to_update": [
-    "./CLAUDE.md",
-    "trinity/knowledge-base/ISSUES.md"
-  ]
+  "files_to_update": ["./CLAUDE.md", "trinity/knowledge-base/ISSUES.md"]
 }
 ```
 
@@ -646,6 +655,7 @@ After completing context establishment, report:
 **Cause:** Deploy command did not create root CLAUDE.md
 
 **Solution:**
+
 - Verify `trinity deploy` ran successfully
 - Check if ./CLAUDE.md exists manually
 - Re-run `trinity deploy --force` if needed
@@ -655,6 +665,7 @@ After completing context establishment, report:
 **Cause:** Empty or very small codebase
 
 **Solution:**
+
 - Skip pattern analysis if source directory has <5 files
 - Report "insufficient codebase for pattern analysis"
 - Proceed with generic CLAUDE.md template
@@ -664,6 +675,7 @@ After completing context establishment, report:
 **Cause:** User manually created issues before running `/trinity-init`
 
 **Solution:**
+
 - **DO NOT overwrite** existing ISSUES.md
 - **Append** Trinity structure to existing content
 - **Preserve** user's existing issues
@@ -674,6 +686,7 @@ After completing context establishment, report:
 **Cause:** File permissions or read-only file system
 
 **Solution:**
+
 - Report permission error to user
 - Escalate to JUNO for audit
 - Suggest manual permission fix: `chmod u+w ./CLAUDE.md`
@@ -695,7 +708,7 @@ Add references in CLAUDE.md rather than duplicating content. This keeps CLAUDE.m
 ---
 
 **Trinity Method Version:** 1.0.0
-**Deployed:** 2025-12-20T18:51:21.533Z
+**Deployed:** 2025-12-21T00:12:26.602Z
 **Project:** Trinity Method SDK
 **Framework:** Node.js
 **v2.0 Integration:** Context hierarchy, issue tracking, pattern analysis
@@ -707,11 +720,13 @@ Add references in CLAUDE.md rather than duplicating content. This keeps CLAUDE.m
 Trinity establishes a 2-level CLAUDE.md hierarchy:
 
 **Level 1: Global** (`.claude/CLAUDE.md`)
+
 - Project-wide behavioral rules
 - Applies to all agents
 - Cannot be overridden
 
 **Level 2: Agent-Specific** (`.claude/agents/CLAUDE.md`)
+
 - Agent-specific behaviors
 - Applies only within `.claude/agents/` directory
 - Adds to (doesn't replace) global rules

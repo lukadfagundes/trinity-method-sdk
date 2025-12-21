@@ -15,6 +15,7 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 `/trinity-orchestrate` is the **main execution command** in Trinity Method development. After you start a session with `/trinity-start` or `/trinity-continue`, you'll use this command repeatedly to execute work orders, perform investigations, and complete general tasks.
 
 **Development Session Flow:**
+
 ```
 /trinity-start or /trinity-continue
     ↓
@@ -37,20 +38,29 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 ```
 
 **When to use:**
+
 - Complex tasks requiring formal tracking
 - Multi-step implementations
 - Tasks spanning multiple context windows
 - Work that needs quality verification
 
 **Workflow:**
+
 1. Create work order: `/trinity-workorder`
 2. Work order saved to: `trinity/work-orders/WO-XXX-{task-name}.md`
 3. Execute: `/trinity-orchestrate @WO-042-jwt-refresh.md`
 4. **AJ MAESTRO** selects agents and orchestrates execution
-5. **JUNO** automatically verifies completion
-6. Audit report saved to: `trinity/reports/AUDIT-WO-042-{date}.md`
+5. **TWO DELIVERABLES CREATED:**
+   a. **Implementation Report** (from work order template):
+   `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
+   b. **JUNO Audit Report** (automatic verification):
+   `trinity/reports/AUDIT-WO-042-{date}.md`
+6. **Move completed work order** from `trinity/work-orders/` to `trinity/sessions/`
+7. **Reports remain** in `trinity/reports/` until session end
+8. **Run `/trinity-end`** when session complete to archive all session files
 
 **Example:**
+
 ```bash
 /trinity-orchestrate @WO-042-jwt-refresh-implementation.md
 ```
@@ -64,6 +74,7 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 ```
 
 **When to use:**
+
 - Bug analysis and root cause investigation
 - Performance investigation
 - Security audits
@@ -71,17 +82,23 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 - Architecture review
 
 **Workflow:**
+
 1. Create investigation: `/trinity-create-investigation`
 2. Investigation saved to: `trinity/investigations/INV-XXX-{title}.md`
 3. Execute: `/trinity-orchestrate @INV-015-performance-analysis.md`
 4. **AJ MAESTRO** coordinates READ-ONLY investigation
 5. Findings documented (no code changes)
-6. **JUNO** audits investigation completeness
-7. Report saved to: `trinity/reports/INV-015-findings-{date}.md`
+6. **Investigation Report Created:**
+   `trinity/reports/INV-015-findings-{date}.md`
+   (See investigation template for required sections)
+7. **Move completed investigation** from `trinity/investigations/` to `trinity/sessions/`
+8. **Report remains** in `trinity/reports/` until session end
+9. **Run `/trinity-end`** when session complete to archive all session files
 
 ⚠️ **CRITICAL:** Investigations are READ-ONLY operations. No code changes during investigation phase. Implementation happens separately after investigation is complete.
 
 **Example:**
+
 ```bash
 /trinity-orchestrate @INV-015-database-performance-analysis.md
 ```
@@ -95,6 +112,7 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 ```
 
 **When to use:**
+
 - Quick fixes without formal work order
 - Simple bug fixes
 - Documentation updates
@@ -102,6 +120,7 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 - Exploratory work
 
 **How it works:**
+
 - AJ MAESTRO assesses task complexity
 - Selects appropriate agents
 - Executes with quality gates
@@ -109,11 +128,13 @@ description: Primary command for executing tasks with AJ MAESTRO orchestration
 - No work order file needed
 
 **Example:**
+
 ```bash
 /trinity-orchestrate "Fix date validation bug in UserForm component"
 ```
 
 **When to create work order instead:**
+
 - Task affects 3+ files
 - Implementation will take >2 hours
 - Need formal tracking across context windows
@@ -128,11 +149,13 @@ When you invoke `/trinity-orchestrate`, here's what happens:
 ### Step 1: Task Analysis
 
 **AJ MAESTRO reads and analyzes:**
+
 - Work order file (if @WO-XXX provided)
 - Investigation file (if @INV-XXX provided)
 - Task description (if general task)
 
 **Determines:**
+
 - Task complexity and scope
 - Required expertise areas
 - Which agents are needed
@@ -145,26 +168,31 @@ When you invoke `/trinity-orchestrate`, here's what happens:
 **AJ MAESTRO selects the best agent(s) for each phase:**
 
 **Planning Agents:**
+
 - **MON** - Requirements analysis, acceptance criteria, scale determination
 - **ROR** - Technical design, function signatures, ADR documentation
 - **TRA** - Strategic planning, task sequencing, timeline estimation
 - **EUS** - Atomic task decomposition (1 task = 1 commit)
 
 **Execution Agents:**
+
 - **KIL** - TDD implementation (RED-GREEN-REFACTOR cycle)
 - **BAS** - 6-phase quality gate validation
 - **DRA** - Code review and Design Doc compliance verification
 
 **Support Agents:**
+
 - **APO** - API documentation and inline code comments
 - **BON** - Dependency management and security scanning
 - **CAP** - Configuration files and environment management
 - **URO** - Code refactoring and technical debt reduction
 
 **Audit Agent:**
+
 - **JUNO** - Comprehensive quality audit and compliance verification
 
 **Selection Criteria:**
+
 - Small tasks (1-2 files): Direct to KIL + BAS
 - Medium tasks (3-5 files): MON → ROR → TRA → KIL + BAS → DRA
 - Large tasks (6+ files): Full agent workflow including EUS and JUNO
@@ -202,6 +230,7 @@ When you invoke `/trinity-orchestrate`, here's what happens:
 **After task completion, JUNO automatically verifies:**
 
 **Quality Criteria Checked:**
+
 1. ✅ **BAS Quality Gates** - All 6 phases passed
    - Linting, structure, build, tests, coverage (≥80%), best practices
 
@@ -230,6 +259,7 @@ When you invoke `/trinity-orchestrate`, here's what happens:
    - Complexity within limits
 
 **JUNO's Audit Report:**
+
 - Saved to: `trinity/reports/AUDIT-{task-id}-{date}.md`
 - Pass/Fail status for each criterion
 - Overall assessment (APPROVED / REQUIRES FIXES)
@@ -237,6 +267,7 @@ When you invoke `/trinity-orchestrate`, here's what happens:
 - Follow-up work orders (if issues found)
 
 **What You See:**
+
 ```
 JUNO: Audit complete ✅
 - BAS gates: PASS ✅
@@ -249,6 +280,7 @@ Task WO-042-jwt-refresh-implementation is complete and verified.
 ```
 
 **If Issues Found:**
+
 ```
 JUNO: Audit complete ⚠️
 - BAS gates: PASS ✅
@@ -267,6 +299,7 @@ Please address WO-043 before marking WO-042 complete.
 ### Step 5: Report to User
 
 **AJ MAESTRO provides completion summary:**
+
 - Work completed overview
 - JUNO audit results (PASS/FAIL)
 - Files changed and commits made
@@ -280,6 +313,7 @@ Please address WO-043 before marking WO-042 complete.
 ### Development Session Lifecycle
 
 **A development session:**
+
 - Starts when user begins working (via `/trinity-start` or `/trinity-continue`)
 - Continues with repeated `/trinity-orchestrate` invocations
 - Ends when user finishes working (via `/trinity-end`)
@@ -316,9 +350,92 @@ Please address WO-043 before marking WO-042 complete.
 
 ---
 
+## After Task Completion Workflow
+
+### When You've Completed a Work Order or Investigation
+
+**Step 1: Verify Deliverables Created**
+
+**Work Orders:**
+
+- [ ] Implementation report in `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
+- [ ] JUNO audit report in `trinity/reports/AUDIT-WO-XXX-{date}.md` (if applicable)
+
+**Investigations:**
+
+- [ ] Findings report in `trinity/reports/INV-XXX-findings-{date}.md`
+- [ ] All required sections completed (summary, findings, root cause, recommendations, evidence)
+
+**Step 2: Move Completed File to Sessions**
+
+```bash
+# Work Order Example
+mv trinity/work-orders/WO-042-jwt-refresh.md trinity/sessions/
+
+# Investigation Example
+mv trinity/investigations/INV-015-performance-analysis.md trinity/sessions/
+```
+
+**Step 3: Continue Working or End Session**
+
+**If continuing work in same session:**
+
+- Reports remain in `trinity/reports/` (available for reference)
+- Completed WOs/INVs in `trinity/sessions/` (out of active work queue)
+- Proceed with next task
+
+**If session is complete:**
+
+```bash
+/trinity-end
+```
+
+This will:
+
+- Archive ALL files from `trinity/sessions/` → `trinity/archive/sessions/YYYY-MM-DD/`
+- Archive ALL files from `trinity/reports/` → `trinity/archive/reports/YYYY-MM-DD/`
+- Archive completed work orders → `trinity/archive/work-orders/YYYY-MM-DD/`
+- Archive completed investigations → `trinity/archive/investigations/YYYY-MM-DD/`
+- Create session summary in `trinity/archive/sessions/YYYY-MM-DD/`
+- **Result:** Clean `trinity/sessions/` and `trinity/reports/` folders for next session
+
+---
+
+## Session File Organization
+
+**Active Session:**
+
+```
+trinity/
+├── work-orders/          # Active work orders (not yet completed)
+├── investigations/       # Active investigations (not yet completed)
+├── sessions/            # Completed WOs/INVs (awaiting archival)
+├── reports/             # All session reports (awaiting archival)
+```
+
+**After /trinity-end:**
+
+```
+trinity/
+├── work-orders/          # EMPTY (all active work complete or in-progress only)
+├── investigations/       # EMPTY (all active investigations complete or in-progress only)
+├── sessions/            # EMPTY (all archived)
+├── reports/             # EMPTY (all archived)
+├── archive/
+│   ├── work-orders/YYYY-MM-DD/    # Completed work orders
+│   ├── investigations/YYYY-MM-DD/ # Completed investigations
+│   ├── reports/YYYY-MM-DD/        # All session reports
+│   └── sessions/YYYY-MM-DD/       # Session summaries
+```
+
+**Clean Slate:** Every new session starts with empty sessions/ and reports/ folders.
+
+---
+
 ### Context Window Management
 
 **Key Understanding:**
+
 - **Session** = You working at the computer
 - **Context Window** = Claude Code's current memory limit
 - **Sessions can span multiple context windows**
@@ -347,6 +464,7 @@ Please address WO-043 before marking WO-042 complete.
    - Hands off to AJ MAESTRO to continue
 
 **Example:**
+
 ```
 [Context window limit approaching during WO-042]
 
@@ -378,7 +496,7 @@ AJ MAESTRO: Resuming WO-042... Reading current state...
 
 ### Example 1: Work Order Execution
 
-```
+````
 User: /trinity-orchestrate @WO-042-jwt-refresh-implementation.md
 
 AJ MAESTRO: Reading work order WO-042...
@@ -435,9 +553,10 @@ interface RefreshTokenOptions {
 
 async refreshToken(userId: string, options: RefreshTokenOptions): Promise<TokenPair>
 async validateAndRefreshIfNeeded(token: string): Promise<TokenPair | null>
-```
+````
 
 ✅ Architecture Decision Record (ADR):
+
 - Decision: Use HTTP-only cookies for refresh tokens
 - Rationale: Prevents XSS attacks, more secure than localStorage
 - Trade-offs: Slightly more complex server-side management
@@ -451,6 +570,7 @@ Design complete. Design Doc compliance criteria: ≥70%
 TRA: Creating implementation plan...
 
 ✅ Task Breakdown:
+
 1. Create token refresh service
 2. Implement refresh middleware
 3. Add token validation logic
@@ -474,6 +594,7 @@ KIL: Beginning TDD implementation...
 **Task 1/8: Create token refresh service**
 
 RED: Writing failing test...
+
 ```typescript
 describe('TokenRefreshService', () => {
   it('should refresh token before expiry', async () => {
@@ -481,9 +602,11 @@ describe('TokenRefreshService', () => {
   });
 });
 ```
+
 ❌ Test fails (expected - no implementation yet)
 
 GREEN: Implementing minimal code...
+
 ```typescript
 class TokenRefreshService {
   async refreshToken(userId: string, options: RefreshTokenOptions) {
@@ -491,12 +614,14 @@ class TokenRefreshService {
   }
 }
 ```
+
 ✅ Test passes
 
 REFACTOR: Cleaning up...
 ✅ Code optimized
 
 **BAS Quality Gates:**
+
 1. Linting: PASS ✅ (auto-fixed 2 formatting issues)
 2. Structure: PASS ✅
 3. Build: PASS ✅
@@ -522,12 +647,14 @@ Implementation complete: 7 commits, all tests passing
 DRA: Reviewing implementation...
 
 ✅ Design Doc Compliance Check:
+
 - Function signatures match design: ✅
 - Error handling strategy followed: ✅
 - ADR decisions implemented: ✅
 - Compliance score: 85% ✅ (exceeds 70% threshold)
 
 ✅ Code Quality:
+
 - No code duplication: ✅
 - Function complexity within limits: ✅
 - Test coverage: 92% ✅
@@ -542,6 +669,7 @@ Code review: APPROVED ✅
 JUNO: Performing comprehensive audit...
 
 **Quality Verification:**
+
 1. BAS Quality Gates: PASS ✅
    - All 6 phases passed on every commit
 
@@ -585,9 +713,11 @@ Audit report saved to:
 ✅ JUNO Audit: APPROVED
 
 **Next Steps:**
+
 - Deploy to staging environment for testing
 - Monitor for edge cases in production
 - OR continue with next task: /trinity-orchestrate @WO-043.md
+
 ```
 
 ---
@@ -595,11 +725,13 @@ Audit report saved to:
 ### Example 2: Investigation Execution
 
 ```
+
 User: /trinity-orchestrate @INV-015-database-performance-analysis.md
 
 AJ MAESTRO: Reading investigation INV-015...
 
 **Analysis:**
+
 - Type: Performance Investigation (READ-ONLY)
 - Scope: Database query performance degradation
 - Evidence: API response time increased 300%
@@ -620,6 +752,7 @@ Collecting performance metrics...
 ✅ Resource utilization metrics gathered
 
 **Key Findings:**
+
 - Average query time: 2.3s (was 0.5s)
 - Slowest query: getUserOrders (5.2s average)
 - Execution count: 500+ queries per page load
@@ -647,6 +780,7 @@ SELECT * FROM users WHERE id = ?;  -- For each order
 ❌ No compound index on `orders(user_id, created_at)`
 
 **Performance Impact:**
+
 - Full table scans on 100k+ row tables
 - 500+ individual queries instead of 1 JOIN
 - No query result caching
@@ -681,7 +815,7 @@ for (const order of orders) {
 // Fixed (1 query with JOIN)
 const orders = await Order.findAll({
   where: { userId },
-  include: [{ model: User }] // Eager loading
+  include: [{ model: User }], // Eager loading
 });
 ```
 
@@ -700,6 +834,7 @@ await redis.set(cacheKey, JSON.stringify(orders), 'EX', 300); // 5 min TTL
 ```
 
 **Total Expected Improvement:**
+
 - Query time: 2.3s → 0.4s (83% improvement)
 - Query count: 500+ → 1 (99.8% reduction)
 - API response time: Within target (<500ms)
@@ -711,6 +846,7 @@ await redis.set(cacheKey, JSON.stringify(orders), 'EX', 300); // 5 min TTL
 JUNO: Auditing investigation completeness...
 
 **Investigation Quality Check:**
+
 1. Problem Statement: CLEAR ✅
 2. Data Collection: COMPREHENSIVE ✅
 3. Root Cause Analysis: EVIDENCE-BASED ✅
@@ -733,14 +869,17 @@ JUNO: Auditing investigation completeness...
 `trinity/reports/INV-015-findings-2025-12-19.md`
 
 **Follow-Up Work Orders Created:**
+
 - WO-043-database-index-optimization (HIGH priority, 2 hours)
 - WO-044-fix-n-plus-one-queries (HIGH priority, 3 hours)
 - WO-045-implement-query-caching (MEDIUM priority, 4 hours)
 
 **Next Steps:**
+
 1. Review findings report
 2. Approve work orders for implementation
 3. Execute with: /trinity-orchestrate @WO-043.md
+
 ```
 
 ---
@@ -748,11 +887,13 @@ JUNO: Auditing investigation completeness...
 ### Example 3: Quick Task (No Work Order)
 
 ```
+
 User: /trinity-orchestrate "Fix date validation bug in UserForm component"
 
 AJ MAESTRO: Analyzing task...
 
 **Assessment:**
+
 - Type: Bug fix
 - Complexity: SMALL (1 file)
 - Estimated time: <1 hour
@@ -772,6 +913,7 @@ Reviewing UserForm component...
 ❌ Missing test coverage for date validation
 
 **Fix Required:**
+
 - Add proper date format validation
 - Handle edge cases (leap years, invalid dates)
 - Write comprehensive tests
@@ -781,6 +923,7 @@ Reviewing UserForm component...
 **Phase 2: Implementation (TDD)**
 
 **RED: Write failing tests**
+
 ```typescript
 describe('UserForm date validation', () => {
   it('should reject invalid date formats', () => {
@@ -788,23 +931,27 @@ describe('UserForm date validation', () => {
   });
 
   it('should handle leap years correctly', () => {
-    expect(validateDate('02/29/2024')).toBe(true);  // Leap year
+    expect(validateDate('02/29/2024')).toBe(true); // Leap year
     expect(validateDate('02/29/2023')).toBe(false); // Not leap year
   });
 });
 ```
+
 ❌ Tests fail (expected - no validation yet)
 
 **GREEN: Implement fix**
+
 ```typescript
 function validateDate(dateStr: string): boolean {
   const date = new Date(dateStr);
   return date instanceof Date && !isNaN(date.getTime());
 }
 ```
+
 ✅ Tests pass
 
 **REFACTOR: Improve validation**
+
 ```typescript
 function validateDate(dateStr: string): boolean {
   const date = new Date(dateStr);
@@ -817,6 +964,7 @@ function validateDate(dateStr: string): boolean {
   return roundTrip === dateStr;
 }
 ```
+
 ✅ Tests still pass, validation more robust
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -850,6 +998,7 @@ function validateDate(dateStr: string): boolean {
 JUNO: Verifying quick fix...
 
 **Quality Check:**
+
 1. Bug fixed: CONFIRMED ✅
 2. Tests comprehensive: YES ✅
 3. No regressions: VERIFIED ✅
@@ -870,11 +1019,13 @@ JUNO: Verifying quick fix...
 **Commit:** "fix(UserForm): validate date format edge cases"
 
 **Files Changed:**
+
 - src/components/UserForm.tsx (validation logic)
 - src/components/UserForm.test.tsx (5 new tests)
 
 Task complete. Ready for next task.
-```
+
+````
 
 ---
 
@@ -949,6 +1100,6 @@ Task complete. Ready for next task.
 /trinity-orchestrate "Fix validation bug"        # Quick fix
 # ... repeat as needed throughout session ...
 /trinity-end                                      # End session
-```
+````
 
 **Next:** Describe your task, provide a work order/investigation file, or continue working on your current task. AJ MAESTRO will orchestrate execution with automatic JUNO verification.

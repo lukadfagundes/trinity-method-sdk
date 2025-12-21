@@ -28,28 +28,47 @@ Examples: WO-042-jwt-refresh-implementation.md
 
 ---
 
-## Interactive Creation
+## Direct Work Order Creation
 
-Run `/trinity-workorder` and answer:
-1. **Work Order Type** - Select template:
-   - Investigation Work Order (from `trinity/templates/work-orders/INVESTIGATION-TEMPLATE.md`)
-   - Implementation Work Order (from `trinity/templates/work-orders/IMPLEMENTATION-TEMPLATE.md`)
-   - Analysis Work Order (from `trinity/templates/work-orders/ANALYSIS-TEMPLATE.md`)
-   - Audit Work Order (from `trinity/templates/work-orders/AUDIT-TEMPLATE.md`)
-   - Pattern Work Order (from `trinity/templates/work-orders/PATTERN-TEMPLATE.md`)
-   - Verification Work Order (from `trinity/templates/work-orders/VERIFICATION-TEMPLATE.md`)
+When `/trinity-workorder` is invoked, the agent will:
 
-2. **Task Description** - Brief description of work needed
-3. **Objectives** - What needs to be accomplished
-4. **Deliverables** - Expected outputs
-5. **Estimated Time** - Time estimate
-6. **Priority** - Low/Medium/High/Critical (optional)
+1. **Analyze user's request** to determine:
+   - Work order type (Investigation/Implementation/Analysis/Audit/Pattern/Verification)
+   - Task description and objectives
+   - Deliverables and acceptance criteria
+   - Priority and estimated effort
 
-**Workflow**:
-1. Select appropriate template from `trinity/templates/work-orders/`
-2. Fill out template with task details
-3. Save completed work order to `trinity/work-orders/WO-XXX-{task-name}.md`
-4. Execute with `/trinity-orchestrate @WO-XXX-{task-name}.md`
+2. **Select appropriate template** from `trinity/templates/work-orders/`:
+   - **Investigation:** Research and analysis tasks
+   - **Implementation:** Feature development tasks
+   - **Analysis:** Code analysis and review tasks
+   - **Audit:** Quality and compliance audits
+   - **Pattern:** Pattern detection and analysis
+   - **Verification:** Verification and validation tasks
+
+3. **Create work order file** in `trinity/work-orders/WO-XXX-{task-name}.md`
+
+4. **Populate template** with:
+   - Clear mission objective
+   - Implementation scope and affected files
+   - Deliverable requirements
+   - Success criteria
+   - After completion instructions
+
+5. **Report completion** to user with work order file path
+
+**No Interactive Wizard:** The agent proceeds directly without asking questions. All necessary information is inferred from the user's request or filled with reasonable defaults.
+
+**User Override:** If specific details are needed, the agent may ask clarifying questions, but default is to proceed autonomously.
+
+**Example Usage:**
+```bash
+# Agent analyzes request and creates WO-043-implement-dark-mode.md
+/trinity-workorder "Implement dark mode toggle in application settings"
+
+# Then execute:
+/trinity-orchestrate @WO-043-implement-dark-mode.md
+```
 
 ---
 

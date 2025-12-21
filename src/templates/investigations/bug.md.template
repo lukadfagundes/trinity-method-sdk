@@ -395,6 +395,52 @@ describe('Regression: {{title}}', () => {
 
 ---
 
+## 📋 DELIVERABLE REQUIREMENTS
+
+### Investigation Report Format
+**Filename:** `INV-{{investigationId}}-findings-[TIMESTAMP].md`
+**Location:** `trinity/reports/`
+
+### Required Sections
+1. **Investigation Summary** - Brief overview of what was investigated
+2. **Findings** - Detailed findings with evidence (logs, screenshots, metrics)
+3. **Root Cause Analysis** - Complete five-whys analysis and root cause explanation
+4. **Fix Validation** - Proof that fix works (test results, metrics)
+5. **Prevention Strategy** - How to prevent similar bugs in future
+6. **Recommendations** - Next steps or related work orders needed
+
+### Evidence to Provide
+- Stack traces and error logs
+- Before/after metrics comparison
+- Test coverage improvements
+- Code change summary (files modified, lines changed)
+- Screenshots/videos demonstrating fix
+
+---
+
+## ✅ AFTER COMPLETION
+
+When investigation is complete:
+1. **Create Investigation Report:**
+   - [ ] Save findings report to `trinity/reports/INV-{{investigationId}}-findings-[TIMESTAMP].md`
+   - [ ] Include all required sections listed above
+   - [ ] Attach all evidence and supporting documentation
+
+2. **Move Investigation File:**
+   - [ ] Move this investigation file (INV-{{investigationId}}.md) to `trinity/sessions/`
+   - [ ] Keep report in `trinity/reports/` until end of session
+
+3. **Session Cleanup:**
+   - [ ] Run `/trinity-end` to archive both investigation and report
+   - [ ] Investigation will be archived to `trinity/archive/investigations/YYYY-MM-DD/`
+   - [ ] Report will be archived to `trinity/archive/reports/YYYY-MM-DD/`
+
+4. **Clean Slate:**
+   - [ ] Verify `trinity/sessions/` is empty (ready for next session)
+   - [ ] Verify `trinity/reports/` is empty (ready for next session)
+
+---
+
 ## 📚 Reference Documentation
 
 **Trinity Method Core:**

@@ -7,13 +7,68 @@ End current Trinity Method session and prepare for commit.
 **Context:** User is finished with current task and ready to commit, push, or move to next work.
 
 **Process:**
+
 1. **ALY (CTO)** archives session work:
-   - Move completed work orders from trinity/work-orders/ to trinity/archive/work-orders/YYYY-MM-DD/
-   - Move completed investigations from trinity/investigations/ to trinity/archive/investigations/YYYY-MM-DD/
-   - Move reports from trinity/reports/ to trinity/archive/reports/YYYY-MM-DD/
-   - Move session files from trinity/sessions/ to trinity/archive/sessions/YYYY-MM-DD/
-   - Keep active/in-progress work orders and investigations (don't archive incomplete work)
-   - Create session summary document in archive
+
+   **STRICT ARCHIVING PROTOCOL:**
+
+   a. **Archive Completed Work Orders:**
+   - Read all files from `trinity/sessions/` matching `WO-*.md`
+   - Move each to `trinity/archive/work-orders/YYYY-MM-DD/`
+   - These were moved to sessions/ after completion per work order template
+
+   b. **Archive Completed Investigations:**
+   - Read all files from `trinity/sessions/` matching `INV-*.md`
+   - Move each to `trinity/archive/investigations/YYYY-MM-DD/`
+   - These were moved to sessions/ after completion per investigation template
+
+   c. **Archive ALL Reports:**
+   - Move ALL files from `trinity/reports/` to `trinity/archive/reports/YYYY-MM-DD/`
+   - This includes:
+     - Implementation completion reports
+     - Investigation findings reports
+     - JUNO audit reports
+     - Any other session reports
+   - **NO EXCEPTIONS:** Every file in reports/ must be archived
+
+   d. **Archive Session Files:**
+   - Move ALL remaining files from `trinity/sessions/` to `trinity/archive/sessions/YYYY-MM-DD/`
+   - Create session summary document in `trinity/archive/sessions/YYYY-MM-DD/SESSION-SUMMARY-{date}.md`
+
+   e. **Verify Clean Slate:**
+   - **CRITICAL:** After archiving, `trinity/sessions/` MUST be empty
+   - **CRITICAL:** After archiving, `trinity/reports/` MUST be empty
+   - If any files remain, archive them or report error
+   - Next session MUST start with completely empty sessions/ and reports/ folders
+
+   **Archive Structure:**
+
+   ```
+   trinity/archive/
+   ├── work-orders/YYYY-MM-DD/
+   │   ├── WO-001-*.md
+   │   ├── WO-002-*.md
+   │   └── ...
+   ├── investigations/YYYY-MM-DD/
+   │   ├── INV-001-*.md
+   │   ├── INV-002-*.md
+   │   └── ...
+   ├── reports/YYYY-MM-DD/
+   │   ├── WO-001-IMPLEMENTATION-COMPLETE-*.md
+   │   ├── AUDIT-WO-001-*.md
+   │   ├── INV-001-findings-*.md
+   │   └── ...
+   └── sessions/YYYY-MM-DD/
+       ├── SESSION-SUMMARY-{date}.md
+       └── [any other session files]
+   ```
+
+   **Important Notes:**
+   - Keep ONLY active/in-progress work orders in `trinity/work-orders/`
+   - Keep ONLY active/in-progress investigations in `trinity/investigations/`
+   - Do NOT archive incomplete work
+   - Completed work is identified by presence in `trinity/sessions/` folder
+   - All reports are archived regardless of status
 
 2. **ALY analyzes session events:**
    - Review all work completed during session
@@ -48,6 +103,7 @@ End current Trinity Method session and prepare for commit.
    - Push to repository: `git push`
 
 **Outcome:**
+
 - All completed work properly archived with timestamp
 - Active/in-progress work remains in working directories
 - Trinity documents updated with session learnings
@@ -105,6 +161,7 @@ End current Trinity Method session and prepare for commit.
 ## Accomplishments
 
 ### WO-042: JWT Refresh Token Implementation ✅
+
 - Implemented secure refresh token rotation
 - Added HttpOnly cookie support
 - 87% test coverage (exceeds 80% threshold)
@@ -114,6 +171,7 @@ End current Trinity Method session and prepare for commit.
 **Lines**: +234 additions, -12 deletions
 
 ### WO-043: User Profile Editing ✅
+
 - Added profile update endpoint
 - Validation for all fields
 - Integration tests complete
@@ -125,14 +183,17 @@ End current Trinity Method session and prepare for commit.
 ## Knowledge Base Updates
 
 **ARCHITECTURE.md**:
+
 - Added OAuth2 refresh token flow diagram
 - Documented token rotation strategy
 
 **ISSUES.md**:
+
 - Closed: #42 (JWT refresh), #45 (profile editing)
 - Added: #48 (rate limiting for refresh endpoint)
 
 **Technical-Debt.md**:
+
 - Added: Refactor auth service (split into 2 files)
 - Resolved: Email validation duplication
 
@@ -146,6 +207,7 @@ End current Trinity Method session and prepare for commit.
 ## Next Session
 
 **Planned Work Orders**:
+
 - WO-048: Rate limiting implementation
 - WO-049: Auth service refactoring
 
@@ -172,6 +234,7 @@ Before ending session, ALY updates living documentation based on session work:
 Update these documents based on what changed during the session:
 
 #### ARCHITECTURE.md
+
 - [ ] **New Components**: Add to Component Architecture table
 - [ ] **Technology Changes**: Update Technology Profile (framework versions, new tools)
 - [ ] **API Changes**: Update API endpoints or patterns
@@ -182,6 +245,7 @@ Update these documents based on what changed during the session:
 - [ ] **Last Updated**: Set to current date
 
 #### ISSUES.md
+
 - [ ] **Close Resolved Issues**: Mark issues fixed during session as resolved
 - [ ] **Add New Issues**: Document new bugs/patterns discovered
 - [ ] **Update Patterns**: Add new recurring patterns discovered
@@ -191,6 +255,7 @@ Update these documents based on what changed during the session:
 - [ ] **Last Updated**: Set to current date
 
 #### To-do.md
+
 - [ ] **Remove Completed**: Delete or mark complete tasks finished during session
 - [ ] **Add New Tasks**: Add tasks identified during development
 - [ ] **Update Priorities**: Re-prioritize based on new information
@@ -200,6 +265,7 @@ Update these documents based on what changed during the session:
 - [ ] **Last Updated**: Set to current date
 
 #### Technical-Debt.md
+
 - [ ] **Add New Debt**: Document TODOs/FIXMEs/HACKs added during session
 - [ ] **Resolve Debt**: Remove items paid down during session
 - [ ] **Update Metrics**: Recalculate debt metrics (TODO count, file complexity, coverage)
@@ -214,24 +280,28 @@ Update these documents based on what changed during the session:
 Only update these if the session introduced new patterns or standards:
 
 #### CODING-PRINCIPLES.md
+
 - [ ] **New Patterns**: Add new good/bad examples discovered
 - [ ] **Refactoring Strategies**: Document new refactoring patterns used
 - [ ] **Framework Changes**: Update if framework version changed standards
 - [ ] **Last Updated**: Set to current date (only if modified)
 
 #### TESTING-PRINCIPLES.md
+
 - [ ] **New Test Patterns**: Add testing patterns discovered
 - [ ] **Coverage Updates**: Update coverage targets if changed
 - [ ] **Testing Strategies**: Document new mocking/stubbing patterns
 - [ ] **Last Updated**: Set to current date (only if modified)
 
 #### AI-DEVELOPMENT-GUIDE.md
+
 - [ ] **Workflow Improvements**: Update if Trinity workflows changed
 - [ ] **Scale Examples**: Add new scale examples if discovered
 - [ ] **Agent Protocols**: Update if agent communication patterns changed
 - [ ] **Last Updated**: Set to current date (only if modified)
 
 #### Trinity.md
+
 - [ ] **Protocol Updates**: Document protocol changes or improvements
 - [ ] **Performance Baselines**: Update if project baselines changed
 - [ ] **Session Workflow**: Update if workflow process improved
@@ -239,6 +309,7 @@ Only update these if the session introduced new patterns or standards:
 - [ ] **Last Updated**: Set to current date (only if modified)
 
 #### DOCUMENTATION-CRITERIA.md
+
 - [ ] **Criteria Changes**: Update if documentation standards evolved
 - [ ] **Last Updated**: Set to current date (only if modified)
 
@@ -247,24 +318,28 @@ Only update these if the session introduced new patterns or standards:
 After all updates, verify documentation integrity:
 
 #### Content Quality
+
 - [ ] All updated files have meaningful changes (not just timestamp)
 - [ ] No placeholder syntax `{{VARIABLE}}` introduced during updates
 - [ ] Metrics use real project values (not example numbers)
 - [ ] Code examples match project's actual framework/language
 
 #### Cross-Reference Integrity
+
 - [ ] Links between documents still work (no broken references)
 - [ ] When updating ARCHITECTURE → checked if ISSUES/Technical-Debt need updates
 - [ ] When adding ISSUES → added related Technical-Debt items if applicable
 - [ ] When closing To-do tasks → verified linked ISSUES closed
 
 #### Consistency Checks
+
 - [ ] Timestamps updated ({{CURRENT_DATE}} replaced with actual date)
 - [ ] Project name consistent across all files
 - [ ] Framework/technology names consistent
 - [ ] Component names match across ARCHITECTURE/ISSUES/Technical-Debt
 
 #### Completeness Validation
+
 - [ ] New components documented in ARCHITECTURE
 - [ ] New issues documented in ISSUES.md
 - [ ] New technical debt tracked in Technical-Debt.md
@@ -274,6 +349,7 @@ After all updates, verify documentation integrity:
 ### Update Guidelines
 
 **For each document updated**:
+
 1. Open the file
 2. Use the document's "When to Update" section as guide (see knowledge-base templates)
 3. Make specific, meaningful changes (don't just change timestamps)
@@ -281,6 +357,7 @@ After all updates, verify documentation integrity:
 5. Keep placeholders for future sessions (don't replace with generic examples)
 
 **When in doubt**:
+
 - If something changed → document it
 - If nothing changed → don't update (stale timestamp is okay)
 - If unsure → reference the document's "When to Update This Document" section
@@ -309,33 +386,40 @@ After all updates, verify documentation integrity:
 ### Session Summary Integration
 
 After knowledge base updates, ALY creates session summary including:
+
 - **Documents Updated**: List which knowledge-base files changed
 - **Key Changes**: Summarize what was added/removed/modified
 - **Cross-References**: Note which documents reference each other
 - **Metrics Delta**: Before/after metrics for Technical-Debt.md
 
 Example:
+
 ```markdown
 ## Knowledge Base Updates
 
 **ARCHITECTURE.md**:
+
 - Added: OAuth2 refresh token flow to API Architecture
 - Updated: Authentication section with refresh token rotation
 
 **ISSUES.md**:
+
 - Closed: ISS-042 (JWT refresh implementation)
 - Added: ISS-048 (Rate limiting pattern for auth endpoints)
 
 **Technical-Debt.md**:
+
 - Resolved: Email validation duplication (was in 3 files)
 - Added: Auth service refactoring (split into 2 files)
 - Metrics: TODO count decreased 5 → 3, File complexity improved
 
 **To-do.md**:
+
 - Completed: T-042 (Implement JWT refresh)
 - Added: T-048 (Rate limiting), T-049 (Auth refactoring)
 
 **Cross-References Updated**:
+
 - ARCHITECTURE.md ↔ ISSUES.md (linked refresh token pattern)
 - ISSUES.md ↔ Technical-Debt.md (linked auth refactoring debt)
 - To-do.md ↔ ISSUES.md (linked rate limiting task to issue)

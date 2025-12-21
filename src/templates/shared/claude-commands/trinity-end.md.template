@@ -8,12 +8,65 @@ End current Trinity Method session and prepare for commit.
 
 **Process:**
 1. **ALY (CTO)** archives session work:
-   - Move completed work orders from trinity/work-orders/ to trinity/archive/work-orders/YYYY-MM-DD/
-   - Move completed investigations from trinity/investigations/ to trinity/archive/investigations/YYYY-MM-DD/
-   - Move reports from trinity/reports/ to trinity/archive/reports/YYYY-MM-DD/
-   - Move session files from trinity/sessions/ to trinity/archive/sessions/YYYY-MM-DD/
-   - Keep active/in-progress work orders and investigations (don't archive incomplete work)
-   - Create session summary document in archive
+
+   **STRICT ARCHIVING PROTOCOL:**
+
+   a. **Archive Completed Work Orders:**
+      - Read all files from `trinity/sessions/` matching `WO-*.md`
+      - Move each to `trinity/archive/work-orders/YYYY-MM-DD/`
+      - These were moved to sessions/ after completion per work order template
+
+   b. **Archive Completed Investigations:**
+      - Read all files from `trinity/sessions/` matching `INV-*.md`
+      - Move each to `trinity/archive/investigations/YYYY-MM-DD/`
+      - These were moved to sessions/ after completion per investigation template
+
+   c. **Archive ALL Reports:**
+      - Move ALL files from `trinity/reports/` to `trinity/archive/reports/YYYY-MM-DD/`
+      - This includes:
+        - Implementation completion reports
+        - Investigation findings reports
+        - JUNO audit reports
+        - Any other session reports
+      - **NO EXCEPTIONS:** Every file in reports/ must be archived
+
+   d. **Archive Session Files:**
+      - Move ALL remaining files from `trinity/sessions/` to `trinity/archive/sessions/YYYY-MM-DD/`
+      - Create session summary document in `trinity/archive/sessions/YYYY-MM-DD/SESSION-SUMMARY-{date}.md`
+
+   e. **Verify Clean Slate:**
+      - **CRITICAL:** After archiving, `trinity/sessions/` MUST be empty
+      - **CRITICAL:** After archiving, `trinity/reports/` MUST be empty
+      - If any files remain, archive them or report error
+      - Next session MUST start with completely empty sessions/ and reports/ folders
+
+   **Archive Structure:**
+   ```
+   trinity/archive/
+   ├── work-orders/YYYY-MM-DD/
+   │   ├── WO-001-*.md
+   │   ├── WO-002-*.md
+   │   └── ...
+   ├── investigations/YYYY-MM-DD/
+   │   ├── INV-001-*.md
+   │   ├── INV-002-*.md
+   │   └── ...
+   ├── reports/YYYY-MM-DD/
+   │   ├── WO-001-IMPLEMENTATION-COMPLETE-*.md
+   │   ├── AUDIT-WO-001-*.md
+   │   ├── INV-001-findings-*.md
+   │   └── ...
+   └── sessions/YYYY-MM-DD/
+       ├── SESSION-SUMMARY-{date}.md
+       └── [any other session files]
+   ```
+
+   **Important Notes:**
+   - Keep ONLY active/in-progress work orders in `trinity/work-orders/`
+   - Keep ONLY active/in-progress investigations in `trinity/investigations/`
+   - Do NOT archive incomplete work
+   - Completed work is identified by presence in `trinity/sessions/` folder
+   - All reports are archived regardless of status
 
 2. **ALY analyzes session events:**
    - Review all work completed during session
