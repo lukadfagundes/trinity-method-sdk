@@ -13,17 +13,19 @@
 
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import fs from 'fs-extra';
-import path from 'path';
 import { deploy } from '../../../../src/cli/commands/deploy/index.js';
 import {
   createTempDir,
   cleanupTempDir,
   verifyTrinityStructure,
   readVersion,
-  countFiles
+  countFiles,
 } from '../../../helpers/test-helpers.js';
+import { mockConsole } from '../../../utils/console-mocks.js';
 
 describe('Deploy Command - Integration Tests', () => {
+  // Mock console to reduce test noise
+  mockConsole();
   let testDir: string;
   let originalCwd: string;
 
@@ -45,9 +47,7 @@ describe('Deploy Command - Integration Tests', () => {
       // Create existing trinity directory
       await fs.ensureDir('trinity');
 
-      await expect(
-        deploy({ yes: true, force: false })
-      ).rejects.toThrow('Trinity already deployed');
+      await expect(deploy({ yes: true, force: false })).rejects.toThrow('Trinity already deployed');
     });
 
     it('should proceed with --force flag even if Trinity exists', async () => {
@@ -80,7 +80,7 @@ describe('Deploy Command - Integration Tests', () => {
         'trinity/archive/work-orders',
         'trinity/archive/investigations',
         'trinity/archive/reports',
-        'trinity/archive/sessions'
+        'trinity/archive/sessions',
       ];
 
       for (const dir of trinityDirs) {
@@ -96,7 +96,7 @@ describe('Deploy Command - Integration Tests', () => {
         '.claude/agents/deployment',
         '.claude/agents/audit',
         '.claude/agents/planning',
-        '.claude/agents/aj-team'
+        '.claude/agents/aj-team',
       ];
 
       for (const dir of claudeDirs) {
@@ -113,7 +113,7 @@ describe('Deploy Command - Integration Tests', () => {
         '.claude/commands/execution',
         '.claude/commands/investigation',
         '.claude/commands/infrastructure',
-        '.claude/commands/utility'
+        '.claude/commands/utility',
       ];
 
       for (const dir of commandDirs) {
@@ -149,10 +149,16 @@ describe('Deploy Command - Integration Tests', () => {
       expect(await fs.pathExists('.claude/agents/aj-team/kil-task-executor.md')).toBe(true);
       expect(await fs.pathExists('.claude/agents/aj-team/bas-quality-gate.md')).toBe(true);
       expect(await fs.pathExists('.claude/agents/aj-team/dra-code-reviewer.md')).toBe(true);
-      expect(await fs.pathExists('.claude/agents/aj-team/apo-documentation-specialist.md')).toBe(true);
+      expect(await fs.pathExists('.claude/agents/aj-team/apo-documentation-specialist.md')).toBe(
+        true
+      );
       expect(await fs.pathExists('.claude/agents/aj-team/bon-dependency-manager.md')).toBe(true);
-      expect(await fs.pathExists('.claude/agents/aj-team/cap-configuration-specialist.md')).toBe(true);
-      expect(await fs.pathExists('.claude/agents/aj-team/uro-refactoring-specialist.md')).toBe(true);
+      expect(await fs.pathExists('.claude/agents/aj-team/cap-configuration-specialist.md')).toBe(
+        true
+      );
+      expect(await fs.pathExists('.claude/agents/aj-team/uro-refactoring-specialist.md')).toBe(
+        true
+      );
     });
 
     it('should process agent templates with variable substitution', async () => {
@@ -186,9 +192,15 @@ describe('Deploy Command - Integration Tests', () => {
       expect(await fs.pathExists('.claude/commands/execution/trinity-docs.md')).toBe(true);
 
       // Investigation commands (3)
-      expect(await fs.pathExists('.claude/commands/investigation/trinity-create-investigation.md')).toBe(true);
-      expect(await fs.pathExists('.claude/commands/investigation/trinity-plan-investigation.md')).toBe(true);
-      expect(await fs.pathExists('.claude/commands/investigation/trinity-investigate-templates.md')).toBe(true);
+      expect(
+        await fs.pathExists('.claude/commands/investigation/trinity-create-investigation.md')
+      ).toBe(true);
+      expect(
+        await fs.pathExists('.claude/commands/investigation/trinity-plan-investigation.md')
+      ).toBe(true);
+      expect(
+        await fs.pathExists('.claude/commands/investigation/trinity-investigate-templates.md')
+      ).toBe(true);
 
       // Infrastructure commands (1)
       expect(await fs.pathExists('.claude/commands/infrastructure/trinity-init.md')).toBe(true);
@@ -223,7 +235,7 @@ describe('Deploy Command - Integration Tests', () => {
         'CODING-PRINCIPLES.md',
         'TESTING-PRINCIPLES.md',
         'AI-DEVELOPMENT-GUIDE.md',
-        'DOCUMENTATION-CRITERIA.md'
+        'DOCUMENTATION-CRITERIA.md',
       ];
 
       for (const file of kbFiles) {
@@ -251,7 +263,7 @@ describe('Deploy Command - Integration Tests', () => {
         'ANALYSIS-TEMPLATE.md',
         'AUDIT-TEMPLATE.md',
         'PATTERN-TEMPLATE.md',
-        'VERIFICATION-TEMPLATE.md'
+        'VERIFICATION-TEMPLATE.md',
       ];
 
       for (const template of workOrderTemplates) {
@@ -267,7 +279,7 @@ describe('Deploy Command - Integration Tests', () => {
         'feature.md',
         'performance.md',
         'security.md',
-        'technical.md'
+        'technical.md',
       ];
 
       for (const template of investigationTemplates) {
@@ -279,7 +291,9 @@ describe('Deploy Command - Integration Tests', () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       expect(await fs.pathExists('trinity/templates/documentation/ROOT-README.md')).toBe(true);
-      expect(await fs.pathExists('trinity/templates/documentation/SUBDIRECTORY-README.md')).toBe(true);
+      expect(await fs.pathExists('trinity/templates/documentation/SUBDIRECTORY-README.md')).toBe(
+        true
+      );
     });
 
     it('should not include .template extension in deployed templates', async () => {
@@ -322,10 +336,13 @@ describe('Deploy Command - Integration Tests', () => {
 
   describe('Framework Detection', () => {
     it('should detect Node.js project from package.json', async () => {
-      await fs.writeFile('package.json', JSON.stringify({
-        name: 'test-project',
-        version: '1.0.0'
-      }));
+      await fs.writeFile(
+        'package.json',
+        JSON.stringify({
+          name: 'test-project',
+          version: '1.0.0',
+        })
+      );
 
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
@@ -358,7 +375,10 @@ describe('Deploy Command - Integration Tests', () => {
 
     it('should not duplicate Trinity exclusions if already present', async () => {
       // Create existing .gitignore with Trinity section
-      await fs.writeFile('.gitignore', '# Trinity Method deployment files\ntrity/\nnode_modules/\n');
+      await fs.writeFile(
+        '.gitignore',
+        '# Trinity Method deployment files\ntrity/\nnode_modules/\n'
+      );
 
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 

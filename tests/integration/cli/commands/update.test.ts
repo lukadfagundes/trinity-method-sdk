@@ -4,7 +4,6 @@
 
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import fs from 'fs-extra';
-import path from 'path';
 import { update } from '../../../../src/cli/commands/update.js';
 import {
   createTempDir,
@@ -12,10 +11,13 @@ import {
   createMockTrinityDeployment,
   verifyTrinityStructure,
   readVersion,
-  verifyUserFilesPreserved
+  verifyUserFilesPreserved,
 } from '../../../helpers/test-helpers.js';
+import { mockConsole } from '../../../utils/console-mocks.js';
 
 describe('Update Command - Integration Tests', () => {
+  // Mock console to reduce test noise
+  mockConsole();
   let testDir: string;
   let originalCwd: string;
   let exitSpy: any;
@@ -41,9 +43,7 @@ describe('Update Command - Integration Tests', () => {
 
   describe('Pre-flight Checks', () => {
     it('should fail if Trinity is not deployed', async () => {
-      await expect(
-        update({ dryRun: false })
-      ).rejects.toThrow();
+      await expect(update({ dryRun: false })).rejects.toThrow();
     });
 
     it('should fail if .claude directory is missing', async () => {
@@ -51,9 +51,7 @@ describe('Update Command - Integration Tests', () => {
       await fs.ensureDir('trinity');
       await fs.writeFile('trinity/VERSION', '1.0.0');
 
-      await expect(
-        update({ dryRun: false })
-      ).rejects.toThrow();
+      await expect(update({ dryRun: false })).rejects.toThrow();
     });
   });
 
@@ -65,7 +63,7 @@ describe('Update Command - Integration Tests', () => {
       // We're just testing it doesn't crash
       try {
         await update({ dryRun: true });
-      } catch (error) {
+      } catch {
         // Dry run might exit process, that's okay
       }
 
@@ -91,7 +89,7 @@ describe('Update Command - Integration Tests', () => {
 
       try {
         await update({ dryRun: true });
-      } catch (error) {
+      } catch {
         // Dry run exits early, that's expected
       }
 
@@ -113,7 +111,7 @@ describe('Update Command - Integration Tests', () => {
         'trinity/knowledge-base/ARCHITECTURE.md': 'User custom architecture content',
         'trinity/knowledge-base/To-do.md': 'User task 1',
         'trinity/knowledge-base/ISSUES.md': 'User custom issues',
-        'trinity/knowledge-base/Technical-Debt.md': 'User custom debt tracking'
+        'trinity/knowledge-base/Technical-Debt.md': 'User custom debt tracking',
       };
 
       // Note: Actual update requires SDK templates to be present
@@ -146,7 +144,7 @@ describe('Update Command - Integration Tests', () => {
         '.claude/agents/aj-team',
         '.claude/agents/deployment',
         '.claude/agents/audit',
-        '.claude/commands'
+        '.claude/commands',
       ];
 
       for (const dir of requiredDirs) {
@@ -213,7 +211,7 @@ describe('Update Command - Integration Tests', () => {
 
       try {
         await update({ dryRun: false });
-      } catch (error) {
+      } catch {
         errorThrown = true;
       }
 
@@ -229,7 +227,7 @@ describe('Update Command - Integration Tests', () => {
       // We're just testing it doesn't crash
       try {
         await update({ dryRun: true });
-      } catch (error) {
+      } catch {
         // Expected to exit
       }
 

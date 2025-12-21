@@ -8,8 +8,11 @@ import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import fs from 'fs-extra';
 import path from 'path';
 import { detectStack } from '../../../../src/cli/utils/detect-stack.js';
+import { mockConsole } from '../../../utils/console-mocks.js';
 
 describe('detectStack', () => {
+  // Mock console to reduce test noise
+  mockConsole();
   let testDir: string;
   let originalCwd: string;
 
