@@ -3,7 +3,7 @@
  */
 
 import chalk from 'chalk';
-import { collectCodebaseMetrics } from '../../utils/codebase-metrics.js';
+import { collectCodebaseMetrics } from '../../utils/metrics/index.js';
 import type { CodebaseMetrics, Stack, Spinner } from './types.js';
 
 /**
@@ -34,7 +34,7 @@ export async function collectMetrics(stack: Stack, spinner: Spinner): Promise<Co
     console.log(chalk.yellow('  Some metrics collection failed, continuing...'));
 
     // Return minimal metrics
-    const { createEmptyMetrics } = await import('../../utils/codebase-metrics.js');
+    const { createEmptyMetrics } = await import('../../utils/metrics/index.js');
     return createEmptyMetrics();
   }
 }

@@ -91,7 +91,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
     if (!options.skipAudit) {
       metrics = await collectMetrics(stack, spinner);
     } else {
-      const { createEmptyMetrics } = await import('../../utils/codebase-metrics.js');
+      const { createEmptyMetrics } = await import('../../utils/metrics/index.js');
       metrics = createEmptyMetrics();
     }
 
