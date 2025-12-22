@@ -47,6 +47,7 @@ Thumbs.db
 
 # Trinity Documents
 trinity/
+.claude/
 
 # Exception: Don't ignore template source files
 !src/templates/trinity/
@@ -55,3 +56,6 @@ trinity/
 # Trinity Method deployment files
 node_modules/
 settings.local.json
+
+
+TODO-LIST.md
