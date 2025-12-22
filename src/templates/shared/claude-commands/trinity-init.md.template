@@ -531,7 +531,7 @@ pre-commit run --all-files
 💡 **What happens now:**
 - Every commit/PR runs through CI quality gates
 - Push to main → Auto-deploy to staging
-- Create version tag (v1.0.0) → Deploy to production (with approval)
+- Create version tag (v2.0.0) → Deploy to production (with approval)
 - Pre-commit hooks validate locally before push
 
 **Ready to activate!** Follow the steps above to enable Trinity quality automation.

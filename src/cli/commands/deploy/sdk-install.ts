@@ -31,7 +31,7 @@ export async function installSDK(spinner: Spinner): Promise<boolean> {
         if (!packageJson.dependencies) {
           packageJson.dependencies = {};
         }
-        packageJson.dependencies['trinity-method-sdk'] = '^1.0.0';
+        packageJson.dependencies['trinity-method-sdk'] = '^2.0.0';
 
         await fs.writeJson(packageJsonPath, packageJson, { spaces: 2 });
 

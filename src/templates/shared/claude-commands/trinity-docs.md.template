@@ -15,7 +15,9 @@ The `/trinity-docs` command invokes APO (Documentation Specialist) to handle all
 **APO's Responsibilities:**
 - Update root README.md
 - Maintain docs/ directory documentation
-- Update CHANGELOG.md
+- Update CHANGELOG.md (root only, not docs/)
+- Update CONTRIBUTING.md (root only, not docs/)
+- Update LICENSE (root only, not docs/)
 - Create/update subdirectory READMEs (for directories with CLAUDE.md files)
 - Generate new documentation following best practices
 - Ensure documentation completeness and accuracy
@@ -95,7 +97,7 @@ APO prepares documentation for release:
 
 ---
 
-## APO's 7-Phase Documentation Process
+## APO's 8-Phase Documentation Process
 
 ### Phase 1: Documentation Discovery
 **Goal:** Identify all existing and missing documentation
@@ -242,8 +244,9 @@ docs/
 │   ├── setup.md
 │   ├── testing.md
 │   └── contributing.md
-├── CHANGELOG.md      # Version history
 └── README.md         # Docs navigation
+
+# NOTE: CHANGELOG.md, CONTRIBUTING.md, LICENSE go in root, not docs/
 ```
 
 **APO Actions:**
@@ -270,7 +273,7 @@ docs/
 
 ### Phase 5: CHANGELOG Management
 
-**Location:** `docs/CHANGELOG.md`
+**Location:** `CHANGELOG.md` (root only, NOT docs/CHANGELOG.md)
 
 **Standard Format (Keep-a-Changelog):**
 ```markdown
@@ -350,7 +353,158 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-### Phase 7: Documentation Audit Report
+### Phase 6: Documentation Completeness Validation
+
+**Goal:** Guarantee no documentation gaps through systematic validation
+
+**APO Must Execute These Checks:**
+
+#### 6a. TypeDoc Validation (For TypeScript/JavaScript Projects)
+
+**Check 1: Run TypeDoc Generation**
+```bash
+npm run docs:generate
+```
+
+**Requirements:**
+- ✅ Command must complete without errors
+- ✅ No warnings about missing JSDoc comments
+- ✅ All exported functions/classes have documentation
+- ✅ All public APIs are included in generated docs
+
+**If TypeDoc Fails:**
+- Identify which functions/classes lack documentation
+- Add JSDoc comments to source code
+- Re-run TypeDoc until clean
+
+**Check 2: Verify TypeDoc Output**
+- ✅ `docs/index.html` exists and is up-to-date
+- ✅ `docs/modules.html` lists all modules
+- ✅ All source files in `src/` are represented
+- ✅ No broken links in generated documentation
+
+---
+
+#### 6b. Root Documentation Files Validation
+
+**Required Files (Must Exist in Root):**
+- ✅ `README.md` - Project overview with current features
+- ✅ `CHANGELOG.md` - Version history (Keep-a-Changelog format)
+- ✅ `CONTRIBUTING.md` - Contribution guidelines
+- ✅ `LICENSE` - License file
+
+**Validation Checks:**
+1. **README.md:**
+   - Has installation instructions
+   - Lists all major features (cross-reference with audit)
+   - Includes usage examples that match current API
+   - Links to detailed documentation work
+   - Has badges (build status, coverage, version)
+
+2. **CHANGELOG.md:**
+   - Has entry for current version (from package.json)
+   - Follows Keep-a-Changelog format
+   - [Unreleased] section exists for ongoing work
+   - Links to release tags work
+
+3. **CONTRIBUTING.md:**
+   - Describes development setup process
+   - Documents testing requirements
+   - Explains PR process
+   - Matches actual project workflow
+
+4. **LICENSE:**
+   - Contains valid license text
+   - Matches package.json license field
+
+---
+
+#### 6c. Documentation Consistency Validation
+
+**Cross-Reference Checks:**
+
+1. **Version Consistency:**
+   - package.json version matches CHANGELOG.md latest version
+   - README.md badges show correct version
+   - All documentation references current version
+
+2. **API Consistency:**
+   - README.md examples use current API
+   - Code examples in docs match actual function signatures
+   - No references to deprecated/removed features
+
+3. **Link Validation:**
+   - All internal links work (README → docs/, CONTRIBUTING → docs/, etc.)
+   - All cross-references between docs are valid
+   - No 404s or broken relative paths
+
+4. **File Structure Consistency:**
+   - Every directory with CLAUDE.md has a README.md
+   - docs/adr/ files follow ADR template
+   - No duplicate files (e.g., CONTRIBUTING.md in both root and docs/)
+
+---
+
+#### 6d. Documentation Coverage Metrics
+
+**APO Must Calculate:**
+
+1. **API Documentation Coverage:**
+   - Total exported functions/classes: {count}
+   - Documented with JSDoc: {count}
+   - Coverage percentage: {percentage}%
+   - **Minimum Required: 80%**
+
+2. **Feature Documentation Coverage:**
+   - Features identified in audit: {count}
+   - Features documented in README: {count}
+   - Coverage percentage: {percentage}%
+   - **Minimum Required: 100%**
+
+3. **File Documentation Coverage:**
+   - Directories with CLAUDE.md: {count}
+   - Directories with README.md: {count}
+   - Coverage percentage: {percentage}%
+   - **Minimum Required: 100%**
+
+**If Coverage Below Minimum:**
+- Identify specific gaps
+- Create missing documentation
+- Re-validate until requirements met
+
+---
+
+### Phase 7: Documentation Best Practices
+
+**APO Ensures:**
+
+1. **Consistency:**
+   - Same terminology throughout
+   - Consistent code style in examples
+   - Uniform heading structure
+   - Standardized formatting
+
+2. **Accessibility:**
+   - Clear language (avoid jargon)
+   - Examples for all concepts
+   - Progressive difficulty (simple → complex)
+   - Search-friendly headings
+
+3. **Maintainability:**
+   - DRY principle (Don't Repeat Yourself)
+   - Links instead of duplication
+   - Versioned documentation
+   - Clear update dates
+
+4. **Completeness:**
+   - All public APIs documented
+   - Error messages explained
+   - Edge cases covered
+   - Migration guides for breaking changes
+
+---
+
+### Phase 8: Documentation Audit Report
 
 **APO Generates:** `trinity/reports/DOCUMENTATION-AUDIT-{date}.md`
 
@@ -470,9 +624,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Existing Documentation:**
 - ✅ README.md (outdated, missing features)
-- ✅ LICENSE (MIT)
-- ❌ CHANGELOG.md (missing)
-- ❌ CONTRIBUTING.md (missing)
+- ✅ LICENSE (MIT - root)
+- ❌ CHANGELOG.md (missing - should be in root)
+- ❌ CONTRIBUTING.md (missing - should be in root)
 - ❌ docs/ directory (missing)
 - ❌ Subdirectory READMEs (missing)
 
@@ -483,10 +637,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Missing: configuration guide, API docs, examples
 
 **Documentation Gaps:**
-1. 🔴 **Critical:** No CHANGELOG.md
+1. 🔴 **Critical:** No CHANGELOG.md (should be in root)
 2. 🔴 **Critical:** No API documentation
 3. 🟡 **High:** Missing configuration guide
-4. 🟡 **High:** No CONTRIBUTING.md
+4. 🟡 **High:** No CONTRIBUTING.md (should be in root)
 5. 🟢 **Medium:** Outdated README.md
 6. 🟢 **Medium:** No subdirectory READMEs
 
@@ -691,8 +845,12 @@ docs/
 │   ├── setup.md
 │   ├── testing.md
 │   └── contributing.md
-├── CHANGELOG.md
 └── README.md (docs navigation)
+
+# Root level files (NOT in docs/):
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
 ```
 
 **Created `docs/README.md`:**
@@ -731,11 +889,11 @@ Complete documentation for express-auth-middleware.
 
 - [Development Setup](development/setup.md)
 - [Running Tests](development/testing.md)
-- [Contributing Guidelines](development/contributing.md)
+- [Contributing Guidelines](../CONTRIBUTING.md) (root level)
 
 ## Version History
 
-- [CHANGELOG](CHANGELOG.md)
+- [CHANGELOG](../CHANGELOG.md) (root level)
 ```
 
 **Created `docs/guides/getting-started.md`:**
@@ -785,7 +943,7 @@ app.listen(3000);
 
 **APO:** Creating CHANGELOG.md from git history...
 
-**Created `docs/CHANGELOG.md`:**
+**Created `CHANGELOG.md` (in root):**
 ```markdown
 # Changelog
 
@@ -842,7 +1000,91 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-### Phase 6: Documentation Best Practices
+### Phase 6: Documentation Completeness Validation
+
+**APO:** Running systematic validation checks...
+
+#### 6a. TypeDoc Validation
+
+**Running TypeDoc generation:**
+```bash
+npm run docs:generate
+```
+
+**Result:**
+- ✅ TypeDoc completed successfully
+- ✅ No errors or warnings
+- ✅ Generated docs/index.html (27 KB)
+- ✅ Generated docs/modules.html (15 KB)
+- ✅ All 24 source files documented
+- ✅ All exported functions have JSDoc comments
+
+---
+
+#### 6b. Root Documentation Files Validation
+
+**Checking required files:**
+- ✅ README.md exists (updated with all 12 features)
+- ✅ CHANGELOG.md exists (root only - created)
+- ✅ CONTRIBUTING.md exists (root only - created)
+- ✅ LICENSE exists (MIT license)
+
+**Validation Results:**
+- ✅ README.md has installation, features, examples, links
+- ✅ CHANGELOG.md follows Keep-a-Changelog format
+- ✅ CHANGELOG.md has entry for v2.1.0 (current version)
+- ✅ CONTRIBUTING.md describes development workflow
+- ✅ LICENSE matches package.json (MIT)
+
+---
+
+#### 6c. Documentation Consistency Validation
+
+**Version Consistency:**
+- ✅ package.json: v2.1.0
+- ✅ CHANGELOG.md latest: v2.1.0
+- ✅ README.md badge: v2.1.0
+- ✅ All versions match
+
+**API Consistency:**
+- ✅ README.md examples use current API
+- ✅ Code examples match function signatures
+- ✅ No references to deprecated features
+
+**Link Validation:**
+- ✅ All internal links work (README → docs/)
+- ✅ All cross-references valid
+- ✅ No broken relative paths (tested 47 links)
+
+**File Structure Consistency:**
+- ✅ All directories with CLAUDE.md have README.md
+- ✅ No duplicate files (CONTRIBUTING.md only in root)
+- ✅ docs/adr/ files follow template
+
+---
+
+#### 6d. Documentation Coverage Metrics
+
+**API Documentation Coverage:**
+- Total exported functions/classes: 42
+- Documented with JSDoc: 42
+- Coverage: **100%** ✅ (Required: 80%)
+
+**Feature Documentation Coverage:**
+- Features identified in audit: 12
+- Features documented in README: 12
+- Coverage: **100%** ✅ (Required: 100%)
+
+**File Documentation Coverage:**
+- Directories with CLAUDE.md: 2
+- Directories with README.md: 2
+- Coverage: **100%** ✅ (Required: 100%)
+
+**All validation checks passed!** ✅
+
+---
+
+### Phase 7: Documentation Best Practices
 
 **APO:** Applying best practices across all documentation...
 
@@ -872,7 +1114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-### Phase 7: Documentation Audit Report
+### Phase 8: Documentation Audit Report
 
 **APO:** Generating documentation audit report...
 
@@ -907,12 +1149,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Root Level
 - ✅ README.md (updated - comprehensive overview)
-- ✅ LICENSE (existing - MIT)
-- ✅ CONTRIBUTING.md (created)
+- ✅ LICENSE (root only - existing - MIT)
+- ✅ CONTRIBUTING.md (root only - created)
+- ✅ CHANGELOG.md (root only - created)
 
 ### docs/ Directory (NEW)
 - ✅ docs/README.md (created - navigation)
-- ✅ docs/CHANGELOG.md (created - version history)
 
 ### Guides (NEW)
 - ✅ docs/guides/getting-started.md
@@ -937,6 +1179,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Subdirectory READMEs (NEW)
 - ✅ src/README.md
 - ✅ src/middleware/README.md
+
+### TypeDoc API Documentation (Validated)
+- ✅ docs/index.html (auto-generated)
+- ✅ docs/modules.html (auto-generated)
+- ✅ docs/assets/ (TypeDoc assets)
+- ✅ All 42 exported functions documented (100% coverage)
+
+## Documentation Validation Results
+
+### Phase 6 Validation: ✅ PASSED
+
+**TypeDoc Validation:**
+- ✅ TypeDoc generation successful (no errors/warnings)
+- ✅ API documentation coverage: 100% (42/42 functions)
+- ✅ All source files represented in generated docs
+
+**Root Files Validation:**
+- ✅ README.md complete with all required sections
+- ✅ CHANGELOG.md follows Keep-a-Changelog format
+- ✅ CONTRIBUTING.md matches actual workflow
+- ✅ LICENSE valid and matches package.json
+
+**Consistency Validation:**
+- ✅ Version consistency across all files (v2.1.0)
+- ✅ API consistency in all examples
+- ✅ Link validation: 47 links tested, 0 broken
+- ✅ File structure: no duplicates, all CLAUDE.md dirs have READMEs
+
+**Coverage Metrics:**
+- ✅ API Documentation: 100% (Required: 80%)
+- ✅ Feature Documentation: 100% (Required: 100%)
+- ✅ File Documentation: 100% (Required: 100%)
 
 ## Changes Made
 
@@ -1095,6 +1369,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ Created CHANGELOG.md from git history
 - ✅ Created docs/ directory with 18 documentation files
 - ✅ Created 2 subdirectory READMEs
+- ✅ **Phase 6 Validation: ALL CHECKS PASSED**
+  - ✅ TypeDoc generation successful (100% API coverage)
+  - ✅ All root files validated
+  - ✅ Version consistency verified
+  - ✅ 47 links tested, 0 broken
+  - ✅ API documentation: 100%
+  - ✅ Feature documentation: 100%
+  - ✅ File documentation: 100%
 - ✅ Documentation score: 9/10 (was 5/10)
 - ✅ All 12 features now documented
 
@@ -1185,12 +1467,20 @@ APO uses two standardized README templates deployed to `trinity/templates/docume
 **APO will:**
 - Update root README.md with current project state
 - Maintain docs/ directory structure
-- Create/update CHANGELOG.md
+- Create/update CHANGELOG.md (root only)
+- Create/update CONTRIBUTING.md (root only)
+- Create/update LICENSE (root only)
 - Create subdirectory READMEs (for CLAUDE.md directories)
-- Generate comprehensive documentation audit report
+- **Phase 6: Run systematic validation checks:**
+  - TypeDoc generation and API documentation coverage (80% minimum)
+  - Root file validation (README, CHANGELOG, CONTRIBUTING, LICENSE)
+  - Documentation consistency (versions, APIs, links)
+  - Coverage metrics (API, features, files - 100% for features/files)
+- Generate comprehensive documentation audit report with validation results
 
 **Deliverable:**
 - Updated documentation across project
+- **Validated documentation** (all Phase 6 checks passed)
 - Documentation audit report in `trinity/reports/DOCUMENTATION-AUDIT-{date}.md`
 - Improved GitHub contribution tracking through better documentation
 

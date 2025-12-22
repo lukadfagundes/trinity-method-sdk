@@ -3,7 +3,7 @@
 **Framework:** Node.js
 **Tech Stack:** JavaScript/TypeScript
 **Source Directory:** src
-**Trinity Version:** 1.0.0
+**Trinity Version:** 2.0.0
 **Deployed:** 2025-12-20T18:51:21.533Z
 
 ---
@@ -17,17 +17,21 @@
 This project uses the Trinity Method with layered context files:
 
 ### 1. Root Context (this file)
+
 Project-specific overview, architecture, and living documentation references.
 
 ### 2. Trinity Method Context
+
 **File**: [trinity/CLAUDE.md](trinity/CLAUDE.md)
 Enforces Trinity Method protocols: investigation-first development, quality gates, crisis management.
 
 ### 3. Technology-Specific Context
+
 **File**: [source/CLAUDE.md](source/CLAUDE.md)
 Framework-specific debugging standards, performance optimization, testing patterns.
 
 ### 4. Agent Directory
+
 **File**: [claude/EMPLOYEE-DIRECTORY.md](claude/EMPLOYEE-DIRECTORY.md)
 Complete guide to the 19-agent Trinity team and workflow orchestration.
 

@@ -485,7 +485,7 @@ Use the feature request template and include:
 
 ## Contributing Support for Other AI Agents
 
-Trinity Method SDK v1.0.0 is built for [Claude Code](https://claude.com/claude-code).
+Trinity Method SDK v2.0.0 is built for [Claude Code](https://claude.com/claude-code).
 
 We welcome contributions to add support for other AI coding agents (Cursor, GitHub Copilot, Aider, etc.).
 

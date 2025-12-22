@@ -269,5 +269,5 @@ If verification reveals critical issues:
 
 **Remember:** Verification is about confirming that implementations work as intended without introducing new issues. Be thorough but efficient. Document everything clearly. Verifications are read-only - no file modifications or git operations.
 
-*Trinity Method v7.2 - Verification Work Order Template*
+*Trinity Method v2.0 - Verification Work Order Template*
 *Project-Isolated Architecture with Dynamic Paths*

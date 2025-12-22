@@ -10,7 +10,10 @@ import os from 'os';
  * Create a temporary test directory
  */
 export async function createTempDir(): Promise<string> {
-  const tmpDir = path.join(os.tmpdir(), `trinity-test-${Date.now()}-${Math.random().toString(36).substring(7)}`);
+  const tmpDir = path.join(
+    os.tmpdir(),
+    `trinity-test-${Date.now()}-${Math.random().toString(36).substring(7)}`
+  );
   await fs.ensureDir(tmpDir);
   return tmpDir;
 }
@@ -27,7 +30,10 @@ export async function cleanupTempDir(dir: string): Promise<void> {
 /**
  * Create a mock Trinity deployment structure
  */
-export async function createMockTrinityDeployment(targetDir: string, version: string = '1.0.0'): Promise<void> {
+export async function createMockTrinityDeployment(
+  targetDir: string,
+  version: string = '2.0.0'
+): Promise<void> {
   // Create trinity directory structure
   await fs.ensureDir(path.join(targetDir, 'trinity/knowledge-base'));
   await fs.ensureDir(path.join(targetDir, 'trinity/templates'));
@@ -90,11 +96,11 @@ export async function verifyTrinityStructure(targetDir: string): Promise<boolean
     '.claude/agents/leadership',
     '.claude/agents/planning',
     '.claude/agents/aj-team',
-    '.claude/commands'
+    '.claude/commands',
   ];
 
   for (const requiredPath of requiredPaths) {
-    if (!await fs.pathExists(path.join(targetDir, requiredPath))) {
+    if (!(await fs.pathExists(path.join(targetDir, requiredPath)))) {
       return false;
     }
   }
@@ -107,7 +113,7 @@ export async function verifyTrinityStructure(targetDir: string): Promise<boolean
  */
 export async function readVersion(targetDir: string): Promise<string> {
   const versionPath = path.join(targetDir, 'trinity/VERSION');
-  if (!await fs.pathExists(versionPath)) {
+  if (!(await fs.pathExists(versionPath))) {
     throw new Error('VERSION file not found');
   }
   return (await fs.readFile(versionPath, 'utf8')).trim();
@@ -116,10 +122,13 @@ export async function readVersion(targetDir: string): Promise<string> {
 /**
  * Check if user files were preserved
  */
-export async function verifyUserFilesPreserved(targetDir: string, expectedContent: Record<string, string>): Promise<boolean> {
+export async function verifyUserFilesPreserved(
+  targetDir: string,
+  expectedContent: Record<string, string>
+): Promise<boolean> {
   for (const [file, content] of Object.entries(expectedContent)) {
     const filePath = path.join(targetDir, file);
-    if (!await fs.pathExists(filePath)) {
+    if (!(await fs.pathExists(filePath))) {
       return false;
     }
     const actualContent = await fs.readFile(filePath, 'utf8');

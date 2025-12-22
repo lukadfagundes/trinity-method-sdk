@@ -316,5 +316,5 @@ Note what must remain manual:
 
 **Remember:** Pattern work is about maximizing impact through systematic fixes. One pattern fix can resolve dozens of issues. Document patterns thoroughly for future reuse. Report all changes to LUKA for git operations.
 
-*Trinity Method v7.2 - Pattern Work Order Template*
+*Trinity Method v2.0 - Pattern Work Order Template*
 *Project-Isolated Architecture with Dynamic Paths*
