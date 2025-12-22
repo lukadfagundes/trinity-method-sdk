@@ -241,7 +241,7 @@ describe('deploy-ci', () => {
 
   describe('File Content', () => {
     it('should preserve template content in deployed files', async () => {
-      const stats = await deployCITemplates();
+      await deployCITemplates();
 
       const ciContent = await fs.readFile('.github/workflows/ci.yml', 'utf8');
       expect(ciContent).toContain('Trinity');
@@ -249,7 +249,7 @@ describe('deploy-ci', () => {
     });
 
     it('should deploy complete CD workflow', async () => {
-      const stats = await deployCITemplates();
+      await deployCITemplates();
 
       const cdContent = await fs.readFile('.github/workflows/cd.yml', 'utf8');
       expect(cdContent).toContain('Trinity');
@@ -257,7 +257,7 @@ describe('deploy-ci', () => {
     });
 
     it('should deploy generic template with correct content', async () => {
-      const stats = await deployCITemplates();
+      await deployCITemplates();
 
       const genericContent = await fs.readFile('trinity/templates/ci/generic-ci.yml', 'utf8');
       expect(genericContent).toContain('Trinity');

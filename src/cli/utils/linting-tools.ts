@@ -206,7 +206,7 @@ export function getScriptsForTools(selectedTools: LintingTool[]): Record<string,
 
 export function getPostInstallInstructions(
   selectedTools: LintingTool[],
-  framework: string
+  _framework: string
 ): PostInstallInstruction[] {
   const instructions: PostInstallInstruction[] = [];
 

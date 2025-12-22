@@ -152,7 +152,7 @@ async function detectGitPlatform(): Promise<GitPlatform> {
     }
 
     return 'unknown';
-  } catch (error) {
+  } catch {
     return 'unknown';
   }
 }

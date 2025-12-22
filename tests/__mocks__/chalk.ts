@@ -2,7 +2,7 @@
  * Mock for chalk - used in Jest tests
  */
 
-const passthrough = (text: string) => text;
+const passthrough = (text: string): string => text;
 
 const chalk = {
   blue: passthrough,
@@ -14,13 +14,14 @@ const chalk = {
   white: passthrough,
   cyan: passthrough,
   bold: passthrough,
-  dim: passthrough
+  dim: passthrough,
 };
 
 // Add nested properties
-(chalk as any).blue.bold = passthrough;
-(chalk as any).green.bold = passthrough;
-(chalk as any).red.bold = passthrough;
-(chalk as any).yellow.bold = passthrough;
+type ChalkInstance = typeof chalk & Record<string, unknown>;
+(chalk as ChalkInstance).blue.bold = passthrough;
+(chalk as ChalkInstance).green.bold = passthrough;
+(chalk as ChalkInstance).red.bold = passthrough;
+(chalk as ChalkInstance).yellow.bold = passthrough;
 
 export default chalk;

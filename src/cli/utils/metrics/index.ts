@@ -93,7 +93,7 @@ async function collectCodebaseMetrics(
       metrics.commitCount = gitMetrics.commitCount;
       metrics.contributors = gitMetrics.contributors;
       metrics.lastCommitDate = gitMetrics.lastCommitDate;
-    } catch (error) {
+    } catch {
       // Git not available or not a git repo
       console.log('   Git metrics unavailable (not a git repository)');
     }

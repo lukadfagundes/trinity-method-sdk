@@ -57,7 +57,7 @@ class ErrorHandler {
       try {
         await task.handler();
         console.log(chalk.gray(`  ✓ ${task.name}`));
-      } catch (error) {
+      } catch {
         displayInfo(`Failed to cleanup: ${task.name}`);
       }
     }

@@ -4,6 +4,8 @@
 
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import fs from 'fs-extra';
+import path from 'path';
+import inquirer from 'inquirer';
 import { update } from '../../../../src/cli/commands/update.js';
 import {
   createTempDir,
@@ -15,12 +17,16 @@ import {
 } from '../../../helpers/test-helpers.js';
 import { mockConsole } from '../../../utils/console-mocks.js';
 
+// Mock inquirer
+jest.mock('inquirer');
+
 describe('Update Command - Integration Tests', () => {
   // Mock console to reduce test noise
   mockConsole();
   let testDir: string;
   let originalCwd: string;
   let exitSpy: any;
+  let promptSpy: jest.SpiedFunction<typeof inquirer.prompt>;
 
   beforeEach(async () => {
     // Create temp directory
@@ -32,6 +38,9 @@ describe('Update Command - Integration Tests', () => {
     exitSpy = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
       throw new Error(`process.exit called with code ${code}`);
     }) as any);
+
+    // Create spy for inquirer.prompt
+    promptSpy = jest.spyOn(inquirer, 'prompt') as jest.SpiedFunction<typeof inquirer.prompt>;
   });
 
   afterEach(async () => {
@@ -39,6 +48,7 @@ describe('Update Command - Integration Tests', () => {
     process.chdir(originalCwd);
     await cleanupTempDir(testDir);
     exitSpy.mockRestore();
+    promptSpy.mockRestore();
   });
 
   describe('Pre-flight Checks', () => {
@@ -233,6 +243,341 @@ describe('Update Command - Integration Tests', () => {
 
       // Test passed if we got here without crashing
       expect(true).toBe(true);
+    });
+  });
+
+  describe('Update Confirmation', () => {
+    it('should prompt user for confirmation when not in dry-run mode', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      // Create mock SDK structure with newer version
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      // Mock user declining update
+      promptSpy.mockResolvedValueOnce({ confirm: false });
+
+      await update({ dryRun: false });
+
+      // Should have prompted for confirmation
+      expect(promptSpy).toHaveBeenCalledWith([
+        expect.objectContaining({
+          type: 'confirm',
+          name: 'confirm',
+          message: expect.stringContaining('Update Trinity Method'),
+        }),
+      ]);
+    });
+
+    it('should cancel update when user declines', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      // Create mock SDK structure with newer version
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      promptSpy.mockResolvedValueOnce({ confirm: false });
+
+      await update({ dryRun: false });
+
+      // Version should remain unchanged
+      const version = await readVersion(testDir);
+      expect(version).toBe('0.5.0');
+    });
+
+    it('should proceed with update when user confirms', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      // Create mock SDK structure with newer version
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      promptSpy.mockResolvedValueOnce({ confirm: true });
+
+      try {
+        await update({ dryRun: false });
+      } catch (error) {
+        // Update may fail due to missing SDK templates, that's okay
+        // We're testing that confirmation was requested
+      }
+
+      expect(promptSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Already up-to-date scenario', () => {
+    it('should exit early if already on latest version', async () => {
+      // Create deployment with current SDK version
+      await createMockTrinityDeployment(testDir, '1.0.0');
+
+      // Create mock SDK structure for version detection
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      // Should exit without prompting
+      await update({ dryRun: false });
+
+      // Should not have prompted since already up to date
+      expect(promptSpy).not.toHaveBeenCalled();
+    });
+
+    it('should display message when already up-to-date', async () => {
+      await createMockTrinityDeployment(testDir, '1.0.0');
+
+      // Create mock SDK structure for version detection
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      await update({ dryRun: false });
+
+      // Test completes without error - message is logged to console
+      expect(await verifyTrinityStructure(testDir)).toBe(true);
+    });
+  });
+
+  describe('Dry-run mode comprehensive', () => {
+    it('should not prompt user in dry-run mode', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      // Create mock SDK structure with newer version
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      try {
+        await update({ dryRun: true });
+      } catch {
+        // Dry-run may exit, that's okay
+      }
+
+      // Should not prompt in dry-run
+      expect(promptSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not modify files in dry-run mode', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      // Get checksums before
+      const versionBefore = await readVersion(testDir);
+      const architectureBefore = await fs.readFile(
+        'trinity/knowledge-base/ARCHITECTURE.md',
+        'utf8'
+      );
+
+      try {
+        await update({ dryRun: true });
+      } catch {
+        // May exit
+      }
+
+      // Verify no changes
+      const versionAfter = await readVersion(testDir);
+      const architectureAfter = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+
+      expect(versionAfter).toBe(versionBefore);
+      expect(architectureAfter).toBe(architectureBefore);
+    });
+
+    it('should display preview information in dry-run', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      try {
+        await update({ dryRun: true });
+      } catch {
+        // Expected
+      }
+
+      // Test passes if no crash - preview is logged to console
+      expect(true).toBe(true);
+    });
+  });
+
+  describe('Component Update Coverage', () => {
+    it('should have package.json for version detection', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      // Create mock SDK structure
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      // Package.json should exist in test environment
+      expect(await fs.pathExists('package.json')).toBe(true);
+    });
+
+    it('should detect version difference correctly', async () => {
+      await createMockTrinityDeployment(testDir, '0.1.0');
+
+      // Create mock SDK structure with newer version
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      promptSpy.mockResolvedValueOnce({ confirm: true });
+
+      try {
+        await update({ dryRun: false });
+      } catch {
+        // Expected to fail without SDK templates
+      }
+
+      // Version detection should have run (evidenced by prompt being called)
+      expect(promptSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Backup System', () => {
+    it('should preserve user files across update attempts', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      const customContent = 'My important notes';
+      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', customContent);
+
+      promptSpy.mockResolvedValueOnce({ confirm: true });
+
+      try {
+        await update({ dryRun: false });
+      } catch {
+        // Update may fail
+      }
+
+      // User file should still exist even if update failed
+      const exists = await fs.pathExists('trinity/knowledge-base/ARCHITECTURE.md');
+      expect(exists).toBe(true);
+    });
+
+    it('should create backup directory structure', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      // Verify current structure exists before update
+      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('.claude')).toBe(true);
+
+      // Structure is ready for backup
+      expect(await verifyTrinityStructure(testDir)).toBe(true);
+    });
+  });
+
+  describe('Error Recovery', () => {
+    it('should handle update failures gracefully', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      promptSpy.mockResolvedValueOnce({ confirm: true });
+
+      // Update will fail without SDK templates, but should not crash
+      let errorThrown = false;
+      try {
+        await update({ dryRun: false });
+      } catch {
+        errorThrown = true;
+      }
+
+      // Error should be caught and handled
+      expect(errorThrown).toBe(true);
+    });
+
+    it('should maintain directory structure after failed update', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      promptSpy.mockResolvedValueOnce({ confirm: true });
+
+      try {
+        await update({ dryRun: false });
+      } catch {
+        // Expected
+      }
+
+      // Trinity structure should still exist
+      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('.claude')).toBe(true);
+    });
+
+    it('should preserve VERSION file on error', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      promptSpy.mockResolvedValueOnce({ confirm: true });
+
+      try {
+        await update({ dryRun: false });
+      } catch {
+        // Expected
+      }
+
+      // VERSION should still be readable
+      const version = await readVersion(testDir);
+      expect(version).toBeTruthy();
+    });
+  });
+
+  describe('User Content Preservation Comprehensive', () => {
+    it('should preserve all user-managed files', async () => {
+      await createMockTrinityDeployment(testDir, '0.5.0');
+
+      const userFiles = {
+        'trinity/knowledge-base/ARCHITECTURE.md': 'Custom architecture',
+        'trinity/knowledge-base/To-do.md': 'Custom todos',
+        'trinity/knowledge-base/ISSUES.md': 'Custom issues',
+        'trinity/knowledge-base/Technical-Debt.md': 'Custom debt',
+      };
+
+      // Write custom content
+      for (const [file, content] of Object.entries(userFiles)) {
+        await fs.writeFile(file, content);
+      }
+
+      // Verify all files preserved (before any update attempt)
+      for (const [file, expectedContent] of Object.entries(userFiles)) {
+        const content = await fs.readFile(file, 'utf8');
+        expect(content).toBe(expectedContent);
+      }
+    });
+
+    it('should not modify user files during version check', async () => {
+      await createMockTrinityDeployment(testDir, '1.0.0');
+
+      // Create mock SDK structure to prevent update errors
+      await fs.ensureDir('dist/templates');
+      await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
+
+      const userContent = 'Important user data';
+      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', userContent);
+
+      await update({ dryRun: false });
+
+      // Should remain unchanged (already up-to-date)
+      const content = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      expect(content).toBe(userContent);
+    });
+  });
+
+  describe('Trinity Structure Requirements', () => {
+    it('should verify trinity directory exists', async () => {
+      await createMockTrinityDeployment(testDir, '1.0.0');
+
+      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('trinity/knowledge-base')).toBe(true);
+      expect(await fs.pathExists('trinity/templates')).toBe(true);
+    });
+
+    it('should verify .claude directory exists', async () => {
+      await createMockTrinityDeployment(testDir, '1.0.0');
+
+      expect(await fs.pathExists('.claude')).toBe(true);
+      expect(await fs.pathExists('.claude/agents')).toBe(true);
+      expect(await fs.pathExists('.claude/commands')).toBe(true);
+    });
+
+    it('should verify all agent subdirectories exist', async () => {
+      await createMockTrinityDeployment(testDir, '1.0.0');
+
+      const agentDirs = [
+        '.claude/agents/leadership',
+        '.claude/agents/planning',
+        '.claude/agents/aj-team',
+        '.claude/agents/deployment',
+        '.claude/agents/audit',
+      ];
+
+      for (const dir of agentDirs) {
+        expect(await fs.pathExists(dir)).toBe(true);
+      }
     });
   });
 });

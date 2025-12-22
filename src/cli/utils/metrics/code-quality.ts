@@ -100,7 +100,14 @@ export async function countCommentedCode(dir: string): Promise<number> {
  * @param sourceDir - Source directory to analyze
  * @returns Code quality metrics
  */
-export async function collectCodeQualityMetrics(sourceDir: string) {
+export async function collectCodeQualityMetrics(sourceDir: string): Promise<{
+  todoCount: number;
+  todoComments: number;
+  fixmeComments: number;
+  hackComments: number;
+  consoleStatements: number;
+  commentedCodeBlocks: number;
+}> {
   const todoComments = await countPattern(sourceDir, /\/\/\s*TODO|#\s*TODO/gi);
   const fixmeComments = await countPattern(sourceDir, /\/\/\s*FIXME|#\s*FIXME/gi);
   const hackComments = await countPattern(sourceDir, /\/\/\s*HACK|#\s*HACK/gi);

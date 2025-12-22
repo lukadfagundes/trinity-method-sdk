@@ -17,7 +17,7 @@ export async function getCommitCount(): Promise<number> {
       stdio: ['pipe', 'pipe', 'ignore'],
     });
     return parseInt(count.trim(), 10);
-  } catch (error) {
+  } catch {
     return 0;
   }
 }
@@ -37,7 +37,7 @@ export async function getContributorCount(): Promise<number> {
       .split('\n')
       .filter((line) => line.length > 0);
     return lines.length;
-  } catch (error) {
+  } catch {
     return 1;
   }
 }
@@ -53,7 +53,7 @@ export async function getLastCommitDate(): Promise<string> {
       stdio: ['pipe', 'pipe', 'ignore'],
     });
     return date.trim();
-  } catch (error) {
+  } catch {
     return 'Unknown';
   }
 }
@@ -62,7 +62,11 @@ export async function getLastCommitDate(): Promise<string> {
  * Collect git metrics
  * @returns Git metrics
  */
-export async function collectGitMetrics() {
+export async function collectGitMetrics(): Promise<{
+  commitCount: number;
+  contributors: number;
+  lastCommitDate: string;
+}> {
   try {
     const commitCount = await getCommitCount();
     const contributors = await getContributorCount();
@@ -73,7 +77,7 @@ export async function collectGitMetrics() {
       contributors,
       lastCommitDate,
     };
-  } catch (error) {
+  } catch {
     // Git not available or not a git repo
     return {
       commitCount: 0,

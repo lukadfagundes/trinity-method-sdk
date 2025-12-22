@@ -122,7 +122,7 @@ export async function update(options: UpdateOptions): Promise<void> {
     if (backupDir) {
       try {
         await rollbackFromBackup(backupDir);
-      } catch (rollbackError: unknown) {
+      } catch {
         // Rollback error already logged in rollbackFromBackup
       }
     }

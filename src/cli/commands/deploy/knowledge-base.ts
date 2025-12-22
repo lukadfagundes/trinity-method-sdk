@@ -85,7 +85,7 @@ export async function deployKnowledgeBase(
     } else {
       spinner.info('ARCHITECTURE.md not found - skipping enrichment');
     }
-  } catch (error: unknown) {
+  } catch {
     spinner.warn('Knowledge base enrichment skipped');
   }
 

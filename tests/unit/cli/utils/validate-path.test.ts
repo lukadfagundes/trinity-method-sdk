@@ -206,7 +206,6 @@ describe('Path Validation Utility', () => {
         try {
           const targetFile = path.join(tempDir, 'target.txt');
           const symlinkFile = path.join(tempDir, 'link.txt');
-          const destFile = path.join(tempDir, 'dest.txt');
           await fs.writeFile(targetFile, 'content');
           await fs.symlink(targetFile, symlinkFile);
 
@@ -237,7 +236,6 @@ describe('Path Validation Utility', () => {
       if (process.platform !== 'win32') {
         const targetFile = path.join(tempDir, 'target.txt');
         const symlinkFile = path.join(tempDir, 'sourcedir', 'link.txt');
-        const destDir = path.join(tempDir, 'destdir');
 
         await fs.writeFile(targetFile, 'original content');
         await fs.ensureDir(path.join(tempDir, 'sourcedir'));

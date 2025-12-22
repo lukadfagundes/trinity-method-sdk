@@ -109,10 +109,10 @@ async function deployPreCommit(
 }
 
 async function deployTypeScriptESLint(
-  tool: LintingTool,
-  stack: Stack,
-  templateDir: string,
-  variables: Record<string, string | number>
+  _tool: LintingTool,
+  _stack: Stack,
+  _templateDir: string,
+  _variables: Record<string, string | number>
 ): Promise<void> {
   // Modify existing .eslintrc.json to add TypeScript support
   const eslintPath = '.eslintrc.json';

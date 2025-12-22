@@ -8,51 +8,101 @@ import fs from 'fs-extra';
 import { execSync } from 'child_process';
 
 /**
+ * Detect React version from package.json
+ */
+async function detectReactVersion(): Promise<string> {
+  if (!(await fs.pathExists('package.json'))) return 'Unknown';
+
+  const pkg = await fs.readJson('package.json');
+  if (pkg.dependencies?.react) {
+    return pkg.dependencies.react.replace(/[\^~]/, '');
+  }
+
+  return detectNodeVersion();
+}
+
+/**
+ * Detect Next.js version from package.json
+ */
+async function detectNextVersion(): Promise<string> {
+  if (!(await fs.pathExists('package.json'))) return 'Unknown';
+
+  const pkg = await fs.readJson('package.json');
+  if (pkg.dependencies?.next) {
+    return pkg.dependencies.next.replace(/[\^~]/, '');
+  }
+
+  return detectNodeVersion();
+}
+
+/**
+ * Detect Node.js version
+ */
+function detectNodeVersion(): string {
+  const nodeVersion = execSync('node --version', {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'ignore'],
+  });
+  return nodeVersion.trim();
+}
+
+/**
+ * Detect Flutter version from pubspec.yaml
+ */
+async function detectFlutterVersion(): Promise<string> {
+  if (!(await fs.pathExists('pubspec.yaml'))) return 'Unknown';
+
+  const yaml = await fs.readFile('pubspec.yaml', 'utf8');
+  const match = yaml.match(/sdk:\s*["']>=?(\d+\.\d+\.\d+)/);
+  return match ? match[1] : 'Unknown';
+}
+
+/**
+ * Detect Python version
+ */
+function detectPythonVersion(): string {
+  const version = execSync('python --version 2>&1', {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'ignore'],
+  });
+  return version.trim().replace('Python ', '');
+}
+
+/**
+ * Detect Rust version
+ */
+function detectRustVersion(): string {
+  const version = execSync('rustc --version', {
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'ignore'],
+  });
+  return version.trim().replace('rustc ', '');
+}
+
+/**
+ * Framework version detector map
+ */
+const VERSION_DETECTORS: Record<string, () => Promise<string> | string> = {
+  React: detectReactVersion,
+  'Next.js': detectNextVersion,
+  'Node.js': detectNodeVersion,
+  Flutter: detectFlutterVersion,
+  Python: detectPythonVersion,
+  Rust: detectRustVersion,
+};
+
+/**
  * Detect framework version
  * @param framework - Framework name
  * @returns Version string
  */
 export async function detectFrameworkVersion(framework: string): Promise<string> {
   try {
-    if (framework === 'Node.js' || framework === 'React' || framework === 'Next.js') {
-      if (await fs.pathExists('package.json')) {
-        const pkg = await fs.readJson('package.json');
-
-        // Try framework-specific version first
-        if (framework === 'React' && pkg.dependencies?.react) {
-          return pkg.dependencies.react.replace(/[\^~]/, '');
-        }
-        if (framework === 'Next.js' && pkg.dependencies?.next) {
-          return pkg.dependencies.next.replace(/[\^~]/, '');
-        }
-
-        // Fall back to Node.js version
-        const nodeVersion = execSync('node --version', {
-          encoding: 'utf8',
-          stdio: ['pipe', 'pipe', 'ignore'],
-        });
-        return nodeVersion.trim();
-      }
-    } else if (framework === 'Flutter') {
-      if (await fs.pathExists('pubspec.yaml')) {
-        const yaml = await fs.readFile('pubspec.yaml', 'utf8');
-        const match = yaml.match(/sdk:\s*["']>=?(\d+\.\d+\.\d+)/);
-        if (match) return match[1];
-      }
-    } else if (framework === 'Python') {
-      const version = execSync('python --version 2>&1', {
-        encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'ignore'],
-      });
-      return version.trim().replace('Python ', '');
-    } else if (framework === 'Rust') {
-      const version = execSync('rustc --version', {
-        encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'ignore'],
-      });
-      return version.trim().replace('rustc ', '');
+    const detector = VERSION_DETECTORS[framework];
+    if (detector) {
+      return await detector();
     }
-  } catch (error) {
+  } catch {
     // Framework version detection failed
   }
 

@@ -112,6 +112,142 @@ async function detectSourceDirectories(targetDir: string): Promise<string[]> {
   return foundDirs;
 }
 
+/**
+ * Detect Flutter project
+ */
+async function detectFlutter(targetDir: string): Promise<Partial<Stack> | null> {
+  if (await exists(path.join(targetDir, 'pubspec.yaml'))) {
+    return {
+      language: 'Dart',
+      framework: 'Flutter',
+      sourceDir: 'lib',
+    };
+  }
+  return null;
+}
+
+/**
+ * Detect Rust project
+ */
+async function detectRust(targetDir: string): Promise<Partial<Stack> | null> {
+  if (await exists(path.join(targetDir, 'Cargo.toml'))) {
+    return {
+      language: 'Rust',
+      framework: 'Generic',
+      sourceDir: 'src',
+    };
+  }
+  return null;
+}
+
+/**
+ * Detect Go project
+ */
+async function detectGo(targetDir: string): Promise<Partial<Stack> | null> {
+  if (await exists(path.join(targetDir, 'go.mod'))) {
+    return {
+      language: 'Go',
+      framework: 'Generic',
+      sourceDir: '.',
+    };
+  }
+  return null;
+}
+
+/**
+ * Detect Node.js/JavaScript framework
+ */
+async function detectNodeFramework(pkg: Record<string, unknown>): Promise<string> {
+  const deps = pkg.dependencies as Record<string, unknown> | undefined;
+
+  if (deps?.next) return 'Next.js';
+  if (deps?.react) return 'React';
+  if (deps?.vue) return 'Vue';
+  if (deps?.['@angular/core']) return 'Angular';
+  if (deps?.express) return 'Express';
+
+  return 'Node.js';
+}
+
+/**
+ * Detect package manager
+ */
+async function detectPackageManager(targetDir: string): Promise<string> {
+  if (await exists(path.join(targetDir, 'pnpm-lock.yaml'))) return 'pnpm';
+  if (await exists(path.join(targetDir, 'yarn.lock'))) return 'yarn';
+  return 'npm';
+}
+
+/**
+ * Detect Node.js project
+ */
+async function detectNodeJs(targetDir: string): Promise<Partial<Stack> | null> {
+  if (!(await exists(path.join(targetDir, 'package.json')))) {
+    return null;
+  }
+
+  try {
+    const pkgPath = path.join(targetDir, 'package.json');
+    const pkgContent = await fs.readFile(pkgPath, 'utf8');
+    const pkg = JSON.parse(pkgContent);
+
+    const framework = await detectNodeFramework(pkg);
+    const packageManager = await detectPackageManager(targetDir);
+
+    return {
+      language: 'JavaScript/TypeScript',
+      framework,
+      sourceDir: framework === 'Angular' ? 'src/app' : 'src',
+      packageManager,
+    };
+  } catch (parseError: unknown) {
+    const { displayError, getErrorMessage } = await import('../utils/errors.js');
+    displayError(`Error parsing package.json: ${getErrorMessage(parseError)}`);
+    return null;
+  }
+}
+
+/**
+ * Detect Python project
+ */
+async function detectPython(targetDir: string): Promise<Partial<Stack> | null> {
+  const hasPythonFiles =
+    (await exists(path.join(targetDir, 'requirements.txt'))) ||
+    (await exists(path.join(targetDir, 'setup.py'))) ||
+    (await exists(path.join(targetDir, 'pyproject.toml')));
+
+  if (!hasPythonFiles) {
+    return null;
+  }
+
+  let framework = 'Generic';
+
+  // Check for Flask
+  if (await exists(path.join(targetDir, 'requirements.txt'))) {
+    const reqContent = await fs.readFile(path.join(targetDir, 'requirements.txt'), 'utf8');
+    if (reqContent.toLowerCase().includes('flask')) {
+      framework = 'Flask';
+    }
+  }
+
+  return {
+    language: 'Python',
+    framework,
+    sourceDir: 'app',
+  };
+}
+
+/**
+ * Finalize source directories
+ */
+function finalizeSourceDirs(result: Stack): void {
+  if (result.sourceDirs.length === 0) {
+    result.sourceDirs = [result.sourceDir];
+  } else if (!result.sourceDirs.includes(result.sourceDir)) {
+    result.sourceDir = result.sourceDirs[0];
+  }
+}
+
 export async function detectStack(targetDir: string = process.cwd()): Promise<Stack> {
   const result: Stack = {
     language: 'Unknown',
@@ -122,85 +258,16 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
   };
 
   try {
-    // Check for Flutter FIRST (before package.json)
-    // This prevents false positives when Trinity SDK creates package.json
-    if (await exists(path.join(targetDir, 'pubspec.yaml'))) {
-      result.language = 'Dart';
-      result.framework = 'Flutter';
-      result.sourceDir = 'lib';
-    }
-    // Check for Rust
-    else if (await exists(path.join(targetDir, 'Cargo.toml'))) {
-      result.language = 'Rust';
-      result.framework = 'Generic';
-      result.sourceDir = 'src';
-    }
-    // Check for Go
-    else if (await exists(path.join(targetDir, 'go.mod'))) {
-      result.language = 'Go';
-      result.framework = 'Generic';
-      result.sourceDir = '.';
-    }
-    // Check for Node.js/JavaScript
-    // IMPORTANT: Check this AFTER other language-specific files to avoid false positives
-    // (Trinity SDK installation may create package.json in non-Node projects)
-    else if (await exists(path.join(targetDir, 'package.json'))) {
-      try {
-        const pkgPath = path.join(targetDir, 'package.json');
-        const pkgContent = await fs.readFile(pkgPath, 'utf8');
-        const pkg = JSON.parse(pkgContent);
+    // Detector array pattern - order matters!
+    // Check Flutter FIRST to avoid false positives when Trinity SDK creates package.json
+    const detectors = [detectFlutter, detectRust, detectGo, detectNodeJs, detectPython];
 
-        result.language = 'JavaScript/TypeScript';
-
-        // Detect framework (check Next.js BEFORE React since Next.js includes React)
-        if (pkg.dependencies?.next) {
-          result.framework = 'Next.js';
-        } else if (pkg.dependencies?.react) {
-          result.framework = 'React';
-        } else if (pkg.dependencies?.vue) {
-          result.framework = 'Vue';
-        } else if (pkg.dependencies?.['@angular/core']) {
-          result.framework = 'Angular';
-          result.sourceDir = 'src/app';
-        } else if (pkg.dependencies?.express) {
-          result.framework = 'Express';
-        } else {
-          result.framework = 'Node.js';
-        }
-
-        // Detect package manager
-        if (await exists(path.join(targetDir, 'pnpm-lock.yaml'))) {
-          result.packageManager = 'pnpm';
-        } else if (await exists(path.join(targetDir, 'yarn.lock'))) {
-          result.packageManager = 'yarn';
-        } else {
-          result.packageManager = 'npm';
-        }
-      } catch (parseError: unknown) {
-        const { displayError, getErrorMessage } = await import('../utils/errors.js');
-        displayError(`Error parsing package.json: ${getErrorMessage(parseError)}`);
-        // If package.json is malformed, treat as unknown project
-        // (keep default result.language = 'Unknown', result.framework = 'Generic')
+    for (const detector of detectors) {
+      const detected = await detector(targetDir);
+      if (detected) {
+        Object.assign(result, detected);
+        break;
       }
-    }
-    // Check for Python
-    else if (
-      (await exists(path.join(targetDir, 'requirements.txt'))) ||
-      (await exists(path.join(targetDir, 'setup.py'))) ||
-      (await exists(path.join(targetDir, 'pyproject.toml')))
-    ) {
-      result.language = 'Python';
-      result.framework = 'Generic';
-
-      // Check for Flask
-      if (await exists(path.join(targetDir, 'requirements.txt'))) {
-        const reqContent = await fs.readFile(path.join(targetDir, 'requirements.txt'), 'utf8');
-        if (reqContent.toLowerCase().includes('flask')) {
-          result.framework = 'Flask';
-        }
-      }
-
-      result.sourceDir = 'app';
     }
   } catch (error: unknown) {
     const { displayWarning, getErrorMessage } = await import('../utils/errors.js');
@@ -210,13 +277,8 @@ export async function detectStack(targetDir: string = process.cwd()): Promise<St
   // Detect all source directories (monorepo support)
   result.sourceDirs = await detectSourceDirectories(targetDir);
 
-  // Ensure primary sourceDir is in sourceDirs array
-  if (result.sourceDirs.length === 0) {
-    result.sourceDirs = [result.sourceDir];
-  } else if (!result.sourceDirs.includes(result.sourceDir)) {
-    // If detected sourceDirs doesn't include the primary, use first detected as primary
-    result.sourceDir = result.sourceDirs[0];
-  }
+  // Finalize source directories
+  finalizeSourceDirs(result);
 
   return result;
 }

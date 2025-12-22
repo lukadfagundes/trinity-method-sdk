@@ -29,7 +29,7 @@ export async function collectMetrics(stack: Stack, spinner: Spinner): Promise<Co
     console.log(chalk.white(`  Dependencies: ${metrics.dependencyCount}`));
 
     return metrics;
-  } catch (error) {
+  } catch {
     spinner.warn('Could not collect all metrics');
     console.log(chalk.yellow('  Some metrics collection failed, continuing...'));
 

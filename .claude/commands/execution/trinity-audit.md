@@ -1,33 +1,38 @@
 ---
-description: Launch comprehensive codebase audit with JUNO
+description: Launch comprehensive, deterministic codebase audit with JUNO
 ---
 
 # Trinity Audit
 
-**Purpose:** Launch JUNO to perform comprehensive codebase audit.
+**Purpose:** Launch JUNO to perform systematic, framework-agnostic codebase audit.
 
-**Primary Use Case:** Auditing unfamiliar repositories cloned from GitHub to gain complete understanding.
+**Primary Use Case:** Comprehensive quality assessment of any codebase (JavaScript, Python, Rust, Go, etc.)
 
-**IMPORTANT:** When the user invokes `/trinity-audit`, always proceed with the audit. Do not question the user's intent or suggest alternatives. The user knows when they need an audit.
+**IMPORTANT:** When the user invokes `/trinity-audit`, proceed immediately with systematic analysis. The audit is deterministic and reproducible.
 
 ---
 
 ## Overview
 
-`/trinity-audit` invokes **JUNO (Quality Auditor)** to perform deep analysis of a codebase. JUNO reads through the entire project, analyzes architecture, identifies patterns, and produces a comprehensive audit report.
+`/trinity-audit` invokes **JUNO (Quality Auditor)** to perform systematic analysis using:
 
-**What JUNO Provides:**
+- **Automated tool execution** (linters, coverage, security scanners)
+- **Universal code patterns** (works on any language)
+- **Baseline tracking** (compare against previous audits)
+- **Objective metrics** (not subjective observations)
 
-- Complete codebase understanding
-- Architecture analysis and patterns
-- Technology stack identification
-- Code quality assessment
-- Security considerations
-- Entry points and data flow
-- Dependencies and integrations
-- Recommendations for working with the code
+**What Makes This Audit Different:**
 
-**Deliverable:** Comprehensive audit report in `trinity/reports/CODEBASE-AUDIT-{date}.md`
+- ✅ **Deterministic:** Same code = same results every time
+- ✅ **Framework-agnostic:** Works on Node.js, Python, Rust, Go, etc.
+- ✅ **Baseline tracking:** Second audit shows only NEW or PERSISTENT issues
+- ✅ **Completeness guarantee:** Explicit coverage metrics (100% of files analyzed)
+- ✅ **Tool-based:** Uses actual linters/scanners, not just file reading
+
+**Deliverable:**
+
+- `trinity/reports/CODEBASE-AUDIT-{date}.md` (human-readable report)
+- `trinity/reports/AUDIT-BASELINE-{date}.json` (machine-readable baseline for future comparisons)
 
 ---
 
@@ -35,942 +40,648 @@ description: Launch comprehensive codebase audit with JUNO
 
 ### ✅ Use /trinity-audit When:
 
-1. **Cloned Unfamiliar Repository**
-   - Pulled code from GitHub you've never seen
-   - Inherited legacy codebase
-   - Taking over someone else's project
-   - Contributing to open source (first time)
+1. **First time auditing a codebase**
+   - Creates baseline for future comparisons
+   - Identifies ALL current issues systematically
 
-2. **Need Complete Understanding**
-   - Don't know what the code does
-   - Don't understand how it works
-   - Need to identify entry points
-   - Want to understand architecture
+2. **After fixing audit issues**
+   - Verify fixes resolved the problems
+   - Ensure no new issues were introduced
+   - See progress: "X issues fixed, 0 new issues"
 
-3. **Before Making Changes**
-   - Want to understand before modifying
-   - Need to assess impact of changes
-   - Looking for technical debt
-   - Evaluating refactoring opportunities
+3. **Before major refactoring**
+   - Establish quality baseline
+   - Track improvements over time
 
-4. **Security Assessment**
-   - Need to identify security issues
-   - Evaluating third-party code
-   - Checking for vulnerabilities
-   - Understanding attack surface
+4. **Periodic quality checks**
+   - Monthly/quarterly codebase health review
+   - Track technical debt accumulation
 
-### ⚠️ Less Common Use Cases:
+### ⚠️ Second Audit Behavior:
 
-While `/trinity-audit` is primarily designed for unfamiliar codebases, you may also use it to:
+When a baseline exists (`trinity/reports/AUDIT-BASELINE-*.json`):
 
-- **Generate comprehensive documentation** for your own project
-- **Identify technical debt** in familiar codebases
-- **Create baseline assessment** before major refactoring
-- **Audit after significant team changes** or long breaks from the code
+- **FIXED issues:** ✅ Marked as resolved (celebrate!)
+- **NEW issues:** ⚠️ Flagged as introduced since last audit
+- **PERSISTENT issues:** 🔴 Still present from previous audit
 
-**Note:** Trinity installation audits happen automatically during `/trinity-init`. Work order verification happens automatically after `/trinity-orchestrate`.
+**Goal:** Second audit should show "0 new issues, 0 persistent issues" if you fixed everything.
 
 ---
 
-## Usage
+## JUNO's Deterministic Audit Protocol
 
-### Basic Audit (Full Codebase)
+JUNO follows a **strict, repeatable process** to ensure consistent results:
+
+### Phase 0: Baseline Check & Comparison
+
+**CRITICAL:** Load previous audit baseline if it exists.
 
 ```bash
-/trinity-audit
+# Check for existing baseline
+IF trinity/reports/AUDIT-BASELINE-*.json exists:
+  - Load previous findings
+  - Track what's been fixed ✅
+  - Track what's new ⚠️
+  - Track what's persistent 🔴
+  - Report: "Comparing against baseline from {date}"
+ELSE:
+  - This is first audit
+  - Create new baseline
+  - Report: "Creating new audit baseline"
 ```
 
-JUNO will audit the entire codebase and provide comprehensive analysis.
+**Output:**
 
-### Focused Audit (Specific Area)
+- State whether baseline exists
+- If comparing: Show baseline date
+- Set audit mode: BASELINE or COMPARISON
+
+---
+
+### Phase 1: Stack Detection (Framework-Agnostic)
+
+**Systematic discovery** of project type, language, and available tools.
+
+**Steps (execute ALL, skip none):**
+
+1. **Detect Language & Framework:**
+
+   ```bash
+   Check for package.json → Node.js/JavaScript/TypeScript
+   Check for Cargo.toml → Rust
+   Check for go.mod → Go
+   Check for requirements.txt, setup.py, pyproject.toml → Python
+   Check for Gemfile → Ruby
+   Check for pom.xml, build.gradle → Java
+   Check for pubspec.yaml → Flutter/Dart
+   Check for *.csproj → C#
+   ```
+
+2. **Identify ALL Source Directories:**
+
+   ```bash
+   Scan for: src/, lib/, app/, pkg/, internal/
+   Ignore: node_modules/, dist/, build/, target/, vendor/
+   ```
+
+3. **Count Files by Extension:**
+
+   ```bash
+   .js, .ts, .jsx, .tsx → JavaScript/TypeScript count
+   .py → Python count
+   .rs → Rust count
+   .go → Go count
+   .rb → Ruby count
+   .java → Java count
+   .cs → C# count
+   ```
+
+4. **Calculate Total LOC:**
+
+   ```bash
+   Use Bash tool: find . -name "*.{ext}" -exec wc -l {} + | tail -1
+   ```
+
+5. **Identify Available Tools:**
+   ```bash
+   Check if eslint exists: which eslint || npm list eslint
+   Check if pytest exists: which pytest
+   Check if cargo exists: which cargo
+   Check if go exists: which go
+   Document which tools are available vs unavailable
+   ```
+
+**Output:**
+
+```json
+{
+  "language": "JavaScript/TypeScript",
+  "framework": "Node.js",
+  "source_dirs": ["src/", "tests/"],
+  "file_counts": { "ts": 49, "json": 12 },
+  "total_loc": 4632,
+  "tools_available": ["eslint", "jest", "npm"],
+  "tools_unavailable": ["cargo", "go", "pytest"]
+}
+```
+
+---
+
+### Phase 2: Automated Tool Execution (Opportunistic)
+
+**RUN ACTUAL TOOLS** to get objective metrics. Do NOT skip this phase.
+
+**For Each Available Tool:**
+
+#### If `npm run lint` or `eslint` exists:
 
 ```bash
-/trinity-audit "Focus on authentication system"
+npm run lint 2>&1 | tee audit-lint-output.txt
+# OR
+eslint . --format json > audit-eslint.json
+
+Parse output:
+- Count total warnings/errors
+- Extract ALL specific issues (file:line:rule)
+- Group by severity (error vs warning)
+- Save to findings array
 ```
 
-JUNO will audit the entire codebase but provide deeper analysis of the specified area.
-
-### Quick Audit (High-Level Overview)
+#### If `npm test` or test framework exists:
 
 ```bash
-/trinity-audit --quick
+npm run test:coverage 2>&1 | tee audit-coverage-output.txt
+# OR pytest --cov
+# OR cargo test
+# OR go test -cover
+
+Parse output:
+- Extract coverage percentage
+- Identify uncovered files
+- Count total tests passing/failing
 ```
 
-JUNO provides high-level overview without deep analysis (faster for very large codebases).
+#### If `npm audit` or dependency checker exists:
+
+```bash
+npm audit --json > audit-dependencies.json
+# OR pip-audit
+# OR cargo audit
+
+Parse output:
+- List vulnerabilities with CVE IDs
+- Group by severity (critical/high/medium/low)
+- Note outdated packages
+```
+
+#### If TypeScript compiler exists:
+
+```bash
+tsc --noEmit 2>&1 | tee audit-tsc-output.txt
+
+Parse output:
+- Count type errors
+- Extract specific errors (file:line)
+```
+
+**Output:**
+
+```json
+{
+  "tools_executed": {
+    "lint": { "run": true, "errors": 13, "warnings": 44 },
+    "coverage": { "run": true, "percentage": 67 },
+    "audit": { "run": true, "vulnerabilities": 0 },
+    "typecheck": { "run": true, "errors": 0 }
+  }
+}
+```
+
+**IMPORTANT:** Document which tools ran and which couldn't run. This is critical for reproducibility.
 
 ---
 
-## JUNO's Audit Process
+### Phase 3: Universal Code Analysis (Language-Agnostic)
 
-When you invoke `/trinity-audit`, JUNO performs an 8-phase comprehensive analysis:
+**These checks work on ANY codebase**, regardless of language or tooling.
 
-### Phase 1: Project Discovery
+**Execute ALL checks systematically:**
 
-**What JUNO Checks:**
+1. **TODO/FIXME/HACK Comments:**
 
-- Project type (web app, library, CLI, API, etc.)
-- Technology stack (languages, frameworks, libraries)
-- Build system (package.json, Cargo.toml, requirements.txt, etc.)
-- Development environment setup
-- Documentation availability
+   ```bash
+   grep -rn "TODO\|FIXME\|HACK" src/ --exclude-dir=node_modules
 
-**Deliverable:** Project overview section in audit report
+   For each match:
+   - Record file:line
+   - Extract comment text
+   - Flag as technical debt
+   ```
 
----
+2. **Hardcoded Secrets Detection:**
 
-### Phase 2: Architecture Analysis
+   ```bash
+   grep -rniE "(api_key|apikey|secret|password|token|auth.*=).*['\"][a-zA-Z0-9]{20,}" src/ --exclude-dir=node_modules
 
-**What JUNO Analyzes:**
+   Patterns to check:
+   - API_KEY = "..."
+   - password = "..."
+   - secret = "..."
+   - Bearer tokens
+   ```
 
-- Directory structure and organization
-- Architectural patterns (MVC, microservices, monolith, etc.)
-- Component relationships and dependencies
-- Data flow and state management
-- Entry points (main files, routes, endpoints)
+3. **Large File Detection:**
 
-**Deliverable:** Architecture diagram and analysis
+   ```bash
+   find src/ -name "*.{js,ts,py,rs,go}" -exec wc -l {} + | awk '$1 > 500 {print}'
 
----
+   Flag files >500 LOC for review
+   ```
 
-### Phase 3: Code Quality Assessment
+4. **Directory Structure Depth:**
 
-**What JUNO Evaluates:**
+   ```bash
+   find src/ -type d | awk -F/ 'NF > 5 {print}'
 
-- Code organization and structure
-- Naming conventions and consistency
-- Code complexity (cyclomatic complexity, nesting depth)
-- Code duplication (DRY violations)
-- Function/file size
-- Comments and documentation quality
+   Flag deeply nested directories (>5 levels)
+   ```
 
-**Deliverable:** Code quality score with specific issues
+5. **Missing Documentation:**
 
----
+   ```bash
+   Check for README.md in root
+   Check for CONTRIBUTING.md
+   Check for API documentation (docs/ or similar)
+   ```
 
-### Phase 4: Technology Stack Analysis
+6. **Environment File Exposure:**
+   ```bash
+   Check if .env exists AND .env.example does NOT exist
+   Check if .env is in .gitignore
+   ```
 
-**What JUNO Identifies:**
+**Output:**
 
-- Programming languages used
-- Frameworks and libraries
-- Development dependencies vs production dependencies
-- Deprecated or outdated dependencies
-- Version compatibility issues
-- Missing security updates
-
-**Deliverable:** Technology stack inventory with recommendations
-
----
-
-### Phase 5: Security Analysis
-
-**What JUNO Checks:**
-
-- Common vulnerabilities (OWASP Top 10)
-- Authentication and authorization patterns
-- Input validation and sanitization
-- Secrets management (hardcoded credentials, API keys)
-- Dependency vulnerabilities
-- Insecure patterns (SQL injection, XSS, etc.)
-
-**Deliverable:** Security assessment with severity ratings
-
----
-
-### Phase 6: Testing Assessment
-
-**What JUNO Evaluates:**
-
-- Test coverage (if tests exist)
-- Test types (unit, integration, e2e)
-- Test quality and completeness
-- Testing frameworks used
-- Missing test coverage areas
-
-**Deliverable:** Testing assessment with coverage gaps
+```json
+{
+  "universal_checks": {
+    "todo_comments": 12,
+    "hardcoded_secrets": 0,
+    "large_files": 2,
+    "deep_nesting": 0,
+    "missing_docs": false,
+    "env_exposure_risk": false
+  }
+}
+```
 
 ---
 
-### Phase 7: Data Flow Analysis
+### Phase 4: Language-Specific Pattern Detection
 
-**What JUNO Maps:**
+**Based on detected language**, check for common anti-patterns:
 
-- How data enters the system (API endpoints, file uploads, etc.)
-- How data flows through components
-- Where data is stored (databases, files, cache)
-- How data leaves the system (API responses, file downloads, etc.)
-- Data transformations and validation
+#### JavaScript/TypeScript:
 
-**Deliverable:** Data flow diagram and analysis
+```bash
+grep -rn "eval(" src/
+grep -rn "innerHTML.*=" src/
+grep -rn " == " src/  # Suggest === instead
+```
+
+#### Python:
+
+```bash
+grep -rn "exec(" src/
+grep -rn "input()" src/  # Check for validation
+```
+
+#### Rust:
+
+```bash
+grep -rn "unsafe" src/
+```
+
+#### Go:
+
+```bash
+grep -rn "go func" src/  # Check for goroutine leaks
+```
+
+**Output:** List of pattern matches with file:line
 
 ---
 
-### Phase 8: Recommendations & Next Steps
+### Phase 5: Baseline Comparison (If Baseline Exists)
 
-**What JUNO Provides:**
+**CRITICAL PHASE:** Compare current findings against previous audit.
 
-- Priority issues to address
-- Quick wins (easy improvements)
-- Refactoring opportunities
-- Security fixes needed
+```json
+IF baseline exists:
+  FOR EACH issue in previous_baseline:
+    IF issue NOT in current_findings:
+      status = "FIXED" ✅
+    ELSE:
+      status = "PERSISTENT" 🔴
+
+  FOR EACH issue in current_findings:
+    IF issue NOT in previous_baseline:
+      status = "NEW" ⚠️
+    ELSE:
+      status = "PERSISTENT" 🔴
+
+  Report summary:
+  - Fixed: X issues ✅
+  - Persistent: Y issues 🔴
+  - New: Z issues ⚠️
+```
+
+**This is what prevents infinite audit cycles.**
+
+---
+
+### Phase 6: Completeness Verification
+
+**Explicitly state what was analyzed** to guarantee thoroughness.
+
+**Required Metrics:**
+
+```json
+{
+  "completeness": {
+    "files_analyzed": "49/49 (100%)",
+    "tools_executed": "3/5 available tools",
+    "universal_checks": "6/6 checks completed",
+    "language_patterns": "4/4 patterns checked",
+    "baseline_comparison": "yes" or "no (first audit)",
+    "confidence_level": "HIGH" or "MEDIUM" or "LOW"
+  }
+}
+```
+
+**Confidence Levels:**
+
+- **HIGH:** All available tools ran successfully, 100% file coverage
+- **MEDIUM:** Some tools unavailable, but all files analyzed
+- **LOW:** Many tools unavailable, manual analysis only
+
+---
+
+### Phase 7: Generate Findings Report
+
+**Structure findings by priority** (based on objective criteria):
+
+#### CRITICAL (P0):
+
+- Security vulnerabilities (CVE with CVSS > 7.0)
+- Hardcoded secrets found
+- Authentication/authorization bypasses
+- SQL injection, XSS, RCE vulnerabilities
+
+#### HIGH (P1):
+
+- Lint errors (not warnings)
+- Failed tests
+- Coverage below 50%
+- Outdated dependencies with known vulnerabilities
+- Type errors (if TypeScript)
+
+#### MEDIUM (P2):
+
+- Lint warnings
+- Coverage 50-80%
+- TODO/FIXME comments
+- Large files (>500 LOC)
+- Cyclomatic complexity >15
+
+#### LOW (P3):
+
 - Documentation gaps
-- Suggested workflow for making changes
-- **Work order files created in trinity/work-orders/**
+- Deep directory nesting
+- Minor code style issues
 
-**Deliverable:** Actionable recommendations with priorities + Work order files
+**Each finding must include:**
 
-**IMPORTANT:** JUNO must create actual work order files (WO-\*.md) in trinity/work-orders/ for each CRITICAL and HIGH priority issue identified. Each work order must be a complete, actionable document following Trinity work order format.
+- File path
+- Line number (if applicable)
+- Issue description
+- Tool that detected it (or "manual analysis")
+- Recommendation for fix
+- Estimated effort
 
 ---
 
-## Audit Report Format
+### Phase 8: Save Outputs
 
-JUNO's audit report is saved to `trinity/reports/CODEBASE-AUDIT-{date}.md` with this structure:
+**Two files created:**
+
+#### 1. Human-Readable Report: `trinity/reports/CODEBASE-AUDIT-{date}.md`
 
 ```markdown
 # Codebase Audit Report
 
-**Project:** {project-name}
-**Repository:** {github-url}
-**Audit Date:** {date}
-**Auditor:** JUNO (Trinity Quality Auditor)
-
----
+**Audit Date:** {timestamp}
+**Audit Mode:** {BASELINE | COMPARISON}
+**Baseline Date:** {previous-audit-date} (if comparison)
 
 ## Executive Summary
 
 **Project Type:** {type}
-**Technology Stack:** {main-technologies}
-**Lines of Code:** {loc}
-**Overall Assessment:** {rating}/10
+**Language:** {language}
+**Framework:** {framework}
+**Total LOC:** {loc}
+**Files Analyzed:** {count}
 
-### Key Findings:
+### Audit Results
 
-- {finding-1}
-- {finding-2}
-- {finding-3}
+- **Fixed Issues:** {count} ✅ (if comparison mode)
+- **Persistent Issues:** {count} 🔴 (if comparison mode)
+- **New Issues:** {count} ⚠️ (if comparison mode)
+- **Total Issues:** {count}
 
-### Critical Issues:
+### Completeness Metrics
 
-- {issue-1}
-- {issue-2}
+- Files analyzed: 100% (49/49)
+- Tools executed: 3/5 available
+- Confidence: HIGH
 
----
+## Findings by Priority
 
-## 1. Project Overview
+### 🔴 CRITICAL (Fix Immediately)
 
-### What This Project Does
+[List with file:line references]
 
-{high-level-description}
+### 🟡 HIGH (Fix This Week)
 
-### Technology Stack
+[List with file:line references]
 
-- **Languages:** {languages}
-- **Frameworks:** {frameworks}
-- **Database:** {database}
-- **Build System:** {build-system}
+### 🟢 MEDIUM (Improvements)
 
-### Project Structure
-```
+[List with file:line references]
 
-{directory-tree}
+### 💡 QUICK WINS
 
-```
+[Easy fixes, <30min each]
 
----
+## Tool Execution Details
 
-## 2. Architecture Analysis
+### ESLint Results
 
-### Architectural Pattern
-{pattern-description}
+- Errors: {count}
+- Warnings: {count}
+  [Specific issues...]
 
-### Component Breakdown
-{components-and-relationships}
+### Test Coverage
 
-### Entry Points
-{main-files-and-routes}
+- Percentage: {percent}%
+- Uncovered files: [list]
 
-### Data Flow
-{how-data-flows-through-system}
+### Dependency Audit
 
----
+- Vulnerabilities: {count}
+  [Specific CVEs if any...]
 
-## 3. Code Quality Assessment
+## Universal Analysis
 
-**Overall Quality Score:** {score}/10
+- TODO comments: {count}
+- Large files: {count}
+- Hardcoded secrets: {count}
 
-### Strengths
-- {strength-1}
-- {strength-2}
+## Recommendations
 
-### Issues Found
-- {issue-1}
-- {issue-2}
+[Prioritized list of actionable next steps]
 
-### Complexity Analysis
-- Average cyclomatic complexity: {number}
-- Files exceeding complexity threshold: {count}
-- Longest functions: {list}
+## Next Audit
 
----
-
-## 4. Technology Stack Details
-
-### Production Dependencies
-{dependency-list-with-versions}
-
-### Development Dependencies
-{dev-dependency-list}
-
-### Outdated Dependencies
-{outdated-packages-with-security-implications}
-
----
-
-## 5. Security Analysis
-
-**Security Score:** {score}/10
-
-### Vulnerabilities Found
-1. **{vulnerability-name}** - Severity: {HIGH/MEDIUM/LOW}
-   - Location: {file}:{line}
-   - Description: {description}
-   - Recommendation: {fix}
-
-### Security Patterns Identified
-- Authentication: {pattern}
-- Authorization: {pattern}
-- Input Validation: {pattern}
-
-### Secrets Found
-⚠️ {hardcoded-secrets-list}
-
----
-
-## 6. Testing Assessment
-
-**Test Coverage:** {percentage}%
-
-### Test Types
-- Unit tests: {count}
-- Integration tests: {count}
-- E2E tests: {count}
-
-### Coverage Gaps
-- {area-1} - No tests
-- {area-2} - Insufficient coverage
-
----
-
-## 7. Data Flow Analysis
-
-### Data Entry Points
-1. {endpoint-1} - {description}
-2. {endpoint-2} - {description}
-
-### Data Storage
-- {database-or-file-description}
-
-### Data Exit Points
-1. {api-or-export-description}
-
----
-
-## 8. Recommendations
-
-### 🔴 Critical (Fix Immediately)
-1. {critical-issue-1}
-2. {critical-issue-2}
-
-### 🟡 High Priority (Fix Soon)
-1. {high-priority-1}
-2. {high-priority-2}
-
-### 🟢 Medium Priority (Improvement)
-1. {medium-priority-1}
-2. {medium-priority-2}
-
-### 💡 Quick Wins (Easy Improvements)
-1. {quick-win-1}
-2. {quick-win-2}
-
----
-
-## Next Steps
-
-### Suggested Workflow
-
-1. **Immediate Actions:**
-   - Fix critical security issues
-   - Update vulnerable dependencies
-   - Add missing authentication checks
-
-2. **Short Term (This Week):**
-   - Refactor high-complexity functions
-   - Add tests for uncovered areas
-   - Document missing API endpoints
-
-3. **Long Term (This Month):**
-   - Reduce technical debt
-   - Improve code organization
-   - Enhance documentation
-
-### Work Orders Created
-
-Based on this audit, the following work orders are recommended:
-- WO-XXX-fix-security-vulnerabilities
-- WO-XXX-update-dependencies
-- WO-XXX-improve-test-coverage
+Run `/trinity-audit` again after fixing issues.
+Expected result: "0 new issues, 0 persistent issues, X fixed issues"
 
 ---
 
 **Audit Complete:** {timestamp}
-**Report Location:** trinity/reports/CODEBASE-AUDIT-{date}.md
+**Confidence:** {HIGH|MEDIUM|LOW}
+**Baseline Saved:** trinity/reports/AUDIT-BASELINE-{date}.json
+```
+
+#### 2. Machine-Readable Baseline: `trinity/reports/AUDIT-BASELINE-{date}.json`
+
+```json
+{
+  "audit_id": "2025-12-21-001",
+  "timestamp": "2025-12-21T12:00:00Z",
+  "project": {
+    "language": "JavaScript/TypeScript",
+    "framework": "Node.js",
+    "total_loc": 4632,
+    "files_analyzed": 49
+  },
+  "tools": {
+    "lint": { "run": true, "errors": 13, "warnings": 44 },
+    "coverage": { "run": true, "percentage": 67 },
+    "audit": { "run": true, "vulnerabilities": 0 }
+  },
+  "findings": [
+    {
+      "id": "lint-001",
+      "file": "src/cli/commands/deploy/configuration.ts",
+      "line": 31,
+      "severity": "HIGH",
+      "category": "complexity",
+      "description": "Cyclomatic complexity 21 exceeds limit of 15",
+      "tool": "eslint"
+    }
+    // ... all findings
+  ],
+  "completeness": {
+    "file_coverage": "100%",
+    "tools_available": 3,
+    "tools_unavailable": 2,
+    "confidence": "HIGH"
+  }
+}
 ```
 
 ---
 
-## Example Usage
+## Work Order Creation
 
-### Example 1: Unfamiliar GitHub Repository
+**After audit completes**, create work order files for CRITICAL and HIGH issues.
 
-````
-User: Just cloned https://github.com/someone/payment-processor
-      I have no idea what this code does. Can you audit it?
+**Naming:** `WO-AUDIT-{XXX}-{short-desc}-{date}.md`
 
-User: /trinity-audit
+**Create ONE work order per issue type:**
 
-JUNO: Beginning comprehensive codebase audit...
+- WO-AUDIT-001-fix-cyclomatic-complexity-2025-12-21.md
+- WO-AUDIT-002-increase-test-coverage-2025-12-21.md
+- WO-AUDIT-003-remove-unused-code-2025-12-21.md
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Each work order includes:**
 
-**Phase 1: Project Discovery**
-
-Analyzing project structure...
-
-✅ Project Type: Node.js REST API
-✅ Technology Stack: Express.js, PostgreSQL, Redis
-✅ Build System: npm (package.json found)
-✅ Documentation: README.md present
-
-**Discovery Summary:**
-- 47 JavaScript files
-- 12,453 lines of code
-- 23 npm dependencies
-- PostgreSQL database integration
-- Redis for caching
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Phase 2: Architecture Analysis**
-
-Mapping architecture...
-
-✅ Pattern Identified: MVC (Model-View-Controller)
-
-**Components:**
-- Routes: 8 API endpoints in src/routes/
-- Controllers: 6 controllers in src/controllers/
-- Models: 5 database models in src/models/
-- Services: 3 business logic services in src/services/
-- Middleware: 4 middleware functions (auth, validation, error)
-
-**Entry Point:** src/server.js
-
-**API Endpoints:**
-- POST /api/payments/create
-- GET /api/payments/:id
-- POST /api/payments/:id/refund
-- GET /api/transactions
-- POST /api/webhooks/stripe
-- GET /api/health
-- POST /api/auth/login
-- GET /api/auth/verify
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Phase 3: Code Quality Assessment**
-
-Analyzing code quality...
-
-**Overall Quality Score:** 6.5/10
-
-**Strengths:**
-✅ Consistent naming conventions
-✅ Good separation of concerns (MVC pattern)
-✅ Error handling middleware present
-
-**Issues Found:**
-❌ High cyclomatic complexity in 3 files:
-   - src/controllers/PaymentController.js (complexity: 18)
-   - src/services/StripeService.js (complexity: 15)
-   - src/middleware/validation.js (complexity: 12)
-
-❌ Code duplication detected:
-   - Payment validation logic duplicated in 3 places
-   - Database connection code repeated
-
-❌ Long functions:
-   - PaymentController.createPayment() - 147 lines (should be <50)
-   - StripeService.processRefund() - 98 lines
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Phase 4: Technology Stack Analysis**
-
-Analyzing dependencies...
-
-**Production Dependencies:**
-- express@4.18.2 ✅ (latest)
-- pg@8.11.0 ✅ (latest)
-- stripe@12.5.0 ⚠️ (v13.0.0 available)
-- redis@4.6.5 ✅ (latest)
-- bcrypt@5.1.0 ✅ (latest)
-- jsonwebtoken@9.0.0 ✅ (latest)
-
-**Outdated with Security Implications:**
-⚠️ stripe@12.5.0 → 13.0.0 (1 security fix)
-
-**Deprecated Dependencies:**
-❌ validator@10.11.0 (deprecated, use v13.x)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Phase 5: Security Analysis**
-
-Performing security audit...
-
-**Security Score:** 4/10 ⚠️
-
-**Critical Vulnerabilities Found:**
-
-1. **SQL Injection Risk** - Severity: HIGH 🔴
-   - Location: src/models/Payment.js:45
-   - Issue: User input concatenated directly into SQL query
-   ```javascript
-   const query = `SELECT * FROM payments WHERE user_id = ${userId}`;
-````
-
-- Recommendation: Use parameterized queries
-
-2. **Hardcoded Secrets** - Severity: CRITICAL 🔴
-   - Location: src/config/stripe.js:3
-
-   ```javascript
-   const STRIPE_SECRET_KEY = 'sk_live_abc123...';
-   ```
-
-   - Recommendation: Move to environment variables immediately
-
-3. **Missing Input Validation** - Severity: MEDIUM 🟡
-   - Location: src/controllers/PaymentController.js:78
-   - Issue: Payment amount not validated (could be negative)
-   - Recommendation: Add validation middleware
-
-4. **Authentication Bypass** - Severity: HIGH 🔴
-   - Location: src/routes/payments.js:12
-   - Issue: Refund endpoint missing authentication middleware
-   ```javascript
-   router.post('/:id/refund', refundPayment); // No auth check!
-   ```
-
-   - Recommendation: Add authMiddleware
-
-**Dependency Vulnerabilities:**
-⚠️ stripe@12.5.0 - 1 known vulnerability (CVE-2023-XXXX)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Phase 6: Testing Assessment**
-
-Analyzing test coverage...
-
-**Test Coverage:** 42% ⚠️
-
-**Tests Found:**
-
-- Unit tests: 18 tests in test/unit/
-- Integration tests: 5 tests in test/integration/
-- E2E tests: None
-
-**Coverage Gaps:**
-❌ Payment refund logic - 0% coverage
-❌ Stripe webhook handler - 0% coverage
-❌ Authentication middleware - 25% coverage
-❌ Error handling - 15% coverage
-
-**Testing Framework:** Jest (configured correctly)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Phase 7: Data Flow Analysis**
-
-Mapping data flow...
-
-**Data Entry Points:**
-
-1. POST /api/payments/create
-   - Accepts: { amount, currency, customerId, paymentMethod }
-   - Validation: Stripe library validates card data
-   - Authentication: JWT required
-
-2. POST /api/webhooks/stripe
-   - Accepts: Stripe webhook events
-   - Validation: Webhook signature verification
-   - Authentication: None (public endpoint with signature check)
-
-**Data Storage:**
-
-- PostgreSQL database (5 tables: users, payments, transactions, refunds, webhooks)
-- Redis cache (payment status, user sessions)
-
-**Data Flow:**
-
-```
-User Request → Express Router → Auth Middleware → Controller
-    ↓
-Validation Middleware → Service Layer → Stripe API
-    ↓
-Database (PostgreSQL) → Response to User
-```
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**Phase 8: Recommendations & Next Steps**
-
-Generating recommendations...
-
-### 🔴 CRITICAL (Fix Immediately)
-
-1. **Remove Hardcoded Stripe Secret Key**
-   - File: src/config/stripe.js
-   - Action: Move to .env file, add to .gitignore
-   - Rotate the exposed key immediately
-
-2. **Fix SQL Injection Vulnerability**
-   - File: src/models/Payment.js:45
-   - Action: Use parameterized queries with pg library
-   - Estimated effort: 1 hour
-
-3. **Add Authentication to Refund Endpoint**
-   - File: src/routes/payments.js:12
-   - Action: Add authMiddleware before refundPayment handler
-   - Estimated effort: 15 minutes
-
-### 🟡 HIGH PRIORITY (Fix This Week)
-
-1. **Update Stripe Dependency**
-   - Current: v12.5.0 (has security vulnerability)
-   - Target: v13.0.0 (latest stable)
-   - Test webhook integration after update
-
-2. **Add Input Validation**
-   - Validate payment amounts (positive, within limits)
-   - Validate currency codes
-   - Validate customer IDs
-
-3. **Improve Test Coverage**
-   - Add tests for refund logic (0% → 80%)
-   - Add tests for webhook handler (0% → 80%)
-   - Add integration tests for payment flow
-
-### 🟢 MEDIUM PRIORITY (Improve Over Time)
-
-1. **Refactor High-Complexity Functions**
-   - PaymentController.createPayment() - Break into smaller functions
-   - StripeService.processRefund() - Extract validation logic
-
-2. **Remove Code Duplication**
-   - Extract payment validation to shared utility
-   - Centralize database connection logic
-
-3. **Add API Documentation**
-   - Document all endpoints with OpenAPI/Swagger
-   - Add request/response examples
-   - Document authentication requirements
-
-### 💡 QUICK WINS (Easy Improvements)
-
-1. **Add .env.example file** (5 minutes)
-2. **Add JSDoc comments to public functions** (1 hour)
-3. **Set up ESLint** (30 minutes)
-4. **Add error logging** (30 minutes)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-**JUNO: Audit Complete** ✅
-
-**Summary:**
-
-- Project Type: Payment processing REST API
-- Technology: Node.js + Express + PostgreSQL + Stripe
-- Overall Assessment: 6.5/10 (needs security fixes)
-- Critical Issues: 3 (must fix immediately)
-- Test Coverage: 42% (needs improvement)
-
-**Audit Report Saved:**
-`trinity/reports/CODEBASE-AUDIT-2025-12-19.md`
-
-**Work Orders Created:**
-
-- WO-XXX-fix-security-vulnerabilities (CRITICAL priority, 2 hours)
-- WO-XXX-update-stripe-dependency (HIGH priority, 1 hour)
-- WO-XXX-improve-test-coverage (HIGH priority, 4 hours)
-
-**Next Steps:**
-
-1. Review the full audit report in trinity/reports/
-2. Fix critical security issues immediately (WO-XXX)
-3. Run updated tests to ensure no regressions
-4. Deploy fixes to staging before production
-
-**Recommendation:** Start with WO-XXX-fix-security-vulnerabilities
-Run: /trinity-orchestrate @WO-XXX-fix-security-vulnerabilities.md
-
-```
+- Specific files/lines affected
+- Objective acceptance criteria
+- Estimated effort
+- Testing requirements
 
 ---
 
-### Example 2: Focused Audit on Authentication
-
-```
-
-User: /trinity-audit "Focus on authentication and authorization system"
-
-JUNO: Beginning focused audit on authentication system...
-
-[JUNO performs full 8-phase audit but provides deeper analysis of auth system]
-
-**Authentication System Analysis:**
-
-**Pattern:** JWT-based authentication with bcrypt password hashing
-
-**Strengths:**
-✅ Passwords hashed with bcrypt (salt rounds: 10)
-✅ JWT tokens have expiration (24 hours)
-✅ Refresh token rotation implemented
-
-**Critical Issues:**
-🔴 JWT secret stored in code (should be in .env)
-🔴 No rate limiting on login endpoint (brute force vulnerability)
-🔴 Password reset tokens never expire
-
-**Recommendations:**
-
-1. Move JWT_SECRET to environment variable
-2. Add express-rate-limit to login endpoint
-3. Set 1-hour expiration on password reset tokens
-4. Add 2FA support (recommended for payment system)
-
-[Full audit report saved to trinity/reports/ with auth deep-dive section]
-
-```
-
----
-
-### Example 3: Quick Audit (Large Codebase)
-
-```
-
-User: /trinity-audit --quick
-
-JUNO: Performing quick audit (high-level overview only)...
-
-**Quick Audit Results:**
-
-**Project:** E-commerce Platform
-**Size:** 234 files, 45,732 lines of code
-**Stack:** React + Node.js + MongoDB + Redis
-
-**High-Level Assessment:**
-
-- Architecture: Microservices (5 services)
-- Quality Score: 7/10
-- Security Score: 6/10
-- Test Coverage: 68%
-
-**Top 3 Issues:**
-
-1. 🔴 2 microservices missing authentication
-2. 🟡 MongoDB queries missing input sanitization
-3. 🟢 Large bundle size (3.2MB uncompressed)
-
-**Recommendation:** Run full audit for detailed analysis
-Run: /trinity-audit (without --quick flag)
-
-[Quick summary saved to trinity/reports/QUICK-AUDIT-{date}.md]
-
-```
-
----
-
-## Integration with Trinity Workflow
-
-### After Audit, Create Work Orders
-
-**CRITICAL INSTRUCTION FOR JUNO:**
-
-After completing the 8-phase audit, JUNO MUST create actual work order files in `trinity/work-orders/` for each CRITICAL and HIGH priority issue. DO NOT just mention work orders in the report - CREATE THE ACTUAL FILES.
-
-**Work Order Creation Process:**
-
-1. **Identify Issues Requiring Work Orders:**
-   - All CRITICAL priority issues → Create work orders
-   - All HIGH priority issues → Create work orders
-   - MEDIUM priority (optional, use judgment)
-
-2. **Work Order Naming Convention:**
-```
-
-WO-AUDIT-XXX-{short-description}-YYYY-MM-DD.md
-
-Examples:
-WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md
-WO-AUDIT-002-refactor-deploy-ts-2025-12-20.md
-WO-AUDIT-003-update-dependencies-2025-12-20.md
-
-````
-
-3. **Work Order Content (Required Sections):**
-```markdown
-# Work Order: WO-AUDIT-XXX
-
-## Title
-{Clear, actionable title}
-
-## Type
-{Security Fix | Bug Fix | Code Quality | Performance | Maintenance}
-
-## Priority
-{CRITICAL | HIGH | MEDIUM}
-
-## Description
-{2-3 paragraphs explaining the issue, why it matters, and context}
-
-## Affected Components
-- List specific files, line numbers, functions affected
-
-## Impact Assessment
-- Risk level
-- User impact
-- Security implications (if any)
-
-## Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
-
-## Tasks
-1. Task 1
-2. Task 2
-3. Task 3
-
-## Estimated Effort
-{Time estimate: "15 minutes" | "1 hour" | "3-5 hours"}
-
-## Testing
-- Test requirements
-- Verification steps
-
-## Dependencies
-- Other work orders that must be completed first
-- External dependencies
-
-## Notes
-- Additional context
-- References to documentation
-````
-
-4. **After Creating Work Order Files:**
-   Report to user which work orders were created and where they're located.
-
-**Example Output After Audit:**
+## Example: Second Audit (Comparison Mode)
 
 ```bash
-✅ Audit Complete
+User: /trinity-audit
 
-Created 3 work order files in trinity/work-orders/:
-1. WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md (CRITICAL)
-2. WO-AUDIT-002-refactor-deploy-ts-2025-12-20.md (CRITICAL)
-3. WO-AUDIT-003-update-dependencies-2025-12-20.md (HIGH)
+JUNO: Loading previous audit baseline...
 
-Execute work orders with:
-/trinity-orchestrate @WO-AUDIT-001-fix-security-vulnerability-2025-12-20.md
+✅ Baseline found: AUDIT-BASELINE-2025-12-20.json
+📊 Comparing current state against previous audit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Audit Results:**
+
+✅ FIXED: 3 issues
+   - Cyclomatic complexity in configuration.ts (FIXED)
+   - Unused variables in deploy.ts (FIXED)
+   - Missing return type in metrics.ts (FIXED)
+
+🔴 PERSISTENT: 0 issues
+   (All previously identified issues have been resolved!)
+
+⚠️ NEW: 0 issues
+   (No new problems introduced since last audit!)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+**Summary:**
+✨ Codebase quality improved since last audit!
+✨ All identified issues resolved
+✨ No regressions detected
+
+**Recommendation:** You're done! The codebase is in excellent shape.
+
+**Audit saved:** trinity/reports/CODEBASE-AUDIT-2025-12-21.md
+**Baseline updated:** trinity/reports/AUDIT-BASELINE-2025-12-21.json
 ```
 
-**DO NOT** just document work orders in the audit report without creating the actual files. Users expect ready-to-execute work order files after the audit.
-
----
-
-### Use Audit Report as Reference
-
-Throughout your work session, reference the audit report:
-
-```markdown
-**Investigation:** Why is the payment endpoint slow?
-
-**Reference:** See CODEBASE-AUDIT-2025-12-19.md
-
-- Phase 7 (Data Flow Analysis) shows N+1 query pattern
-- Recommendation #4 suggests adding database indexes
-
-**Next Step:** Create investigation
-/trinity-create-investigation "Payment endpoint performance"
-```
-
----
-
-## Related Commands
-
-### Discovery & Planning
-
-- `/trinity-audit` - Comprehensive codebase audit (this command)
-- `/trinity-start` - Begin development session
-- `/trinity-workorder` - Create work order from audit findings
-
-### Execution
-
-- `/trinity-orchestrate @WO-XXX.md` - Execute work orders from audit
-- `/trinity-create-investigation` - Investigate issues found in audit
-
-### Verification
-
-- `/trinity-verify` - Verify Trinity installation (different from codebase audit)
+**This is how the cycle ends.**
 
 ---
 
 ## Summary
 
-**Primary Use:** Comprehensive codebase audit with JUNO's 8-phase analysis
+### Key Principles
 
-**Key Points:**
+1. **Deterministic:** Same code = same findings (tool-based, not subjective)
+2. **Framework-Agnostic:** Works on any language
+3. **Baseline Tracking:** Second audit shows only changes
+4. **Completeness Guarantee:** Explicit metrics (100% coverage stated)
+5. **Objective Criteria:** Linting errors, not "feels complex"
 
-1. **JUNO performs 8-phase comprehensive analysis**
-2. **Delivers complete understanding of the codebase**
-3. **Identifies security issues and technical debt**
-4. **Creates actionable work orders**
-5. **Saves audit report to trinity/reports/**
-6. **Execute immediately when invoked** - no pre-flight checks needed
-
-**Typical Workflow:**
+### Typical Workflow
 
 ```bash
-# Clone repository (familiar or unfamiliar)
-git clone https://github.com/someone/project.git
-cd project
-
-# Initialize Trinity
-npx trinity deploy
-
-# Audit the codebase
+# First audit (creates baseline)
 /trinity-audit
+# → Finds 10 issues, creates baseline
 
-# Review audit report in trinity/reports/
+# Fix all issues
+/trinity-orchestrate @WO-AUDIT-001.md
+/trinity-orchestrate @WO-AUDIT-002.md
 
-# Fix critical issues
-/trinity-orchestrate @WO-001-fix-security-vulnerabilities.md
-
-# Continue with recommended work orders
+# Second audit (comparison mode)
+/trinity-audit
+# → Result: "10 fixed, 0 persistent, 0 new" ✅ DONE
 ```
 
-**Next:** After audit, start working through recommended work orders or investigations.
+### When Are You Done?
+
+You're done when the second audit shows:
+
+- **0 persistent issues** (everything from first audit fixed)
+- **0 new issues** (fixes didn't introduce problems)
+
+**No infinite loop. Clear completion criteria.**
+
+---
+
+**Next:** After audit, execute work orders with `/trinity-orchestrate @WO-AUDIT-XXX.md`

@@ -168,7 +168,7 @@ describe('get-sdk-path', () => {
     it('should handle nested directory structures', async () => {
       await fs.ensureDir('dist/templates/nested/deep');
 
-      const sdkPath = await getSDKPath();
+      await getSDKPath();
       const templatesPath = await getTemplatesPath();
 
       expect(await fs.pathExists(path.join(templatesPath, 'nested/deep'))).toBe(true);
