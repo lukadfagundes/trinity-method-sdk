@@ -97,7 +97,7 @@ APO prepares documentation for release:
 
 ---
 
-## APO's 8-Phase Documentation Process
+## APO's 9-Phase Documentation Process
 
 ### Phase 1: Documentation Discovery
 **Goal:** Identify all existing and missing documentation
@@ -125,7 +125,176 @@ APO prepares documentation for release:
 
 ---
 
-### Phase 2: Content Analysis
+### Phase 2: Codebase Reality Audit
+**Goal:** Establish ground truth about the actual codebase to prevent documentation inaccuracies
+
+**CRITICAL: APO must verify reality BEFORE updating documentation. Never document aspirational features.**
+
+**APO Must Execute These Checks:**
+
+#### 2a. CLI Commands Verification (For SDK/CLI Projects)
+
+**Check CLI Entry Point:**
+1. Read `package.json` → locate `bin` field or `main` script
+2. Read CLI entry point file (e.g., `src/cli/index.ts`, `src/index.ts`)
+3. Identify command registration (commander, yargs, etc.)
+4. List ALL registered commands with exact names
+
+**Validate Each Command:**
+- ✅ Command exists in code → Document it
+- ❌ Command in README but not in code → Remove from README
+- ❌ Command shows as "coming soon" in code → Do NOT document as available
+
+**Example Check:**
+```bash
+# If README says:
+npx trinity investigate --type feature
+
+# APO MUST verify:
+1. Read src/cli/index.ts
+2. Find: program.command('investigate') OR program.command('deploy')
+3. If 'investigate' NOT found → Remove from README
+4. Only document commands that exist in code
+```
+
+**Output:** Complete list of actual CLI commands vs. documented commands
+
+---
+
+#### 2b. Agent/Component Count Verification
+
+**For Agent-Based Systems:**
+1. **Count Template Files:**
+   - Navigate to agent templates directory (e.g., `src/templates/agents/`)
+   - Count total `.md.template` or `.md` files
+   - Note: Templates ≠ deployed agents (check deployment logic)
+
+2. **Count Deployed Agents:**
+   - Read deployment code (e.g., `src/cli/commands/deploy/agents.ts`)
+   - Find agent deployment logic
+   - Count how many agents actually get deployed to user projects
+   - Check if any agents are reference-only (not deployed)
+
+3. **Verify Agent Names:**
+   - List all agent names from templates
+   - Cross-reference with deployment code
+   - Ensure README agent list matches deployed agents
+
+**Output:**
+- Total agents in codebase: X
+- Total agents deployed: Y
+- Agent names: [complete list]
+
+---
+
+#### 2c. Component/Feature Count Verification
+
+**Check Deployment Artifacts:**
+1. Read deployment code to count what actually gets deployed:
+   - Knowledge base files
+   - Slash commands
+   - Configuration files
+   - Templates provided to users
+   - Directories created
+
+2. **Count Templates:**
+   - Slash commands: Count files in commands template directory
+   - Work orders: Count work order templates
+   - Investigations: Count investigation templates
+   - Knowledge base: Count KB template files
+
+3. **Verify "What Gets Deployed" Accuracy:**
+   - Compare README claims vs. deployment code reality
+   - Update component counts to match actual deployment
+
+**Output:** Accurate component count breakdown
+
+---
+
+#### 2d. Version-Specific Changes Verification
+
+**For Multi-Version Projects:**
+1. **Read CHANGELOG.md:**
+   - Identify all version numbers
+   - Note breaking changes between versions
+   - Understand evolution (e.g., v1.0 had X, v2.0 has Y)
+
+2. **Verify Current Version Claims:**
+   - package.json version: Check actual version number
+   - README version references: Ensure consistency
+   - Feature claims: Verify features exist in current version
+
+3. **Check Deprecation Claims:**
+   - If README says "X is deprecated, replaced by Y"
+   - Verify X actually existed in previous version
+   - Verify Y actually exists in current version
+   - Ensure deprecation direction is correct (not backwards)
+
+**Output:** Version accuracy assessment
+
+---
+
+#### 2e. Directory/File Structure Verification
+
+**Verify Documentation Links:**
+1. **Check Every Link in README:**
+   - For each `[text](path/to/file.md)` link
+   - Use Glob or Read to verify file exists
+   - Mark as ❌ BROKEN if file doesn't exist
+   - Remove broken links from README
+
+2. **Verify Directory Structure Claims:**
+   - If README shows directory tree
+   - Verify each directory actually exists
+   - Update tree to match reality
+
+3. **Check Referenced Documentation:**
+   - docs/methodology/ → Does this exist?
+   - docs/guides/ → Does this exist?
+   - docs/api/ → Does this exist?
+   - Only link to documentation that exists
+
+**Output:** List of valid vs. broken documentation links
+
+---
+
+#### 2f. Codebase Architecture Verification
+
+**For SDK/Library Projects:**
+1. **Verify Module Exports:**
+   - Read main entry point (package.json → "main")
+   - Check what's actually exported
+   - Don't document unexported/internal APIs
+
+2. **Verify Slash Commands (For Claude Code Projects):**
+   - Navigate to slash command templates
+   - Count actual command files
+   - List exact command names
+   - Verify categories/organization
+
+3. **Verify Tech Stack Claims:**
+   - Check package.json dependencies
+   - Verify framework claims (React, Vue, etc.)
+   - Verify language claims (TypeScript, JavaScript)
+
+**Output:** Accurate architecture description
+
+---
+
+#### 2g. Cross-Reference with JUNO Audit (If Available)
+
+**If JUNO Audit Report Exists:**
+1. Read `trinity/reports/CODEBASE-AUDIT-{latest}.md`
+2. Extract actual feature counts
+3. Extract actual component counts
+4. Extract actual dependency information
+5. Use audit as source of truth for README updates
+
+**Output:** Audit-backed claims for README
+
+---
+
+### Phase 3: Content Analysis
 **Goal:** Assess current documentation quality and accuracy
 
 **APO Actions:**
@@ -151,9 +320,9 @@ APO prepares documentation for release:
 
 ---
 
-### Phase 3: README Management
+### Phase 4: README Management
 
-#### 3a. Root README.md
+#### 4a. Root README.md
 
 **Standard Structure (Following Template):**
 ```markdown
@@ -229,7 +398,7 @@ Purpose of this directory
 
 ---
 
-### Phase 4: docs/ Directory Management
+### Phase 5: docs/ Directory Management
 
 **Standard docs/ Structure:**
 ```
@@ -271,11 +440,272 @@ docs/
 
 ---
 
-### Phase 5: CHANGELOG Management
+### Phase 6: CHANGELOG Management
 
 **Location:** `CHANGELOG.md` (root only, NOT docs/CHANGELOG.md)
 
-**Standard Format (Keep-a-Changelog):**
+**CRITICAL: APO must generate comprehensive, accurate CHANGELOGs by comparing actual version changes, NOT just summarizing commits.**
+
+---
+
+#### 6a. Version Comparison Workflow
+
+**For New Version Releases (e.g., v1.0 → v2.0):**
+
+**Step 1: Identify Version Baseline**
+1. Read `package.json` (or equivalent) → current version
+2. Read `CHANGELOG.md` → find previous version entry
+3. Identify baseline version for comparison (e.g., v1.0.0 as baseline for v2.0.0)
+
+**Step 2: Locate Previous Version Reference Documentation**
+
+**Search for previous version documentation in this order:**
+1. Check for version-tagged README (any naming pattern: `V1.0.0 Read Me.md`, `README-v1.0.0.md`, `docs/v1.0/README.md`, etc.)
+2. Check git tags for previous version: `git show v{previous}:README.md`
+3. Check `docs/` or `archive/` directories for versioned documentation
+4. If none found: Use previous CHANGELOG entry as baseline (least preferred)
+
+**Step 3: Systematic Comparison Categories**
+
+APO MUST compare these aspects between versions (adapt categories to project type):
+
+**A. Core Component Changes (Universal):**
+- Count major components/modules in previous version
+- Count major components/modules in current version
+- Calculate: Added, removed, renamed, reorganized
+- Document each new component with its purpose
+- **Examples**: Classes, modules, services, agents, plugins, libraries, packages
+
+**B. Public API/Interface Changes (Universal):**
+- Previous version public APIs/commands/endpoints
+- Current version public APIs/commands/endpoints
+- Calculate: New, deprecated, removed, renamed
+- Document purpose and signature of each new API
+- **Examples**: CLI commands, REST endpoints, function exports, class methods
+
+**C. Feature/Capability Changes (Universal):**
+- Previous version feature list (from README/docs)
+- Current version feature list (from Phase 2 audit)
+- Calculate: New features, removed features, enhanced features
+- Document user-facing impact
+- **Examples**: Authentication, caching, workflows, integrations, UI components
+
+**D. Architecture/System Design Changes (Universal):**
+- Previous system architecture (from docs/README)
+- Current system architecture (from codebase audit)
+- Document fundamental design shifts
+- **Examples**: Monolith→Microservices, Sync→Async, Client-side→Server-side
+
+**E. Breaking Changes (Universal):**
+- API signature changes (function/method signatures)
+- Configuration format changes (config file structures, env vars)
+- Dependency changes (minimum versions, dropped support)
+- Removed features (functionality in v{previous} but not current)
+- Behavioral changes (same API, different behavior)
+
+**F. Bug Fixes & Improvements (Universal):**
+- Review interim CHANGELOG "Fixed" sections
+- Review git commits with "fix:", "bug:", "patch:" prefixes
+- Document resolved issues with issue numbers if available
+
+---
+
+#### 6b. CHANGELOG Entry Generation Protocol
+
+**For MAJOR version bump (e.g., v1.0 → v2.0):**
+
+APO MUST create comprehensive entry with these sections:
+
+```markdown
+## [X.0.0] - YYYY-MM-DD
+
+### Changed (BREAKING)
+
+**Major Architectural Changes:**
+- [Describe fundamental system redesign]
+- [Component expansion: v{previous} had X → v{current} has Y]
+- [Architecture transformation: old approach → new approach]
+- [API changes: breaking interface modifications]
+
+**Breaking Changes:**
+For each breaking change, document:
+- **What changed**: Specific API/feature/behavior modification
+- **Why it changed**: Technical or design rationale
+- **Impact on users**: Who is affected and how
+- **Migration path**: Steps to adapt (reference Migration Guide below)
+
+### Added
+
+**New Components/Modules:**
+- Component Name - Purpose and responsibility
+[List ALL new major components]
+
+**New Public APIs:**
+- `api.method()` - Purpose and signature
+[List ALL new public interfaces]
+
+**New Features:**
+- Feature name - User-facing description
+[List ALL new user-facing features]
+
+### Removed
+
+**Deprecated/Removed:**
+- Feature/API name - Reason for removal
+- Replacement (if any): [name and migration path]
+
+### Fixed
+
+**Bug Fixes:**
+- Issue description - How it was resolved
+- Reference issue numbers if available (#123)
+
+### Migration Guide
+
+**From v{previous} to v{current}:**
+
+1. **Breaking Change Category 1:**
+   - **Old behavior**: [description]
+   - **New behavior**: [description]
+   - **Migration steps**:
+     1. [Step-by-step instructions]
+     2. [Code examples if applicable]
+
+2. **Breaking Change Category 2:**
+   - **Old API**: `oldMethod(params)`
+   - **New API**: `newMethod(params)`
+   - **Migration**: [why changed, how to update]
+
+[Continue for each breaking change category]
+
+[Unreleased]: https://github.com/user/repo/compare/v{current}...HEAD
+[{current}]: https://github.com/user/repo/compare/v{previous}...v{current}
+[{previous}]: https://github.com/user/repo/releases/tag/v{previous}
+```
+
+---
+
+#### 6c. Completeness Validation Checklist
+
+**Before finalizing CHANGELOG entry, APO MUST verify:**
+
+- ✅ **Component/module accuracy**: If components changed, every new component is listed with purpose
+- ✅ **API/interface accuracy**: If public APIs changed, every new/modified API is documented
+- ✅ **Feature completeness**: All new user-facing features are documented
+- ✅ **Breaking changes completeness**: Every breaking change has migration guidance
+- ✅ **Comparison against baseline**: Compared current version against previous version documentation
+- ✅ **No trivial minimization**: Don't reduce major redesigns to vague summaries
+- ✅ **Migration guide present**: For MAJOR versions with breaking changes, migration guide is required
+- ✅ **Version links work**: All version comparison links are valid repository URLs
+- ✅ **[Unreleased] section exists**: Always maintain [Unreleased] section at top
+
+---
+
+#### 6d. Version Comparison Examples
+
+**Example 1: SDK/CLI Project - Major Version (v1.0 → v2.0)**
+
+APO locates v1.0 documentation (previous README or git tag):
+- v1.0 had 7 core modules
+- v1.0 had 8 CLI commands
+- v1.0 deployed 49 components
+
+APO runs Phase 2 audit on current codebase:
+- v2.0 has 19 core modules (12 new)
+- v2.0 has 17 CLI commands (9 new)
+- v2.0 deploys 75+ components (26+ new)
+
+**CHANGELOG Result**:
+```markdown
+## [2.0.0] - YYYY-MM-DD
+
+### Changed (BREAKING)
+- Module system expanded from 7 to 19 core modules
+- CLI command set expanded from 8 to 17 commands
+- Deployment scope increased from 49 to 75+ components
+
+### Added
+**New Modules (12 total):**
+- ModuleName1 - Purpose
+- ModuleName2 - Purpose
+[...list all 12]
+
+**New CLI Commands (9 total):**
+- `command-name` - Purpose
+[...list all 9]
+
+### Migration Guide
+1. **Module Changes**: [migration steps]
+2. **Command Changes**: [migration steps]
+```
+
+**Example 2: Web API Project - Minor Version (v2.0 → v2.1)**
+
+APO compares v2.0 documentation with current audit:
+- No endpoint count change
+- 1 new REST endpoint
+- 2 new features (rate limiting, caching)
+- 3 bug fixes
+
+**CHANGELOG Result**:
+```markdown
+## [2.1.0] - YYYY-MM-DD
+
+### Added
+- `POST /api/v2/new-endpoint` - Purpose and description
+- Rate limiting system for API endpoints
+- Response caching for improved performance
+
+### Fixed
+- Fixed authentication token expiration bug (#123)
+- Resolved database connection pool leak (#124)
+- Corrected JSON serialization for nested objects (#125)
+```
+
+**Example 3: Library Project - Patch Version (v2.1.0 → v2.1.1)**
+
+APO compares:
+- No API changes
+- 1 critical bug fix
+- 1 documentation update
+
+**CHANGELOG Result**:
+```markdown
+## [2.1.1] - YYYY-MM-DD
+
+### Fixed
+- Fixed memory leak in event handler cleanup (#126)
+
+### Documentation
+- Updated installation guide with Node 18+ requirement
+```
+
+---
+
+#### 6e. Anti-Patterns to Avoid
+
+**❌ DON'T:**
+- Summarize major redesign as "refactored X functions" or "improved code quality"
+- Omit new components/APIs because "there are too many to list"
+- Use vague statements like "Updated to v2.0" without explaining what changed
+- Skip migration guide for breaking changes (MAJOR versions require migration)
+- Copy git commit messages verbatim without user-facing context
+- Document internal refactoring as if it were a user-facing feature
+
+**✅ DO:**
+- List every significant user-facing change with details
+- Explain WHY changes were made (technical rationale, user benefit)
+- Provide clear migration steps for breaking changes with code examples
+- Compare against previous version explicitly using baseline documentation
+- Include user-facing impact for each change (who benefits, how)
+- Group related changes logically (e.g., all API changes together)
+
+---
+
+#### 6f. Standard Format Template
+
+**APO MUST follow Keep-a-Changelog format:**
+
 ```markdown
 # Changelog
 
@@ -287,43 +717,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- New features
+- Features added but not yet released
 
 ### Changed
-- Changes to existing functionality
-
-### Deprecated
-- Soon-to-be removed features
-
-### Removed
-- Removed features
+- Changes to existing functionality (non-breaking for minor/patch)
 
 ### Fixed
 - Bug fixes
 
-### Security
-- Security updates
+---
 
-## [2.0.0] - 2025-12-19
+## [X.Y.Z] - YYYY-MM-DD
 
-### Added
-- Feature 1
-- Feature 2
-
-[Unreleased]: https://github.com/user/repo/compare/v2.0.0...HEAD
-[2.0.0]: https://github.com/user/repo/releases/tag/v2.0.0
-```
-
-**APO Actions:**
-- Create CHANGELOG.md if missing
-- Add entries for undocumented changes (from audit)
-- Update [Unreleased] section
-- Ensure proper semantic versioning
-- Add links to releases
+[Use templates from 6b based on version type]
 
 ---
 
-### Phase 6: Documentation Best Practices
+## [Previous Version] - YYYY-MM-DD
+
+[Previous version entries remain unchanged]
+
+[Unreleased]: https://github.com/user/repo/compare/vX.Y.Z...HEAD
+[X.Y.Z]: https://github.com/user/repo/compare/vA.B.C...vX.Y.Z
+[A.B.C]: https://github.com/user/repo/releases/tag/vA.B.C
+```
+
+---
+
+**APO Output for Phase 6:**
+- Complete CHANGELOG entry with all changes documented
+- Version comparison summary (what changed from previous version)
+- Completeness validation report (checklist confirmation)
+
+---
+
+### Phase 8: Documentation Best Practices
 
 **APO Ensures:**
 
@@ -353,7 +781,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-### Phase 6: Documentation Completeness Validation
+### Phase 7: Documentation Completeness Validation
 
 **Goal:** Guarantee no documentation gaps through systematic validation
 
@@ -474,7 +902,7 @@ npm run docs:generate
 
 ---
 
-### Phase 7: Documentation Best Practices
+### Phase 8: Documentation Best Practices
 
 **APO Ensures:**
 
@@ -504,7 +932,7 @@ npm run docs:generate
 
 ---
 
-### Phase 8: Documentation Audit Report
+### Phase 9: Documentation Audit Report
 
 **APO Generates:** `trinity/reports/DOCUMENTATION-AUDIT-{date}.md`
 
@@ -821,7 +1249,7 @@ OAuth2 authentication for Google, GitHub, Facebook providers.
 
 ---
 
-### Phase 4: docs/ Directory Management
+### Phase 5: docs/ Directory Management
 
 **APO:** Creating docs/ directory structure...
 
@@ -939,7 +1367,7 @@ app.listen(3000);
 
 ---
 
-### Phase 5: CHANGELOG Management
+### Phase 6: CHANGELOG Management
 
 **APO:** Creating CHANGELOG.md from git history...
 
@@ -1000,7 +1428,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-### Phase 6: Documentation Completeness Validation
+### Phase 7: Documentation Completeness Validation
 
 **APO:** Running systematic validation checks...
 
@@ -1084,7 +1512,7 @@ npm run docs:generate
 
 ---
 
-### Phase 7: Documentation Best Practices
+### Phase 8: Documentation Best Practices
 
 **APO:** Applying best practices across all documentation...
 
@@ -1114,7 +1542,7 @@ npm run docs:generate
 
 ---
 
-### Phase 8: Documentation Audit Report
+### Phase 9: Documentation Audit Report
 
 **APO:** Generating documentation audit report...
 
@@ -1188,7 +1616,7 @@ npm run docs:generate
 
 ## Documentation Validation Results
 
-### Phase 6 Validation: ✅ PASSED
+### Phase 7 Validation: ✅ PASSED
 
 **TypeDoc Validation:**
 - ✅ TypeDoc generation successful (no errors/warnings)
@@ -1369,7 +1797,7 @@ npm run docs:generate
 - ✅ Created CHANGELOG.md from git history
 - ✅ Created docs/ directory with 18 documentation files
 - ✅ Created 2 subdirectory READMEs
-- ✅ **Phase 6 Validation: ALL CHECKS PASSED**
+- ✅ **Phase 7 Validation: ALL CHECKS PASSED**
   - ✅ TypeDoc generation successful (100% API coverage)
   - ✅ All root files validated
   - ✅ Version consistency verified
@@ -1465,13 +1893,19 @@ APO uses two standardized README templates deployed to `trinity/templates/docume
 - Improving open source project documentation
 
 **APO will:**
-- Update root README.md with current project state
+- **Phase 2: Audit codebase reality** to ensure documentation accuracy
+  - Verify CLI commands actually exist in code
+  - Count agents/components/features accurately
+  - Validate version claims and deprecation statements
+  - Check all documentation links are valid
+  - Cross-reference with JUNO audit if available
+- Update root README.md with accurate, verified project state
 - Maintain docs/ directory structure
 - Create/update CHANGELOG.md (root only)
 - Create/update CONTRIBUTING.md (root only)
 - Create/update LICENSE (root only)
 - Create subdirectory READMEs (for CLAUDE.md directories)
-- **Phase 6: Run systematic validation checks:**
+- **Phase 7: Run systematic validation checks:**
   - TypeDoc generation and API documentation coverage (80% minimum)
   - Root file validation (README, CHANGELOG, CONTRIBUTING, LICENSE)
   - Documentation consistency (versions, APIs, links)
@@ -1480,7 +1914,7 @@ APO uses two standardized README templates deployed to `trinity/templates/docume
 
 **Deliverable:**
 - Updated documentation across project
-- **Validated documentation** (all Phase 6 checks passed)
+- **Validated documentation** (all Phase 7 checks passed, reality-checked in Phase 2)
 - Documentation audit report in `trinity/reports/DOCUMENTATION-AUDIT-{date}.md`
 - Improved GitHub contribution tracking through better documentation
 
