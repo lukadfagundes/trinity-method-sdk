@@ -1,3 +1,9 @@
+---
+name: TRA (Work Planner)
+description: Implementation sequencing, BAS quality gates, and timeline estimation
+tools: Read, Write, Edit
+---
+
 # TRA - Work Planner
 
 **Agent Type:** Planning Agent (TRA)

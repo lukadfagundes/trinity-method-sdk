@@ -369,21 +369,18 @@ describe('Deploy Command - Integration Tests', () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       const gitignoreContent = await fs.readFile('.gitignore', 'utf8');
-      expect(gitignoreContent).toContain('# Trinity Method deployment files');
+      expect(gitignoreContent).toContain('# Trinity Method SDK');
       expect(gitignoreContent).toContain('trinity/');
     });
 
     it('should not duplicate Trinity exclusions if already present', async () => {
       // Create existing .gitignore with Trinity section
-      await fs.writeFile(
-        '.gitignore',
-        '# Trinity Method deployment files\ntrity/\nnode_modules/\n'
-      );
+      await fs.writeFile('.gitignore', '# Trinity Method SDK\ntrity/\nnode_modules/\n');
 
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       const gitignoreContent = await fs.readFile('.gitignore', 'utf8');
-      const matches = gitignoreContent.match(/# Trinity Method deployment files/g);
+      const matches = gitignoreContent.match(/# Trinity Method SDK/g);
       expect(matches).toHaveLength(1); // Should only appear once
     });
   });

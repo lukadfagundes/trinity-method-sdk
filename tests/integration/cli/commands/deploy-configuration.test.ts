@@ -87,7 +87,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should prompt for project name with current directory as default', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -106,7 +106,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should use provided project name as default', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'custom-name' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -126,7 +126,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should configure recommended linting tools', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'recommended' })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -142,7 +142,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should prompt with recommended option as default', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'recommended' })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -150,20 +150,10 @@ describe('Deploy Configuration - Integration', () => {
 
       expect(promptSpy).toHaveBeenCalledWith([
         expect.objectContaining({
-          type: 'list',
-          name: 'linting',
-          choices: expect.arrayContaining([
-            expect.objectContaining({
-              value: 'recommended',
-            }),
-            expect.objectContaining({
-              value: 'custom',
-            }),
-            expect.objectContaining({
-              value: 'skip',
-            }),
-          ]),
-          default: 0,
+          type: 'confirm',
+          name: 'setupLinting',
+          message: 'Setup linting configuration? (y/n)',
+          default: true,
         }),
       ]);
     });
@@ -171,27 +161,21 @@ describe('Deploy Configuration - Integration', () => {
     test('should include framework name in recommended option text', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'recommended' })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
-      await promptConfiguration(baseOptions, mockStack);
+      const result = await promptConfiguration(baseOptions, mockStack);
 
-      expect(promptSpy).toHaveBeenCalledWith([
-        expect.objectContaining({
-          choices: expect.arrayContaining([
-            expect.objectContaining({
-              name: expect.stringContaining('Node.js'),
-            }),
-          ]),
-        }),
-      ]);
+      // With the new confirm-based approach, framework name is shown in console output
+      // rather than in prompt choices, so we just verify linting was configured
+      expect(result.enableLinting).toBe(true);
     });
 
     test('should return post-install instructions when linting tools selected', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'recommended' })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -202,11 +186,13 @@ describe('Deploy Configuration - Integration', () => {
   });
 
   describe('Linting configuration - Custom', () => {
-    test('should allow custom tool selection', async () => {
+    // Note: Custom tool selection was removed in favor of recommended defaults
+    // Tests updated to reflect new confirm-based approach
+
+    test('should configure linting when user confirms', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'custom' })
-        .mockResolvedValueOnce({ tools: ['eslint', 'prettier'] })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -216,11 +202,10 @@ describe('Deploy Configuration - Integration', () => {
       expect(result.lintingTools!.length).toBeGreaterThan(0);
     });
 
-    test('should show checkbox prompt for tool selection', async () => {
+    test('should show confirm prompt for linting setup', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'custom' })
-        .mockResolvedValueOnce({ tools: ['eslint'] })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -228,19 +213,17 @@ describe('Deploy Configuration - Integration', () => {
 
       expect(promptSpy).toHaveBeenCalledWith([
         expect.objectContaining({
-          type: 'checkbox',
-          name: 'tools',
-          message: 'Select tools to configure:',
-          choices: expect.any(Array),
+          type: 'confirm',
+          name: 'setupLinting',
+          message: 'Setup linting configuration? (y/n)',
         }),
       ]);
     });
 
-    test('should handle no tools selected', async () => {
+    test('should handle skipping linting setup', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'custom' })
-        .mockResolvedValueOnce({ tools: [] })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -251,11 +234,10 @@ describe('Deploy Configuration - Integration', () => {
       expect(result.lintingDependencies).toEqual([]);
     });
 
-    test('should return dependencies and scripts for selected tools', async () => {
+    test('should return dependencies and scripts when linting enabled', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'custom' })
-        .mockResolvedValueOnce({ tools: ['eslint'] })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -267,10 +249,10 @@ describe('Deploy Configuration - Integration', () => {
   });
 
   describe('Linting configuration - Skip', () => {
-    test('should skip linting setup when skip is selected', async () => {
+    test('should skip linting setup when user declines', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -288,7 +270,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should enable CI/CD when confirmed', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: true })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -300,7 +282,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should disable CI/CD when declined', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -312,7 +294,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should prompt with true as default for CI/CD', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: true })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -337,7 +319,7 @@ describe('Deploy Configuration - Integration', () => {
 
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: true })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -357,7 +339,7 @@ describe('Deploy Configuration - Integration', () => {
 
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: true })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -370,7 +352,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should handle missing .git/config gracefully', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: true })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -385,7 +367,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should proceed when user confirms deployment', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -398,7 +380,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should throw error when user cancels deployment', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: false });
 
@@ -410,7 +392,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should prompt with true as default for final confirmation', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -430,7 +412,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should handle complete recommended workflow', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'full-project' })
-        .mockResolvedValueOnce({ linting: 'recommended' })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: true })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -450,8 +432,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should handle complete custom workflow', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'custom-project' })
-        .mockResolvedValueOnce({ linting: 'custom' })
-        .mockResolvedValueOnce({ tools: ['eslint', 'prettier'] })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: true })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -466,7 +447,7 @@ describe('Deploy Configuration - Integration', () => {
     test('should handle minimal setup (no linting, no CI/CD)', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'minimal-project' })
-        .mockResolvedValueOnce({ linting: 'skip' })
+        .mockResolvedValueOnce({ setupLinting: false })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -495,7 +476,7 @@ describe('Deploy Configuration - Integration', () => {
 
       promptSpy
         .mockResolvedValueOnce({ projectName: 'react-project' })
-        .mockResolvedValueOnce({ linting: 'recommended' })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -515,7 +496,7 @@ describe('Deploy Configuration - Integration', () => {
 
       promptSpy
         .mockResolvedValueOnce({ projectName: 'vue-project' })
-        .mockResolvedValueOnce({ linting: 'recommended' })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 
@@ -534,7 +515,7 @@ describe('Deploy Configuration - Integration', () => {
 
       promptSpy
         .mockResolvedValueOnce({ projectName: 'python-project' })
-        .mockResolvedValueOnce({ linting: 'recommended' })
+        .mockResolvedValueOnce({ setupLinting: true })
         .mockResolvedValueOnce({ setupCI: false })
         .mockResolvedValueOnce({ confirmDeploy: true });
 

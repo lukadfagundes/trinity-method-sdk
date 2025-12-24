@@ -24,6 +24,31 @@ The `/trinity-docs` command invokes APO (Documentation Specialist) to handle all
 
 ---
 
+## CRITICAL: APO Must Perform Documentation Work DIRECTLY
+
+**APO is NOT a planning agent. APO is an EXECUTION agent for documentation.**
+
+**✅ APO MUST:**
+- Read, analyze, and UPDATE existing documentation files **in this command execution**
+- CREATE missing documentation files **in this command execution**
+- Fix ALL factual inaccuracies identified in Phase 2 **immediately in Phase 4**
+- Apply updates directly to files (use Edit/Write tools)
+- Report COMPLETED work in Phase 9 (past tense: "Updated README.md", not "Update README.md")
+
+**❌ APO MUST NOT:**
+- Create work orders for documentation updates (WO-DOC-* pattern is FORBIDDEN)
+- Create "recommendations" instead of performing updates
+- Ask user for approval before fixing factual errors
+- Skip updates because "it's too much work" or "user might not want this"
+- Delegate documentation work to other agents
+- Defer work to future execution
+
+**Work orders are ONLY created by JUNO for code/infrastructure issues, NEVER for documentation.**
+
+**If APO identifies an inaccuracy in Phase 2, APO MUST fix it in Phase 4. No exceptions.**
+
+---
+
 ## When to Use `/trinity-docs`
 
 ### Perfect Use Cases:
@@ -97,29 +122,176 @@ APO prepares documentation for release:
 
 ---
 
+## APO Execution Principles
+
+**CRITICAL: APO has UNLIMITED token budget for this command.**
+
+### Token Budget Policy
+
+- ✅ APO MUST complete ALL 9 phases regardless of token consumption
+- ✅ APO MUST create READMEs for ALL directories with CLAUDE.md
+- ✅ APO MUST execute ALL phases 1-9 in sequence without skipping
+- ❌ APO MUST NOT stop due to token usage concerns
+- ❌ APO MUST NOT estimate or check token budgets before starting work
+- ❌ APO MUST NOT skip work due to "budget constraints"
+- ❌ APO MUST NOT defer phases to "future sessions"
+
+**Token consumption is the USER's decision, not APO's.**
+
+If APO hits the hard 200K token limit during execution:
+1. Report exact progress: "X/Y READMEs created before hard limit at 200K tokens"
+2. List specific remaining work items with file paths
+3. User will run `/trinity-docs` again in fresh session to complete remaining work
+4. NEVER claim "budget constraints" as reason for incomplete work if limit not actually hit
+
+---
+
+## Phase Execution Rules
+
+**ALL 9 phases (1-9) are MANDATORY. APO MUST execute phases in sequence.**
+
+**FORBIDDEN:**
+- ❌ Skipping phases
+- ❌ "Deferring" phases to future sessions
+- ❌ Claiming phases are "optional"
+- ❌ Stopping after Phase 4 claiming "critical work complete"
+- ❌ Jumping to Phase 9 without executing Phases 5-8
+
+**If APO cannot complete a phase:**
+1. APO MUST report specific blocker (e.g., "File X not found", "Tool Y unavailable")
+2. APO MUST attempt workaround or alternative approach
+3. APO MUST document in Phase 9 report which phase(s) could not complete and why
+4. APO MUST NOT skip to Phase 9 without attempting ALL phases
+
+**Example INVALID justifications:**
+- "Deferred to future sessions" ❌
+- "Already comprehensive" (for Phase 6 CHANGELOG) ❌
+- "Critical work complete" ❌
+- "Token budget concerns" ❌
+- "Too much work" ❌
+
+**Example VALID blockers:**
+- "Phase 6: CHANGELOG.md file not found, cannot verify version" ✅
+- "Phase 7b: No API documentation generation tool detected (TypeDoc/JSDoc not configured)" ✅
+- "Phase 5: docs/ directory does not exist, created structure instead" ✅
+
+---
+
 ## APO's 9-Phase Documentation Process
 
-### Phase 1: Documentation Discovery
-**Goal:** Identify all existing and missing documentation
+### Phase 1: Documentation Discovery (SYSTEMATIC)
+**Goal:** Identify ALL existing and missing documentation using tools
 
-**APO Actions:**
-1. Scan for existing documentation:
-   - Root README.md
+**CRITICAL: APO MUST Execute Systematically - NO ASSUMPTIONS - VERIFY COMPLETENESS**
+
+**Step 1: Find ALL CLAUDE.md Files Using Glob**
+
+```bash
+Use Glob tool with pattern: "**/CLAUDE.md"
+```
+
+**Step 2: VERIFY Glob Completeness**
+
+After Glob execution, APO MUST:
+- Report TOTAL count of CLAUDE.md files found
+- List EVERY file path found (absolute paths, one per line)
+- Include nested directories (backend/src/, frontend/app/, frontend/app/lib/, etc.)
+- NEVER filter results to "major directories only"
+- NEVER assume which directories "deserve" READMEs
+
+**Step 3: For EACH CLAUDE.md Found, Check for README.md**
+
+```
+For path in glob_results:
+  directory = dirname(path)
+  readme_path = directory + "/README.md"
+
+  if exists(readme_path):
+    add to "existing_readmes" array
+  else:
+    add to "missing_readmes" array
+```
+
+**Step 4: MANDATORY - Report Complete Inventory**
+
+APO MUST output:
+
+```markdown
+Phase 1 Discovery Results:
+- Total CLAUDE.md files: {count}
+
+- CLAUDE.md file paths (ALL PATHS):
+  1. {absolute path 1}
+  2. {absolute path 2}
+  ...
+  {count}. {absolute path N}
+
+- Directories with READMEs: {count}
+  {list all paths}
+
+- Directories MISSING READMEs: {count}
+  {list all paths - this becomes Phase 4b work list}
+```
+
+**Step 5: Self-Verification Check**
+
+APO MUST verify:
+- Did Glob find nested directories? (Check for */src/, */app/, */lib/ patterns)
+- Does count match expected project structure?
+- Are there frontend/, backend/, database/ subdirectories in results?
+
+If verification reveals missing paths: RE-RUN Glob with explicit paths
+
+**Example Expected Output:**
+
+```markdown
+Phase 1 Discovery Results:
+- Total CLAUDE.md files: 8
+
+- CLAUDE.md file paths:
+  1. C:\Project\CLAUDE.md
+  2. C:\Project\trinity\CLAUDE.md
+  3. C:\Project\backend\CLAUDE.md
+  4. C:\Project\backend\src\CLAUDE.md
+  5. C:\Project\frontend\CLAUDE.md
+  6. C:\Project\frontend\app\CLAUDE.md
+  7. C:\Project\frontend\app\lib\CLAUDE.md
+  8. C:\Project\database\CLAUDE.md
+
+- Directories with READMEs: 4
+  - C:\Project\
+  - C:\Project\trinity\
+  - C:\Project\backend\
+  - C:\Project\frontend\
+
+- Directories MISSING READMEs: 4
+  - C:\Project\backend\src\
+  - C:\Project\frontend\app\
+  - C:\Project\frontend\app\lib\
+  - C:\Project\database\
+
+Coverage: 50% (4/8 directories)
+```
+
+**This prevents APO from:**
+- Missing nested CLAUDE.md files
+- Filtering results incorrectly
+- Making assumptions about directory importance
+
+**Step 6: Scan for Other Documentation**
+
+1. Check for existing documentation:
+   - Root README.md (should exist from CLAUDE.md scan)
    - docs/ directory structure
    - CHANGELOG.md
-   - Subdirectory READMEs
    - CONTRIBUTING.md, LICENSE, etc.
 
-2. Identify documentation gaps:
-   - Directories with CLAUDE.md but no README
-   - Undocumented features (from audit)
-   - Missing getting started guides
-   - Outdated documentation
-
-3. Review audit findings (if provided):
+2. Review audit findings (if provided):
    - Parse JUNO's audit report
    - Extract documentation-relevant findings
    - Identify areas requiring doc updates
+
+**NO ASSUMPTIONS. ONLY USE GLOB RESULTS.**
 
 **Output:** Documentation inventory with gaps identified
 
@@ -130,167 +302,268 @@ APO prepares documentation for release:
 
 **CRITICAL: APO must verify reality BEFORE updating documentation. Never document aspirational features.**
 
-**APO Must Execute These Checks:**
+**Universal Verification Principles (Adapt to Project Type):**
 
-#### 2a. CLI Commands Verification (For SDK/CLI Projects)
+#### 2a. Verify Quantitative Claims
 
-**Check CLI Entry Point:**
-1. Read `package.json` → locate `bin` field or `main` script
-2. Read CLI entry point file (e.g., `src/cli/index.ts`, `src/index.ts`)
-3. Identify command registration (commander, yargs, etc.)
-4. List ALL registered commands with exact names
+**If README makes numeric claims, verify them:**
 
-**Validate Each Command:**
-- ✅ Command exists in code → Document it
-- ❌ Command in README but not in code → Remove from README
-- ❌ Command shows as "coming soon" in code → Do NOT document as available
+1. **Count Claims:**
+   - "50+ features" → Count actual features
+   - "12 API endpoints" → Count actual endpoints
+   - "100+ tests" → Count test files/cases
+   - "8 integrations" → Count integration implementations
 
-**Example Check:**
-```bash
-# If README says:
-npx trinity investigate --type feature
+2. **How to Verify:**
+   - Use Grep to search for feature implementations
+   - Count files matching patterns (e.g., test files, spec files, etc.)
+   - Read API route files to count endpoints
+   - Check configuration files for integrations
 
-# APO MUST verify:
-1. Read src/cli/index.ts
-2. Find: program.command('investigate') OR program.command('deploy')
-3. If 'investigate' NOT found → Remove from README
-4. Only document commands that exist in code
+3. **Update README:**
+   - Replace vague claims ("many features") with exact counts
+   - Remove inflated numbers (claimed 100, found 42)
+   - Update outdated counts (README says 5, code has 12)
+
+---
+
+#### 2b. Verify Feature/Functionality Claims
+
+**If README lists features, verify each one exists:**
+
+1. **For Each Claimed Feature:**
+   - Search codebase for implementation
+   - Check if feature is actually working (not commented out, not TODO)
+   - Verify feature is user-accessible (not internal-only)
+
+2. **Examples:**
+   - "JWT Authentication" → Search for JWT implementation
+   - "Real-time notifications" → Check for WebSocket/SSE code
+   - "Dark mode support" → Verify theme switcher exists
+
+3. **Actions:**
+   - ✅ Feature exists → Keep in README
+   - ❌ Feature doesn't exist → Remove from README
+   - ⏳ Feature is TODO/planned → Move to "Roadmap" section
+
+---
+
+#### 2c. Verify Installation/Setup Instructions
+
+**Test that documented setup actually works:**
+
+1. **Check Prerequisites:**
+   - README says "Node 16+" → Verify package.json engines field (or requirements.txt, Cargo.toml, etc.)
+   - README says "PostgreSQL required" → Check if actually used
+   - README lists dependencies → Verify in dependency manifest
+
+2. **Verify Commands:**
+   - README says `npm install` → Standard, should work (or `pip install`, `cargo build`, `go get`, etc.)
+   - README says `npm run setup` → Verify script exists in package.json (or Makefile, build scripts, etc.)
+   - README says custom CLI commands → Verify they exist in code
+
+3. **Check Configuration:**
+   - README references .env variables → List what's actually used
+   - README shows config examples → Verify config schema matches code
+
+---
+
+#### 2d. Verify Version Information
+
+**Ensure version claims are accurate:**
+
+1. **Check Version Consistency:**
+   - Project manifest version (package.json, Cargo.toml, pyproject.toml, etc.)
+   - README version badges/claims
+   - CHANGELOG.md latest entry
+   - All should match
+
+2. **Verify Deprecation Claims:**
+   - If README says "X is deprecated" → Verify X still exists but marked deprecated
+   - If README says "Use Y instead of X" → Verify Y actually exists
+
+3. **Check Breaking Changes:**
+   - If CHANGELOG claims breaking changes → Verify they're actually breaking
+
+---
+
+#### 2e. Verify Links and References
+
+**Check all documentation links work:**
+
+1. **Internal Links:**
+   - For each `[text](./path/file.md)` link → Verify file exists
+   - For each `[Section](#heading)` link → Verify heading exists
+   - Remove or fix broken links
+
+2. **External Links:**
+   - Check critical external links (docs, dependencies)
+   - Update outdated URLs
+
+3. **Cross-References:**
+   - README mentions "see CONTRIBUTING.md" → Verify file exists
+   - README references docs/ → Verify directory exists
+
+---
+
+#### 2f. Cross-Reference with Audit Report (If Available)
+
+**If JUNO audit report exists:**
+
+1. Read `trinity/reports/CODEBASE-AUDIT-{latest}.md`
+2. Extract actual counts (files, components, tests, etc.)
+3. Use audit findings as source of truth
+4. Update README with audit-verified information
+
+**Output:** List of verified vs. unverified claims
+
+---
+
+#### 2g. Existing Subdirectory README Audit (COMPREHENSIVE)
+
+**Goal:** Audit ALL existing subdirectory READMEs for inaccuracies, not just root README
+
+**CRITICAL: Phase 2 previously only audited root README.md. This phase expands scope to ALL existing READMEs.**
+
+**Step 1: Identify All Existing Subdirectory READMEs**
+
+From Phase 1 discovery, APO already has list of existing READMEs:
+- Root README.md (already audited in Phase 2a-2f)
+- All subdirectory READMEs (e.g., api/README.md, frontend/README.md, etc.)
+
+**Step 2: For Each Subdirectory README, Perform Full Phase 2 Audit**
+
+For EACH subdirectory README in "existing_readmes" array:
+
+1. **Quantitative Claims Audit** (like Phase 2a):
+   - Extract all numbers (file counts, test counts, API endpoints, etc.)
+   - Verify each claim against codebase using Grep/Glob/Bash
+   - Flag inaccuracies for Phase 2.5 commitment list
+
+2. **Feature Claims Audit** (like Phase 2b):
+   - Extract claimed features ("supports X", "includes Y")
+   - Verify existence in codebase
+   - Flag missing/incorrect features
+
+3. **Link Validation** (like Phase 2c):
+   - Check all markdown links: `[text](path)` or `[text](url)`
+   - Verify file paths exist
+   - Verify URLs are reachable (or skip external URL validation)
+   - Flag broken links
+
+4. **API/Component Documentation Audit** (like Phase 2d):
+   - If README documents specific functions/classes/APIs
+   - Verify these exist in codebase
+   - Verify signatures/parameters match documented behavior
+
+5. **JUNO Audit Cross-Reference** (like Phase 2f):
+   - If subdirectory has JUNO audit findings, cross-reference
+   - Use audit data as source of truth
+
+**Step 3: Aggregate All Inaccuracies**
+
+Combine inaccuracies from:
+- Root README.md (Phase 2a-2f)
+- ALL subdirectory READMEs (Phase 2g)
+
+Total inaccuracy count = root inaccuracies + subdirectory inaccuracies
+
+**Output Format:**
+```markdown
+### Phase 2g: Subdirectory README Audit Results
+
+**Subdirectory READMEs Audited:** {count}
+
+#### api/README.md:
+- ❌ Inaccuracy 1: Claims "15 API endpoints", actual count: 12
+- ❌ Inaccuracy 2: Link to `api/docs/swagger.md` broken (file not found)
+- ✅ Feature claim verified: REST API with authentication
+
+#### frontend/README.md:
+- ✅ All claims verified (no inaccuracies found)
+
+**Total Subdirectory Inaccuracies:** {count}
+**Combined Total (Root + Subdirectories):** {count}
 ```
 
-**Output:** Complete list of actual CLI commands vs. documented commands
+**IMPORTANT: All Phase 2g inaccuracies MUST be added to Phase 2.5 commitment list**
 
 ---
 
-#### 2b. Agent/Component Count Verification
+### Phase 2.5: Reality Audit → Fix Commitment
 
-**For Agent-Based Systems:**
-1. **Count Template Files:**
-   - Navigate to agent templates directory (e.g., `src/templates/agents/`)
-   - Count total `.md.template` or `.md` files
-   - Note: Templates ≠ deployed agents (check deployment logic)
+**Goal:** Create binding commitment to fix ALL inaccuracies identified in Phase 2 (including Phase 2g)
 
-2. **Count Deployed Agents:**
-   - Read deployment code (e.g., `src/cli/commands/deploy/agents.ts`)
-   - Find agent deployment logic
-   - Count how many agents actually get deployed to user projects
-   - Check if any agents are reference-only (not deployed)
+**CRITICAL: This phase creates accountability. APO lists what MUST be fixed and commits to fixing it.**
 
-3. **Verify Agent Names:**
-   - List all agent names from templates
-   - Cross-reference with deployment code
-   - Ensure README agent list matches deployed agents
+**APO Must Generate Commitment List:**
 
-**Output:**
-- Total agents in codebase: X
-- Total agents deployed: Y
-- Agent names: [complete list]
+For EACH inaccuracy found in Phase 2 (Phases 2a-2g), APO MUST document:
 
----
+```markdown
+## Phase 2 Inaccuracies Identified → Fix Commitment
 
-#### 2c. Component/Feature Count Verification
+**Total Inaccuracies Found:** {count}
 
-**Check Deployment Artifacts:**
-1. Read deployment code to count what actually gets deployed:
-   - Knowledge base files
-   - Slash commands
-   - Configuration files
-   - Templates provided to users
-   - Directories created
+### Inaccuracy 1: {Description}
+- **Location:** {file} line {number}
+- **Current (WRONG):** "{incorrect value}"
+- **Correct (VERIFIED):** "{correct value from Phase 2 audit}"
+- **Fix in Phase:** Phase 4d - Existing README Updates
+- **Status:** ⏳ PENDING FIX
 
-2. **Count Templates:**
-   - Slash commands: Count files in commands template directory
-   - Work orders: Count work order templates
-   - Investigations: Count investigation templates
-   - Knowledge base: Count KB template files
+### Inaccuracy 2: {Description}
+- **Location:** {file} line {number}
+- **Current (WRONG):** "{incorrect value}"
+- **Correct (VERIFIED):** "{correct value from Phase 2 audit}"
+- **Fix in Phase:** Phase 4d - Existing README Updates
+- **Status:** ⏳ PENDING FIX
 
-3. **Verify "What Gets Deployed" Accuracy:**
-   - Compare README claims vs. deployment code reality
-   - Update component counts to match actual deployment
+[... list ALL inaccuracies identified in Phase 2 ...]
 
-**Output:** Accurate component count breakdown
+**APO commits to fixing ALL {count} inaccuracies in subsequent phases.**
+**Phase 9 report MUST verify all inaccuracies were fixed.**
+```
 
----
+**Example Commitment:**
 
-#### 2d. Version-Specific Changes Verification
+```markdown
+## Phase 2 Inaccuracies Identified → Fix Commitment
 
-**For Multi-Version Projects:**
-1. **Read CHANGELOG.md:**
-   - Identify all version numbers
-   - Note breaking changes between versions
-   - Understand evolution (e.g., v1.0 had X, v2.0 has Y)
+**Total Inaccuracies Found:** 3
 
-2. **Verify Current Version Claims:**
-   - package.json version: Check actual version number
-   - README version references: Ensure consistency
-   - Feature claims: Verify features exist in current version
+### Inaccuracy 1: Equipment Count Mismatch
+- **Location:** README.md line 18
+- **Current (WRONG):** "800+ equipment items tracked across 5 active dealers"
+- **Correct (VERIFIED):** "299 equipment items (Lion Machinery - 1 active dealer)"
+- **Fix in Phase:** Phase 4 - Root README.md Update
+- **Status:** ⏳ PENDING FIX
 
-3. **Check Deprecation Claims:**
-   - If README says "X is deprecated, replaced by Y"
-   - Verify X actually existed in previous version
-   - Verify Y actually exists in current version
-   - Ensure deprecation direction is correct (not backwards)
+### Inaccuracy 2: Scraper Count Outdated
+- **Location:** README.md line 63
+- **Current (WRONG):** "5 active scrapers (Phase 3A)"
+- **Correct (VERIFIED):** "12 dealer scrapers implemented (1 deployed, 11 pending activation)"
+- **Fix in Phase:** Phase 4 - Root README.md Update
+- **Status:** ⏳ PENDING FIX
 
-**Output:** Version accuracy assessment
+### Inaccuracy 3: Test Count Incorrect
+- **Location:** README.md line 565
+- **Current (WRONG):** "71 tests"
+- **Correct (VERIFIED):** "537 tests (341 passing, 175 failing, 21 pending)"
+- **Fix in Phase:** Phase 4 - Root README.md Update
+- **Status:** ⏳ PENDING FIX
 
----
+**APO commits to fixing ALL 3 inaccuracies in Phase 4.**
+**Phase 9 report will verify all fixes were applied.**
+```
 
-#### 2e. Directory/File Structure Verification
+**This commitment:**
+- Creates a binding list of what MUST be fixed
+- Prevents APO from "forgetting" to apply Phase 2 findings
+- Provides audit trail for Phase 9 verification
+- Makes inaccuracies impossible to ignore
 
-**Verify Documentation Links:**
-1. **Check Every Link in README:**
-   - For each `[text](path/to/file.md)` link
-   - Use Glob or Read to verify file exists
-   - Mark as ❌ BROKEN if file doesn't exist
-   - Remove broken links from README
-
-2. **Verify Directory Structure Claims:**
-   - If README shows directory tree
-   - Verify each directory actually exists
-   - Update tree to match reality
-
-3. **Check Referenced Documentation:**
-   - docs/methodology/ → Does this exist?
-   - docs/guides/ → Does this exist?
-   - docs/api/ → Does this exist?
-   - Only link to documentation that exists
-
-**Output:** List of valid vs. broken documentation links
-
----
-
-#### 2f. Codebase Architecture Verification
-
-**For SDK/Library Projects:**
-1. **Verify Module Exports:**
-   - Read main entry point (package.json → "main")
-   - Check what's actually exported
-   - Don't document unexported/internal APIs
-
-2. **Verify Slash Commands (For Claude Code Projects):**
-   - Navigate to slash command templates
-   - Count actual command files
-   - List exact command names
-   - Verify categories/organization
-
-3. **Verify Tech Stack Claims:**
-   - Check package.json dependencies
-   - Verify framework claims (React, Vue, etc.)
-   - Verify language claims (TypeScript, JavaScript)
-
-**Output:** Accurate architecture description
-
----
-
-#### 2g. Cross-Reference with JUNO Audit (If Available)
-
-**If JUNO Audit Report Exists:**
-1. Read `trinity/reports/CODEBASE-AUDIT-{latest}.md`
-2. Extract actual feature counts
-3. Extract actual component counts
-4. Extract actual dependency information
-5. Use audit as source of truth for README updates
-
-**Output:** Audit-backed claims for README
+**If NO inaccuracies found:** State "Phase 2 found 0 inaccuracies. All documentation is accurate. Proceeding to quality assessment."
 
 ---
 
@@ -356,45 +629,583 @@ Brief description (1-2 sentences)
 [License information]
 ```
 
-**APO Updates:**
-- Ensure all sections present and accurate
-- Update feature list from audit findings
-- Verify installation instructions work
-- Add badges (build status, coverage, version)
+**MANDATORY ACTIONS (APO MUST Complete ALL - Cannot Skip):**
+
+**Step 1: Load Current README.md**
+- Read README.md into context
+- Identify all sections present
+
+**Step 2: Apply Phase 2.5 Corrections (MANDATORY)**
+
+For EACH inaccuracy identified in Phase 2.5 commitment list:
+- ✅ Locate the incorrect claim in README.md (use line number from commitment)
+- ✅ Replace with correct value from Phase 2.5 audit
+- ✅ Mark as ✅ FIXED in Phase 9 report
+
+**Example Phase 2.5 → Phase 4 Fix:**
+
+```markdown
+# Phase 2.5 Commitment:
+❌ README.md line 18: Claims "800+ items" → Reality: 299 items
+
+# Phase 4 Action (MANDATORY):
+1. Read README.md
+2. Find line 18: "Current Inventory: 800+ equipment items tracked across 5 active dealers"
+3. Edit line 18 to: "Current Inventory: 299 equipment items (Lion Machinery - 1 active dealer)"
+4. Save README.md using Edit tool
+5. Update commitment status: ⏳ PENDING FIX → ✅ FIXED
+```
+
+**Step 3: Update Remaining Sections**
+- Ensure all standard sections present (Features, Installation, Usage, Configuration, etc.)
+- Update feature list from audit findings (add new features discovered in Phase 2)
+- Add badges if missing (build status, coverage, version)
+- Verify installation instructions are accurate
 - Update links to documentation
+
+**Step 4: Save Updated README.md**
+- Use Edit tool to apply ALL changes
+- Do NOT create WO-DOC-* work order recommendations
+- Do NOT defer to future work
+- Apply changes NOW in this command execution
+
+**Valid Skip Reasons (ONLY):**
+- ✅ Value already 100% correct (no update needed)
+- ✅ Requires user input APO doesn't have (e.g., license choice, API keys)
+- ✅ Requires code changes (documentation follows code, not vice versa)
+
+**Invalid Skip Reasons (FORBIDDEN):**
+- ❌ "Too much work"
+- ❌ "User might not want this"
+- ❌ "Will create work order recommendation instead"
+- ❌ "Too many changes to make"
+- ❌ "Documentation is outdated but functional"
+
+**If APO skips ANY Phase 2.5 inaccuracy fix, APO MUST explain WHY with valid skip reason in Phase 9 report "Skipped Updates" section.**
 
 ---
 
-#### 3b. Subdirectory READMEs
+#### 4b. Subdirectory READMEs
 
 **Rule:** Every directory with CLAUDE.md gets a README.md
 
-**Standard Structure (Following Template):**
-```markdown
-# Directory Name
+**CRITICAL: APO MUST:**
+1. Scan entire codebase for ALL CLAUDE.md files (use Glob tool: `**/*CLAUDE.md`)
+2. For EACH directory containing CLAUDE.md, create/update README.md in THAT directory
+3. ONLY create READMEs in directories with CLAUDE.md (never assume src/, lib/, etc.)
 
-Purpose of this directory
+**Example Scan:**
+```
+Found CLAUDE.md files:
+- CLAUDE.md (root - already has root README.md)
+- api/CLAUDE.md → CREATE/UPDATE api/README.md
+- web/CLAUDE.md → CREATE/UPDATE web/README.md
+- web/components/CLAUDE.md → CREATE/UPDATE web/components/README.md
+- cli/CLAUDE.md → CREATE/UPDATE cli/README.md
 
-## Contents
-- File 1: Description
-- File 2: Description
-
-## Usage
-[How to use code in this directory]
-
-## Key Files
-- `important-file.ts`: Description
-- `another-file.ts`: Description
-
-## Related Documentation
-- [Link to main docs]
+Do NOT create:
+- src/README.md (no src/CLAUDE.md found)
+- lib/README.md (no lib/CLAUDE.md found)
+- utils/README.md (no utils/CLAUDE.md found)
 ```
 
-**APO Actions:**
-- Create missing subdirectory READMEs
-- Update existing ones with current file inventory
-- Ensure consistency with root README
-- Add cross-references to related docs
+**CRITICAL: APO MUST USE PHASE 1 DISCOVERY RESULTS - NO HARDCODING**
+
+**For EACH directory in Phase 1 "missing_readmes" list:**
+
+1. **Read the corresponding CLAUDE.md file** to understand directory purpose
+2. **Detect directory type** using path analysis (see rules below)
+3. **Generate README.md** using appropriate template
+4. **Create the README.md file** using Write tool
+
+**Directory Type Detection Rules:**
+
+**Type A: Source Code Directory (src/, lib/, app/)**
+- **Detection:** Path contains "src", "lib", or "app" (e.g., `api/src`, `web/app`, `cli/lib`)
+- **README Template:**
+  ```markdown
+  # {Directory Name}
+
+  {Purpose extracted from CLAUDE.md}
+
+  ## Directory Structure
+
+  {Use ls or tree to show actual subdirectories and key files}
+
+  ## Key Components
+
+  {List major files/modules with descriptions from filesystem}
+
+  ## Architecture
+
+  {Extract from CLAUDE.md - framework, patterns, organization}
+
+  ## Development
+
+  See [{directory}/CLAUDE.md](CLAUDE.md) for development patterns and debugging.
+  ```
+
+**Type B: Database Directory**
+- **Detection:** Directory name is "database", "db", or "migrations"
+- **README Template:**
+  ```markdown
+  # Database
+
+  {Extract database info from CLAUDE.md}
+
+  ## Schema Files
+
+  {List actual files from filesystem - init.sql, migrations/, etc.}
+
+  ## Database Info
+
+  {Extract from CLAUDE.md - database type, version, tables}
+
+  ## Setup
+
+  {Extract setup instructions from CLAUDE.md or show standard setup}
+
+  ## Documentation
+
+  See [database/CLAUDE.md](CLAUDE.md) for database patterns.
+  ```
+
+**Type C: Trinity Directory**
+- **Detection:** Directory name is "trinity"
+- **README Template:**
+  ```markdown
+  # Trinity Method
+
+  Trinity Method v2.0 implementation for {project name}.
+
+  ## Directory Structure
+
+  {Use ls to show actual trinity/ subdirectories}
+
+  ## Key Files
+
+  {List actual files in trinity/knowledge-base/ with line counts}
+
+  ## Trinity Commands
+
+  ```bash
+  /trinity-start          # Start workflow guide
+  /trinity-audit          # Run codebase audit
+  /trinity-docs           # Update documentation
+  /trinity-orchestrate    # Workflow orchestration
+  ```
+
+  ## Documentation
+
+  See [trinity/CLAUDE.md](CLAUDE.md) for Trinity Method context.
+  ```
+
+**Type D: Test Directory**
+- **Detection:** Directory name contains "test", "__tests__", "spec"
+- **README Template:**
+  ```markdown
+  # {Directory Name}
+
+  {Extract testing info from CLAUDE.md}
+
+  ## Test Structure
+
+  {Use ls to show actual test files and subdirectories}
+
+  ## Running Tests
+
+  {Extract test commands from CLAUDE.md or package.json scripts}
+
+  ## Coverage
+
+  {If coverage info exists in CLAUDE.md, include it}
+
+  ## Documentation
+
+  See [{directory}/CLAUDE.md](CLAUDE.md) for testing patterns.
+  ```
+
+**Type E: Nested Subdirectory (2+ levels deep)**
+- **Detection:** Path has 2+ levels (e.g., `backend/src`, `frontend/app`, `frontend/app/lib`)
+- **When to Use:** Directory is nested inside another directory (not at root level)
+- **README Template:**
+  ```markdown
+  # {Directory Name}
+
+  {Purpose extracted from CLAUDE.md - usually first paragraph}
+
+  ## Location in Project
+
+  **Path:** `{relative_path_from_root}`
+  **Parent:** `{parent_directory_name}`
+  **Level:** {depth} levels from root
+
+  ## Directory Contents
+
+  {Use `ls` or `tree` to show actual subdirectories and files}
+
+  ```
+  {directory_name}/
+  ├── {subdirectory1}/
+  ├── {subdirectory2}/
+  ├── {file1}
+  ├── {file2}
+  └── ...
+  ```
+
+  ## Purpose
+
+  {Extract from CLAUDE.md - what this directory is responsible for}
+
+  ## Key Components
+
+  {List major files/subdirectories with brief descriptions}
+
+  ### {Component 1}
+  **Location:** `{path}`
+  **Purpose:** {description}
+
+  ### {Component 2}
+  **Location:** `{path}`
+  **Purpose:** {description}
+
+  ## Architecture Patterns
+
+  {Extract from CLAUDE.md - any architectural patterns specific to this directory}
+
+  ## Usage Examples
+
+  {If CLAUDE.md contains usage examples, include them}
+
+  ```javascript
+  // Example from CLAUDE.md
+  import { something } from './{this_directory}'
+  ```
+
+  ## Development Guidelines
+
+  {Extract from CLAUDE.md - coding standards, conventions, patterns}
+
+  ## Related Documentation
+
+  - Parent directory: [{parent}/README.md](../README.md)
+  - Root documentation: [CLAUDE.md](./CLAUDE.md)
+  - Project root: [README.md](../../README.md) {adjust path depth}
+
+  ---
+
+  **Developer Guide:** See [CLAUDE.md](CLAUDE.md) for detailed technical context and debugging patterns.
+  ```
+
+**Example for backend/src/:**
+
+```markdown
+# backend/src/
+
+Core Express.js backend source code for {Project Name}.
+
+## Location in Project
+
+**Path:** `backend/src/`
+**Parent:** `backend/`
+**Level:** 2 levels from root
+
+## Directory Contents
+
+```
+backend/src/
+├── routes/          # Express route handlers
+├── services/        # Business logic layer
+├── middleware/      # Express middleware
+├── utils/           # Utility functions
+├── config/          # Configuration management
+├── server.js        # Express application entry point
+└── app.js           # Express app configuration
+```
+
+## Purpose
+
+Contains all Express.js backend application code including API routes, business logic services, and middleware. This is the core of the backend system.
+
+## Key Components
+
+### routes/
+**Location:** `backend/src/routes/`
+**Purpose:** Express route handlers organized by resource
+
+### services/
+**Location:** `backend/src/services/`
+**Purpose:** Business logic layer implementing core functionality
+
+### middleware/
+**Location:** `backend/src/middleware/`
+**Purpose:** Express middleware for authentication, validation, and error handling
+
+## Architecture Patterns
+
+- **Layered Architecture:** Routes → Services → Database
+- **Dependency Injection:** Services injected into routes via factory pattern
+- **Error Handling:** Centralized error middleware catches all route errors
+
+## Development Guidelines
+
+- All routes must use async/await (no callbacks)
+- Services must be stateless and testable
+- Middleware must call `next()` or send response (never both)
+
+## Related Documentation
+
+- Parent directory: [backend/README.md](../README.md)
+- Root documentation: [CLAUDE.md](./CLAUDE.md)
+- API Documentation: [../../docs/API.md](../../docs/API.md)
+
+---
+
+**Developer Guide:** See [CLAUDE.md](CLAUDE.md) for Express.js debugging patterns and performance optimization.
+```
+
+**APO MUST:**
+- ✅ Create README.md for **EVERY** directory in "missing_readmes" list
+- ✅ Use appropriate template based on directory type detection
+- ✅ Extract real content from CLAUDE.md file (don't invent content)
+- ✅ Use filesystem tools (ls, tree, Glob) to list actual files/subdirectories
+- ✅ NO HARDCODING of specific paths (api/src, web/app, etc.)
+- ✅ Dynamically generate based on Phase 1 discovery
+
+**APO MUST NOT:**
+- ❌ Skip any directory from "missing_readmes" list
+- ❌ Hardcode assumed paths (backend/src, frontend/app, etc.)
+- ❌ Create READMEs for directories WITHOUT CLAUDE.md
+- ❌ Use placeholder content (all content must be real from CLAUDE.md/filesystem)
+
+---
+
+#### 4c. README Creation Completion Verification (MANDATORY CHECKPOINT)
+
+**CRITICAL: APO CANNOT proceed to Phase 5 until this checkpoint PASSES**
+
+**Goal:** Ensure 100% completion of Phase 4b README creation requirements
+
+**Step 1: Count Missing READMEs (From Phase 1)**
+```javascript
+missing_readmes_from_phase1 = [list from Phase 1 discovery]
+total_missing = missing_readmes_from_phase1.length
+```
+
+**Step 2: Count READMEs Created in Phase 4b**
+```javascript
+readmes_created_in_phase4b = [list of paths created]
+total_created = readmes_created_in_phase4b.length
+```
+
+**Step 3: Calculate Coverage**
+```javascript
+coverage_percentage = (total_created / total_missing) * 100
+```
+
+**Step 4: Validate Skipped READMEs (if coverage < 100%)**
+
+For EACH README not created (missing from Phase 1 but not created in Phase 4b):
+- State skip reason
+- Validate against allowed reasons:
+  - ✅ README already exists (value 100% correct)
+  - ✅ Requires user input APO doesn't have
+  - ❌ "Token budget" (FORBIDDEN - no token budget limits apply to this command)
+  - ❌ "Too much work" (FORBIDDEN)
+  - ❌ "Prioritized other work" (FORBIDDEN)
+  - ❌ "Deferred to future session" (FORBIDDEN)
+
+**Step 5: Pass/Fail Decision (BINARY - NO "PARTIAL")**
+
+```
+if coverage == 100%:
+  status = PASS
+elif coverage < 100% AND all_skips_valid:
+  status = PASS (with valid exceptions)
+else:
+  status = FAIL
+```
+
+**ONLY TWO VALID STATUSES:**
+- ✅ **PASSED** - Coverage = 100% OR (Coverage < 100% AND all skips valid)
+- ❌ **FAILED** - Coverage < 100% AND any skip has invalid reason
+
+**FORBIDDEN STATUSES:**
+- ⚠️ "PARTIAL" (not defined in specification)
+- ⏳ "IN PROGRESS" (checkpoint is binary evaluation)
+- 🔄 "PENDING" (not applicable)
+
+**APO MUST use ONLY ✅ PASSED or ❌ FAILED.**
+
+**APO MUST Output Checkpoint Report:**
+
+```markdown
+### Phase 4c Checkpoint: README Creation Completeness
+
+**Missing READMEs (Phase 1):** {total_missing}
+**READMEs Created (Phase 4b):** {total_created}
+**Coverage:** {coverage_percentage}% ({total_created}/{total_missing})
+
+**Checkpoint Status:** {✅ PASS | ❌ FAIL}
+
+**If PASS:**
+✅ All required READMEs created OR all skips have valid reasons.
+Proceeding to Phase 5.
+
+**If FAIL:**
+❌ Phase 4c CHECKPOINT FAILED
+Reason: {X} READMEs skipped with INVALID reasons
+
+Invalid Skip Reasons:
+- {directory1}: "{invalid_reason}" (FORBIDDEN - see valid reasons above)
+- {directory2}: "{invalid_reason}" (FORBIDDEN - see valid reasons above)
+
+**ACTION REQUIRED:**
+APO MUST immediately return to Phase 4b and create the missing READMEs.
+DO NOT proceed to Phase 5 until Phase 4c checkpoint PASSES.
+```
+
+**Step 6: Checkpoint Action (ENFORCED)**
+
+```python
+if status == PASS:
+  print("✅ Phase 4c Checkpoint PASSED - Proceeding to Phase 4d")
+  goto Phase_4d
+
+elif status == FAIL:
+  print("❌ Phase 4c Checkpoint FAILED")
+  print("Invalid skip reasons detected. Returning to Phase 4b.")
+
+  # MANDATORY LOOP-BACK
+  goto Phase_4b
+  # Create ALL READMEs with invalid skip reasons
+  # Re-run Phase 4c
+  # Repeat until PASS
+```
+
+**APO CANNOT execute Phase 4d or Phase 5 until this checkpoint returns PASS.**
+
+**Example Checkpoint Failure Scenario:**
+
+```
+Phase 4c Checkpoint Results:
+- Missing READMEs (Phase 1): 4
+- READMEs Created (Phase 4b): 2
+- Coverage: 50% (2/4)
+
+Skipped READMEs:
+1. frontend/README.md - Reason: "Token budget constraints"
+   Validation: ❌ INVALID (no token budget limits apply)
+
+2. database/README.md - Reason: "Too much work"
+   Validation: ❌ INVALID (all work must be completed)
+
+Checkpoint Status: ❌ FAILED
+
+ACTION: Returning to Phase 4b to create 2 missing READMEs
+[APO creates frontend/README.md]
+[APO creates database/README.md]
+[APO re-runs Phase 4c]
+
+Phase 4c Re-Check:
+- Missing READMEs (Phase 1): 4
+- READMEs Created (Phase 4b): 4
+- Coverage: 100% (4/4)
+
+Checkpoint Status: ✅ PASSED
+
+Proceeding to Phase 4d...
+```
+
+**This prevents APO from:**
+- Bypassing checkpoint without completing work
+- Reporting "PARTIAL" when specification defines PASS/FAIL only
+- Skipping to Phase 9 when work incomplete
+
+---
+
+#### 4d. Existing README Updates (PHASE 2 INACCURACY FIXES)
+
+**Goal:** Apply ALL Phase 2.5 inaccuracy corrections to existing subdirectory READMEs
+
+**CRITICAL: Phase 4b created NEW missing READMEs. Phase 4d updates EXISTING subdirectory READMEs with corrections.**
+
+**Step 1: Review Phase 2.5 Commitment List**
+
+From Phase 2.5, APO has a list of ALL inaccuracies found:
+- Root README.md inaccuracies (from Phase 2a-2f)
+- Subdirectory README inaccuracies (from Phase 2g)
+
+**Step 2: Group Inaccuracies by File**
+
+Organize Phase 2.5 commitment list by README file:
+
+```markdown
+### Root README.md Fixes:
+- Inaccuracy 1: {description}
+- Inaccuracy 2: {description}
+
+### api/README.md Fixes:
+- Inaccuracy 3: {description}
+- Inaccuracy 4: {description}
+
+### frontend/README.md Fixes:
+- Inaccuracy 5: {description}
+```
+
+**Step 3: Update Each README File**
+
+For EACH existing README with inaccuracies:
+
+1. **Read current README content**
+2. **Apply ALL fixes from Phase 2.5 for this file**:
+   - Correct quantitative claims (file counts, test counts, etc.)
+   - Fix broken links
+   - Update feature descriptions to match reality
+   - Correct API/component documentation
+3. **Use Edit tool to apply corrections**
+4. **Mark Phase 2.5 inaccuracy as ✅ FIXED**
+
+**Step 4: Verify All Phase 2.5 Fixes Applied**
+
+After updating all READMEs, verify:
+- Every inaccuracy from Phase 2.5 is now marked ✅ FIXED
+- No inaccuracies remain as ⏳ PENDING FIX
+
+**Output Format:**
+```markdown
+### Phase 4d: Existing README Update Results
+
+**READMEs Updated:** {count}
+
+#### Root README.md:
+- ✅ Fixed: Corrected "50 components" → "42 components"
+- ✅ Fixed: Updated broken link to `docs/api.md` → `docs/api/README.md`
+- **Total Fixes Applied:** 2
+
+#### api/README.md:
+- ✅ Fixed: Corrected "15 API endpoints" → "12 API endpoints"
+- ✅ Fixed: Fixed link to `api/docs/swagger.md`
+- **Total Fixes Applied:** 2
+
+#### frontend/README.md:
+- ℹ️ No fixes needed (no inaccuracies found in Phase 2g)
+
+**Total Phase 2.5 Inaccuracies Fixed:** {count}
+**Remaining Unfixed:** {should be 0}
+```
+
+**Validation:**
+
+APO MUST verify:
+- ✅ All Phase 2.5 inaccuracies = ✅ FIXED status
+- ✅ No ⏳ PENDING FIX items remain
+- ✅ All existing READMEs now contain verified, accurate information
+
+**If any inaccuracies remain unfixed:**
+1. Report which inaccuracies were not fixed and why
+2. Loop back to Step 3 and fix remaining items
+3. Re-run verification
 
 ---
 
@@ -453,7 +1264,7 @@ docs/
 **For New Version Releases (e.g., v1.0 → v2.0):**
 
 **Step 1: Identify Version Baseline**
-1. Read `package.json` (or equivalent) → current version
+1. Read project manifest (package.json, Cargo.toml, pyproject.toml, etc.) → current version
 2. Read `CHANGELOG.md` → find previous version entry
 3. Identify baseline version for comparison (e.g., v1.0.0 as baseline for v2.0.0)
 
@@ -787,33 +1598,84 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **APO Must Execute These Checks:**
 
-#### 6a. TypeDoc Validation (For TypeScript/JavaScript Projects)
+#### 7a. CLAUDE.md → README.md Coverage Validation
 
-**Check 1: Run TypeDoc Generation**
+**CRITICAL: Re-run Phase 1 discovery to verify ALL READMEs were created**
+
+**Step 1: Re-run Glob**
 ```bash
-npm run docs:generate
+Use Glob tool with pattern: "**/CLAUDE.md"
 ```
 
-**Requirements:**
-- ✅ Command must complete without errors
-- ✅ No warnings about missing JSDoc comments
-- ✅ All exported functions/classes have documentation
-- ✅ All public APIs are included in generated docs
+**Step 2: Verify Each Directory Has README.md**
 
-**If TypeDoc Fails:**
-- Identify which functions/classes lack documentation
-- Add JSDoc comments to source code
-- Re-run TypeDoc until clean
+```javascript
+missing_readmes = []
 
-**Check 2: Verify TypeDoc Output**
-- ✅ `docs/index.html` exists and is up-to-date
-- ✅ `docs/modules.html` lists all modules
-- ✅ All source files in `src/` are represented
-- ✅ No broken links in generated documentation
+For each CLAUDE.md path:
+  directory = dirname(path)
+  readme_path = directory + "/README.md"
+
+  if NOT exists(readme_path):
+    missing_readmes.append(directory)
+```
+
+**Step 3: Calculate Coverage**
+
+APO MUST output:
+```
+Phase 7a CLAUDE.md Coverage Validation:
+- Total CLAUDE.md directories: {count}
+- READMEs created: {count}
+- Coverage: {percentage}%
+```
+
+**Expected Result:**
+- Coverage: **100%** (ALL directories with CLAUDE.md have README.md)
+
+**If coverage < 100%:**
+- ❌ **FAIL validation**
+- List missing READMEs: {directories}
+- **Action Required:** Return to Phase 4 and create missing READMEs
+- Re-run Phase 7a validation until coverage = 100%
+
+**Only proceed to 7b if coverage = 100%**
 
 ---
 
-#### 6b. Root Documentation Files Validation
+#### 7b. API Documentation Validation (If Project Has API Docs)
+
+**Check if project generates API documentation:**
+
+**Common patterns to check:**
+- `docs:generate` or `docs:build` script in package.json/Makefile/build scripts
+- API documentation tool (TypeDoc, JSDoc, Sphinx, Javadoc, Godoc, RustDoc, etc.)
+- docs/ directory with generated API references
+
+**If API docs generation exists:**
+
+1. **Run Generation Command:**
+   - Try: `npm run docs:generate`, `make docs`, `cargo doc`, `go doc`, etc.
+   - Verify command completes without errors
+   - Check for warnings about missing documentation
+
+2. **Verify Output:**
+   - API documentation files exist in docs/ or similar
+   - All public APIs/functions/classes are documented
+   - Generated docs are up-to-date with current code
+
+3. **Update README:**
+   - Link to API documentation
+   - Explain how to regenerate docs
+   - Note any API coverage metrics
+
+**If NO API docs generation:**
+- Skip this check (not all projects need generated API docs)
+- Focus on README examples and inline code comments
+
+---
+
+#### 7c. Root Documentation Files Validation
 
 **Required Files (Must Exist in Root):**
 - ✅ `README.md` - Project overview with current features
@@ -830,7 +1692,7 @@ npm run docs:generate
    - Has badges (build status, coverage, version)
 
 2. **CHANGELOG.md:**
-   - Has entry for current version (from package.json)
+   - Has entry for current version (from project manifest)
    - Follows Keep-a-Changelog format
    - [Unreleased] section exists for ongoing work
    - Links to release tags work
@@ -843,16 +1705,16 @@ npm run docs:generate
 
 4. **LICENSE:**
    - Contains valid license text
-   - Matches package.json license field
+   - Matches project manifest license field
 
 ---
 
-#### 6c. Documentation Consistency Validation
+#### 7d. Documentation Consistency Validation
 
 **Cross-Reference Checks:**
 
 1. **Version Consistency:**
-   - package.json version matches CHANGELOG.md latest version
+   - Project manifest version matches CHANGELOG.md latest version
    - README.md badges show correct version
    - All documentation references current version
 
@@ -873,7 +1735,7 @@ npm run docs:generate
 
 ---
 
-#### 6d. Documentation Coverage Metrics
+#### 7e. Documentation Coverage Metrics
 
 **APO Must Calculate:**
 
@@ -932,11 +1794,88 @@ npm run docs:generate
 
 ---
 
+## Work Completion Criteria
+
+**APO's work is COMPLETE when ALL criteria below are met:**
+
+### Hard Requirements (MUST be 100%)
+
+1. **✅ Phase Execution:** All 9 phases executed (1, 2, 2.5, 3, 4a-4d, 5, 6, 7, 8, 9)
+2. **✅ README Coverage:** 100% (every directory with CLAUDE.md has README.md)
+3. **✅ Phase 2.5 Fixes:** 100% (all inaccuracies identified in Phase 2 are fixed in Phase 4)
+4. **✅ Phase 4c Checkpoint:** PASSED (not FAILED, not PARTIAL)
+5. **✅ Phase 7a Validation:** PASSED (100% coverage confirmed)
+
+### Soft Requirements (SHOULD be addressed)
+
+6. **✅ docs/ Management:** docs/ directory organized and updated
+7. **✅ CHANGELOG Verified:** CHANGELOG.md verified or updated per Phase 6
+8. **✅ Documentation Consistency:** All versions, APIs, links validated per Phase 7d
+
+### APO Work Status Determination
+
+```python
+hard_requirements_met = (
+    phases_executed == 9 AND
+    readme_coverage == 100 AND
+    phase_2_5_fixes == 100 AND
+    phase_4c_status == "PASSED" AND
+    phase_7a_status == "PASSED"
+)
+
+if hard_requirements_met AND soft_requirements_met:
+    status = "✅ SUCCESS"
+elif hard_requirements_met:
+    status = "⚠️ PARTIAL SUCCESS" (valid use of PARTIAL - hard requirements met, soft requirements incomplete)
+else:
+    status = "❌ FAILED"
+```
+
+### Example SUCCESS
+
+```
+Work Completion Criteria:
+1. Phase Execution: 9/9 phases ✅
+2. README Coverage: 100% (8/8) ✅
+3. Phase 2.5 Fixes: 100% (8/8) ✅
+4. Phase 4c Checkpoint: PASSED ✅
+5. Phase 7a Validation: PASSED ✅
+6. docs/ Management: Complete ✅
+7. CHANGELOG Verified: Up-to-date ✅
+8. Documentation Consistency: Validated ✅
+
+Overall Status: ✅ SUCCESS
+```
+
+### Example FAILURE
+
+```
+Work Completion Criteria:
+1. Phase Execution: 5/9 phases ❌ (Phases 5-8 skipped)
+2. README Coverage: 50% (4/8) ❌
+3. Phase 2.5 Fixes: 100% (8/8) ✅
+4. Phase 4c Checkpoint: FAILED ❌
+5. Phase 7a Validation: NOT EXECUTED ❌
+
+Overall Status: ❌ FAILED
+Reason: Hard requirements not met (1, 2, 4, 5 failed)
+```
+
+**This prevents:**
+- Ambiguous "partial success" when work fundamentally incomplete
+- APO claiming success with 50% coverage
+- User confusion about what "partial" means
+
+---
+
 ### Phase 9: Documentation Audit Report
 
 **APO Generates:** `trinity/reports/DOCUMENTATION-AUDIT-{date}.md`
 
-**Report Contents:**
+**CRITICAL: Report MUST document COMPLETED work, not future recommendations or work orders.**
+
+**Required Report Structure:**
+
 ```markdown
 # Documentation Audit Report
 
@@ -946,941 +1885,245 @@ npm run docs:generate
 
 ## Executive Summary
 **Documentation Score:** {score}/10
-**Files Updated:** {count}
 **Files Created:** {count}
-**Issues Fixed:** {count}
+**Files Updated:** {count}
+**Phase 2.5 Inaccuracies Fixed:** {fixed}/{total}
+**Phase 2.5 Completion:** {percentage}%
+**CLAUDE.md → README.md Coverage:** {count}/{total} ({percentage}%)
 
-## Documentation Inventory
+**COMMAND EXECUTION STATUS:** {✅ SUCCESS | ⚠️ PARTIAL SUCCESS | ❌ FAILED}
 
-### Existing Documentation
-- ✅ README.md (updated)
-- ✅ docs/CHANGELOG.md (updated)
-- ✅ docs/guides/getting-started.md (updated)
-- ✅ src/README.md (created)
+### Hard Requirements Status
+1. **Phase Execution:** {executed}/{total} phases ✅/❌
+2. **README Coverage:** {percentage}% ({count}/{total}) ✅/❌ (Target: 100%)
+3. **Phase 2.5 Fixes:** {percentage}% ({fixed}/{total}) ✅/❌ (Target: 100%)
+4. **Phase 4c Checkpoint:** {✅ PASSED | ❌ FAILED}
+5. **Phase 7a Validation:** {✅ PASSED | ❌ FAILED | ⏸️ NOT EXECUTED}
 
-### Missing Documentation (Created)
-- 📝 docs/guides/configuration.md
-- 📝 docs/api/endpoints.md
-- 📝 src/components/README.md
+**If ALL 5 hard requirements = ✅ AND all soft requirements met: STATUS = ✅ SUCCESS**
+**If ALL 5 hard requirements = ✅ BUT some soft requirements missing: STATUS = ⚠️ PARTIAL SUCCESS**
+**If ANY hard requirement = ❌: STATUS = ❌ FAILED**
 
-## Changes Made
+## Phase 2.5 Inaccuracies → Fixes Applied
 
-### Root README.md
-- Updated feature list (added 3 features from audit)
-- Fixed broken installation link
-- Added badges (build, coverage, version)
-- Updated usage examples
+**MANDATORY: Report ALL Phase 2.5 inaccuracies with fix status**
 
-### CHANGELOG.md
-- Created file (was missing)
-- Added version history from git tags
-- Documented unreleased changes
+### Inaccuracy 1: {Description} ✅ FIXED
+- **Was (WRONG):** "{incorrect value}" (file line X)
+- **Now (CORRECT):** "{correct value}"
+- **Action Taken:** Updated {file} line X via Edit tool
+- **Status:** ✅ APPLIED
 
-### Subdirectory READMEs
-- Created src/README.md
-- Created src/components/README.md
-- Updated tests/README.md
+### Inaccuracy 2: {Description} ✅ FIXED
+- **Was (WRONG):** "{incorrect value}" (file line Y)
+- **Now (CORRECT):** "{correct value}"
+- **Action Taken:** Updated {file} line Y via Edit tool
+- **Status:** ✅ APPLIED
 
-### docs/ Directory
-- Created docs/guides/configuration.md
-- Updated docs/guides/getting-started.md
-- Fixed 12 broken links
+[... list ALL Phase 2.5 inaccuracies with fix status ...]
+
+**Phase 2.5 Completion:** ✅ All {count} inaccuracies fixed
+OR
+**Phase 2.5 Completion:** ⚠️ {fixed}/{total} inaccuracies fixed ({skipped} skipped - see Skipped Updates section)
+
+## CLAUDE.md → README.md Coverage
+
+**Total CLAUDE.md Files:** {count}
+**Directories with READMEs:** {count}/{total} ({percentage}%)
+
+### Created READMEs ({count} total):
+- ✅ `api/src/README.md` (source code directory)
+- ✅ `database/README.md` (database directory)
+- ✅ `web/app/README.md` (application directory)
+- ✅ `web/app/lib/README.md` (utilities directory)
+- ✅ `trinity/README.md` (Trinity Method directory)
+- ✅ `api/tests/README.md` (backend testing)
+- ✅ `web/__tests__/README.md` (frontend testing)
+
+### Existing READMEs ({count} total):
+- ✅ `README.md` (root - updated with Phase 4d corrections)
+- ✅ `api/README.md` (API overview - updated with Phase 4d corrections)
+- ✅ `web/README.md` (web interface overview - no corrections needed)
+
+**Note:** Existing READMEs were updated in Phase 4d with ALL Phase 2.5 inaccuracy corrections.
+
+**Coverage:** {percentage}% ({count}/{total} directories)
+
+**Expected:** 100% coverage (every directory with CLAUDE.md must have README.md)
+
+## Files Created (Past Tense - COMPLETED Work)
+- ✅ CONTRIBUTING.md (373 lines) - Created contributor guidelines with code of conduct
+- ✅ api/README.md (415 lines) - Created API architecture overview
+- ✅ docs/guides/configuration.md (250 lines) - Created configuration guide
+
+## Files Updated (Past Tense - COMPLETED Work)
+- ✅ README.md - Fixed 3 inaccuracies (equipment count 800+→299, scraper count 5→12, test count 71→537)
+- ✅ CHANGELOG.md - Added [1.3.1] Phase 3B entry documenting 12 scraper implementations
+- ✅ docs/guides/getting-started.md - Updated installation steps for Node 18+
+
+## Files Verified (No Changes Needed)
+- ✅ LICENSE - Already accurate (MIT license), no changes needed
+- ✅ docs/API.md - Already current with v1.3.1 endpoints, no updates required
+- ✅ .gitignore - Already includes node_modules, .env, no changes needed
+
+## Skipped Updates (With Justification)
+
+**ONLY use this section if updates were skipped with VALID reasons**
+
+### {File} - {Section/Line}
+- **Inaccuracy:** "{what was wrong}"
+- **Correct Value:** "{what it should be}"
+- **Skip Reason (MUST be valid):** {reason}
+- **Valid Reasons Only:**
+  - ✅ Requires user input APO doesn't have (e.g., API keys, license choice)
+  - ✅ Requires code changes (documentation follows code)
+  - ✅ Already 100% accurate (false positive from Phase 2)
+
+**FORBIDDEN Skip Reasons (Report as ERROR if used):**
+- ❌ "Too much work"
+- ❌ "User might not want this"
+- ❌ "Created work order recommendation instead"
 
 ## Quality Improvements
 
 ### Before
 - Documentation Score: 4/10
+- Phase 2 Inaccuracies: {count}
 - Missing READMEs: 5
 - Broken Links: 12
-- Outdated Examples: 8
 
 ### After
 - Documentation Score: 9/10
-- Missing READMEs: 0
-- Broken Links: 0
-- Outdated Examples: 0
+- Phase 2 Inaccuracies: 0 (all fixed)
+- Missing READMEs: 0 (all created)
+- Broken Links: 0 (all fixed)
 
-## Recommendations
+## Recommendations (Future Work - NOT Completed)
+
+**This section is for FUTURE work, not work that should have been done now**
 
 ### Short Term
-1. Add API documentation for new endpoints
-2. Create troubleshooting guide
-3. Add architecture diagrams
+1. Add API documentation for v2.0 endpoints (requires v2.0 release)
+2. Create video tutorials (requires screen recording tools)
+3. Add architecture diagrams (requires diagramming tool access)
 
 ### Long Term
-1. Setup automated documentation generation
-2. Add documentation tests (verify examples)
-3. Create video tutorials
+1. Setup automated documentation generation (TypeDoc/JSDoc integration)
+2. Add documentation tests (verify code examples compile)
+3. Consider Docusaurus migration for better docs site
 
 ## Next Steps
-1. Review updated documentation
-2. Update any incorrect technical details
-3. Consider adding:
-   - API documentation (if not present)
-   - Architecture diagrams
-   - Contributing guidelines
+1. Review updated documentation for accuracy
+2. Commit documentation changes to git
+3. Update docs deployment if applicable
 ```
 
----
+**FORBIDDEN PATTERNS (APO Must NOT Use):**
 
-## Real-World Example: Open Source Project Documentation
+❌ **"Work Orders Created" section** - APO does NOT create work orders, only JUNO does
+❌ **"WO-DOC-###" identifiers** - This pattern is ONLY used by JUNO for code issues
+❌ **Recommendations listed as completed work** - "Recommendations" are FUTURE work, not COMPLETED work
+❌ **Future tense for work not done** - Use past tense ("Updated") not future tense ("Update")
+❌ **Claiming work orders were "created as files"** - Work orders are recommendations in report, not actual files
 
-### Scenario: Documentation Maintenance After Audit
+**Validation Checklist (APO MUST verify before finalizing report):**
 
-**Context:**
-- Open source Node.js library cloned from GitHub
-- Just ran `/trinity-audit` and found documentation gaps
-- Want to improve documentation for better contributor engagement
+- ✅ All Phase 2.5 inaccuracies have "✅ FIXED" status OR valid skip justification
+- ✅ "Files Created" section uses PAST TENSE ("Created", not "Create")
+- ✅ "Files Updated" section uses PAST TENSE ("Updated", "Fixed", not "Update", "Fix")
+- ✅ NO "Work Orders Created" section exists anywhere in report
+- ✅ NO "WO-DOC-###" identifiers appear in report
+- ✅ Skipped updates have VALID justifications (user input needed, code changes required)
+- ✅ "Recommendations" section clearly states "Future Work - NOT Completed"
+- ✅ Phase 2.5 completion percentage is accurate (fixed/total * 100)
+- ✅ CLAUDE.md → README.md coverage is 100% (all directories with CLAUDE.md have READMEs)
+- ✅ Coverage section lists ALL created and existing READMEs
+- ✅ Phase 4c checkpoint PASSED
+```
 
----
+**Final Step: Command Execution Assessment**
 
-### Execution
+APO MUST add this section at the end of the report:
 
-**User:** Just finished auditing this open source project. The code is solid but documentation is lacking. Can you update all the docs?
-
-**User:** `/trinity-docs @trinity/reports/CODEBASE-AUDIT-2025-12-19.md`
-
----
-
-**APO:** Beginning comprehensive documentation review and update...
-
----
-
-### Phase 1: Documentation Discovery
-
-**APO:** Scanning project for existing and missing documentation...
-
-**Existing Documentation:**
-- ✅ README.md (outdated, missing features)
-- ✅ LICENSE (MIT - root)
-- ❌ CHANGELOG.md (missing - should be in root)
-- ❌ CONTRIBUTING.md (missing - should be in root)
-- ❌ docs/ directory (missing)
-- ❌ Subdirectory READMEs (missing)
-
-**Audit Findings Review:**
-- Project: Express.js authentication middleware
-- 12 features identified
-- Only 6 documented in README
-- Missing: configuration guide, API docs, examples
-
-**Documentation Gaps:**
-1. 🔴 **Critical:** No CHANGELOG.md (should be in root)
-2. 🔴 **Critical:** No API documentation
-3. 🟡 **High:** Missing configuration guide
-4. 🟡 **High:** No CONTRIBUTING.md (should be in root)
-5. 🟢 **Medium:** Outdated README.md
-6. 🟢 **Medium:** No subdirectory READMEs
-
----
-
-### Phase 2: Content Analysis
-
-**Current README.md Quality:** 5/10
-
-**Issues Found:**
-- ❌ Missing 6 features (passport integration, JWT refresh, rate limiting, session management, OAuth2, 2FA)
-- ❌ Installation instructions outdated (Node 12, now requires Node 18)
-- ❌ No usage examples
-- ❌ No badges
-- ❌ Broken link to documentation (404)
-
-**Action:** Will update README.md to current project state
-
----
-
-### Phase 3: README Management
-
-#### 3a. Root README.md
-
-**APO:** Updating root README.md using template...
-
-**Updates Made:**
 ```markdown
-# express-auth-middleware
+## Command Execution Assessment
 
-Comprehensive authentication middleware for Express.js applications with support for JWT, sessions, OAuth2, and 2FA.
+### Hard Requirements Evaluation
 
-[![npm version](https://badge.fury.io/js/express-auth-middleware.svg)](https://www.npmjs.com/package/express-auth-middleware)
-[![Build Status](https://github.com/user/express-auth-middleware/workflows/CI/badge.svg)](https://github.com/user/express-auth-middleware/actions)
-[![Coverage](https://codecov.io/gh/user/express-auth-middleware/branch/main/graph/badge.svg)](https://codecov.io/gh/user/express-auth-middleware)
+1. **Phase Execution:** {executed}/9 phases {✅ COMPLETE | ❌ INCOMPLETE}
+2. **README Coverage:** {percentage}% ({count}/{total}) {✅ 100% | ❌ < 100%}
+3. **Phase 2.5 Fixes:** {percentage}% ({fixed}/{total}) {✅ 100% | ❌ < 100%}
+4. **Phase 4c Checkpoint:** {✅ PASSED | ❌ FAILED}
+5. **Phase 7a Validation:** {✅ PASSED | ❌ FAILED | ⏸️ NOT EXECUTED}
 
-## Features
+### Overall Execution Status
 
-- 🔐 **JWT Authentication** - Stateless authentication with access/refresh tokens
-- 🔑 **Session Management** - Express-session integration with Redis support
-- 🌐 **OAuth2 Providers** - Google, GitHub, Facebook integration
-- 🛡️ **Two-Factor Authentication** - TOTP and SMS 2FA support
-- ⚡ **Rate Limiting** - Protect against brute force attacks
-- 🔄 **Token Refresh** - Automatic token refresh handling
-- 🎫 **Passport Integration** - Works with 500+ Passport.js strategies
-- 📊 **Request Logging** - Audit trail for authentication events
-- 🚀 **TypeScript Support** - Full type definitions included
-- ✅ **100% Test Coverage** - Comprehensive test suite
+**✅ SUCCESS** - All 5 hard requirements met AND all soft requirements met:
+- Phase Execution: 9/9 phases complete ✅
+- README Coverage: 100% ({count}/{total}) ✅
+- Phase 2.5 Fixes: 100% ({fixed}/{total}) ✅
+- Phase 4c Checkpoint: PASSED ✅
+- Phase 7a Validation: PASSED ✅
+- docs/ Management: Complete ✅
+- CHANGELOG Verified: Up-to-date ✅
+- Documentation Consistency: Validated ✅
 
-## Installation
+**⚠️ PARTIAL SUCCESS** - All 5 hard requirements met BUT some soft requirements incomplete:
+- Hard Requirements: ALL PASSED (5/5) ✅
+- Soft Requirements: PARTIALLY MET
+- Gaps: {describe which soft requirements were not fully met}
+- Impact: Core documentation complete, optional enhancements incomplete
+- User Action: Can use current documentation; optionally re-run /trinity-docs for soft requirement completion
 
-```bash
-npm install express-auth-middleware
-```
-
-**Requirements:**
-- Node.js 18+ (v16 for older versions)
-- Express.js 4.x
-
-## Quick Start
-
-```javascript
-const express = require('express');
-const { jwtAuth, sessionAuth } = require('express-auth-middleware');
-
-const app = express();
-
-// JWT Authentication
-app.use('/api', jwtAuth({
-  secret: process.env.JWT_SECRET,
-  expiresIn: '15m'
-}));
-
-// Session Authentication
-app.use('/admin', sessionAuth({
-  store: 'redis',
-  ttl: 3600
-}));
-
-app.listen(3000);
-```
-
-## Documentation
-
-- [Getting Started Guide](docs/guides/getting-started.md)
-- [Configuration Options](docs/guides/configuration.md)
-- [API Reference](docs/api/README.md)
-- [Examples](examples/)
-- [Troubleshooting](docs/guides/troubleshooting.md)
-
-## Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## License
-
-MIT © [Author Name](https://github.com/user)
-```
-
-**Changes:**
-- ✅ Added badges (npm, build, coverage)
-- ✅ Listed all 12 features with emoji icons
-- ✅ Updated installation (Node 18 requirement)
-- ✅ Added quick start example
-- ✅ Added links to documentation
-- ✅ Added contributing section
-
----
-
-#### 3b. Subdirectory READMEs
-
-**APO:** Creating subdirectory READMEs for directories with CLAUDE.md...
-
-**Created `src/README.md`:**
-```markdown
-# Source Code
-
-Core authentication middleware implementation.
-
-## Contents
-
-- `middleware/` - Authentication middleware functions
-- `strategies/` - Authentication strategies (JWT, Session, OAuth2)
-- `utils/` - Utility functions (token generation, validation)
-- `types/` - TypeScript type definitions
-
-## Key Files
-
-- `index.ts` - Main entry point, exports all middleware
-- `middleware/jwt.ts` - JWT authentication middleware
-- `middleware/session.ts` - Session authentication middleware
-- `strategies/oauth2.ts` - OAuth2 provider integrations
-
-## Usage
-
-Import middleware from the main entry point:
-
-```javascript
-const { jwtAuth, sessionAuth, oauth2Auth } = require('express-auth-middleware');
-```
-
-## Related Documentation
-
-- [API Reference](../docs/api/README.md)
-- [Configuration Guide](../docs/guides/configuration.md)
-```
-
-**Created `src/middleware/README.md`:**
-```markdown
-# Middleware
-
-Express.js authentication middleware functions.
-
-## Contents
-
-- `jwt.ts` - JWT authentication and validation
-- `session.ts` - Session-based authentication
-- `oauth2.ts` - OAuth2 provider authentication
-- `twoFactor.ts` - Two-factor authentication (TOTP, SMS)
-- `rateLimit.ts` - Rate limiting for auth endpoints
-
-## Key Functions
-
-### jwtAuth(options)
-JWT authentication middleware with token validation and refresh.
-
-### sessionAuth(options)
-Session-based authentication with Redis/Memory store support.
-
-### oauth2Auth(provider, options)
-OAuth2 authentication for Google, GitHub, Facebook providers.
-
-## Related Documentation
-
-- [JWT Guide](../../docs/guides/jwt.md)
-- [Session Guide](../../docs/guides/sessions.md)
+**❌ FAILED** - One or more hard requirements NOT met:
+- Phase Execution: {executed}/9 ❌ (Phases {list skipped} not executed)
+- README Coverage: {percentage}% ({count}/{total}) ❌ (Target: 100%)
+- Phase 2.5 Fixes: {percentage}% ({fixed}/{total}) ❌ (Target: 100%)
+- Phase 4c Checkpoint: FAILED ❌
+- Phase 7a Validation: NOT EXECUTED ❌
+- Root Cause: {describe specific violation}
+- User Action: MUST re-run /trinity-docs in fresh session to complete work
 ```
 
 ---
 
-### Phase 5: docs/ Directory Management
+## Example Workflow: Documentation Update After Audit
 
-**APO:** Creating docs/ directory structure...
-
-**Created Directory Structure:**
+**User runs audit:**
 ```
-docs/
-├── api/
-│   ├── README.md (API overview)
-│   ├── jwt.md (JWT API)
-│   ├── session.md (Session API)
-│   └── oauth2.md (OAuth2 API)
-├── guides/
-│   ├── getting-started.md
-│   ├── configuration.md
-│   ├── jwt.md
-│   ├── sessions.md
-│   ├── oauth2.md
-│   ├── two-factor.md
-│   └── troubleshooting.md
-├── development/
-│   ├── setup.md
-│   ├── testing.md
-│   └── contributing.md
-└── README.md (docs navigation)
-
-# Root level files (NOT in docs/):
-CHANGELOG.md
-CONTRIBUTING.md
-LICENSE
+/trinity-audit
 ```
 
-**Created `docs/README.md`:**
-```markdown
-# Documentation
+**JUNO generates:** `trinity/reports/CODEBASE-AUDIT-2025-12-22.md`
 
-Complete documentation for express-auth-middleware.
-
-## Getting Started
-
-- [Installation & Setup](guides/getting-started.md)
-- [Configuration Options](guides/configuration.md)
-- [Quick Start Examples](guides/getting-started.md#quick-start)
-
-## Authentication Methods
-
-- [JWT Authentication](guides/jwt.md)
-- [Session Authentication](guides/sessions.md)
-- [OAuth2 Providers](guides/oauth2.md)
-- [Two-Factor Authentication](guides/two-factor.md)
-
-## API Reference
-
-- [API Overview](api/README.md)
-- [JWT API](api/jwt.md)
-- [Session API](api/session.md)
-- [OAuth2 API](api/oauth2.md)
-
-## Guides
-
-- [Configuration Guide](guides/configuration.md)
-- [Troubleshooting](guides/troubleshooting.md)
-- [Migration from v1.x](guides/migration.md)
-
-## Development
-
-- [Development Setup](development/setup.md)
-- [Running Tests](development/testing.md)
-- [Contributing Guidelines](../CONTRIBUTING.md) (root level)
-
-## Version History
-
-- [CHANGELOG](../CHANGELOG.md) (root level)
+**User requests documentation update:**
+```
+/trinity-docs @trinity/reports/CODEBASE-AUDIT-2025-12-22.md
 ```
 
-**Created `docs/guides/getting-started.md`:**
-```markdown
-# Getting Started
+**APO executes 9-phase workflow:**
 
-Complete guide to getting started with express-auth-middleware.
-
-## Installation
-
-```bash
-npm install express-auth-middleware
-```
-
-## Basic Usage
-
-### JWT Authentication
-
-```javascript
-const express = require('express');
-const { jwtAuth } = require('express-auth-middleware');
-
-const app = express();
-
-app.use('/api', jwtAuth({
-  secret: process.env.JWT_SECRET,
-  expiresIn: '15m',
-  refreshToken: {
-    enabled: true,
-    expiresIn: '7d'
-  }
-}));
-
-app.get('/api/protected', (req, res) => {
-  res.json({ user: req.user });
-});
-
-app.listen(3000);
-```
-
-[... more examples ...]
-```
-
----
-
-### Phase 6: CHANGELOG Management
-
-**APO:** Creating CHANGELOG.md from git history...
-
-**Created `CHANGELOG.md` (in root):**
-```markdown
-# Changelog
-
-All notable changes to express-auth-middleware will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-### Added
-- Documentation improvements (README, guides, API docs)
-
-## [2.1.0] - 2025-11-15
-
-### Added
-- Two-factor authentication support (TOTP, SMS)
-- Rate limiting for authentication endpoints
-- TypeScript type definitions
-
-### Changed
-- Updated dependencies to latest versions
-- Improved error messages
-
-### Fixed
-- Session refresh race condition
-- JWT expiry edge case
-
-## [2.0.0] - 2025-09-01
-
-### Added
-- OAuth2 provider support (Google, GitHub, Facebook)
-- Passport.js integration
-- Request logging and audit trail
-
-### Changed
-- **BREAKING:** Minimum Node.js version now 18
-- Refactored JWT middleware for better performance
-
-### Removed
-- **BREAKING:** Removed deprecated `basicAuth` middleware
-
-## [1.5.0] - 2025-06-20
-
-### Added
-- Session management with Redis support
-- Token refresh mechanism
-
-[Unreleased]: https://github.com/user/express-auth-middleware/compare/v2.1.0...HEAD
-[2.1.0]: https://github.com/user/express-auth-middleware/compare/v2.0.0...v2.1.0
-[2.0.0]: https://github.com/user/express-auth-middleware/compare/v1.5.0...v2.0.0
-[1.5.0]: https://github.com/user/express-auth-middleware/releases/tag/v1.5.0
-```
-
----
-
-### Phase 7: Documentation Completeness Validation
-
-**APO:** Running systematic validation checks...
-
-#### 6a. TypeDoc Validation
-
-**Running TypeDoc generation:**
-```bash
-npm run docs:generate
-```
+1. **Phase 1: Discovery** - Uses Glob to find ALL CLAUDE.md files, identifies missing READMEs systematically
+2. **Phase 2: Reality Audit** - Verifies feature counts, tests installation steps, checks links
+3. **Phase 2.5: Fix Commitment** - Lists ALL inaccuracies found, commits to fixing them
+4. **Phase 3: Content Analysis** - Assesses documentation quality (scores current state)
+5. **Phase 4: README Management** - Updates root README.md + dynamically creates ALL subdirectory READMEs (applies Phase 2.5 fixes)
+6. **Phase 5: docs/ Management** - Creates/updates guides, API docs, architecture docs
+7. **Phase 6: CHANGELOG Management** - Generates comprehensive version comparison CHANGELOG entry
+8. **Phase 7: Validation** - Verifies 100% CLAUDE.md coverage, all files exist, links work, versions match
+9. **Phase 8: Best Practices** - Ensures consistency, accessibility, maintainability
+10. **Phase 9: Audit Report** - Generates `trinity/reports/DOCUMENTATION-AUDIT-{date}.md` with coverage metrics
 
 **Result:**
-- ✅ TypeDoc completed successfully
-- ✅ No errors or warnings
-- ✅ Generated docs/index.html (27 KB)
-- ✅ Generated docs/modules.html (15 KB)
-- ✅ All 24 source files documented
-- ✅ All exported functions have JSDoc comments
-
----
-
-#### 6b. Root Documentation Files Validation
-
-**Checking required files:**
-- ✅ README.md exists (updated with all 12 features)
-- ✅ CHANGELOG.md exists (root only - created)
-- ✅ CONTRIBUTING.md exists (root only - created)
-- ✅ LICENSE exists (MIT license)
-
-**Validation Results:**
-- ✅ README.md has installation, features, examples, links
-- ✅ CHANGELOG.md follows Keep-a-Changelog format
-- ✅ CHANGELOG.md has entry for v2.1.0 (current version)
-- ✅ CONTRIBUTING.md describes development workflow
-- ✅ LICENSE matches package.json (MIT)
-
----
-
-#### 6c. Documentation Consistency Validation
-
-**Version Consistency:**
-- ✅ package.json: v2.1.0
-- ✅ CHANGELOG.md latest: v2.1.0
-- ✅ README.md badge: v2.1.0
-- ✅ All versions match
-
-**API Consistency:**
-- ✅ README.md examples use current API
-- ✅ Code examples match function signatures
-- ✅ No references to deprecated features
-
-**Link Validation:**
-- ✅ All internal links work (README → docs/)
-- ✅ All cross-references valid
-- ✅ No broken relative paths (tested 47 links)
-
-**File Structure Consistency:**
-- ✅ All directories with CLAUDE.md have README.md
-- ✅ No duplicate files (CONTRIBUTING.md only in root)
-- ✅ docs/adr/ files follow template
-
----
-
-#### 6d. Documentation Coverage Metrics
-
-**API Documentation Coverage:**
-- Total exported functions/classes: 42
-- Documented with JSDoc: 42
-- Coverage: **100%** ✅ (Required: 80%)
-
-**Feature Documentation Coverage:**
-- Features identified in audit: 12
-- Features documented in README: 12
-- Coverage: **100%** ✅ (Required: 100%)
-
-**File Documentation Coverage:**
-- Directories with CLAUDE.md: 2
-- Directories with README.md: 2
-- Coverage: **100%** ✅ (Required: 100%)
-
-**All validation checks passed!** ✅
-
----
-
-### Phase 8: Documentation Best Practices
-
-**APO:** Applying best practices across all documentation...
-
-**Consistency Checks:**
-- ✅ Terminology: "JWT" (not "JSON Web Token" inconsistently)
-- ✅ Code style: JavaScript examples use CommonJS, TypeScript examples use ES6
-- ✅ Headings: Title case throughout
-- ✅ Formatting: Consistent code block languages
-
-**Accessibility Improvements:**
-- ✅ Added "What is JWT?" section for beginners
-- ✅ Progressive examples (simple → advanced)
-- ✅ Clear error messages with solutions
-- ✅ Search-friendly headings
-
-**Maintainability:**
-- ✅ Centralized configuration reference (no duplication)
-- ✅ Links instead of copy-paste
-- ✅ Version badges auto-update
-- ✅ Last updated dates on all docs
-
-**Completeness:**
-- ✅ All 12 features documented
-- ✅ Error codes documented
-- ✅ Edge cases covered
-- ✅ Migration guide for v2.0 breaking changes
-
----
-
-### Phase 9: Documentation Audit Report
-
-**APO:** Generating documentation audit report...
-
-**Report Saved:** `trinity/reports/DOCUMENTATION-AUDIT-2025-12-19.md`
-
-```markdown
-# Documentation Audit Report
-
-**Project:** express-auth-middleware
-**Repository:** https://github.com/user/express-auth-middleware
-**Audit Date:** 2025-12-19
-**Auditor:** APO (Documentation Specialist)
-**Based on Audit:** trinity/reports/CODEBASE-AUDIT-2025-12-19.md
-
-## Executive Summary
-
-**Documentation Score:** 9/10 (was 5/10)
-
-**Changes:**
-- Files Updated: 1 (README.md)
-- Files Created: 18
-- Issues Fixed: 23
-- Broken Links Fixed: 1
-
-**Impact:**
-- Complete documentation coverage
-- All features now documented
-- Clear getting started guide
-- Comprehensive API reference
-
-## Documentation Inventory
-
-### Root Level
-- ✅ README.md (updated - comprehensive overview)
-- ✅ LICENSE (root only - existing - MIT)
-- ✅ CONTRIBUTING.md (root only - created)
-- ✅ CHANGELOG.md (root only - created)
-
-### docs/ Directory (NEW)
-- ✅ docs/README.md (created - navigation)
-
-### Guides (NEW)
-- ✅ docs/guides/getting-started.md
-- ✅ docs/guides/configuration.md
-- ✅ docs/guides/jwt.md
-- ✅ docs/guides/sessions.md
-- ✅ docs/guides/oauth2.md
-- ✅ docs/guides/two-factor.md
-- ✅ docs/guides/troubleshooting.md
-
-### API Documentation (NEW)
-- ✅ docs/api/README.md
-- ✅ docs/api/jwt.md
-- ✅ docs/api/session.md
-- ✅ docs/api/oauth2.md
-
-### Development (NEW)
-- ✅ docs/development/setup.md
-- ✅ docs/development/testing.md
-- ✅ docs/development/contributing.md
-
-### Subdirectory READMEs (NEW)
-- ✅ src/README.md
-- ✅ src/middleware/README.md
-
-### TypeDoc API Documentation (Validated)
-- ✅ docs/index.html (auto-generated)
-- ✅ docs/modules.html (auto-generated)
-- ✅ docs/assets/ (TypeDoc assets)
-- ✅ All 42 exported functions documented (100% coverage)
-
-## Documentation Validation Results
-
-### Phase 7 Validation: ✅ PASSED
-
-**TypeDoc Validation:**
-- ✅ TypeDoc generation successful (no errors/warnings)
-- ✅ API documentation coverage: 100% (42/42 functions)
-- ✅ All source files represented in generated docs
-
-**Root Files Validation:**
-- ✅ README.md complete with all required sections
-- ✅ CHANGELOG.md follows Keep-a-Changelog format
-- ✅ CONTRIBUTING.md matches actual workflow
-- ✅ LICENSE valid and matches package.json
-
-**Consistency Validation:**
-- ✅ Version consistency across all files (v2.1.0)
-- ✅ API consistency in all examples
-- ✅ Link validation: 47 links tested, 0 broken
-- ✅ File structure: no duplicates, all CLAUDE.md dirs have READMEs
-
-**Coverage Metrics:**
-- ✅ API Documentation: 100% (Required: 80%)
-- ✅ Feature Documentation: 100% (Required: 100%)
-- ✅ File Documentation: 100% (Required: 100%)
-
-## Changes Made
-
-### Root README.md
-**Before:**
-- 6 features listed (missing 6 from audit)
-- No badges
-- Outdated installation (Node 12)
-- No quick start example
-- Broken documentation link
-
-**After:**
-- All 12 features documented with emoji icons
-- Added badges (npm version, build status, coverage)
-- Updated Node requirement (18+)
-- Added quick start examples (JWT, Session)
-- Fixed documentation links
-- Added contributing section
-
-**Impact:** Much better first impression for potential users
-
-### CHANGELOG.md (NEW)
-**Created from git history:**
-- Documented versions 1.5.0, 2.0.0, 2.1.0
-- Followed Keep-a-Changelog format
-- Marked breaking changes
-- Added release links
-
-**Impact:** Users can now track version history and breaking changes
-
-### docs/ Directory (NEW)
-**Created complete documentation structure:**
-- 7 guides (getting started, configuration, auth methods, troubleshooting)
-- 4 API reference documents
-- 3 development documents
-- Navigation README
-
-**Impact:** Comprehensive documentation for all use cases
-
-### Subdirectory READMEs (NEW)
-**Created READMEs for:**
-- src/ (overview of source structure)
-- src/middleware/ (middleware functions)
-
-**Impact:** Easier navigation for contributors
-
-## Quality Improvements
-
-### Before
-- **Documentation Score:** 5/10
-- **Feature Coverage:** 50% (6/12 features)
-- **Missing READMEs:** 2 (src/, src/middleware/)
-- **Missing Docs:** CHANGELOG, guides, API docs
-- **Broken Links:** 1
-- **Outdated Examples:** 8
-- **Contribution Guide:** Missing
-
-### After
-- **Documentation Score:** 9/10 ✅
-- **Feature Coverage:** 100% (12/12 features) ✅
-- **Missing READMEs:** 0 ✅
-- **Missing Docs:** 0 ✅
-- **Broken Links:** 0 ✅
-- **Outdated Examples:** 0 ✅
-- **Contribution Guide:** Created ✅
-
-## Recommendations
-
-### Short Term (This Week)
-1. **Add Architecture Diagrams**
-   - Authentication flow diagram
-   - Token refresh flow
-   - OAuth2 flow
-   - Estimated effort: 2 hours
-
-2. **Create Video Tutorials**
-   - "Getting started in 5 minutes" video
-   - Publish to YouTube
-   - Estimated effort: 3 hours
-
-3. **Add More Examples**
-   - Real-world use cases
-   - Integration with popular frameworks (NestJS, Fastify)
-   - Estimated effort: 2 hours
-
-### Medium Term (This Month)
-1. **Setup Automated Documentation**
-   - Auto-generate API docs from JSDoc comments
-   - Use TypeDoc for TypeScript definitions
-   - Estimated effort: 4 hours
-
-2. **Documentation Testing**
-   - Test all code examples in CI
-   - Verify links in documentation
-   - Estimated effort: 3 hours
-
-3. **Internationalization**
-   - Translate README to Spanish, Chinese
-   - Consider docs i18n
-   - Estimated effort: 8 hours
-
-### Long Term (This Quarter)
-1. **Interactive Documentation**
-   - Setup Docusaurus or VuePress
-   - Create interactive code playground
-   - Estimated effort: 16 hours
-
-2. **Documentation Versioning**
-   - Version docs with releases
-   - Maintain docs for v1.x and v2.x
-   - Estimated effort: 4 hours
-
-## GitHub Contribution Tracking
-
-**Documentation improvements will increase:**
-- ✅ **Discoverability** - Better README = more GitHub stars
-- ✅ **Contribution Rate** - CONTRIBUTING.md guides new contributors
-- ✅ **Issue Quality** - Troubleshooting guide reduces support burden
-- ✅ **Adoption** - Complete docs = more npm downloads
-- ✅ **SEO** - Better documentation = higher search rankings
-
-**Expected Impact:**
-- 30-50% increase in GitHub stars
-- 20-30% increase in contributors
-- 40% reduction in "how do I?" issues
-- Better npm weekly downloads
-
-## Next Steps
-
-1. **Review Documentation** - Read through all created docs for technical accuracy
-2. **Update Any Errors** - Correct any misunderstandings from audit
-3. **Consider Adding:**
-   - Architecture diagrams (Mermaid)
-   - Video tutorials
-   - More real-world examples
-4. **Monitor Impact:**
-   - Track GitHub stars
-   - Monitor npm downloads
-   - Review contributor activity
-
----
-
-**Report Generated:** 2025-12-19 14:35:00
-**APO Version:** Trinity v2.0
-**Files Created:** 18
-**Files Updated:** 1
-**Total Documentation Pages:** 19
-```
-
----
-
-**APO:** Documentation update complete!
-
-**Summary:**
-- ✅ Updated root README.md (added 6 missing features, badges, examples)
-- ✅ Created CHANGELOG.md from git history
-- ✅ Created docs/ directory with 18 documentation files
-- ✅ Created 2 subdirectory READMEs
-- ✅ **Phase 7 Validation: ALL CHECKS PASSED**
-  - ✅ TypeDoc generation successful (100% API coverage)
-  - ✅ All root files validated
-  - ✅ Version consistency verified
-  - ✅ 47 links tested, 0 broken
-  - ✅ API documentation: 100%
-  - ✅ Feature documentation: 100%
-  - ✅ File documentation: 100%
-- ✅ Documentation score: 9/10 (was 5/10)
-- ✅ All 12 features now documented
-
-**Audit Report:** `trinity/reports/DOCUMENTATION-AUDIT-2025-12-19.md`
-
-**Recommendation:** Review the new documentation for technical accuracy, then consider adding architecture diagrams and video tutorials for even better contributor engagement.
-
----
-
-## Documentation Templates
-
-APO uses two standardized README templates deployed to `trinity/templates/documentation/`:
-
-### 1. Root README Template
-**Location:** `trinity/templates/documentation/ROOT-README.md`
-
-**Purpose:** Standardized root-level README.md for projects
-
-**Sections:**
-- Project name and description
-- Features (bulleted with emoji icons)
-- Installation instructions
-- Quick start example
-- Usage documentation
-- Configuration options
-- Documentation links
-- Contributing guidelines
-- License information
-
----
-
-### 2. Subdirectory README Template
-**Location:** `trinity/templates/documentation/SUBDIRECTORY-README.md`
-
-**Purpose:** Standardized README.md for source subdirectories
-
-**Sections:**
-- Directory purpose
-- Contents (file listing)
-- Key files and descriptions
-- Usage examples
-- Related documentation links
-
----
-
-## Integration with JUNO Audit
-
-**Workflow:**
-1. Run `/trinity-audit` to analyze codebase
-2. JUNO identifies features, architecture, dependencies
-3. Run `/trinity-docs @trinity/reports/CODEBASE-AUDIT-{date}.md`
-4. APO updates documentation based on JUNO's findings
-5. APO generates documentation audit report
-
-**Synergy:**
-- JUNO provides source of truth (what the code does)
-- APO ensures documentation matches reality
-- Combined: Complete codebase understanding + accurate documentation
-
----
-
-## Related Commands
-
-### Session Management
-- `/trinity-start` - Start development session
-- `/trinity-continue` - Resume interrupted session
-- `/trinity-end` - End session and archive
-
-### Audit & Documentation
-- `/trinity-audit` - Comprehensive codebase audit (run first)
-- `/trinity-docs` - Documentation maintenance (run after audit)
-
-### Specialized Agents
-- `APO` - Documentation Specialist (invoked by this command)
-- `DRA` - Code Reviewer (for inline code comments)
-- `JUNO` - Quality Auditor (for codebase audits)
+- ✅ README.md updated with Phase 2.5 corrections (fixed 3 inaccuracies)
+- ✅ CHANGELOG.md created/updated with version comparison
+- ✅ CONTRIBUTING.md created
+- ✅ ALL subdirectory READMEs created (100% CLAUDE.md coverage - 10/10 directories)
+- ✅ docs/ structure created with guides
+- ✅ All links validated, all versions consistent
+- ✅ Documentation audit report generated with coverage metrics
+
+**Key Principle:** APO performs ALL updates directly (never creates work orders, never defers work)
 
 ---
 
@@ -1893,12 +2136,22 @@ APO uses two standardized README templates deployed to `trinity/templates/docume
 - Improving open source project documentation
 
 **APO will:**
+- **Phase 1: Systematic discovery** using Glob to find ALL CLAUDE.md files
+  - NO assumptions about directory structure
+  - Build complete inventory of missing READMEs
+  - 100% coverage guarantee
 - **Phase 2: Audit codebase reality** to ensure documentation accuracy
-  - Verify CLI commands actually exist in code
-  - Count agents/components/features accurately
+  - Verify quantitative claims (feature counts, API endpoint counts, test counts)
+  - Validate feature/functionality claims against actual code
+  - Check installation instructions and prerequisites
   - Validate version claims and deprecation statements
   - Check all documentation links are valid
   - Cross-reference with JUNO audit if available
+- **Phase 4: Dynamic README creation** for ALL directories with CLAUDE.md
+  - Detect directory type (src/, database/, trinity/, tests/, nested modules)
+  - Generate appropriate README template for each type
+  - Extract real content from CLAUDE.md and filesystem
+  - NO hardcoded paths or assumptions
 - Update root README.md with accurate, verified project state
 - Maintain docs/ directory structure
 - Create/update CHANGELOG.md (root only)
@@ -1906,10 +2159,11 @@ APO uses two standardized README templates deployed to `trinity/templates/docume
 - Create/update LICENSE (root only)
 - Create subdirectory READMEs (for CLAUDE.md directories)
 - **Phase 7: Run systematic validation checks:**
-  - TypeDoc generation and API documentation coverage (80% minimum)
+  - **CLAUDE.md → README.md coverage validation** (MUST be 100%)
+  - API documentation validation (if project generates API docs)
   - Root file validation (README, CHANGELOG, CONTRIBUTING, LICENSE)
   - Documentation consistency (versions, APIs, links)
-  - Coverage metrics (API, features, files - 100% for features/files)
+  - Coverage metrics (ensure all features are documented)
 - Generate comprehensive documentation audit report with validation results
 
 **Deliverable:**

@@ -91,28 +91,18 @@ async function promptLintingChoice(stack: Stack): Promise<string> {
 
   const lintingChoice = await inquirer.prompt([
     {
-      type: 'list',
-      name: 'linting',
-      message: 'Setup linting configuration?',
-      choices: [
-        {
-          name: `Recommended (Best practices for ${stack.framework})`,
-          value: 'recommended',
-        },
-        {
-          name: 'Custom (Choose specific tools)',
-          value: 'custom',
-        },
-        {
-          name: 'Skip - No linting setup',
-          value: 'skip',
-        },
-      ],
-      default: 0,
+      type: 'confirm',
+      name: 'setupLinting',
+      message: 'Setup linting configuration? (y/n)',
+      default: true,
     },
   ]);
 
-  return lintingChoice.linting;
+  if (lintingChoice.setupLinting) {
+    return 'recommended';
+  } else {
+    return 'skip';
+  }
 }
 
 /**
@@ -132,52 +122,6 @@ async function configureRecommendedLinting(stack: Stack): Promise<{
   displayLintingConfig(tools, dependencies, scripts);
 
   return { tools, dependencies, scripts };
-}
-
-/**
- * Configure custom linting tools
- */
-async function configureCustomLinting(stack: Stack): Promise<{
-  tools: LintingTool[];
-  dependencies: string[];
-  scripts: Record<string, string>;
-}> {
-  const availableTools = getToolsForFramework(stack.framework, stack.language);
-
-  const customSelection = await inquirer.prompt([
-    {
-      type: 'checkbox',
-      name: 'tools',
-      message: 'Select tools to configure:',
-      choices: availableTools.map((tool) => ({
-        name: `${tool.name} (${tool.file})${tool.description ? ` - ${tool.description}` : ''}`,
-        value: tool.id,
-        checked: tool.recommended,
-      })),
-    },
-  ]);
-
-  const tools = availableTools.filter((t) => customSelection.tools.includes(t.id));
-
-  if (tools.length > 0) {
-    console.log(chalk.green('\n✔ Selected:'), tools.map((t) => t.name).join(', '));
-    console.log(chalk.cyan('\n📦 Configuration summary:'));
-    tools.forEach((tool) => {
-      console.log(chalk.white(`  ✓ ${tool.name} (${tool.file})`));
-    });
-
-    const dependencies = getDependenciesForTools(tools);
-    if (dependencies.length > 0) {
-      console.log(chalk.white('\n  Dependencies to add:'));
-      dependencies.forEach((dep) => console.log(chalk.white(`    - ${dep}`)));
-    }
-
-    const scripts = getScriptsForTools(tools);
-    return { tools, dependencies, scripts };
-  } else {
-    console.log(chalk.yellow('\n⚠️  No tools selected - continuing without linting configuration'));
-    return { tools: [], dependencies: [], scripts: {} };
-  }
 }
 
 /**
@@ -295,12 +239,6 @@ export async function promptConfiguration(
     selectedLintingTools = config.tools;
     lintingDependencies = config.dependencies;
     lintingScripts = config.scripts;
-  } else if (lintingChoice === 'custom') {
-    const config = await configureCustomLinting(stack);
-    selectedLintingTools = config.tools;
-    lintingDependencies = config.dependencies;
-    lintingScripts = config.scripts;
-    enableLinting = selectedLintingTools.length > 0;
   } else {
     console.log(chalk.gray('\n✔ Setup linting configuration?'), 'Skip\n');
   }

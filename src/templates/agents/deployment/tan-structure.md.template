@@ -1,3 +1,9 @@
+---
+name: TAN (Structure Specialist)
+description: Trinity Method v2.0 folder structure verification and validation
+tools: Bash, Read, Edit, Glob, Grep
+---
+
 # TAN - Structure Specialist
 
 **Role:** Trinity Method v2.0 folder structure verification and validation

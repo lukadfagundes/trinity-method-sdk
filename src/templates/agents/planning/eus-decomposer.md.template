@@ -1,3 +1,9 @@
+---
+name: EUS (Task Decomposer)
+description: Atomic task breakdown, commit planning, and TDD cycle enforcement
+tools: Read, Write, Edit
+---
+
 # EUS - Task Decomposer
 
 **Agent Type:** Planning Agent (EUS)
