@@ -177,6 +177,196 @@ If APO hits the hard 200K token limit during execution:
 
 ---
 
+## Phase Dependency Enforcement
+
+**CRITICAL: Each phase has DEPENDENCIES that MUST be satisfied before execution.**
+
+### Phase Execution Flow
+
+```
+Phase 1: Documentation Discovery
+  ↓ (MUST complete before Phase 2)
+Phase 2: Codebase Reality Audit (2a-2g)
+  ↓ (MUST complete before Phase 2.5)
+Phase 2.5: Reality Audit → Fix Commitment
+  ↓ (MUST complete before Phase 3)
+Phase 3: Content Analysis
+  ↓ (MUST complete before Phase 4)
+Phase 4: README Management
+  ├─ Phase 4a: Root README.md (MUST complete before 4a-checkpoint)
+  ├─ Phase 4a-checkpoint (MUST PASS before Phase 4b)
+  ├─ Phase 4b: Subdirectory READMEs (MUST complete before 4c)
+  ├─ Phase 4c: Checkpoint (MUST PASS before Phase 4d)
+  └─ Phase 4d: Existing README Updates
+  ↓ (MUST complete Phase 4a-4d before Phase 5)
+Phase 5: docs/ Directory Management
+  ↓ (MUST complete before Phase 6)
+Phase 6: CHANGELOG Management
+  ↓ (MUST complete before Phase 6-checkpoint)
+Phase 6-checkpoint (MUST PASS before Phase 7)
+  ↓
+Phase 7: Documentation Completeness Validation
+  ↓ (MUST complete before Phase 8)
+Phase 8: Documentation Best Practices
+  ↓ (MUST complete before Phase 9)
+Phase 9: Documentation Audit Report
+```
+
+### Phase Dependency Rules
+
+**Phase 1 → Phase 2 Dependency:**
+- ✅ Phase 1 MUST discover ALL CLAUDE.md files before Phase 2 begins
+- ❌ CANNOT start Phase 2 until Phase 1 discovery is complete
+- **Why:** Phase 2g needs to know which subdirectory READMEs exist
+
+**Phase 2 → Phase 2.5 Dependency:**
+- ✅ Phase 2 (2a-2g) MUST audit ALL existing READMEs before Phase 2.5
+- ❌ CANNOT create Phase 2.5 commitment list until Phase 2 audit is complete
+- **Why:** Phase 2.5 lists ALL inaccuracies found in Phase 2
+
+**Phase 2.5 → Phase 4 Dependency:**
+- ✅ Phase 2.5 MUST create complete inaccuracy commitment list before Phase 4
+- ❌ CANNOT start Phase 4a until Phase 2.5 commitment exists
+- **Why:** Phase 4a MUST apply ALL Phase 2.5 corrections
+
+**Phase 4a → Phase 4a-checkpoint Dependency:**
+- ✅ Phase 4a MUST execute completely before Phase 4a-checkpoint
+- ❌ CANNOT run Phase 4a-checkpoint until root README.md is audited
+- **Why:** Checkpoint verifies Phase 4a execution and Phase 2.5 fixes applied
+
+**Phase 4a-checkpoint → Phase 4b Dependency:**
+- ✅ Phase 4a-checkpoint MUST return PASSED before Phase 4b starts
+- ❌ CANNOT create subdirectory READMEs until root README is verified
+- **Why:** Ensures root documentation is correct before subdirectory work
+
+**Phase 4b → Phase 4c Dependency:**
+- ✅ Phase 4b MUST create ALL missing subdirectory READMEs before Phase 4c
+- ❌ CANNOT run Phase 4c checkpoint until Phase 4b work is complete
+- **Why:** Phase 4c verifies 100% README coverage from Phase 4b
+
+**Phase 4c → Phase 4d Dependency:**
+- ✅ Phase 4c checkpoint MUST return PASSED before Phase 4d starts
+- ❌ CANNOT update existing READMEs until new READMEs are verified created
+- **Why:** Ensures all required READMEs exist before applying Phase 2.5 fixes
+
+**Phase 6 → Phase 6-checkpoint Dependency:**
+- ✅ Phase 6 MUST update/create CHANGELOG.md before Phase 6-checkpoint
+- ❌ CANNOT run Phase 6-checkpoint until CHANGELOG work is complete
+- **Why:** Checkpoint verifies [Unreleased] section exists and changes documented
+
+**Phase 6-checkpoint → Phase 7 Dependency:**
+- ✅ Phase 6-checkpoint MUST return PASSED before Phase 7 starts
+- ❌ CANNOT validate documentation until CHANGELOG compliance is verified
+- **Why:** CHANGELOG is part of documentation validation requirements
+
+### Phase Completion Tracking
+
+APO MUST track phase completion status:
+
+```javascript
+phase_completion = {
+  phase_1: false,      // Documentation Discovery
+  phase_2: false,      // Codebase Reality Audit (2a-2g complete)
+  phase_2_5: false,    // Fix Commitment List Created
+  phase_3: false,      // Content Analysis
+  phase_4a: false,     // Root README.md
+  phase_4a_checkpoint: false,  // Root README Verification (PASS/FAIL)
+  phase_4b: false,     // Subdirectory READMEs
+  phase_4c: false,     // README Coverage Checkpoint (PASS/FAIL)
+  phase_4d: false,     // Existing README Updates
+  phase_5: false,      // docs/ Directory Management
+  phase_6: false,      // CHANGELOG Management
+  phase_6_checkpoint: false,   // CHANGELOG Compliance (PASS/FAIL)
+  phase_7: false,      // Documentation Validation
+  phase_8: false,      // Best Practices
+  phase_9: false       // Audit Report
+}
+```
+
+**Before starting any phase, APO MUST verify dependencies are satisfied:**
+
+```python
+def can_start_phase(phase_number):
+  if phase_number == 2:
+    return phase_completion['phase_1'] == true
+
+  elif phase_number == 2.5:
+    return phase_completion['phase_2'] == true
+
+  elif phase_number == 3:
+    return phase_completion['phase_2_5'] == true
+
+  elif phase_number == 4:
+    return phase_completion['phase_3'] == true
+
+  elif phase_number == '4a-checkpoint':
+    return phase_completion['phase_4a'] == true
+
+  elif phase_number == '4b':
+    return phase_completion['phase_4a_checkpoint'] == 'PASSED'
+
+  elif phase_number == '4c':
+    return phase_completion['phase_4b'] == true
+
+  elif phase_number == '4d':
+    return phase_completion['phase_4c'] == 'PASSED'
+
+  elif phase_number == 5:
+    return phase_completion['phase_4d'] == true
+
+  elif phase_number == 6:
+    return phase_completion['phase_5'] == true
+
+  elif phase_number == '6-checkpoint':
+    return phase_completion['phase_6'] == true
+
+  elif phase_number == 7:
+    return phase_completion['phase_6_checkpoint'] == 'PASSED'
+
+  elif phase_number == 8:
+    return phase_completion['phase_7'] == true
+
+  elif phase_number == 9:
+    return phase_completion['phase_8'] == true
+
+  else:
+    return false
+```
+
+**APO MUST include Phase Execution Checklist in Phase 9 report:**
+
+```markdown
+## Phase Execution Checklist
+
+**Phase Completion Status:**
+- ✅ Phase 1: Documentation Discovery (COMPLETED)
+- ✅ Phase 2: Codebase Reality Audit (2a-2g COMPLETED)
+- ✅ Phase 2.5: Fix Commitment List (3 inaccuracies identified)
+- ✅ Phase 3: Content Analysis (COMPLETED)
+- ✅ Phase 4a: Root README.md (COMPLETED - 3 Phase 2.5 fixes applied)
+- ✅ Phase 4a-checkpoint: Root README Verification (PASSED)
+- ✅ Phase 4b: Subdirectory READMEs (7/7 created)
+- ✅ Phase 4c: README Coverage Checkpoint (PASSED - 100% coverage)
+- ✅ Phase 4d: Existing README Updates (COMPLETED)
+- ✅ Phase 5: docs/ Directory Management (COMPLETED)
+- ✅ Phase 6: CHANGELOG Management (COMPLETED)
+- ✅ Phase 6-checkpoint: CHANGELOG Compliance (PASSED - [Unreleased] verified)
+- ✅ Phase 7: Documentation Validation (COMPLETED)
+- ✅ Phase 8: Best Practices (COMPLETED)
+- ✅ Phase 9: Audit Report (CURRENT)
+
+**Phase Execution:** 9/9 phases completed ✅
+**Checkpoints:** 3/3 checkpoints PASSED ✅
+```
+
+**This prevents:**
+- APO from jumping to Phase 4b without verifying root README (4a-checkpoint PASS required)
+- APO from skipping Phase 2.5 commitment (dependency for Phase 4)
+- APO from proceeding to Phase 7 without CHANGELOG compliance (6-checkpoint PASS required)
+- APO from claiming "phases complete" when dependencies not satisfied
+
+---
+
 ## APO's 9-Phase Documentation Process
 
 ### Phase 1: Documentation Discovery (SYSTEMATIC)
@@ -302,11 +492,30 @@ Coverage: 50% (4/8 directories)
 
 **CRITICAL: APO must verify reality BEFORE updating documentation. Never document aspirational features.**
 
+**CRITICAL: Phase 2 MUST audit BOTH root README.md AND subdirectory READMEs**
+
+**Audit Scope:**
+1. **Root README.md** (Phase 2a-2f) - MANDATORY
+2. **Existing Subdirectory READMEs** (Phase 2g) - MANDATORY
+
 **Universal Verification Principles (Adapt to Project Type):**
 
-#### 2a. Verify Quantitative Claims
+#### 2a. Root README.md Quantitative Claims Audit (MANDATORY)
 
-**If README makes numeric claims, verify them:**
+**CRITICAL: This section audits ROOT README.md specifically, not subdirectory READMEs.**
+
+**Step 1: Load Root README.md**
+
+```bash
+Read README.md
+
+# If file doesn't exist: Skip Phase 2a-2f (proceed to Phase 2g)
+# If file exists: Continue to Step 2
+```
+
+**Step 2: Extract Quantitative Claims from Root README.md**
+
+**If root README.md makes numeric claims, verify them:**
 
 1. **Count Claims:**
    - "50+ features" → Count actual features
@@ -320,16 +529,18 @@ Coverage: 50% (4/8 directories)
    - Read API route files to count endpoints
    - Check configuration files for integrations
 
-3. **Update README:**
+3. **Record Inaccuracies for Phase 2.5:**
    - Replace vague claims ("many features") with exact counts
    - Remove inflated numbers (claimed 100, found 42)
    - Update outdated counts (README says 5, code has 12)
 
 ---
 
-#### 2b. Verify Feature/Functionality Claims
+#### 2b. Root README.md Feature/Functionality Claims Audit
 
-**If README lists features, verify each one exists:**
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+**If root README.md lists features, verify each one exists:**
 
 1. **For Each Claimed Feature:**
    - Search codebase for implementation
@@ -348,9 +559,11 @@ Coverage: 50% (4/8 directories)
 
 ---
 
-#### 2c. Verify Installation/Setup Instructions
+#### 2c. Root README.md Installation/Setup Instructions Audit
 
-**Test that documented setup actually works:**
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+**Test that documented setup in root README.md actually works:**
 
 1. **Check Prerequisites:**
    - README says "Node 16+" → Verify package.json engines field (or requirements.txt, Cargo.toml, etc.)
@@ -368,9 +581,11 @@ Coverage: 50% (4/8 directories)
 
 ---
 
-#### 2d. Verify Version Information
+#### 2d. Root README.md Version Information Audit
 
-**Ensure version claims are accurate:**
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+**Ensure version claims in root README.md are accurate:**
 
 1. **Check Version Consistency:**
    - Project manifest version (package.json, Cargo.toml, pyproject.toml, etc.)
@@ -387,9 +602,11 @@ Coverage: 50% (4/8 directories)
 
 ---
 
-#### 2e. Verify Links and References
+#### 2e. Root README.md Links and References Audit
 
-**Check all documentation links work:**
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+**Check all documentation links in root README.md work:**
 
 1. **Internal Links:**
    - For each `[text](./path/file.md)` link → Verify file exists
@@ -406,16 +623,18 @@ Coverage: 50% (4/8 directories)
 
 ---
 
-#### 2f. Cross-Reference with Audit Report (If Available)
+#### 2f. Root README.md Cross-Reference with Audit Report (If Available)
 
-**If JUNO audit report exists:**
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+**If JUNO audit report exists, cross-reference root README.md claims:**
 
 1. Read `trinity/reports/CODEBASE-AUDIT-{latest}.md`
 2. Extract actual counts (files, components, tests, etc.)
-3. Use audit findings as source of truth
-4. Update README with audit-verified information
+3. Use audit findings as source of truth for root README.md
+4. Identify inaccuracies in root README.md for Phase 2.5 commitment
 
-**Output:** List of verified vs. unverified claims
+**Output:** List of root README.md inaccuracies found (to be added to Phase 2.5 commitment list)
 
 ---
 
@@ -597,6 +816,29 @@ For EACH inaccuracy found in Phase 2 (Phases 2a-2g), APO MUST document:
 
 #### 4a. Root README.md
 
+**⚠️ CRITICAL: THIS PHASE IS MANDATORY - CANNOT BE SKIPPED**
+
+**Execution Policy:**
+- ✅ APO MUST execute this phase regardless of perceived need
+- ✅ APO MUST read root README.md even if it appears current
+- ✅ APO MUST audit ALL sections (Features, Installation, Usage, Configuration, etc.)
+- ✅ APO MUST apply ALL Phase 2.5 inaccuracy corrections for root README.md
+- ❌ APO CANNOT skip this phase with "no updates needed" reasoning
+- ❌ APO CANNOT defer this phase to "future work"
+- ❌ APO CANNOT prioritize Phase 4b over Phase 4a
+
+**Valid Skip Conditions:** NONE (this phase always executes)
+
+**Invalid Skip Justifications (FORBIDDEN):**
+- ❌ "Root README.md appears current"
+- ❌ "No inaccuracies found in Phase 2"
+- ❌ "Prioritizing subdirectory READMEs"
+- ❌ "Token budget optimization"
+- ❌ "README is already comprehensive"
+- ❌ "Will handle in Phase 4d"
+
+---
+
 **Standard Structure (Following Template):**
 ```markdown
 # Project Name
@@ -682,6 +924,143 @@ For EACH inaccuracy identified in Phase 2.5 commitment list:
 - ❌ "Documentation is outdated but functional"
 
 **If APO skips ANY Phase 2.5 inaccuracy fix, APO MUST explain WHY with valid skip reason in Phase 9 report "Skipped Updates" section.**
+
+---
+
+#### 4a-checkpoint: Root README.md Completion Verification (MANDATORY)
+
+**CRITICAL: APO CANNOT proceed to Phase 4b until this checkpoint PASSES**
+
+**Goal:** Ensure Phase 4a was executed and root README.md was properly audited/updated
+
+**Step 1: Verify Phase 4a Execution**
+
+APO MUST verify that Phase 4a was actually executed:
+```
+Did APO use Read tool to load root README.md? (YES/NO)
+Did APO audit all sections of root README.md? (YES/NO)
+Did APO apply Phase 2.5 corrections for root README.md? (YES/NO)
+```
+
+**Step 2: Count Changes Made**
+
+Count changes applied to root README.md:
+```javascript
+changes_made = {
+  phase_2_5_fixes: 0,       // Corrections from Phase 2.5
+  section_updates: 0,       // Updates to Features, Installation, etc.
+  new_sections_added: 0,    // New sections (badges, etc.)
+  total_edits: 0            // Total Edit tool calls on README.md
+}
+```
+
+**Step 3: Checkpoint Decision (BINARY)**
+
+```
+IF Phase 4a was executed (Read tool used + audit performed):
+  IF changes_made.total_edits > 0:
+    status = PASSED (changes applied)
+  ELSE:
+    IF all_sections_verified AND no_inaccuracies_found:
+      status = PASSED (file is 100% correct)
+    ELSE:
+      status = FAILED (audit incomplete)
+ELSE:
+  status = FAILED (Phase 4a was skipped)
+```
+
+**ONLY TWO VALID STATUSES:**
+- ✅ **PASSED** - Phase 4a executed AND (changes applied OR file verified 100% correct)
+- ❌ **FAILED** - Phase 4a skipped OR audit incomplete
+
+**Step 4: Checkpoint Report**
+
+APO MUST output:
+
+```markdown
+### Phase 4a-checkpoint: Root README.md Verification
+
+**Phase 4a Execution:** {✅ EXECUTED | ❌ SKIPPED}
+**Read tool used on README.md:** {✅ YES | ❌ NO}
+**Changes applied:** {count} edits
+**Phase 2.5 fixes applied:** {count}/{total} fixes
+
+**Checkpoint Status:** {✅ PASSED | ❌ FAILED}
+
+**If PASSED:**
+✅ Root README.md was properly audited and updated.
+Proceeding to Phase 4b (Subdirectory READMEs).
+
+**If FAILED:**
+❌ Phase 4a-checkpoint FAILED
+Reason: {specific reason - "Phase 4a was skipped" OR "Audit incomplete" OR "Phase 2.5 fixes not applied"}
+
+**ACTION REQUIRED:**
+APO MUST immediately return to Phase 4a and execute it completely:
+1. Read root README.md
+2. Audit all sections
+3. Apply ALL Phase 2.5 corrections
+4. Update outdated sections
+5. Re-run Phase 4a-checkpoint
+```
+
+**Step 5: Checkpoint Action (ENFORCED)**
+
+```python
+if status == PASSED:
+  print("✅ Phase 4a-checkpoint PASSED - Proceeding to Phase 4b")
+  goto Phase_4b
+
+elif status == FAILED:
+  print("❌ Phase 4a-checkpoint FAILED")
+  print("Root README.md was not properly audited. Returning to Phase 4a.")
+
+  # MANDATORY LOOP-BACK
+  goto Phase_4a
+  # Execute Phase 4a completely
+  # Re-run Phase 4a-checkpoint
+  # Repeat until PASSED
+```
+
+**APO CANNOT execute Phase 4b until this checkpoint returns PASSED.**
+
+**Example Checkpoint Failure Scenario:**
+
+```
+Phase 4a-checkpoint Results:
+- Phase 4a Execution: ❌ SKIPPED
+- Read tool used on README.md: ❌ NO
+- Changes applied: 0 edits
+- Phase 2.5 fixes applied: 0/3 fixes
+
+Checkpoint Status: ❌ FAILED
+Reason: Phase 4a was skipped entirely
+
+APO Reasoning (INVALID): "Root README.md appears current, prioritizing subdirectory READMEs"
+
+ACTION: Returning to Phase 4a to execute mandatory audit
+[APO reads README.md]
+[APO audits all sections]
+[APO applies 3 Phase 2.5 fixes]
+[APO updates Features section with new features from Phase 2]
+[APO re-runs Phase 4a-checkpoint]
+
+Phase 4a-checkpoint Re-Check:
+- Phase 4a Execution: ✅ EXECUTED
+- Read tool used on README.md: ✅ YES
+- Changes applied: 4 edits (3 Phase 2.5 fixes + 1 Features update)
+- Phase 2.5 fixes applied: 3/3 fixes
+
+Checkpoint Status: ✅ PASSED
+
+Proceeding to Phase 4b...
+```
+
+**This prevents APO from:**
+- Skipping root README.md entirely
+- Jumping to Phase 4b without auditing root README.md
+- Claiming "no updates needed" without verification
+- Prioritizing subdirectory work over root documentation
 
 ---
 
@@ -1559,6 +1938,210 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Complete CHANGELOG entry with all changes documented
 - Version comparison summary (what changed from previous version)
 - Completeness validation report (checklist confirmation)
+
+---
+
+### Phase 6-checkpoint: CHANGELOG.md Compliance Verification (MANDATORY)
+
+**CRITICAL: APO CANNOT proceed to Phase 7 until this checkpoint PASSES**
+
+**Goal:** Ensure CHANGELOG.md exists and follows Keep-a-Changelog format with [Unreleased] section
+
+**Step 1: Verify [Unreleased] Section Exists**
+
+Read CHANGELOG.md (first 50 lines):
+```bash
+Read CHANGELOG.md
+
+# Check first ## heading
+if first_section == "## [Unreleased]":
+  unreleased_exists = TRUE
+else:
+  unreleased_exists = FALSE
+```
+
+**Step 2: Verify Current Changes Documented**
+
+Check if current session's work is documented:
+```javascript
+current_changes_documented = (
+  // Check if changes from current /trinity-docs execution are in [Unreleased]
+  // OR check if version entry exists for current project version
+)
+```
+
+**Step 3: Checkpoint Decision (BINARY)**
+
+```
+IF [Unreleased] section exists:
+  IF current_changes_documented OR version_entry_exists:
+    status = PASSED
+  ELSE:
+    status = FAILED (changes not documented)
+ELSE:
+  status = FAILED ([Unreleased] section missing)
+```
+
+**ONLY TWO VALID STATUSES:**
+- ✅ **PASSED** - [Unreleased] section exists AND changes documented
+- ❌ **FAILED** - [Unreleased] missing OR changes not documented
+
+**Step 4: Checkpoint Report**
+
+APO MUST output:
+
+```markdown
+### Phase 6-checkpoint: CHANGELOG.md Compliance Verification
+
+**CHANGELOG.md exists:** {✅ YES | ❌ NO}
+**[Unreleased] section exists:** {✅ YES | ❌ NO}
+**Current changes documented:** {✅ YES | ❌ NO | ⏸️ N/A (version entry exists)}
+**Keep-a-Changelog format:** {✅ VALID | ❌ INVALID}
+
+**Checkpoint Status:** {✅ PASSED | ❌ FAILED}
+
+**If PASSED:**
+✅ CHANGELOG.md follows Keep-a-Changelog format with [Unreleased] section.
+Proceeding to Phase 7 (Documentation Validation).
+
+**If FAILED:**
+❌ Phase 6-checkpoint FAILED
+Reason: {specific reason}
+
+**Failure Reasons:**
+1. **[Unreleased] section missing** - CHANGELOG.md exists but doesn't have ## [Unreleased] as first section
+2. **CHANGELOG.md doesn't exist** - File not found in root directory
+3. **Changes not documented** - Current documentation updates not reflected in CHANGELOG
+4. **Invalid format** - Doesn't follow Keep-a-Changelog structure
+
+**ACTION REQUIRED:**
+{specific_action_based_on_failure_reason}
+```
+
+**Step 5: Auto-Fix [Unreleased] Section (If Missing)**
+
+If CHANGELOG.md exists but [Unreleased] section is missing:
+
+```python
+if changelog_exists AND unreleased_missing:
+  # AUTO-FIX: Insert [Unreleased] section at top
+
+  Read CHANGELOG.md
+
+  # Find insertion point (after header, before first version)
+  if starts_with("# Changelog"):
+    insert_after_line = line_number_of("# Changelog") + blank_lines
+
+  # Insert [Unreleased] section
+  Edit CHANGELOG.md:
+    Insert at insertion_point:
+      """
+      ## [Unreleased]
+
+      ### Added
+      - Documentation updates (see DOCUMENTATION-AUDIT report)
+
+      """
+
+  # Re-run checkpoint
+  goto Step_1
+```
+
+**Step 6: Checkpoint Action (ENFORCED)**
+
+```python
+if status == PASSED:
+  print("✅ Phase 6-checkpoint PASSED - Proceeding to Phase 7")
+  goto Phase_7
+
+elif status == FAILED AND auto_fix_possible:
+  print("⚠️ Phase 6-checkpoint FAILED - Attempting auto-fix")
+  # Apply auto-fix (insert [Unreleased] section)
+  # Re-run Phase 6-checkpoint
+  goto Step_1
+
+elif status == FAILED AND NOT auto_fix_possible:
+  print("❌ Phase 6-checkpoint FAILED - Manual intervention required")
+  # Report failure in Phase 9
+  # Continue to Phase 7 (checkpoint failure documented)
+  goto Phase_7
+```
+
+**Example Checkpoint Failure Scenario (Auto-Fixed):**
+
+```
+Phase 6-checkpoint Results:
+- CHANGELOG.md exists: ✅ YES
+- [Unreleased] section exists: ❌ NO
+- Current changes documented: ❌ NO
+- Keep-a-Changelog format: ✅ VALID
+
+Checkpoint Status: ❌ FAILED
+Reason: [Unreleased] section missing (first section is "## [1.3.1] - 2025-12-15")
+
+AUTO-FIX: Inserting [Unreleased] section at top of CHANGELOG.md
+
+[APO reads CHANGELOG.md]
+[APO inserts [Unreleased] section after "# Changelog" header]
+[APO adds documentation update entry]
+[APO re-runs Phase 6-checkpoint]
+
+Phase 6-checkpoint Re-Check:
+- CHANGELOG.md exists: ✅ YES
+- [Unreleased] section exists: ✅ YES
+- Current changes documented: ✅ YES
+- Keep-a-Changelog format: ✅ VALID
+
+Checkpoint Status: ✅ PASSED
+
+Proceeding to Phase 7...
+```
+
+**Example Checkpoint Failure Scenario (No Auto-Fix):**
+
+```
+Phase 6-checkpoint Results:
+- CHANGELOG.md exists: ❌ NO
+- [Unreleased] section exists: ❌ NO (file doesn't exist)
+- Current changes documented: ❌ NO
+- Keep-a-Changelog format: ❌ N/A (file missing)
+
+Checkpoint Status: ❌ FAILED
+Reason: CHANGELOG.md file not found in root directory
+
+AUTO-FIX: Not possible (file doesn't exist - requires user decision on initial version)
+
+ACTION: Creating basic CHANGELOG.md with [Unreleased] section
+
+[APO creates CHANGELOG.md using Keep-a-Changelog template]
+[APO adds [Unreleased] section with documentation updates]
+[APO re-runs Phase 6-checkpoint]
+
+Phase 6-checkpoint Re-Check:
+- CHANGELOG.md exists: ✅ YES
+- [Unreleased] section exists: ✅ YES
+- Current changes documented: ✅ YES
+- Keep-a-Changelog format: ✅ VALID
+
+Checkpoint Status: ✅ PASSED
+
+Proceeding to Phase 7...
+```
+
+**This prevents APO from:**
+- Skipping CHANGELOG.md updates entirely
+- Assuming "comprehensive CHANGELOG" means "compliant CHANGELOG"
+- Missing [Unreleased] section requirement
+- Proceeding to Phase 7 without verifying CHANGELOG compliance
+
+**Valid Skip Conditions:**
+- ✅ Project explicitly doesn't use CHANGELOG.md (documented in root README.md)
+- ✅ CHANGELOG.md managed by automated tool (e.g., semantic-release)
+
+**Invalid Skip Justifications (FORBIDDEN):**
+- ❌ "CHANGELOG already comprehensive" (must still have [Unreleased])
+- ❌ "Too much work to update CHANGELOG"
+- ❌ "CHANGELOG is 1,144 lines, no need to update"
 
 ---
 
