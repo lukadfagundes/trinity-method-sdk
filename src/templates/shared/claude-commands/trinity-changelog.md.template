@@ -1,0 +1,624 @@
+# Trinity CHANGELOG Management
+
+**Purpose:** Launch APO (Documentation Specialist) to maintain CHANGELOG.md in Keep-a-Changelog format.
+
+**Use Case:** Ensure CHANGELOG.md exists, follows Keep-a-Changelog format, and documents project changes.
+
+**Deliverable:** CHANGELOG audit report in `trinity/reports/CHANGELOG-AUDIT-{date}.md`
+
+---
+
+## Overview
+
+The `/trinity-changelog` command invokes APO (Documentation Specialist) to manage CHANGELOG.md. This command focuses exclusively on ensuring the project has a properly formatted CHANGELOG that follows the Keep-a-Changelog standard.
+
+**APO's Responsibilities:**
+- Check if CHANGELOG.md exists
+- Validate Keep-a-Changelog format compliance
+- Ensure [Unreleased] section exists at top
+- Document recent changes (if identifiable)
+- Generate CHANGELOG audit report
+
+**What This Command Does NOT Handle:**
+- ❌ README.md files (use `/trinity-readme`)
+- ❌ docs/ directory organization (use `/trinity-docs-organize`)
+- ❌ API documentation generation (use specialized tools)
+
+---
+
+## CRITICAL: APO Must Perform Work DIRECTLY
+
+**APO is NOT a planning agent. APO is an EXECUTION agent for documentation.**
+
+**✅ APO MUST:**
+- CHECK CHANGELOG.md existence **in this command execution**
+- VALIDATE format compliance **in this command execution**
+- CREATE or UPDATE CHANGELOG.md **in this command execution**
+- Report COMPLETED work in Phase 3 (past tense: "Created CHANGELOG.md")
+
+**❌ APO MUST NOT:**
+- Create work orders for CHANGELOG management
+- Create "recommendations" instead of performing updates
+- Skip work because "it's too much effort"
+- Defer work to future execution
+
+---
+
+## When to Use `/trinity-changelog`
+
+### Perfect Use Cases:
+✅ **Missing CHANGELOG** - No CHANGELOG.md exists
+✅ **Format Issues** - CHANGELOG exists but not Keep-a-Changelog compliant
+✅ **No [Unreleased] Section** - Missing section for tracking changes
+✅ **Pre-Release** - Ensure CHANGELOG is up-to-date before release
+✅ **Documentation Audit** - Verify CHANGELOG compliance
+
+### When NOT to Use:
+❌ **Version Releases** - Use semantic versioning tools/git tags
+❌ **README Updates** - Use `/trinity-readme` instead
+❌ **API Documentation** - Use API-specific generators
+
+---
+
+## Usage
+
+### Basic Usage
+```bash
+/trinity-changelog
+```
+
+APO performs complete CHANGELOG management:
+1. Checks if CHANGELOG.md exists
+2. Validates Keep-a-Changelog format
+3. Ensures [Unreleased] section exists
+4. Documents recent changes (if detectable)
+5. Generates CHANGELOG audit report
+
+---
+
+## APO Execution Principles
+
+### Unlimited Token Budget
+
+**CRITICAL: APO has NO token budget limits for this command.**
+
+**✅ APO MUST:**
+1. Complete ALL 3 phases regardless of token usage
+2. Validate entire CHANGELOG format (no "budget exceeded" stops)
+3. NEVER claim "token budget constraints" as reason for incomplete work
+
+**❌ APO MUST NOT:**
+1. Stop execution due to token concerns
+2. Skip validation due to "budget constraints"
+3. Defer work to future sessions
+
+---
+
+## Phase Execution Rules
+
+**ALL 3 phases are MANDATORY. APO MUST execute phases in sequence.**
+
+**FORBIDDEN:**
+- ❌ Skipping phases
+- ❌ "Deferring" phases to future sessions
+- ❌ Claiming phases are "optional"
+
+---
+
+## APO's 3-Phase CHANGELOG Management Process
+
+### Phase 1: CHANGELOG Discovery & Format Validation
+
+**Goal:** Check CHANGELOG.md existence and validate Keep-a-Changelog format compliance
+
+**Step 1: Check CHANGELOG.md Existence**
+
+```bash
+# Use Glob to find CHANGELOG.md
+Use Glob pattern: "CHANGELOG.md"
+```
+
+**Expected Results:**
+- **FOUND:** CHANGELOG.md exists → Proceed to Step 2
+- **NOT FOUND:** No CHANGELOG.md → Skip to Step 4 (Creation)
+
+**Step 2: Read CHANGELOG.md**
+
+If CHANGELOG.md exists:
+
+```javascript
+Use Read tool on CHANGELOG.md
+changelog_content = read_result
+changelog_lines = changelog_content.split('\n')
+```
+
+**Step 3: Validate Keep-a-Changelog Format**
+
+Check for required Keep-a-Changelog elements:
+
+```javascript
+// Required elements
+has_title = changelog_lines.some(line => line.match(/^# Changelog/i))
+has_keepachangelog_link = changelog_content.includes('keepachangelog.com')
+has_unreleased = changelog_content.includes('[Unreleased]')
+has_version_format = changelog_content.match(/## \[\d+\.\d+\.\d+\]/)
+
+// Section categories (should exist in some entries)
+has_added = changelog_content.includes('### Added')
+has_changed = changelog_content.includes('### Changed')
+has_deprecated = changelog_content.includes('### Deprecated')
+has_removed = changelog_content.includes('### Removed')
+has_fixed = changelog_content.includes('### Fixed')
+has_security = changelog_content.includes('### Security')
+
+// Calculate format score
+format_score = (
+  (has_title ? 20 : 0) +
+  (has_keepachangelog_link ? 15 : 0) +
+  (has_unreleased ? 25 : 0) +
+  (has_version_format ? 20 : 0) +
+  (has_added || has_changed || has_fixed ? 20 : 0)
+)
+```
+
+**Format Score Interpretation:**
+- **80-100:** Excellent format compliance
+- **60-79:** Good format, minor improvements needed
+- **40-59:** Moderate format issues
+- **0-39:** Poor format compliance, major fixes needed
+
+**Step 4: Analyze [Unreleased] Section**
+
+If CHANGELOG exists and has [Unreleased]:
+
+```javascript
+// Extract [Unreleased] section
+unreleased_section = extract_section_between(
+  start_marker: '## [Unreleased]',
+  end_marker: next '##' header
+)
+
+// Check if [Unreleased] has content
+unreleased_has_content = unreleased_section.length > 2  // More than just header
+
+// Count changes in [Unreleased]
+unreleased_added = count_items_under(unreleased_section, '### Added')
+unreleased_changed = count_items_under(unreleased_section, '### Changed')
+unreleased_fixed = count_items_under(unreleased_section, '### Fixed')
+unreleased_total = unreleased_added + unreleased_changed + unreleased_fixed
+```
+
+**APO Output:**
+
+```markdown
+=== PHASE 1: CHANGELOG DISCOVERY & VALIDATION ===
+
+**CHANGELOG.md:** {✅ EXISTS | ❌ NOT FOUND}
+
+{If EXISTS:}
+
+**Format Validation:**
+- Title (# Changelog): {✅ | ❌}
+- Keep-a-Changelog link: {✅ | ❌}
+- [Unreleased] section: {✅ | ❌}
+- Version format (## [X.Y.Z]): {✅ | ❌}
+- Change categories (Added/Changed/Fixed): {✅ | ❌}
+
+**Format Score:** {format_score}/100
+- 80-100: ✅ Excellent compliance
+- 60-79: ⚠️ Good, minor improvements
+- 40-59: ⚠️ Moderate issues
+- 0-39: ❌ Major fixes needed
+
+**[Unreleased] Section:**
+- Exists: {✅ YES | ❌ NO}
+- Has content: {✅ YES | ❌ EMPTY}
+- Total changes: {unreleased_total}
+  - Added: {unreleased_added}
+  - Changed: {unreleased_changed}
+  - Fixed: {unreleased_fixed}
+
+{If NOT FOUND:}
+
+**Action Required:** Create CHANGELOG.md from template
+```
+
+---
+
+### Phase 2: CHANGELOG Creation or Update
+
+**Goal:** Create CHANGELOG.md if missing, or update existing CHANGELOG to ensure compliance
+
+**Path A: CHANGELOG Does NOT Exist (Create)**
+
+**Step 1: Create CHANGELOG.md from Template**
+
+```markdown
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Initial project setup
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [1.0.0] - {current_date}
+
+### Added
+- First release
+```
+
+**Step 2: Write CHANGELOG.md to Root**
+
+```javascript
+Use Write tool to create CHANGELOG.md
+changelog_created = true
+```
+
+**APO Output (Path A):**
+
+```markdown
+=== PHASE 2: CHANGELOG CREATION ===
+
+**Action:** CREATED CHANGELOG.md from Keep-a-Changelog template
+
+**File Location:** CHANGELOG.md (project root)
+
+**Template Includes:**
+- ✅ # Changelog title
+- ✅ Keep-a-Changelog link
+- ✅ Semantic Versioning link
+- ✅ [Unreleased] section with all categories
+- ✅ [1.0.0] initial version entry
+
+**Status:** ✅ CHANGELOG.md created successfully
+```
+
+---
+
+**Path B: CHANGELOG Exists BUT Missing [Unreleased] (Update)**
+
+**Step 1: Insert [Unreleased] Section**
+
+```javascript
+// Find insertion point (after intro, before first version)
+intro_end = find_line_index(changelog_lines, /^## \[/)
+
+// Create [Unreleased] section
+unreleased_section = `
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+`
+
+// Insert [Unreleased] section
+new_changelog = insert_at_line(changelog_lines, intro_end, unreleased_section)
+
+// Write updated CHANGELOG
+Use Edit tool to add [Unreleased] section
+```
+
+**APO Output (Path B):**
+
+```markdown
+=== PHASE 2: CHANGELOG UPDATE ===
+
+**Action:** ADDED [Unreleased] section to existing CHANGELOG.md
+
+**Insertion Point:** Line {intro_end} (before first version entry)
+
+**Sections Added:**
+- ✅ [Unreleased] header
+- ✅ Added category
+- ✅ Changed category
+- ✅ Deprecated category
+- ✅ Removed category
+- ✅ Fixed category
+- ✅ Security category
+
+**Status:** ✅ [Unreleased] section added successfully
+```
+
+---
+
+**Path C: CHANGELOG Exists with [Unreleased] (Validate Only)**
+
+**Step 1: Verify [Unreleased] Section Structure**
+
+```javascript
+// Check if [Unreleased] has all standard categories
+missing_categories = []
+
+if (!unreleased_section.includes('### Added')) missing_categories.push('Added')
+if (!unreleased_section.includes('### Changed')) missing_categories.push('Changed')
+if (!unreleased_section.includes('### Deprecated')) missing_categories.push('Deprecated')
+if (!unreleased_section.includes('### Removed')) missing_categories.push('Removed')
+if (!unreleased_section.includes('### Fixed')) missing_categories.push('Fixed')
+if (!unreleased_section.includes('### Security')) missing_categories.push('Security')
+```
+
+**Step 2: Add Missing Categories (if any)**
+
+```javascript
+if (missing_categories.length > 0) {
+  // Find [Unreleased] section end
+  unreleased_end = find_next_version_header(changelog_lines)
+
+  // Insert missing categories before next version
+  for (category in missing_categories) {
+    insert_line = `\n### ${category}\n`
+    // Use Edit tool to insert category
+  }
+}
+```
+
+**APO Output (Path C):**
+
+```markdown
+=== PHASE 2: CHANGELOG VALIDATION ===
+
+**Action:** VALIDATED [Unreleased] section structure
+
+**[Unreleased] Section:**
+- Header: ✅ Present
+- Added: {✅ | ❌ ADDED}
+- Changed: {✅ | ❌ ADDED}
+- Deprecated: {✅ | ❌ ADDED}
+- Removed: {✅ | ❌ ADDED}
+- Fixed: {✅ | ❌ ADDED}
+- Security: {✅ | ❌ ADDED}
+
+{If missing categories:}
+**Missing Categories Added:** {missing_categories.join(', ')}
+
+{If all categories present:}
+**Status:** ✅ All standard categories present
+```
+
+---
+
+### Phase 3: CHANGELOG Audit Report
+
+**APO Generates:** `trinity/reports/CHANGELOG-AUDIT-{date}.md`
+
+**Required Report Structure:**
+
+```markdown
+# CHANGELOG Audit Report
+
+**Project:** {{PROJECT_NAME}}
+**Audit Date:** {date}
+**Auditor:** APO (Documentation Specialist)
+**Command:** /trinity-changelog
+
+---
+
+## Executive Summary
+
+**CHANGELOG.md:** {✅ EXISTS | ❌ CREATED}
+**Format Score:** {format_score}/100
+**[Unreleased] Section:** {✅ EXISTS | ❌ CREATED}
+**Keep-a-Changelog Compliance:** {✅ COMPLIANT | ⚠️ PARTIAL | ❌ NON-COMPLIANT}
+
+**COMMAND EXECUTION STATUS:** {✅ SUCCESS | ⚠️ PARTIAL SUCCESS}
+
+---
+
+## Phase Execution Summary
+
+### Phase 1: Discovery & Validation
+- **CHANGELOG.md existed:** {✅ YES | ❌ NO}
+- **Format score:** {format_score}/100
+- **[Unreleased] existed:** {✅ YES | ❌ NO}
+
+### Phase 2: Creation or Update
+- **Action taken:** {CREATED | UPDATED [Unreleased] | ADDED CATEGORIES | VALIDATED}
+- **File location:** CHANGELOG.md (project root)
+
+---
+
+## Format Compliance
+
+**Keep-a-Changelog Elements:**
+- ✅ Title: # Changelog
+- {✅ | ❌} Link to keepachangelog.com
+- {✅ | ❌} Link to semver.org
+- ✅ [Unreleased] section
+- {✅ | ❌} Version entries (## [X.Y.Z])
+
+**[Unreleased] Section Categories:**
+- ✅ Added
+- ✅ Changed
+- ✅ Deprecated
+- ✅ Removed
+- ✅ Fixed
+- ✅ Security
+
+**Format Score:** {format_score}/100
+- 80-100: ✅ Excellent compliance
+- 60-79: ⚠️ Good, minor improvements
+- 40-59: ⚠️ Moderate issues
+- 0-39: ❌ Major fixes needed
+
+---
+
+## [Unreleased] Section Analysis
+
+**Status:** {✅ READY | ⚠️ EMPTY | ❌ MISSING}
+
+**Current Changes Documented:**
+- Added: {unreleased_added} items
+- Changed: {unreleased_changed} items
+- Fixed: {unreleased_fixed} items
+- Total: {unreleased_total} items
+
+{If unreleased_total > 0:}
+**Recent Changes:**
+{list items from [Unreleased] section}
+
+{If unreleased_total == 0:}
+**Note:** [Unreleased] section is empty. Add changes as they are made.
+
+---
+
+## Version History
+
+**Total Versions:** {count version entries}
+
+**Latest Version:** {latest_version} ({latest_date})
+
+**Versions:**
+{list all version entries with dates}
+
+---
+
+## Recommendations
+
+{If format_score < 80:}
+**Format Improvements:**
+- {list specific improvements needed}
+
+{If unreleased_total == 0:}
+**Documentation:**
+- ⚠️ [Unreleased] section is empty
+- Consider documenting recent changes
+
+{If format_score >= 80 && unreleased exists:}
+**No recommendations** - CHANGELOG is well-maintained ✅
+
+---
+
+## Success Criteria
+
+**Required Elements:**
+- {✅ | ❌} CHANGELOG.md exists
+- {✅ | ❌} Keep-a-Changelog format
+- {✅ | ❌} [Unreleased] section present
+- {✅ | ❌} All standard categories in [Unreleased]
+
+{If all ✅:}
+**SUCCESS Criteria:** All required elements present ✅
+
+{If any ❌:}
+**PARTIAL SUCCESS:** {list missing elements}
+
+---
+
+**Report Generated:** {timestamp}
+**Report Location:** trinity/reports/CHANGELOG-AUDIT-{date}.md
+```
+
+---
+
+## Success Criteria
+
+**Command succeeds when:**
+
+1. **CHANGELOG.md Exists:** File present in project root
+2. **Format Compliance:** Format score ≥ 60/100
+3. **[Unreleased] Section:** Exists with all standard categories
+4. **All Phases Complete:** 3/3 phases executed
+
+**If ALL criteria met: STATUS = ✅ SUCCESS**
+
+**If missing elements: STATUS = ⚠️ PARTIAL SUCCESS**
+- Report lists missing elements
+- User can re-run command to complete
+
+---
+
+## Post-Execution Checklist
+
+**After `/trinity-changelog` completes, verify:**
+
+1. ✅ Check `trinity/reports/CHANGELOG-AUDIT-{date}.md`
+2. ✅ Verify CHANGELOG.md exists in root
+3. ✅ Check [Unreleased] section present
+4. ✅ Verify format score ≥ 60/100
+5. ✅ Check "COMMAND EXECUTION STATUS" = "✅ SUCCESS"
+
+---
+
+## Keep-a-Changelog Format Reference
+
+**Standard Template:**
+
+```markdown
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- New features
+
+### Changed
+- Changes to existing features
+
+### Deprecated
+- Soon-to-be removed features
+
+### Removed
+- Removed features
+
+### Fixed
+- Bug fixes
+
+### Security
+- Security fixes
+
+## [1.0.0] - 2024-01-01
+
+### Added
+- Initial release
+```
+
+**Category Guidelines:**
+
+- **Added:** New features
+- **Changed:** Changes to existing functionality
+- **Deprecated:** Soon-to-be removed features
+- **Removed:** Removed features
+- **Fixed:** Bug fixes
+- **Security:** Security-related changes
+
+**Version Format:** `## [X.Y.Z] - YYYY-MM-DD`
+
+**Links Section (optional):**
+```markdown
+[Unreleased]: https://github.com/user/repo/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/user/repo/releases/tag/v1.0.0
+```
+
+---
+
+**Command Specification Version:** 1.0.0
+**Last Updated:** 2025-12-27
