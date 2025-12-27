@@ -374,63 +374,135 @@ def can_start_phase(phase_number):
 
 **CRITICAL: APO MUST Execute Systematically - NO ASSUMPTIONS - VERIFY COMPLETENESS**
 
-**Step 1: Find ALL CLAUDE.md Files Using Glob**
+**Step 1: Execute Glob Search**
 
 ```bash
 Use Glob tool with pattern: "**/CLAUDE.md"
 ```
 
-**Step 2: VERIFY Glob Completeness**
+**Step 2: Paste Raw Glob Output (MANDATORY - VALIDATION CHECKPOINT)**
 
-After Glob execution, APO MUST:
-- Report TOTAL count of CLAUDE.md files found
-- List EVERY file path found (absolute paths, one per line)
-- Include nested directories (backend/src/, frontend/app/, frontend/app/lib/, etc.)
-- NEVER filter results to "major directories only"
-- NEVER assume which directories "deserve" READMEs
+**CRITICAL: APO MUST paste the complete, unfiltered Glob tool output below.**
 
-**Step 3: For EACH CLAUDE.md Found, Check for README.md**
+**DO NOT summarize, filter, or process the output. Paste it exactly as returned by the Glob tool.**
 
 ```
-For path in glob_results:
+Glob Tool Output (RAW - PASTE EVERY LINE):
+{paste complete Glob output here - every single line}
+```
+
+**Step 3: Count Validation (ENFORCED)**
+
+Count the lines in the Glob tool output pasted in Step 2:
+
+```javascript
+glob_output_lines = {manually count lines in pasted Glob output above}
+apo_reported_count = {APO's count of CLAUDE.md files to report}
+
+// VALIDATION CHECK (MANDATORY)
+if (apo_reported_count !== glob_output_lines) {
+  ❌ CRITICAL ERROR: Count mismatch - Phase 1 validation FAILED
+
+  - Glob tool returned: {glob_output_lines} lines
+  - APO planned to report: {apo_reported_count} files
+  - Discrepancy: {Math.abs(glob_output_lines - apo_reported_count)} files
+
+  **STOP EXECUTION IMMEDIATELY**
+  **APO MUST use glob_output_lines as the correct count**
+  **Re-count using the pasted Glob output as source of truth**
+
+} else {
+  ✅ Count validation PASSED: {apo_reported_count} == {glob_output_lines}
+}
+```
+
+**CRITICAL: If counts don't match, APO CANNOT proceed. Must use Glob output line count.**
+
+**Step 4: Build Inventory from Validated Glob Output**
+
+For EACH line in the pasted Glob output (process all {glob_output_lines} lines):
+
+```javascript
+for (let i = 0; i < glob_output_lines; i++) {
+  path = glob_output[i]  // Each line from pasted output
   directory = dirname(path)
   readme_path = directory + "/README.md"
 
   if exists(readme_path):
-    add to "existing_readmes" array
+    existing_readmes.push(directory)
   else:
-    add to "missing_readmes" array
+    missing_readmes.push(directory)
+}
 ```
 
-**Step 4: MANDATORY - Report Complete Inventory**
+**Step 5: Report Complete Inventory (Using Validated Count)**
 
 APO MUST output:
 
 ```markdown
 Phase 1 Discovery Results:
-- Total CLAUDE.md files: {count}
+- Total CLAUDE.md files: {glob_output_lines} (validated against Glob tool output)
 
-- CLAUDE.md file paths (ALL PATHS):
-  1. {absolute path 1}
-  2. {absolute path 2}
+- Glob Tool Output Validation:
+  ✅ Raw Glob output pasted in Step 2
+  ✅ Reported count ({glob_output_lines}) matches Glob output lines
+  ✅ All {glob_output_lines} paths processed
+
+- CLAUDE.md file paths (ALL {glob_output_lines} PATHS):
+  1. {absolute path 1 from Glob output line 1}
+  2. {absolute path 2 from Glob output line 2}
   ...
-  {count}. {absolute path N}
+  {glob_output_lines}. {absolute path N from Glob output line N}
 
-- Directories with READMEs: {count}
+- Directories with READMEs: {existing_readmes.length}
   {list all paths}
 
-- Directories MISSING READMEs: {count}
+- Directories MISSING READMEs: {missing_readmes.length}
   {list all paths - this becomes Phase 4b work list}
+
+Coverage: {(existing_readmes.length / glob_output_lines) * 100}%
 ```
 
-**Step 5: Self-Verification Check**
+**Step 6: Self-Verification Checklist (MANDATORY OUTPUT)**
 
-APO MUST verify:
-- Did Glob find nested directories? (Check for */src/, */app/, */lib/ patterns)
-- Does count match expected project structure?
-- Are there frontend/, backend/, database/ subdirectories in results?
+APO MUST answer ALL checklist items:
 
-If verification reveals missing paths: RE-RUN Glob with explicit paths
+**Self-Verification Checklist:**
+
+1. **Glob Output Pasted:**
+   - Did I paste the raw Glob output in Step 2? ✅ YES | ❌ NO
+   - If NO: STOP and paste Glob output
+
+2. **Nested Directory Check:**
+   - Did Glob find ANY paths matching `*/src/`? ✅ YES (found: {list}) | ❌ NO
+
+3. **Nested Directory Check:**
+   - Did Glob find ANY paths matching `*/app/`? ✅ YES (found: {list}) | ❌ NO
+
+4. **Nested Directory Check:**
+   - Did Glob find ANY paths matching `*/lib/`? ✅ YES (found: {list}) | ❌ NO
+
+5. **Count Validation:**
+   - Does my reported count ({glob_output_lines}) match Glob output lines? ✅ YES | ❌ NO
+   - If NO: STOP and use Glob output count
+
+6. **Project Structure Sanity:**
+   - For project with backend/, frontend/, database/, trinity/, do I expect nested CLAUDE.md files? ✅ YES | ❌ NO
+   - If YES but none found: Re-run Glob with explicit paths
+
+**Self-Verification Action:**
+
+```
+IF any critical item = ❌ NO:
+  Re-run Glob with explicit patterns:
+    - backend/**/CLAUDE.md
+    - frontend/**/CLAUDE.md
+    - database/**/CLAUDE.md
+    - trinity/**/CLAUDE.md
+  Merge results and re-validate
+
+Checklist Completion: ✅ 6/6 items verified
+```
 
 **Example Expected Output:**
 
@@ -1365,21 +1437,65 @@ Contains all Express.js backend application code including API routes, business 
 
 **Goal:** Ensure 100% completion of Phase 4b README creation requirements
 
-**Step 1: Count Missing READMEs (From Phase 1)**
-```javascript
-missing_readmes_from_phase1 = [list from Phase 1 discovery]
-total_missing = missing_readmes_from_phase1.length
+**Step 1: Re-run Glob for Independent Validation (MANDATORY)**
+
+**CRITICAL: DO NOT use Phase 1 cached count. Run fresh Glob for cross-validation.**
+
+```bash
+Use Glob with pattern: "**/CLAUDE.md"
 ```
 
-**Step 2: Count READMEs Created in Phase 4b**
-```javascript
-readmes_created_in_phase4b = [list of paths created]
-total_created = readmes_created_in_phase4b.length
+**Paste Fresh Glob Output:**
+```
+Fresh Glob Output (Phase 4c Validation):
+{paste complete Glob output here}
 ```
 
-**Step 3: Calculate Coverage**
+Count lines in fresh Glob output:
 ```javascript
-coverage_percentage = (total_created / total_missing) * 100
+fresh_glob_count = {count lines in fresh Glob output above}
+```
+
+**Step 2: Validate Phase 1 Accuracy (CROSS-CHECK)**
+
+```javascript
+phase1_count = {count from Phase 1 Discovery}
+fresh_glob_count = {count from Step 1 fresh Glob}
+
+if (fresh_glob_count !== phase1_count) {
+  ❌ CRITICAL ERROR: Phase 1 discovery was INCOMPLETE
+
+  - Phase 1 reported: {phase1_count} CLAUDE.md files
+  - Fresh Glob found: {fresh_glob_count} CLAUDE.md files
+  - Discrepancy: {Math.abs(fresh_glob_count - phase1_count)} files
+
+  **PHASE 1 ERROR DETECTED - MANDATORY LOOP-BACK**
+
+  **ACTION REQUIRED:**
+  1. RETURN TO PHASE 1
+  2. Re-run discovery with fresh Glob count: {fresh_glob_count}
+  3. Update missing_readmes list with ALL missing READMEs
+  4. RETURN TO PHASE 4b with corrected list
+  5. Create ALL missing READMEs
+  6. Re-run Phase 4c
+
+  **APO CANNOT proceed until Phase 1 count matches fresh Glob count**
+
+} else {
+  ✅ Phase 1 validation PASSED: {phase1_count} == {fresh_glob_count}
+}
+```
+
+**Step 3: Calculate Coverage (Using Validated Count)**
+
+Use fresh_glob_count as source of truth:
+
+```javascript
+total_claude_directories = fresh_glob_count  // VALIDATED count
+total_with_readmes = {count directories that have README.md}
+total_missing = total_claude_directories - total_with_readmes
+
+coverage_percentage = (total_with_readmes / total_claude_directories) * 100
 ```
 
 **Step 4: Validate Skipped READMEs (if coverage < 100%)**
@@ -2456,6 +2572,153 @@ Reason: Hard requirements not met (1, 2, 4, 5 failed)
 **APO Generates:** `trinity/reports/DOCUMENTATION-AUDIT-{date}.md`
 
 **CRITICAL: Report MUST document COMPLETED work, not future recommendations or work orders.**
+
+---
+
+## FINAL VALIDATION OVERRIDE (ENFORCED - RUNS BEFORE REPORT GENERATION)
+
+**CRITICAL: Before APO can generate the report or claim any status, Phase 9 MUST run independent final validation.**
+
+**This validation OVERRIDES any previous checkpoint results if coverage < 100%.**
+
+---
+
+### Step 1: Independent Final Coverage Check (MANDATORY)
+
+**Re-run Glob one final time for independent validation:**
+
+```bash
+Use Glob with pattern: "**/CLAUDE.md"
+```
+
+**Paste Final Glob Output:**
+```
+Final Glob Output (Phase 9 Validation):
+{paste complete Glob output here}
+```
+
+Count lines:
+```javascript
+final_glob_count = {count lines in final Glob output above}
+```
+
+---
+
+### Step 2: Verify README.md Exists for EACH CLAUDE.md
+
+**APO MUST check EACH path in the final Glob output:**
+
+```javascript
+missing_readmes = []
+
+for each_path in final_glob_output:
+  directory = dirname(each_path)
+  readme_path = directory + "/README.md"
+
+  if exists(readme_path):
+    ✅ {directory}: README.md EXISTS
+  else:
+    ❌ {directory}: README.md MISSING
+    missing_readmes.push(directory)
+```
+
+**Required Output:**
+```markdown
+Final README.md Verification (Phase 9):
+
+1. ✅ {directory1}: README.md exists
+2. ✅ {directory2}: README.md exists
+3. ❌ {directory3}: README.md MISSING ← COVERAGE FAILURE
+...
+
+Total CLAUDE.md directories: {final_glob_count}
+READMEs existing: {existing_count}
+Final Coverage: {(existing_count / final_glob_count) * 100}%
+```
+
+---
+
+### Step 3: Hard Requirements Re-Validation
+
+```javascript
+// Re-validate all hard requirements using FINAL independent data
+
+hard_requirement_1 = (phases_executed === 9)  // All phases executed
+hard_requirement_2 = (final_coverage === 100)  // README coverage
+hard_requirement_3 = (phase_2_5_fixes === 100)  // Inaccuracies fixed
+hard_requirement_4 = (final_coverage === 100)  // Phase 4c verified
+hard_requirement_5 = (final_coverage === 100)  // Phase 7a verified
+```
+
+**Hard Requirements Status:**
+```
+1. Phase Execution: 9/9 = {✅ PASS | ❌ FAIL}
+2. README Coverage: {final_coverage}% = {✅ PASS (100%) | ❌ FAIL (< 100%)}
+3. Phase 2.5 Fixes: {phase_2_5_completion}% = {✅ PASS (100%) | ❌ FAIL (< 100%)}
+4. Phase 4c Checkpoint: {✅ VERIFIED | ❌ FALSE POSITIVE}
+   - Verification: Final coverage == 100%? {✅ YES | ❌ NO}
+5. Phase 7a Validation: {✅ VERIFIED | ❌ FALSE POSITIVE}
+   - Verification: Final coverage == 100%? {✅ YES | ❌ NO}
+```
+
+---
+
+### Step 4: Override Logic (CANNOT BE BYPASSED)
+
+```python
+# Final validation override (ENFORCED)
+
+if not hard_requirement_1:
+    status = "❌ FAILED"
+    reason = f"Only {phases_executed}/9 phases executed"
+
+elif not hard_requirement_2:
+    status = "❌ FAILED"
+    reason = f"README coverage = {final_coverage}% (< 100%)"
+    reason += f"\nMissing READMEs: {missing_readmes}"
+
+elif not hard_requirement_3:
+    status = "❌ FAILED"
+    reason = f"Phase 2.5 fixes = {phase_2_5_completion}% (< 100%)"
+
+elif not hard_requirement_4:
+    status = "❌ FAILED"
+    reason = "Phase 4c checkpoint was FALSE POSITIVE"
+    reason += f"\nClaimed: PASSED, but final coverage = {final_coverage}%"
+
+elif not hard_requirement_5:
+    status = "❌ FAILED"
+    reason = "Phase 7a validation was FALSE POSITIVE"
+    reason += f"\nClaimed: PASSED, but final coverage = {final_coverage}%"
+
+else:
+    status = "✅ SUCCESS"
+    reason = "All hard requirements verified"
+```
+
+**Status Determination:**
+```
+FINAL VALIDATION OVERRIDE:
+- Status: {status}
+- Reason: {reason}
+```
+
+**IF status == "❌ FAILED":**
+```markdown
+## CRITICAL: OVERRIDE IN EFFECT
+
+**APO Claimed Status:** {what APO might have claimed}
+**Final Validation Override:** ❌ FAILED
+**Override Reason:** {reason}
+
+**Missing READMEs (if coverage < 100%):**
+{list all directories from missing_readmes array}
+
+**This status OVERRIDES any previous claims of SUCCESS.**
+**The command execution has FAILED hard requirement(s).**
+```
+
+---
 
 **Required Report Structure:**
 
