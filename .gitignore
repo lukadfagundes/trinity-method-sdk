@@ -45,10 +45,6 @@ pnpm-debug.log*
 # OS
 Thumbs.db
 
-# Trinity Documents
-trinity/
-.claude/
-
 # Exception: Don't ignore template source files
 !src/templates/trinity/
 !src/templates/.claude/
@@ -59,3 +55,10 @@ settings.local.json
 
 
 TODO-LIST.md
+
+# Trinity Method SDK
+node_modules/
+.claude/
+trinity/
+*CLAUDE.md
+TRINITY.md
