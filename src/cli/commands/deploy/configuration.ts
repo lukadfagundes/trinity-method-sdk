@@ -8,18 +8,11 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import {
   getRecommendedTools,
-  getToolsForFramework,
   getDependenciesForTools,
   getScriptsForTools,
   getPostInstallInstructions,
 } from '../../utils/linting-tools.js';
-import type {
-  DeployOptions,
-  DeployConfig,
-  Stack,
-  LintingTool,
-  PostInstallInstruction,
-} from './types.js';
+import type { DeployOptions, DeployConfig, Stack, LintingTool } from './types.js';
 
 /**
  * Get default configuration for --yes flag

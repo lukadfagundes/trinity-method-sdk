@@ -4,7 +4,6 @@
 
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import fs from 'fs-extra';
-import path from 'path';
 import inquirer from 'inquirer';
 import { update } from '../../../../src/cli/commands/update.js';
 import {
@@ -296,7 +295,7 @@ describe('Update Command - Integration Tests', () => {
 
       try {
         await update({ dryRun: false });
-      } catch (error) {
+      } catch {
         // Update may fail due to missing SDK templates, that's okay
         // We're testing that confirmation was requested
       }
