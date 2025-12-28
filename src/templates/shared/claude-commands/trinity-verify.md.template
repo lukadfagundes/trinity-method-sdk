@@ -32,11 +32,11 @@ Check for:
    - .claude/agents/planning/ (4 agents: MON, ROR, TRA, EUS)
    - .claude/agents/aj-team/ (7 agents: KIL, BAS, DRA, APO, BON, CAP, URO)
 
-4. **Slash Commands (18 commands in 6 categories):**
+4. **Slash Commands (20 commands in 6 categories):**
    - .claude/commands/ (all Trinity slash commands)
    - Session: start, continue, end
    - Planning: requirements, design, plan, decompose
-   - Execution: orchestrate, audit, docs
+   - Execution: orchestrate, audit, readme, docs, changelog
    - Investigation: create-investigation, plan-investigation, investigate-templates
    - Infrastructure: init
    - Utility: verify, agents, workorder

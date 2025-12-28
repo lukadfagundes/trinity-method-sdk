@@ -39,7 +39,7 @@ Located in: `.claude/agents/aj-team/`
 - **KIL (Task Executor)** - TDD implementation specialist (RED-GREEN-REFACTOR)
 - **BAS (Quality Gate)** - 6-phase validation (Lint, Structure, Build, Test, Coverage, Practices)
 - **DRA (Code Reviewer)** - Design Doc compliance validation
-- **APO (Documentation Specialist)** - Project documentation management (invoke with `/trinity-docs`), API docs, and inline comments
+- **APO (Documentation Specialist)** - Documentation management (invoke with `/trinity-readme`, `/trinity-docs`, or `/trinity-changelog`), API docs, and inline comments
 - **BON (Dependency Manager)** - Package management and security
 - **CAP (Configuration Specialist)** - Environment and configuration files
 - **URO (Refactoring Specialist)** - Code refactoring and technical debt reduction
@@ -57,7 +57,8 @@ Ask which agent you want to learn more about, and Claude will read that agent's 
 ### 1. Unfamiliar Codebase Workflow
 ```bash
 /trinity-audit              # JUNO analyzes codebase
-/trinity-docs @audit-report # APO updates documentation
+/trinity-readme             # APO ensures README coverage
+/trinity-docs               # APO organizes docs/ directory
 ```
 **Use Case:** Just cloned an unfamiliar repository and need to understand it
 
@@ -74,7 +75,9 @@ Ask which agent you want to learn more about, and Claude will read that agent's 
 
 ### 3. Documentation Maintenance
 ```bash
-/trinity-docs  # APO reviews and updates all documentation
+/trinity-readme     # APO ensures 100% README coverage
+/trinity-docs       # APO organizes docs/ directory
+/trinity-changelog  # APO maintains CHANGELOG.md
 ```
 **Use Case:** Regular documentation reviews, pre-release updates
 **Agents Involved:** APO (standalone)

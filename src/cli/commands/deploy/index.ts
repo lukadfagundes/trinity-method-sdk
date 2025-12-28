@@ -13,7 +13,7 @@
  * Manual setup is error-prone and inconsistent. Developers forget folders, skip quality tools, or
  * misconfigure agents. This command orchestrates TAN (structure), ZEN (documentation), INO (context),
  * and EIN (CI/CD) to deploy battle-tested Trinity infrastructure in minutes. Every project gets same
- * high-quality foundation: 18 agents, 17 commands, quality gates, and documentation architecture.
+ * high-quality foundation: 19 agents, 20 commands, quality gates, and documentation architecture.
  *
  * @example
  * ```bash

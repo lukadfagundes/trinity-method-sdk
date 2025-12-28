@@ -172,7 +172,7 @@ describe('Deploy Command - Integration Tests', () => {
   });
 
   describe('Slash Command Deployment', () => {
-    it('should deploy all 18 slash commands to categorized directories', async () => {
+    it('should deploy all 20 slash commands to categorized directories', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // Session commands (3)
@@ -186,10 +186,12 @@ describe('Deploy Command - Integration Tests', () => {
       expect(await fs.pathExists('.claude/commands/planning/trinity-plan.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/planning/trinity-decompose.md')).toBe(true);
 
-      // Execution commands (3)
+      // Execution commands (5)
       expect(await fs.pathExists('.claude/commands/execution/trinity-orchestrate.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/execution/trinity-audit.md')).toBe(true);
+      expect(await fs.pathExists('.claude/commands/execution/trinity-readme.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/execution/trinity-docs.md')).toBe(true);
+      expect(await fs.pathExists('.claude/commands/execution/trinity-changelog.md')).toBe(true);
 
       // Investigation commands (3)
       expect(
@@ -426,7 +428,7 @@ describe('Deploy Command - Integration Tests', () => {
 
       // Expected minimum files:
       // - 19 agents
-      // - 18 slash commands
+      // - 20 slash commands
       // - 9 knowledge base files
       // - 6 work order templates
       // - 5 investigation templates
@@ -434,7 +436,7 @@ describe('Deploy Command - Integration Tests', () => {
       // - 3 root files (TRINITY.md, CLAUDE.md, trinity/VERSION)
       // - 1 trinity/CLAUDE.md
       // - 1 EMPLOYEE-DIRECTORY.md
-      // = 64 minimum files
+      // = 66 minimum files
 
       const trinityFileCount = await countFiles('trinity');
       const claudeFileCount = await countFiles('.claude');

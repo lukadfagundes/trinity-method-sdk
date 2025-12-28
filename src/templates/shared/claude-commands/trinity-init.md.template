@@ -11,7 +11,7 @@ description: Complete Trinity integration with TAN → ZEN → INO → EIN → J
 
 **What You Get**:
 - 19 specialized agents in `.claude/agents/`
-- 18 slash commands in `.claude/commands/` (6 categories)
+- 20 slash commands in `.claude/commands/` (6 categories)
 - Knowledge base in `trinity/knowledge-base/`
 - Work order system in `trinity/work-orders/`
 - Documentation templates in `trinity/templates/documentation/`

@@ -42,7 +42,11 @@ User: Clone unfamiliar repository
   ↓
 /trinity-audit → JUNO performs 8-phase audit
   ↓
-/trinity-docs @trinity/reports/CODEBASE-AUDIT-{date}.md → APO updates documentation
+/trinity-readme → APO ensures README coverage
+  ↓
+/trinity-docs → APO organizes docs/ directory
+  ↓
+/trinity-changelog → APO maintains CHANGELOG
 ```
 
 ---

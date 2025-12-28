@@ -21,7 +21,7 @@ The `/trinity-changelog` command invokes APO (Documentation Specialist) to manag
 
 **What This Command Does NOT Handle:**
 - ❌ README.md files (use `/trinity-readme`)
-- ❌ docs/ directory organization (use `/trinity-docs-organize`)
+- ❌ docs/ directory organization (use `/trinity-docs`)
 - ❌ API documentation generation (use specialized tools)
 
 ---
