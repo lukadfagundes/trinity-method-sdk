@@ -433,23 +433,76 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ### CI/CD Pipeline
 
-Trinity uses GitHub Actions for comprehensive continuous integration:
+Trinity uses GitHub Actions for comprehensive continuous integration and deployment with BAS 6-phase quality gates.
 
-**Automated Quality Checks:**
+#### Continuous Integration (CI)
+
+**Automated Quality Checks on Every Push:**
 
 - ✅ Multi-platform testing (Ubuntu, Windows, macOS)
 - ✅ Multi-version testing (Node.js 18.x, 20.x, 22.x)
+- ✅ Trinity component validation (19 agents, 19+ slash commands, knowledge base, CI/CD templates)
 - ✅ Test suite execution (unit, integration, e2e, performance)
 - ✅ Code coverage validation (80%+ threshold enforced)
 - ✅ Linting and type checking
 - ✅ Security scanning (npm audit, dependency checks)
-- ✅ Build verification
+- ✅ Build verification with artifact validation
+- ✅ Documentation validation
+
+**BAS 6-Phase Quality Gates:**
+
+1. **Phase 1**: Code Quality (Linting, type checking, formatting)
+2. **Phase 2**: Structure Validation (Trinity template validation)
+3. **Phase 3**: Build Validation (TypeScript compilation, artifact verification)
+4. **Phase 4**: Testing (All test suites across platforms)
+5. **Phase 5**: Coverage Check (≥80% threshold)
+6. **Phase 6**: Documentation (API docs, README validation)
 
 **CI Workflow Location:** [.github/workflows/ci.yml](.github/workflows/ci.yml)
 
-### Publishing to npm
+#### Continuous Deployment (CD)
 
-**Current Process:** Manual publishing after CI validation
+**Automated Publishing to npm:**
+
+The CD pipeline automatically publishes to npm when you push version tags to the main branch:
+
+```bash
+# Create release commit and tag (triggers CD pipeline on main branch only)
+git commit --allow-empty -m "chore: release v2.0.0"
+git tag -a v2.0.0 -m "Trinity Method SDK v2.0.0"
+git push origin main --follow-tags
+```
+
+**CD Pipeline Workflow:**
+
+1. **Pre-deployment Validation**: Verify CI passed, tag format correct (v\*), on main branch
+2. **Build & Trinity Validation**: Build artifacts, validate Trinity components
+3. **npm Publish**: Automated publishing using `NPM_TOKEN` secret
+4. **GitHub Release**: Create GitHub release with CHANGELOG
+5. **Deployment Summary**: Post-deployment notifications and metrics
+
+**CD Workflow Location:** [.github/workflows/cd.yml](.github/workflows/cd.yml)
+
+**Important:** The CD pipeline only triggers on the `main` branch. Tags pushed to `dev` or `testing` branches will not trigger automated deployment.
+
+**Required Setup:**
+
+Before automated deployment works, you must configure the `NPM_TOKEN` secret:
+
+1. Create npm granular access token (see [.env.example](.env.example) for detailed instructions)
+2. Add to GitHub Secrets:
+   - Go to: **Settings → Secrets and variables → Actions → New repository secret**
+   - Name: `NPM_TOKEN`
+   - Value: [your npm token]
+
+**Documentation:**
+
+- **Complete CI/CD Guide**: [docs/guides/CI-CD-GUIDE.md](docs/guides/CI-CD-GUIDE.md)
+- **Quick Reference**: [docs/reference/CI-CD-REFERENCE.md](docs/reference/CI-CD-REFERENCE.md)
+
+### Manual Publishing (Optional)
+
+You can still publish manually if needed:
 
 ```bash
 # After pushing to main and CI passes
@@ -465,7 +518,7 @@ npm publish                  # Publishes with prepublishOnly checks
 4. Full test suite execution (`npm run test`)
 5. Only publishes if all checks pass
 
-**Note:** Automated npm publishing is not currently configured. Publishing requires manual `npm publish` after successful CI validation.
+**Note:** Manual publishing is now optional. The CD pipeline handles automated publishing when you create version tags (recommended workflow).
 
 ---
 
