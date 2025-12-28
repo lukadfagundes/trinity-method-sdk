@@ -1,8 +1,8 @@
 # Trinity docs/ Directory Management
 
-**Purpose:** Launch APO (Documentation Specialist) to organize and maintain the project's `docs/` directory with proper structure and navigation.
+**Purpose:** Launch APO (Documentation Specialist) to create, organize, and maintain the project's `docs/` directory with proper structure, seeded content, and navigation.
 
-**Use Case:** Create organized docs/ directory structure, generate navigation README, categorize documentation files.
+**Use Case:** Create organized docs/ directory structure, seed initial documentation content, migrate scattered docs, generate navigation, validate links.
 
 **Deliverable:** docs/ organization report in `trinity/reports/DOCS-ORGANIZATION-{date}.md`
 
@@ -10,20 +10,25 @@
 
 ## Overview
 
-The `/trinity-docs` command invokes APO (Documentation Specialist) to organize the `docs/` directory. This command focuses exclusively on creating a well-structured documentation directory with proper categorization and navigation.
+The `/trinity-docs` command invokes APO (Documentation Specialist) to **create and organize** the `docs/` directory. This command creates a well-structured documentation directory with relevant starter content based on your project's actual codebase.
 
 **APO's Responsibilities:**
-- Scan existing docs/ files
-- Create hierarchical directory structure (guides/, api/, architecture/, etc.)
+- Analyze codebase to gather project context
+- Scan existing docs/ files and scattered documentation
+- Create hierarchical directory structure (guides/, api/, architecture/, reference/, images/)
+- Seed initial documentation content based on project type
+- Migrate scattered documentation files into organized structure
+- Auto-generate architecture documentation from codebase
 - Generate docs/README.md navigation file
-- Organize existing documentation files into categories
-- Apply documentation best practices
+- Validate and fix documentation links
+- Integrate auto-generated API docs (TypeDoc, Rustdoc, etc.)
+- Provide actionable recommendations for empty categories
 
 **What This Command Does NOT Handle:**
-- ❌ README.md files (use `/trinity-readme`)
+- ❌ Root README.md (use `/trinity-readme`)
 - ❌ CHANGELOG.md updates (use `/trinity-changelog`)
-- ❌ Root-level documentation files
-- ❌ API documentation generation (use specialized tools)
+- ❌ Trinity infrastructure files (trinity/, CLAUDE.md)
+- ❌ Technical source READMEs (src/README.md, tests/README.md)
 
 ---
 
@@ -32,33 +37,40 @@ The `/trinity-docs` command invokes APO (Documentation Specialist) to organize t
 **APO is NOT a planning agent. APO is an EXECUTION agent for documentation.**
 
 **✅ APO MUST:**
+- ANALYZE codebase for project context **in this command execution**
 - CREATE docs/ directory structure **in this command execution**
+- SEED initial documentation content **in this command execution**
+- MIGRATE scattered documentation **in this command execution**
+- GENERATE architecture docs **in this command execution**
 - ORGANIZE existing documentation files **in this command execution**
-- GENERATE docs/README.md navigation **in this command execution**
-- Report COMPLETED work in Phase 4 (past tense: "Created docs/guides/")
+- VALIDATE and FIX documentation links **in this command execution**
+- Report COMPLETED work in Phase 5 (past tense: "Created docs/guides/getting-started.md")
 
 **❌ APO MUST NOT:**
 - Create work orders for docs organization
 - Create "recommendations" instead of performing organization
 - Skip work because "it's too much effort"
 - Defer work to future execution
+- Move Trinity infrastructure files (trinity/, CLAUDE.md)
+- Move technical source READMEs (src/README.md, etc.)
 
 ---
 
 ## When to Use `/trinity-docs`
 
 ### Perfect Use Cases:
+✅ **New Project** - Setting up docs/ for the first time with seeded content
+✅ **Empty docs/** - docs/ exists but contains no useful documentation
 ✅ **Disorganized docs/** - Files scattered without structure
 ✅ **Missing Navigation** - No docs/README.md to guide users
-✅ **New Project** - Setting up docs/ for the first time
 ✅ **Documentation Growth** - docs/ has grown and needs reorganization
-✅ **Pre-Release** - Ensure documentation is well-organized
+✅ **Scattered Documentation** - .md files scattered across project
+✅ **Pre-Release** - Ensure documentation is well-organized with starter content
 
 ### When NOT to Use:
-❌ **README Updates** - Use `/trinity-readme` instead
+❌ **Root README Updates** - Use `/trinity-readme` instead
 ❌ **CHANGELOG Updates** - Use `/trinity-changelog` instead
-❌ **API Documentation** - Use API-specific generators
-❌ **No docs/ Directory** - Command requires docs/ to exist or creates minimal structure
+❌ **API Documentation Generation** - Use TypeDoc, Rustdoc, etc. first (this command integrates them)
 
 ---
 
@@ -69,12 +81,17 @@ The `/trinity-docs` command invokes APO (Documentation Specialist) to organize t
 /trinity-docs
 ```
 
-APO performs complete docs/ organization:
-1. Scans existing docs/ files
-2. Creates directory structure (guides/, api/, architecture/)
-3. Organizes files into appropriate categories
-4. Generates docs/README.md navigation
-5. Generates organization report
+APO performs complete docs/ creation and organization:
+1. Analyzes codebase for project context (framework, tech stack, architecture)
+2. Scans existing docs/ files and scattered documentation
+3. Creates directory structure (guides/, api/, architecture/, reference/, images/)
+4. Seeds initial documentation content based on project type
+5. Migrates scattered .md files into organized structure
+6. Auto-generates architecture documentation
+7. Integrates auto-generated API docs (TypeDoc, etc.)
+8. Validates and fixes documentation links
+9. Generates docs/README.md navigation with coverage metrics
+10. Generates comprehensive organization report
 
 ---
 
@@ -85,20 +102,20 @@ APO performs complete docs/ organization:
 **CRITICAL: APO has NO token budget limits for this command.**
 
 **✅ APO MUST:**
-1. Complete ALL 4 phases regardless of token usage
-2. Organize ALL docs/ files (no "budget exceeded" stops)
+1. Complete ALL 5 phases regardless of token usage
+2. Create ALL seeded content and organize ALL files (no "budget exceeded" stops)
 3. NEVER claim "token budget constraints" as reason for incomplete work
 
 **❌ APO MUST NOT:**
 1. Stop execution due to token concerns
-2. Skip organization due to "budget constraints"
+2. Skip phases due to "budget constraints"
 3. Defer work to future sessions
 
 ---
 
 ## Phase Execution Rules
 
-**ALL 4 phases are MANDATORY. APO MUST execute phases in sequence.**
+**ALL 5 phases are MANDATORY. APO MUST execute phases in sequence.**
 
 **FORBIDDEN:**
 - ❌ Skipping phases
@@ -107,11 +124,11 @@ APO performs complete docs/ organization:
 
 ---
 
-## APO's 4-Phase docs/ Organization Process
+## APO's 5-Phase docs/ Organization Process
 
-### Phase 1: Discovery
+### Phase 1: Discovery & Codebase Analysis
 
-**Goal:** Scan existing docs/ directory and inventory files
+**Goal:** Scan existing documentation, detect scattered files, and analyze codebase for context
 
 **Step 1: Check if docs/ Exists**
 
@@ -123,10 +140,10 @@ if exists("docs/"):
   Use Glob pattern: "docs/**/*"
 else:
   docs_exists = false
-  # Will create minimal structure in Phase 2
+  # Will create structure in Phase 2
 ```
 
-**Step 2: Inventory Existing Files**
+**Step 2: Inventory Existing docs/ Files**
 
 If docs/ exists:
 
@@ -142,42 +159,246 @@ for each path in glob_results:
 
 // Categorize files by type
 markdown_files = docs_files.filter(f => f.endsWith('.md'))
-image_files = docs_files.filter(f => f.endsWith('.png', '.jpg', '.svg'))
-other_files = docs_files.filter(f => not markdown nor image)
+image_files = docs_files.filter(f => f.endsWith('.png', '.jpg', '.svg', '.gif'))
+html_files = docs_files.filter(f => f.endsWith('.html'))  // TypeDoc, etc.
+other_files = docs_files.filter(f => not markdown nor image nor html)
 ```
 
-**Step 3: Analyze Current Structure**
+**Step 3: Analyze Current docs/ Structure**
 
 ```javascript
 has_guides_dir = docs_dirs.includes("docs/guides")
 has_api_dir = docs_dirs.includes("docs/api")
 has_architecture_dir = docs_dirs.includes("docs/architecture")
+has_reference_dir = docs_dirs.includes("docs/reference")
+has_images_dir = docs_dirs.includes("docs/images")
 has_navigation = docs_files.includes("docs/README.md")
 
 structure_score = (
-  (has_guides_dir ? 25 : 0) +
-  (has_api_dir ? 25 : 0) +
-  (has_architecture_dir ? 25 : 0) +
-  (has_navigation ? 25 : 0)
+  (has_guides_dir ? 20 : 0) +
+  (has_api_dir ? 20 : 0) +
+  (has_architecture_dir ? 20 : 0) +
+  (has_reference_dir ? 20 : 0) +
+  (has_navigation ? 20 : 0)
 )
+```
+
+**Step 4: Scan for Scattered Documentation (ENHANCEMENT 3)**
+
+**CRITICAL: Identify documentation scattered outside docs/ for migration**
+
+```bash
+# Search entire project for .md files outside docs/
+Use Glob: "**/*.md"
+
+# EXCLUDE these patterns (DO NOT migrate):
+excluded_patterns = [
+  "node_modules/**",
+  ".git/**",
+  "docs/**",  # Already in docs/
+  "trinity/**",  # Trinity infrastructure - NEVER move
+  "**/CLAUDE.md",  # All CLAUDE.md files - NEVER move
+  "README.md",  # Root README - keep in root
+  "CHANGELOG.md",  # Root CHANGELOG - keep in root
+  "CONTRIBUTING.md",  # Root CONTRIBUTING - keep in root
+  "LICENSE",  # Root LICENSE - keep in root
+  "CODE_OF_CONDUCT.md",  # Root standards - keep in root
+  "SECURITY.md"  # Root standards - keep in root
+]
+
+scattered_docs = []
+
+for each file in glob_results:
+  # Skip if matches excluded patterns
+  if matches_any(file, excluded_patterns):
+    continue
+
+  # Categorize by filename/content patterns
+  category = detect_category(file)
+
+  # Check if it's a technical source README (src/README.md, tests/README.md)
+  if file.endsWith("/README.md"):
+    parent_dir = get_parent_directory(file)
+    if is_source_directory(parent_dir):  // src/, tests/, lib/, pkg/, etc.
+      continue  # Keep technical READMEs with source code
+
+  # This is orphaned documentation - mark for migration
+  scattered_docs.push({
+    file: file,
+    suggested_category: category
+  })
+
+// Category detection logic
+function detect_category(filename):
+  if matches("architecture*", "design*", "*-architecture", "*-design"):
+    return "docs/architecture/"
+
+  if matches("api*", "endpoints*", "*-api", "*-endpoints"):
+    return "docs/api/"
+
+  if matches("guide*", "tutorial*", "how-to*", "*-guide", "*-tutorial"):
+    return "docs/guides/"
+
+  if matches("*-reference", "spec*", "*-spec", "glossary*"):
+    return "docs/reference/"
+
+  // Default category
+  return "docs/guides/"
+```
+
+**Step 5: Codebase Context Analysis (ENHANCEMENT 1)**
+
+**CRITICAL: Gather project information to seed relevant documentation**
+
+```bash
+# Detect project type and extract metadata
+project_metadata = {}
+
+# Check package manifests
+if exists("package.json"):
+  package_json = read("package.json")
+  project_metadata.type = "Node.js"
+  project_metadata.name = package_json.name
+  project_metadata.version = package_json.version
+  project_metadata.description = package_json.description
+  project_metadata.dependencies = Object.keys(package_json.dependencies || {})
+  project_metadata.framework = detect_framework(package_json.dependencies)
+
+else if exists("Cargo.toml"):
+  cargo_toml = read("Cargo.toml")
+  project_metadata.type = "Rust"
+  project_metadata.name = cargo_toml.package.name
+  project_metadata.version = cargo_toml.package.version
+  project_metadata.description = cargo_toml.package.description
+
+else if exists("pyproject.toml") or exists("setup.py"):
+  project_metadata.type = "Python"
+  pyproject = read("pyproject.toml" or "setup.py")
+  # Extract Python project metadata
+
+else if exists("pubspec.yaml"):
+  pubspec = read("pubspec.yaml")
+  project_metadata.type = "Flutter"
+  project_metadata.name = pubspec.name
+  project_metadata.version = pubspec.version
+
+else if exists("go.mod"):
+  go_mod = read("go.mod")
+  project_metadata.type = "Go"
+  # Extract Go module info
+
+# Detect framework
+function detect_framework(dependencies):
+  if has("react"): return "React"
+  if has("next"): return "Next.js"
+  if has("express"): return "Express"
+  if has("vue"): return "Vue"
+  if has("@nestjs"): return "NestJS"
+  if has("django"): return "Django"
+  if has("flask"): return "Flask"
+  if has("fastapi"): return "FastAPI"
+  return "Unknown"
+
+# Scan source directory structure
+if exists("src/"):
+  src_structure = analyze_directory_structure("src/")
+  project_metadata.architecture = detect_architecture_pattern(src_structure)
+  project_metadata.entry_point = find_entry_point()
+
+# Detect architecture pattern
+function detect_architecture_pattern(structure):
+  if has_dirs(["controllers", "models", "views"]): return "MVC"
+  if has_dirs(["components", "pages", "hooks"]): return "React Component Architecture"
+  if has_dirs(["services", "repositories"]): return "Service Layer Architecture"
+  if has_dirs(["handlers", "middleware"]): return "Middleware-based Architecture"
+  return "Modular Architecture"
+
+# Check for existing documentation candidates
+if exists("CONTRIBUTING.md"):
+  project_metadata.has_contributing = true
+
+if exists(".env.example"):
+  project_metadata.has_env_example = true
+```
+
+**Step 6: Detect Auto-Generated API Documentation (ENHANCEMENT 8)**
+
+```bash
+# Detect TypeDoc (Node.js/TypeScript)
+if exists("docs/index.html") and exists("docs/modules.html"):
+  project_metadata.api_docs = {
+    type: "TypeDoc",
+    location: "docs/",
+    entry: "index.html"
+  }
+
+# Detect JSDoc
+if exists("docs/jsdoc/index.html"):
+  project_metadata.api_docs = {
+    type: "JSDoc",
+    location: "docs/jsdoc/",
+    entry: "index.html"
+  }
+
+# Detect Rustdoc
+if exists("target/doc/index.html"):
+  project_metadata.api_docs = {
+    type: "Rustdoc",
+    location: "target/doc/",
+    entry: "index.html"
+  }
+
+# Detect Sphinx (Python)
+if exists("docs/_build/html/index.html"):
+  project_metadata.api_docs = {
+    type: "Sphinx",
+    location: "docs/_build/html/",
+    entry: "index.html"
+  }
+```
+
+**Step 7: Detect Duplicate Documentation (ENHANCEMENT 6)**
+
+```bash
+# Find potential duplicates
+all_md_files = glob("**/*.md", exclude=excluded_patterns)
+duplicates = []
+
+for each file1 in all_md_files:
+  title1 = extract_title(file1)
+
+  for each file2 in all_md_files (after file1):
+    title2 = extract_title(file2)
+
+    # Check for similar titles
+    if similarity(title1, title2) > 0.8:
+      duplicates.push({file1, file2, similarity_score})
+
+    # Check for similar content
+    content_similarity = compare_content(file1, file2)
+    if content_similarity > 0.7:
+      duplicates.push({file1, file2, type: "content", similarity_score})
 ```
 
 **APO Output:**
 
 ```markdown
-=== PHASE 1: DOCS DISCOVERY ===
+=== PHASE 1: DISCOVERY & CODEBASE ANALYSIS ===
 
 **docs/ Exists:** {✅ YES | ❌ NO}
 
-**Current Files:** {count}
+**Current docs/ Files:** {count}
 - Markdown files: {count}
 - Image files: {count}
+- HTML files (TypeDoc/etc): {count}
 - Other files: {count}
 
-**Current Directories:** {count}
+**Current docs/ Directories:** {count}
 - guides/: {✅ EXISTS | ❌ MISSING}
 - api/: {✅ EXISTS | ❌ MISSING}
 - architecture/: {✅ EXISTS | ❌ MISSING}
+- reference/: {✅ EXISTS | ❌ MISSING}
+- images/: {✅ EXISTS | ❌ MISSING}
 - Navigation (README.md): {✅ EXISTS | ❌ MISSING}
 
 **Structure Score:** {structure_score}/100
@@ -185,23 +406,53 @@ structure_score = (
 - 26-50: Needs significant organization
 - 51-75: Needs minor organization
 - 76-100: Well-organized
+
+**Scattered Documentation Found:** {scattered_docs.length} files
+{For each scattered doc:}
+- {file} → {suggested_category}
+
+**Duplicate Documentation:** {duplicates.length} potential duplicates
+{For each duplicate:}
+- {file1} ↔ {file2} (similarity: {score}%)
+
+**Project Context:**
+- **Type:** {project_metadata.type}
+- **Name:** {project_metadata.name}
+- **Version:** {project_metadata.version}
+- **Framework:** {project_metadata.framework}
+- **Architecture:** {project_metadata.architecture}
+- **Entry Point:** {project_metadata.entry_point}
+
+**Auto-Generated API Docs:**
+{if api_docs detected:}
+- ✅ {api_docs.type} detected at {api_docs.location}
+{else:}
+- ❌ No auto-generated API docs detected
+
+**Existing Documentation Assets:**
+- CONTRIBUTING.md: {✅ YES | ❌ NO}
+- .env.example: {✅ YES | ❌ NO}
 ```
 
 ---
 
-### Phase 2: Directory Structure Creation
+### Phase 2: Directory Structure & Content Seeding
 
-**Goal:** Create hierarchical docs/ directory structure
+**Goal:** Create hierarchical docs/ structure with seeded initial content
 
 **Standard Directory Structure:**
 
 ```
 docs/
-├── README.md (navigation - created in Phase 3)
+├── README.md (navigation - created in Phase 4)
 ├── guides/           (How-to guides, tutorials)
+│   └── getting-started.md (seeded)
 ├── api/              (API documentation)
+│   └── README.md (seeded with project context)
 ├── architecture/     (Architecture diagrams, design docs)
+│   └── overview.md (auto-generated from codebase)
 ├── reference/        (Reference documentation)
+│   └── README.md (seeded with CLI commands, env vars)
 └── images/           (Images, diagrams, screenshots)
 ```
 
@@ -224,73 +475,563 @@ for each dir in required_dirs:
     created_dirs.push(dir)
 ```
 
-**Step 2: Create Category README Files**
+**Step 2: Seed docs/guides/ Content (ENHANCEMENT 2)**
 
-For each category directory, create a README.md:
+**CRITICAL: Create useful starter guides based on project type, not empty placeholders**
 
-**docs/guides/README.md:**
 ```markdown
+### docs/guides/getting-started.md
+
+# Getting Started with {{PROJECT_NAME}}
+
+**Version:** {{VERSION}}
+**Last Updated:** {{CURRENT_DATE}}
+
+## Overview
+
+{project_metadata.description or "This guide will help you get started with {{PROJECT_NAME}}."}
+
+## Prerequisites
+
+{if project_metadata.type === "Node.js":}
+- Node.js ≥ {extract from package.json engines or "16.0.0"}
+- npm or yarn package manager
+
+{if project_metadata.type === "Python":}
+- Python ≥ {extract from pyproject.toml or "3.8"}
+- pip package manager
+
+{if project_metadata.type === "Rust":}
+- Rust {extract from Cargo.toml or "latest stable"}
+- Cargo build tool
+
+{if project_metadata.type === "Flutter":}
+- Flutter SDK {extract from pubspec.yaml or "latest"}
+- Dart SDK
+
+## Installation
+
+{if project_metadata.type === "Node.js":}
+```bash
+# Clone the repository
+git clone {repository URL from package.json or placeholder}
+cd {{PROJECT_NAME}}
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
+{if project_metadata.type === "Python":}
+```bash
+# Clone the repository
+git clone {repository URL}
+cd {{PROJECT_NAME}}
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run application
+python main.py
+```
+
+{if project_metadata.type === "Rust":}
+```bash
+# Clone the repository
+git clone {repository URL}
+cd {{PROJECT_NAME}}
+
+# Build project
+cargo build
+
+# Run project
+cargo run
+```
+
+## Project Structure
+
+```
+{actual src/ directory structure from Phase 1 scan}
+```
+
+## Next Steps
+
+- [API Documentation](../api/) - Learn about available APIs
+- [Architecture Overview](../architecture/overview.md) - Understand system design
+{if has CONTRIBUTING.md:}
+- [Contributing Guide](../../CONTRIBUTING.md) - Contribute to the project
+
+## Common Issues
+
+{if project_metadata.type === "Node.js":}
+### "Module not found" errors
+- Ensure you've run `npm install`
+- Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+
+{if project_metadata.type === "Python":}
+### Import errors
+- Ensure virtual environment is activated
+- Reinstall dependencies: `pip install -r requirements.txt`
+
+## Support
+
+{Placeholder for support information}
+- GitHub Issues: [repository]/issues
+- Documentation: [docs/](../)
+```
+
+**Create Framework-Specific Guides (ENHANCEMENT 10)**
+
+```markdown
+{if framework === "Express":}
+### docs/guides/api-development.md
+
+# API Development Guide
+
+## Creating Routes
+
+```javascript
+// src/routes/example.js
+const express = require('express');
+const router = express.Router();
+
+router.get('/example', (req, res) => {
+  res.json({ message: 'Example endpoint' });
+});
+
+module.exports = router;
+```
+
+## Middleware
+
+{Examples based on detected middleware patterns in codebase}
+
+## Error Handling
+
+{if error handling patterns detected, show them}
+
+{if framework === "React":}
+### docs/guides/component-development.md
+
+# Component Development Guide
+
+## Component Structure
+
+```jsx
+// Functional Component Example
+import React from 'react';
+
+export const ExampleComponent = ({ prop1, prop2 }) => {
+  return (
+    <div>
+      {/* Component content */}
+    </div>
+  );
+};
+```
+
+## State Management
+
+{if Redux detected: show Redux patterns}
+{if Context API detected: show Context patterns}
+
+{if framework === "Django":}
+### docs/guides/django-development.md
+
+# Django Development Guide
+
+## Creating Apps
+
+```bash
+python manage.py startapp myapp
+```
+
+## Models and Migrations
+
+{Examples of model creation and migration workflow}
+
+## Admin Panel
+
+{Django admin setup instructions}
+```
+
+**Step 3: Seed docs/api/ Content (ENHANCEMENT 2 + 8)**
+
+```markdown
+### docs/api/README.md
+
+# API Documentation
+
+{if project_metadata.api_docs (TypeDoc/Rustdoc/etc):}
+
+**Auto-Generated API Reference:** [{api_docs.type}]({api_docs.entry})
+
+Full API documentation is available in the auto-generated {api_docs.type} documentation.
+
+{else if framework matches API framework (Express, FastAPI, etc):}
+
+**{project_metadata.name}** API documentation.
+
+## Endpoints
+
+{if Express and routes detected:}
+### Available Routes
+
+{scan src/ for route files and list endpoints}
+
+- `GET /api/example` - Example endpoint
+{list actual detected routes from codebase}
+
+## Authentication
+
+{if authentication patterns detected, document them}
+
+## Request/Response Format
+
+All API responses follow this format:
+
+```json
+{
+  "success": true,
+  "data": {},
+  "error": null
+}
+```
+
+{else:}
+
+API documentation for {{PROJECT_NAME}}.
+
+## Overview
+
+{Framework-specific API documentation guidance}
+
+{if project_metadata.type === "Node.js":}
+Consider using tools like:
+- Swagger/OpenAPI for REST APIs
+- GraphQL documentation for GraphQL APIs
+- TypeDoc for TypeScript API reference
+
+{if project_metadata.type === "Python":}
+Consider using tools like:
+- Sphinx for Python API reference
+- FastAPI automatic documentation (available at /docs)
+- Django REST Framework browsable API
+```
+
+**Step 4: Auto-Generate docs/architecture/overview.md (ENHANCEMENT 4)**
+
+**CRITICAL: Create real architecture documentation from codebase analysis**
+
+```markdown
+### docs/architecture/overview.md
+
+# Architecture Overview
+
+**Project:** {{PROJECT_NAME}}
+**Type:** {project_metadata.type}
+**Framework:** {project_metadata.framework}
+**Version:** {project_metadata.version}
+**Last Updated:** {{CURRENT_DATE}}
+
+## System Overview
+
+{project_metadata.description}
+
+## Technology Stack
+
+**Runtime/Language:** {project_metadata.type} {version}
+**Framework:** {project_metadata.framework}
+
+{if project_metadata.type === "Node.js":}
+**Package Manager:** npm/yarn
+**Build Tool:** {detect from package.json scripts}
+
+{if project_metadata.dependencies.length > 0:}
+**Key Dependencies:**
+{list major dependencies from package.json}
+- {dependency}: {purpose detected or version}
+
+{if database detected:}
+**Database:** {detected database from dependencies}
+
+## Architecture Pattern
+
+**Pattern:** {project_metadata.architecture}
+
+{if architecture === "MVC":}
+This project follows the Model-View-Controller (MVC) architectural pattern:
+- **Models:** Data structures and business logic
+- **Views:** Presentation layer
+- **Controllers:** Request handling and coordination
+
+{if architecture === "React Component Architecture":}
+This project follows React's component-based architecture:
+- **Components:** Reusable UI building blocks
+- **Pages:** Top-level route components
+- **Hooks:** Custom React hooks for shared logic
+- **Context:** Global state management
+
+{if architecture === "Service Layer Architecture":}
+This project uses a service-oriented architecture:
+- **Services:** Business logic layer
+- **Repositories:** Data access layer
+- **Controllers:** API endpoint handlers
+
+## Directory Structure
+
+```
+{actual src/ directory structure from Phase 1 analysis}
+```
+
+**Key Directories:**
+{for each major directory in src/:}
+- **{directory}:** {purpose based on name/content}
+
+## Entry Points
+
+{if project_metadata.entry_point:}
+**Main Entry:** {entry_point}
+
+{if CLI commands detected from package.json:}
+**CLI Commands:**
+{list npm scripts or CLI commands}
+- `{command}`: {purpose}
+
+## Data Flow
+
+{if architecture pattern is recognized, describe typical data flow}
+
+{if API framework:}
+1. Request received at endpoint
+2. Middleware processing
+3. Controller handles request
+4. Service layer executes business logic
+5. Repository accesses data
+6. Response sent to client
+
+## Configuration
+
+{if .env.example exists:}
+**Environment Variables:** See [.env.example](../../.env.example)
+
+{list detected config files:}
+**Configuration Files:**
+- {config file}: {purpose}
+
+## Build & Deployment
+
+{from package.json scripts or build system:}
+**Build Command:** `{build command}`
+**Development:** `{dev command}`
+**Production:** `{start command}`
+
+## Architecture Diagrams
+
+*Architecture diagrams can be added to the [images/](../images/) directory and linked here.*
+
+Recommended diagrams:
+- System architecture diagram
+- Component interaction diagram
+- Data flow diagram
+- Deployment architecture
+
+## Design Decisions
+
+{if ADR files detected, link to them}
+
+Key architectural decisions are documented in:
+- [Architecture Decision Records](adr/) - ADRs documenting major technical decisions
+
+## Performance Considerations
+
+{Framework-specific performance guidance}
+
+## Security Considerations
+
+{Framework-specific security guidance}
+
+---
+
+For detailed API documentation, see [../api/](../api/).
+```
+
+**Step 5: Seed docs/reference/ Content (ENHANCEMENT 2)**
+
+```markdown
+### docs/reference/README.md
+
+# Reference Documentation
+
+Quick reference materials for {{PROJECT_NAME}}.
+
+## CLI Commands
+
+{if package.json scripts detected:}
+### npm Scripts
+
+{for each script in package.json.scripts:}
+- **`npm run {script}`** - {infer purpose from script name or command}
+
+{if Makefile detected:}
+### Make Commands
+
+{for each target in Makefile:}
+- **`make {target}`** - {purpose}
+
+## Environment Variables
+
+{if .env.example exists:}
+See [.env.example](../../.env.example) for all available environment variables.
+
+**Required Variables:**
+{parse .env.example and list required vars}
+- `{VAR_NAME}` - {purpose}
+
+## Configuration
+
+{list detected config files and their purpose}
+
+## API Reference
+
+{if auto-generated API docs:}
+See [API Documentation](../api/) for complete API reference.
+
+## Dependencies
+
+**Production Dependencies:** {count}
+{list major production dependencies}
+
+**Development Dependencies:** {count}
+{list major dev dependencies}
+
+## Glossary
+
+{Project-specific terminology}
+```
+
+**Step 6: Migrate CONTRIBUTING.md to Reference (if exists)**
+
+```bash
+if exists("CONTRIBUTING.md"):
+  # Don't move the file, but reference it from docs/reference/
+  # Add link in docs/reference/README.md
+```
+
+**Step 7: Create Category README Files**
+
+For each category, create README.md that lists actual content:
+
+```markdown
+### docs/guides/README.md
+
 # Guides
 
 User guides and tutorials for {{PROJECT_NAME}}.
 
 ## Available Guides
 
-{list .md files in guides/ directory}
+{if getting-started.md created:}
+- [Getting Started](getting-started.md) - Quick start guide for new users
+
+{if framework-specific guide created:}
+- [{Framework} Development](....md) - {Framework}-specific development guide
+
+{if scattered docs migrated to guides/:}
+{list migrated files}
+
+## Planned Guides
+
+*Additional guides can be added to this directory. Common guide topics include:*
+- Deployment guide
+- Testing guide
+- Troubleshooting guide
+- Advanced features guide
 
 ## Contributing
 
 To add a new guide:
 1. Create a new .md file in this directory
-2. Follow the guide template format
+2. Follow the guide template format:
+   - Clear title and objective
+   - Prerequisites section
+   - Step-by-step instructions
+   - Expected outcomes
+   - Troubleshooting tips
 3. Update this README with a link to your guide
+
+---
+
+See [../README.md](../README.md) for complete documentation index.
 ```
 
-**docs/api/README.md:**
 ```markdown
-# API Documentation
+### docs/api/README.md
 
-API reference documentation for {{PROJECT_NAME}}.
-
-## API Endpoints
-
-{list .md files in api/ directory}
-
-## API Overview
-
-{if API overview exists, summarize; otherwise provide template}
+{Content from Step 3 - already seeded with project-specific info}
 ```
 
-**docs/architecture/README.md:**
 ```markdown
+### docs/architecture/README.md
+
 # Architecture Documentation
 
 System architecture and design documentation for {{PROJECT_NAME}}.
 
-## Architecture Docs
+## Architecture Overview
 
-{list .md files in architecture/ directory}
+**Main Document:** [Architecture Overview](overview.md) - Complete system architecture
 
-## Diagrams
+{if ADR directory exists or should be created:}
+## Architecture Decision Records (ADRs)
 
-{list images in architecture/ or images/ that are architecture-related}
+*Architecture Decision Records document significant architectural decisions made during development.*
+
+{if ADR files exist:}
+{list ADR files}
+
+{else:}
+ADRs can be added to the `adr/` subdirectory following the [ADR template format](https://github.com/joelparkerhenderson/architecture-decision-record).
+
+## Architecture Diagrams
+
+{if images/ has architecture diagrams:}
+{list diagram files}
+
+{else:}
+*Architecture diagrams can be added to [../images/](../images/) directory.*
+
+Recommended diagrams:
+- System architecture diagram
+- Component interaction diagram
+- Data flow diagram
+- Deployment architecture
+
+## Technology Stack
+
+See [Architecture Overview](overview.md#technology-stack) for complete technology stack details.
+
+---
+
+See [../README.md](../README.md) for complete documentation index.
 ```
 
-**docs/reference/README.md:**
 ```markdown
-# Reference Documentation
+### docs/reference/README.md
 
-Reference materials for {{PROJECT_NAME}}.
-
-## References
-
-{list .md files in reference/ directory}
+{Content from Step 5 - already seeded with CLI commands, env vars}
 ```
 
 **APO Output:**
 
 ```markdown
-=== PHASE 2: DIRECTORY STRUCTURE CREATION ===
+=== PHASE 2: DIRECTORY STRUCTURE & CONTENT SEEDING ===
 
 **Directories Created:** {created_dirs.length}
 - ✅ docs/guides/
@@ -299,22 +1040,241 @@ Reference materials for {{PROJECT_NAME}}.
 - ✅ docs/reference/
 - ✅ docs/images/
 
-**Category READMEs Created:** {count}
+**Content Seeded:** {count} files created
+
+**Guides:**
+- ✅ docs/guides/getting-started.md ({line_count} lines)
+{if framework-specific guide created:}
+- ✅ docs/guides/{framework}-development.md ({line_count} lines)
+
+**API Documentation:**
+- ✅ docs/api/README.md ({line_count} lines)
+{if TypeDoc integrated:}
+- ✅ Integrated {api_docs.type} documentation
+
+**Architecture:**
+- ✅ docs/architecture/overview.md ({line_count} lines) - AUTO-GENERATED from codebase
+{if ADR directory created:}
+- ✅ docs/architecture/adr/ directory created
+
+**Reference:**
+- ✅ docs/reference/README.md ({line_count} lines)
+
+**Category READMEs:** 4 files
 - ✅ docs/guides/README.md
 - ✅ docs/api/README.md
 - ✅ docs/architecture/README.md
 - ✅ docs/reference/README.md
+
+**Project Context Used:**
+- Type: {project_metadata.type}
+- Framework: {project_metadata.framework}
+- Architecture: {project_metadata.architecture}
+- Dependencies: {major_deps_count} major dependencies documented
 ```
 
 ---
 
-### Phase 3: Navigation README Creation
+### Phase 3: Scattered Documentation Migration
 
-**Goal:** Create comprehensive docs/README.md navigation file
+**Goal:** Migrate scattered .md files into organized docs/ structure
 
-**Step 1: Generate docs/README.md**
+**CRITICAL: Only migrate orphaned documentation, preserve Trinity infrastructure**
+
+**Step 1: Review Migration Candidates**
+
+```javascript
+// From Phase 1 Step 4 - scattered_docs array
+
+migration_plan = []
+
+for each doc in scattered_docs:
+  // Verify file still exists and should be migrated
+  if exists(doc.file) and not is_excluded(doc.file):
+    migration_plan.push({
+      source: doc.file,
+      destination: doc.suggested_category + extract_filename(doc.file),
+      action: "MOVE"
+    })
+```
+
+**Step 2: Execute Migration**
+
+```bash
+migrated_files = []
+migration_errors = []
+
+for each item in migration_plan:
+  try:
+    # Create destination directory if needed
+    ensure_directory_exists(item.destination)
+
+    # Move file to new location
+    move_file(item.source, item.destination)
+
+    migrated_files.push(item)
+  catch error:
+    migration_errors.push({item, error})
+```
+
+**Step 3: Update Internal Links (ENHANCEMENT 5 - partial)**
+
+```bash
+# After migration, update links in migrated files
+for each migrated_file in migrated_files:
+  content = read(migrated_file.destination)
+
+  # Update relative links that may have broken
+  updated_content = update_relative_links(content, migrated_file.source, migrated_file.destination)
+
+  if updated_content != content:
+    write(migrated_file.destination, updated_content)
+```
+
+**Step 4: Update Category READMEs**
+
+```bash
+# Add migrated files to appropriate category READMEs
+for each migrated_file in migrated_files:
+  category_readme = get_category_readme(migrated_file.destination)
+
+  # Add link to migrated file in category README
+  append_to_section(category_readme, "Available {Category}", link_to_file)
+```
+
+**APO Output:**
 
 ```markdown
+=== PHASE 3: SCATTERED DOCUMENTATION MIGRATION ===
+
+**Migration Summary:**
+- Files migrated: {migrated_files.length}
+- Migration errors: {migration_errors.length}
+
+**Migrated Files:**
+{for each migrated:}
+- ✅ {source} → {destination}
+
+{if migration_errors.length > 0:}
+**Migration Errors:**
+{for each error:}
+- ❌ {item.source}: {error.message}
+
+**Files NOT Migrated (Preserved):**
+- Trinity infrastructure (trinity/**): {count} files
+- CLAUDE.md files: {count} files
+- Root standards (README, CHANGELOG, etc.): {count} files
+- Technical source READMEs (src/README.md, etc.): {count} files
+
+**Link Updates:** {count} files with updated links
+
+**Category Updates:**
+{for each category:}
+- docs/{category}/README.md: Added {count} migrated files
+```
+
+---
+
+### Phase 4: Link Validation & Navigation Creation
+
+**Goal:** Validate all documentation links, fix broken links, and create comprehensive navigation
+
+**Step 1: Extract All Links from Documentation (ENHANCEMENT 5)**
+
+```bash
+all_docs_files = glob("docs/**/*.md")
+all_links = []
+
+for each doc_file in all_docs_files:
+  content = read(doc_file)
+
+  # Extract markdown links [text](path)
+  links = extract_markdown_links(content)
+
+  for each link in links:
+    all_links.push({
+      source_file: doc_file,
+      link_text: link.text,
+      link_path: link.path,
+      line_number: link.line
+    })
+```
+
+**Step 2: Validate Links**
+
+```bash
+broken_links = []
+valid_links = []
+
+for each link in all_links:
+  # Skip external URLs (http://, https://)
+  if is_external_url(link.link_path):
+    continue
+
+  # Resolve relative path
+  resolved_path = resolve_path(link.source_file, link.link_path)
+
+  # Check if linked file exists
+  if exists(resolved_path):
+    valid_links.push(link)
+  else:
+    broken_links.push({
+      link: link,
+      resolved_path: resolved_path,
+      error: "File not found"
+    })
+```
+
+**Step 3: Fix Broken Links**
+
+```bash
+fixed_links = []
+unfixable_links = []
+
+for each broken_link in broken_links:
+  # Try to find the correct path
+  filename = extract_filename(broken_link.resolved_path)
+
+  # Search for file in docs/
+  possible_matches = glob(f"docs/**/{filename}")
+
+  if possible_matches.length === 1:
+    # Found unique match - fix the link
+    correct_path = calculate_relative_path(
+      broken_link.link.source_file,
+      possible_matches[0]
+    )
+
+    # Update link in source file
+    update_link_in_file(
+      broken_link.link.source_file,
+      broken_link.link.link_path,
+      correct_path
+    )
+
+    fixed_links.push({broken_link, correct_path})
+
+  else if possible_matches.length > 1:
+    # Multiple matches - can't auto-fix
+    unfixable_links.push({
+      broken_link,
+      reason: "Multiple possible matches",
+      matches: possible_matches
+    })
+
+  else:
+    # No matches - file doesn't exist
+    unfixable_links.push({
+      broken_link,
+      reason: "File not found in docs/"
+    })
+```
+
+**Step 4: Generate docs/README.md Navigation**
+
+```markdown
+### docs/README.md
+
 # Documentation
 
 Comprehensive documentation for {{PROJECT_NAME}}.
@@ -325,52 +1285,131 @@ This directory contains organized project documentation:
 
 - **[Guides](guides/)** - How-to guides and tutorials
 - **[API](api/)** - API reference documentation
-- **[Architecture](architecture/)** - System architecture and design
-- **[Reference](reference/)** - Reference materials
+{if api_docs detected:}
+  - [{api_docs.type} Reference]({api_docs.entry}) - Auto-generated API documentation
+- **[Architecture](architecture/)** - System architecture and design decisions
+- **[Reference](reference/)** - Quick references and command guides
 
-## Quick Links
+## Quick Start
+
+New to {{PROJECT_NAME}}? Start here:
+
+1. **[Getting Started Guide](guides/getting-started.md)** - Installation and setup
+{if framework-specific guide exists:}
+2. **[{Framework} Development](guides/{framework}-development.md)** - Framework-specific development guide
+3. **[Architecture Overview](architecture/overview.md)** - Understand the system design
+{if API documentation exists:}
+4. **[API Documentation](api/)** - Explore available APIs
+
+## Documentation Categories
 
 ### Guides
-{list top 3-5 guides from docs/guides/}
+
+{list actual guide files from docs/guides/, exclude README.md}
+- [Getting Started](guides/getting-started.md) - Quick start for new users
+{for each guide file:}
+- [{title}]({path}) - {extract description from file}
+
+{if guides/ is empty or only has README:}
+*No additional guides available yet. See [guides/README.md](guides/README.md) for planned guides.*
 
 ### API Documentation
-{list API docs from docs/api/}
+
+{if TypeDoc/Rustdoc/etc detected:}
+**[{api_docs.type} Reference]({api_docs.entry})** - Auto-generated API documentation
+
+{list actual API doc files from docs/api/, exclude README.md}
+{for each API doc:}
+- [{title}]({path}) - {description}
+
+{if api/ has only README or TypeDoc:}
+See [api/README.md](api/) for API overview and documentation links.
 
 ### Architecture
-{list architecture docs from docs/architecture/}
+
+{list actual architecture files from docs/architecture/, exclude README.md}
+- [Architecture Overview](architecture/overview.md) - System design and technology stack
+
+{if ADR files exist:}
+**Architecture Decision Records:**
+{for each ADR:}
+- [{ADR title}]({path}) - {decision summary}
+
+{if architecture diagrams exist in images/:}
+**Architecture Diagrams:**
+{for each diagram:}
+- [{diagram name}]({path})
 
 ### Reference
-{list reference docs from docs/reference/}
+
+{list actual reference files from docs/reference/, exclude README.md}
+- [Reference Documentation](reference/README.md) - CLI commands, environment variables, glossary
 
 ## Documentation Standards
 
 - All documentation is in Markdown format
 - Images are stored in `images/` directory
 - Each category has its own README for navigation
+{if ADR directory exists:}
+- Architecture decisions are documented using ADR format
 
 ## Contributing to Documentation
 
+{if CONTRIBUTING.md exists:}
 See [CONTRIBUTING.md](../CONTRIBUTING.md) for documentation contribution guidelines.
+
+{else:}
+To contribute to documentation:
+1. Follow the existing structure (guides/, api/, architecture/, reference/)
+2. Use clear, concise Markdown
+3. Include code examples where applicable
+4. Update category README files when adding new documentation
+5. Validate all links before submitting
 
 ## Documentation Index
 
-{alphabetical index of all documentation files}
+### All Documentation Files
+
+{alphabetical index of all .md files in docs/, organized by category}
+
+**Guides ({count}):**
+{for each guide, alphabetically:}
+- [{title}]({path})
+
+**API Documentation ({count}):**
+{for each API doc, alphabetically:}
+- [{title}]({path})
+
+**Architecture ({count}):**
+{for each architecture doc, alphabetically:}
+- [{title}]({path})
+
+**Reference ({count}):**
+{for each reference doc, alphabetically:}
+- [{title}]({path})
+
+---
+
+**Documentation Coverage:** {coverage_score}/100 (see [Organization Report](../trinity/reports/DOCS-ORGANIZATION-{date}.md))
+
+*Last updated: {{CURRENT_DATE}}*
 ```
 
-**Step 2: Build Documentation Index**
+**Step 5: Build Complete Documentation Index**
 
 ```javascript
 all_docs = []
 
 // Scan all subdirectories
 for each category in ["guides", "api", "architecture", "reference"]:
-  files = glob(f"docs/{category}/*.md")
+  files = glob(f"docs/{category}/**/*.md")
   for each file in files:
     if file != "README.md":
       all_docs.push({
         title: extract_title_from_file(file),
         path: file,
-        category: category
+        category: category,
+        description: extract_description(file)
       })
 
 // Sort alphabetically
@@ -380,25 +1419,181 @@ all_docs.sort_by_title()
 **APO Output:**
 
 ```markdown
-=== PHASE 3: NAVIGATION README CREATION ===
+=== PHASE 4: LINK VALIDATION & NAVIGATION CREATION ===
 
-**docs/README.md:** ✅ CREATED ({line_count} lines)
+**Link Validation:**
+- Total links found: {all_links.length}
+- Valid links: {valid_links.length}
+- Broken links: {broken_links.length}
+- Fixed links: {fixed_links.length}
+- Unfixable links: {unfixable_links.length}
+
+**Broken Links Fixed:**
+{for each fixed_link:}
+- ✅ {source_file}: {old_path} → {new_path}
+
+{if unfixable_links.length > 0:}
+**Unfixable Links (Manual Review Required):**
+{for each unfixable:}
+- ⚠️ {source_file}:{line_number}: [{link_text}]({link_path})
+  - Reason: {reason}
+  {if multiple matches:}
+  - Possible matches: {list matches}
+
+**Navigation Creation:**
+- ✅ docs/README.md created ({line_count} lines)
 
 **Documentation Index:**
 - Total files indexed: {all_docs.length}
-- Guides: {count}
-- API docs: {count}
-- Architecture docs: {count}
-- Reference docs: {count}
+- Guides: {guides_count}
+- API docs: {api_count}
+- Architecture docs: {architecture_count}
+- Reference docs: {reference_count}
 
-**Quick Links:** {count} top documentation files linked
+**Quick Links:** {count} essential documentation files highlighted
 ```
 
 ---
 
-### Phase 4: Organization Report
+### Phase 5: Organization Report & Coverage Metrics
 
 **APO Generates:** `trinity/reports/DOCS-ORGANIZATION-{date}.md`
+
+**Step 1: Calculate Documentation Coverage Metrics (ENHANCEMENT 9)**
+
+```javascript
+coverage_metrics = {
+  structure: 0,
+  content: 0,
+  navigation: 0,
+  total: 0
+}
+
+// Structure score (30 points)
+structure_score = 0
+if exists("docs/guides/"): structure_score += 6
+if exists("docs/api/"): structure_score += 6
+if exists("docs/architecture/"): structure_score += 6
+if exists("docs/reference/"): structure_score += 6
+if exists("docs/images/"): structure_score += 6
+
+coverage_metrics.structure = structure_score
+
+// Content score (50 points)
+content_score = 0
+
+// Guides content (15 points)
+guides_files = glob("docs/guides/*.md", exclude="README.md")
+if guides_files.length >= 1: content_score += 5  // Getting started exists
+if guides_files.length >= 2: content_score += 5  // Framework guide exists
+if guides_files.length >= 3: content_score += 5  // Additional guides
+
+// API documentation (15 points)
+if api_docs detected or exists("docs/api/*.md"): content_score += 15
+
+// Architecture documentation (15 points)
+if exists("docs/architecture/overview.md"): content_score += 10
+if exists("docs/architecture/adr/*"): content_score += 5
+
+// Reference documentation (5 points)
+if exists("docs/reference/README.md") and has_content: content_score += 5
+
+coverage_metrics.content = content_score
+
+// Navigation score (20 points)
+navigation_score = 0
+if exists("docs/README.md"): navigation_score += 10
+if all category READMEs exist: navigation_score += 10
+
+coverage_metrics.navigation = navigation_score
+
+// Total coverage
+coverage_metrics.total = structure_score + content_score + navigation_score
+
+// Grade
+if coverage_metrics.total >= 90: grade = "A (Excellent)"
+else if coverage_metrics.total >= 80: grade = "B (Good)"
+else if coverage_metrics.total >= 70: grade = "C (Fair)"
+else if coverage_metrics.total >= 60: grade = "D (Needs Improvement)"
+else: grade = "F (Poor)"
+```
+
+**Step 2: Generate Actionable Recommendations for Empty Categories (ENHANCEMENT 7)**
+
+```javascript
+recommendations = []
+
+// Check guides/
+guides_count = count_md_files("docs/guides/", exclude="README.md")
+if guides_count === 0:
+  recommendations.push({
+    category: "guides",
+    priority: "HIGH",
+    items: [
+      "Create Getting Started guide with installation steps",
+      "Document common workflows and use cases",
+      "Add troubleshooting guide for common issues"
+    ]
+  })
+else if guides_count < 3:
+  recommendations.push({
+    category: "guides",
+    priority: "MEDIUM",
+    items: [
+      "Add deployment guide",
+      "Create testing guide",
+      "Document advanced features"
+    ]
+  })
+
+// Check architecture/
+arch_count = count_md_files("docs/architecture/", exclude="README.md")
+if arch_count === 0 or not exists("docs/architecture/overview.md"):
+  recommendations.push({
+    category: "architecture",
+    priority: "HIGH",
+    items: [
+      "✅ AUTO-GENERATED: Architecture overview created",
+      "Add system architecture diagram to images/",
+      "Create component interaction diagram",
+      "Document architecture decision records (ADRs)"
+    ]
+  })
+
+// Check API documentation
+if not api_docs and api_count === 0:
+  recommendations.push({
+    category: "api",
+    priority: "MEDIUM",
+    items: [
+      "Generate API documentation using TypeDoc/Rustdoc/Sphinx",
+      "Document API endpoints and request/response formats",
+      "Add API authentication and authorization guide"
+    ]
+  })
+
+// Check for duplicates
+if duplicates.length > 0:
+  recommendations.push({
+    category: "quality",
+    priority: "MEDIUM",
+    items: [
+      f"Review {duplicates.length} potential duplicate documentation files",
+      "Consolidate overlapping content",
+      "Remove or rename duplicate files"
+    ]
+  })
+
+// Check for broken links
+if unfixable_links.length > 0:
+  recommendations.push({
+    category: "quality",
+    priority: "HIGH",
+    items: [
+      f"Fix {unfixable_links.length} broken documentation links (see Phase 4 report)"
+    ]
+  })
+```
 
 **Required Report Structure:**
 
@@ -414,31 +1609,88 @@ all_docs.sort_by_title()
 
 ## Executive Summary
 
-**docs/ Structure:** {✅ ORGANIZED | ⚠️ PARTIALLY ORGANIZED | ❌ DISORGANIZED}
-**Navigation:** {✅ EXISTS | ❌ MISSING}
-**Categories:** {count} categories created
-**Files Organized:** {count} files
+**docs/ Structure:** {✅ ORGANIZED | ⚠️ PARTIALLY ORGANIZED}
+**Navigation:** {✅ COMPLETE | ⚠️ PARTIAL}
+**Categories:** 5 categories (guides, api, architecture, reference, images)
+**Content Created:** {count} files with seeded content
+**Files Migrated:** {migrated_files.length} scattered docs organized
+**Links Fixed:** {fixed_links.length} broken links repaired
+
+**Documentation Coverage:** {coverage_metrics.total}/100 - Grade: {grade}
 
 **COMMAND EXECUTION STATUS:** {✅ SUCCESS | ⚠️ PARTIAL SUCCESS}
 
 ---
 
+## Documentation Coverage Breakdown
+
+**Overall Score:** {coverage_metrics.total}/100 ({grade})
+
+**Structure (30 points):** {structure_score}/30
+- Directory hierarchy: {✅ COMPLETE | ⚠️ PARTIAL}
+- guides/: {✅ | ❌}
+- api/: {✅ | ❌}
+- architecture/: {✅ | ❌}
+- reference/: {✅ | ❌}
+- images/: {✅ | ❌}
+
+**Content (50 points):** {content_score}/50
+- Guides: {guides_score}/15 {✅ | ⚠️ | ❌}
+  - Getting started: {✅ CREATED | ❌ MISSING}
+  - Framework guide: {✅ CREATED | ❌ MISSING}
+  - Additional guides: {count}
+- API Documentation: {api_score}/15 {✅ | ⚠️ | ❌}
+  - Auto-generated docs: {✅ INTEGRATED | ❌ NONE}
+  - Manual API docs: {count} files
+- Architecture: {arch_score}/15 {✅ | ⚠️ | ❌}
+  - Overview: {✅ AUTO-GENERATED | ❌ MISSING}
+  - ADRs: {count} records
+  - Diagrams: {count} diagrams
+- Reference: {ref_score}/5 {✅ | ❌}
+  - CLI/env reference: {✅ CREATED | ❌ MISSING}
+
+**Navigation (20 points):** {navigation_score}/20
+- docs/README.md: {✅ CREATED | ❌ MISSING}
+- Category READMEs: {count}/4
+- Documentation index: {✅ COMPLETE | ⚠️ PARTIAL}
+
+---
+
 ## Phase Execution Summary
 
-### Phase 1: Discovery
-- **docs/ existed:** {✅ YES | ❌ NO}
-- **Files found:** {count}
-- **Directories found:** {count}
-- **Structure score:** {score}/100
+### Phase 1: Discovery & Codebase Analysis
+- **docs/ existed:** {✅ YES | ❌ NO (created)}
+- **Files found in docs/:** {count}
+- **Scattered docs found:** {scattered_docs.length} files
+- **Structure score:** {structure_score}/100
+- **Project type:** {project_metadata.type}
+- **Framework:** {project_metadata.framework}
+- **Architecture pattern:** {project_metadata.architecture}
+- **Auto-generated API docs:** {✅ {api_docs.type} | ❌ None}
+- **Duplicate docs:** {duplicates.length} potential duplicates
 
-### Phase 2: Directory Structure
-- **Directories created:** {count}
-- **Category READMEs created:** {count}
+### Phase 2: Directory Structure & Content Seeding
+- **Directories created:** {created_dirs.length}
+- **Content files created:** {count}
+  - Guides: {guides_created_count} ({getting-started, framework guide, etc.})
+  - API: {api_created_count}
+  - Architecture: {arch_created_count} (✅ AUTO-GENERATED overview)
+  - Reference: {ref_created_count}
+- **Category READMEs:** 4 created with project-specific content
 
-### Phase 3: Navigation
-- **docs/README.md:** ✅ CREATED
-- **Files indexed:** {count}
-- **Quick links:** {count}
+### Phase 3: Scattered Documentation Migration
+- **Files migrated:** {migrated_files.length}
+- **Migration errors:** {migration_errors.length}
+- **Links updated:** {count} files
+- **Files preserved:** {preserved_count} (Trinity infrastructure, CLAUDE.md, source READMEs)
+
+### Phase 4: Link Validation & Navigation
+- **docs/README.md:** ✅ CREATED ({line_count} lines)
+- **Total links validated:** {all_links.length}
+- **Broken links found:** {broken_links.length}
+- **Links fixed:** {fixed_links.length}
+- **Unfixable links:** {unfixable_links.length}
+- **Files indexed:** {all_docs.length}
 
 ---
 
@@ -446,48 +1698,92 @@ all_docs.sort_by_title()
 
 **Before:**
 ```
-docs/
-├── {list files/dirs before}
+{show actual before state from Phase 1}
 ```
 
 **After:**
 ```
 docs/
-├── README.md (navigation)
+├── README.md (navigation - {line_count} lines)
 ├── guides/
 │   ├── README.md
-│   └── {list guide files}
+│   ├── getting-started.md (✅ CREATED - {line_count} lines)
+{if framework guide created:}
+│   ├── {framework}-development.md (✅ CREATED - {line_count} lines)
+{for each migrated guide:}
+│   └── {file} (migrated from {original_location})
 ├── api/
-│   ├── README.md
-│   └── {list API docs}
+│   ├── README.md (seeded with {api_docs.type or "project context"})
+{if TypeDoc/etc:}
+│   ├── index.html ({api_docs.type})
+│   └── modules.html ({api_docs.type})
+{for each API doc file:}
+│   └── {file}
 ├── architecture/
 │   ├── README.md
-│   └── {list architecture docs}
+│   ├── overview.md (✅ AUTO-GENERATED - {line_count} lines)
+{if ADR directory:}
+│   └── adr/
+{for each architecture file:}
+│       └── {file}
 ├── reference/
-│   ├── README.md
-│   └── {list reference docs}
+│   ├── README.md (seeded with CLI commands, env vars)
+{for each reference file:}
+│   └── {file}
 └── images/
-    └── {list images}
+{for each image:}
+    └── {file}
 ```
 
 ---
 
-## Files Organized
+## Files Created
 
-**Guides ({count}):**
-- {list guide files}
+**Seeded Content ({count} files):**
 
-**API Documentation ({count}):**
-- {list API doc files}
+**Guides:**
+- ✅ **getting-started.md** ({line_count} lines) - Installation, setup, project structure
+{if framework guide:}
+- ✅ **{framework}-development.md** ({line_count} lines) - Framework-specific development guide
 
-**Architecture ({count}):**
-- {list architecture files}
+**API Documentation:**
+- ✅ **api/README.md** ({line_count} lines) - Seeded with {api_docs.type or "project endpoints"}
 
-**Reference ({count}):**
-- {list reference files}
+**Architecture:**
+- ✅ **architecture/overview.md** ({line_count} lines) - AUTO-GENERATED from codebase analysis
+  - Technology stack: {tech_stack}
+  - Architecture pattern: {architecture}
+  - Directory structure: Actual src/ layout
+  - Entry points: {entry_points}
+  - Configuration: {config_files}
 
-**Images ({count}):**
-- {list image files}
+**Reference:**
+- ✅ **reference/README.md** ({line_count} lines) - CLI commands, environment variables
+
+**Category READMEs (4 files):**
+- ✅ guides/README.md - Lists all available guides
+- ✅ api/README.md - API overview and documentation links
+- ✅ architecture/README.md - Architecture docs and ADRs
+- ✅ reference/README.md - Quick reference materials
+
+---
+
+## Files Migrated
+
+{if migrated_files.length > 0:}
+**Scattered Documentation Organized ({migrated_files.length} files):**
+
+{for each migrated file:}
+- ✅ `{source}` → `{destination}`
+
+**Files Preserved (NOT migrated):**
+- Trinity infrastructure: `trinity/**` ({count} files)
+- AI context files: `**/CLAUDE.md` ({count} files)
+- Root standards: `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, etc.
+- Technical source READMEs: `src/README.md`, `tests/README.md`, etc.
+
+{else:}
+**No scattered documentation found** - All documentation was already in docs/ or properly located.
 
 ---
 
@@ -495,10 +1791,80 @@ docs/
 
 **docs/README.md includes:**
 - ✅ Documentation structure overview
-- ✅ Quick links to key documents
-- ✅ Complete documentation index
+- ✅ Quick start guide (links to getting-started.md)
+- ✅ Complete documentation index by category
+- ✅ Quick links to essential documentation
+{if api_docs:}
+- ✅ Link to {api_docs.type} auto-generated API reference
 - ✅ Documentation standards
-- ✅ Contributing guidelines link
+- ✅ Contributing guidelines
+
+**Category Navigation:**
+- ✅ guides/README.md: {guides_count} guides listed
+- ✅ api/README.md: API documentation overview
+- ✅ architecture/README.md: Architecture docs and ADRs
+- ✅ reference/README.md: CLI commands, env vars, glossary
+
+---
+
+## Link Validation Results
+
+**Total Links Validated:** {all_links.length}
+- Valid links: {valid_links.length} ✅
+- Broken links found: {broken_links.length} ❌
+- Links auto-fixed: {fixed_links.length} ✅
+- Links requiring manual review: {unfixable_links.length} ⚠️
+
+{if fixed_links.length > 0:}
+**Auto-Fixed Links:**
+{for each fixed_link:}
+- ✅ {source_file}:{line_number}
+  - Old: `{old_path}` (broken)
+  - New: `{new_path}` (fixed)
+
+{if unfixable_links.length > 0:}
+**Links Requiring Manual Review:**
+{for each unfixable:}
+- ⚠️ {source_file}:{line_number}: [{link_text}]({link_path})
+  - Issue: {reason}
+  {if multiple matches:}
+  - Possible matches: {list matches}
+  - **Action Required:** Determine correct file and update link manually
+
+---
+
+## Project Context Used
+
+**Codebase Analysis:**
+- **Project Type:** {project_metadata.type}
+- **Framework:** {project_metadata.framework}
+- **Version:** {project_metadata.version}
+- **Architecture Pattern:** {project_metadata.architecture}
+- **Entry Point:** {project_metadata.entry_point}
+- **Major Dependencies:** {major_deps_count} documented
+
+**Content Seeding:**
+- Getting Started guide: Framework-specific installation instructions
+- Architecture overview: Actual directory structure from `src/`
+- API documentation: {api_docs.type or "Endpoints detected"} from codebase
+- Reference: CLI commands from package.json scripts
+- Reference: Environment variables from .env.example
+
+---
+
+## Duplicate Documentation Detected
+
+{if duplicates.length > 0:}
+**Potential Duplicates Found:** {duplicates.length} cases
+
+{for each duplicate:}
+- ⚠️ **{file1}** ↔ **{file2}**
+  - Similarity: {similarity_score}%
+  - Type: {title_similarity or content_similarity}
+  - **Recommendation:** Review and consolidate or clarify differences
+
+{else:}
+**No duplicate documentation detected** ✅
 
 ---
 
@@ -506,24 +1872,117 @@ docs/
 
 **Required Elements:**
 - ✅ docs/ directory exists
-- ✅ Hierarchical structure (guides/, api/, architecture/, reference/)
+- ✅ Hierarchical structure (guides/, api/, architecture/, reference/, images/)
+- ✅ Seeded content in all categories
+- ✅ Auto-generated architecture overview
 - ✅ docs/README.md navigation
-- ✅ Category READMEs
-- ✅ All files organized into categories
+- ✅ Category READMEs with actual content listings
+- ✅ Scattered documentation migrated ({migrated_files.length} files)
+- ✅ Documentation links validated ({fixed_links.length} fixed)
+{if api_docs:}
+- ✅ Auto-generated API docs integrated ({api_docs.type})
 
+**Documentation Coverage:** {coverage_metrics.total}/100 ({grade})
+
+{if coverage_metrics.total >= 70:}
 **SUCCESS Criteria:** All required elements present ✅
+
+{else:}
+**PARTIAL SUCCESS:** Core structure complete, content needs expansion ⚠️
 
 ---
 
 ## Recommendations
 
-{If any improvements suggested, list them here}
+{if recommendations.length > 0:}
 
-**No recommendations** - docs/ is well-organized ✅
+{for each category_recommendation in recommendations:}
+### {category_recommendation.category} - Priority: {priority}
+
+{for each item in category_recommendation.items:}
+- {item}
+
+{else:}
+**No recommendations** - Documentation is comprehensive ✅
+
+---
+
+## Next Steps
+
+### Immediate Actions
+
+{if unfixable_links.length > 0:}
+1. **Fix Broken Links** ({unfixable_links.length} links)
+   - Review links requiring manual attention (see Link Validation Results)
+
+{if duplicates.length > 0:}
+2. **Review Duplicate Documentation** ({duplicates.length} cases)
+   - Consolidate or clarify differences between similar files
+
+{if guides_count < 3:}
+3. **Expand Guides**
+   - Add deployment guide
+   - Create testing guide
+   - Document troubleshooting steps
+
+{if not api_docs and framework matches API framework:}
+4. **Generate API Documentation**
+   - Run TypeDoc/Rustdoc/Sphinx to generate API reference
+   - Document API endpoints and authentication
+
+### Future Enhancements
+
+{if not exists("docs/architecture/adr/"):}
+- **Architecture Decision Records**
+  - Start documenting architectural decisions using ADR format
+  - Create `docs/architecture/adr/` directory
+
+{if not has_architecture_diagrams:}
+- **Architecture Diagrams**
+  - Create system architecture diagram
+  - Add component interaction diagram
+  - Document deployment architecture
+
+- **Advanced Guides**
+  - Performance optimization guide
+  - Security best practices
+  - Debugging guide
 
 ---
 
 **Report Generated:** {timestamp}
+**Report Location:** trinity/reports/DOCS-ORGANIZATION-{date}.md
+
+**Documentation Status:** {✅ Production-Ready | ⚠️ Needs Content Expansion | ❌ Incomplete}
+```
+
+**APO Output:**
+
+```markdown
+=== PHASE 5: ORGANIZATION REPORT ===
+
+**Report Generated:** trinity/reports/DOCS-ORGANIZATION-{date}.md
+
+**Documentation Coverage Score:** {coverage_metrics.total}/100
+- Grade: {grade}
+- Structure: {structure_score}/30
+- Content: {content_score}/50
+- Navigation: {navigation_score}/20
+
+**Status:** {✅ SUCCESS | ⚠️ PARTIAL SUCCESS}
+
+**Key Achievements:**
+- ✅ {created_dirs.length} directories created
+- ✅ {content_files_created} files created with seeded content
+- ✅ Architecture overview auto-generated ({line_count} lines)
+- ✅ {migrated_files.length} scattered docs migrated
+- ✅ {fixed_links.length} broken links fixed
+- ✅ Complete navigation structure
+
+{if recommendations.length > 0:}
+**Recommendations:** {recommendations.length} categories
+- {list priority recommendations}
+
 **Report Location:** trinity/reports/DOCS-ORGANIZATION-{date}.md
 ```
 
@@ -534,15 +1993,33 @@ docs/
 **Command succeeds when:**
 
 1. **docs/ Structure:** Hierarchical directories exist (guides/, api/, architecture/, reference/, images/)
-2. **Navigation:** docs/README.md exists with complete index
-3. **Category READMEs:** Each category directory has README.md
-4. **All Phases Complete:** 4/4 phases executed
+2. **Seeded Content:** Initial documentation created based on project type
+3. **Architecture Overview:** Auto-generated from codebase analysis
+4. **Navigation:** docs/README.md exists with complete index
+5. **Category READMEs:** Each category directory has README.md listing actual files
+6. **Migration:** Scattered documentation organized (if any found)
+7. **Link Validation:** Documentation links validated and fixed where possible
+8. **All Phases Complete:** 5/5 phases executed
 
-**If ALL criteria met: STATUS = ✅ SUCCESS**
+**Status Determination:**
 
-**If missing elements: STATUS = ⚠️ PARTIAL SUCCESS**
-- Report lists missing elements
-- User can re-run command to complete
+**✅ SUCCESS (Coverage ≥ 70/100):**
+- All required structure created
+- Content seeded in all categories
+- Architecture overview auto-generated
+- Navigation complete
+- Documentation coverage ≥ 70%
+
+**⚠️ PARTIAL SUCCESS (Coverage 40-69/100):**
+- Structure created
+- Some content seeded
+- Navigation exists
+- Manual content expansion needed
+
+**❌ NEEDS ATTENTION (Coverage < 40/100):**
+- Structural issues remain
+- Minimal content created
+- Re-run command or manual intervention needed
 
 ---
 
@@ -550,13 +2027,67 @@ docs/
 
 **After `/trinity-docs` completes, verify:**
 
-1. ✅ Check `trinity/reports/DOCS-ORGANIZATION-{date}.md`
-2. ✅ Verify docs/README.md exists
-3. ✅ Check all category directories exist
-4. ✅ Verify category READMEs exist
-5. ✅ Check "COMMAND EXECUTION STATUS" = "✅ SUCCESS"
+1. ✅ Check `trinity/reports/DOCS-ORGANIZATION-{date}.md` for full report
+2. ✅ Verify docs/README.md exists and navigation works
+3. ✅ Check docs/guides/getting-started.md was created
+4. ✅ Verify docs/architecture/overview.md was auto-generated
+5. ✅ Check all category directories exist with READMEs
+6. ✅ Review documentation coverage score (target: ≥70/100)
+7. ✅ Review recommendations section for next steps
+8. ✅ Fix any unfixable broken links (if reported)
+9. ✅ Review duplicate documentation (if reported)
+10. ✅ Check "COMMAND EXECUTION STATUS" = "✅ SUCCESS"
 
 ---
 
-**Command Specification Version:** 1.0.0
-**Last Updated:** 2025-12-27
+## Framework-Specific Content Examples
+
+### Node.js/Express Projects
+
+**Guides Created:**
+- `getting-started.md`: npm install, project structure, npm run dev
+- `api-development.md`: Route creation, middleware, error handling
+
+**Architecture:**
+- Auto-detects Express routes, middleware patterns
+- Documents dependencies from package.json
+
+**Reference:**
+- CLI commands from package.json scripts
+- Environment variables from .env.example
+
+### Python/Django Projects
+
+**Guides Created:**
+- `getting-started.md`: pip install, virtual env, python manage.py runserver
+- `django-development.md`: App creation, models, migrations, admin
+
+**Architecture:**
+- Auto-detects Django apps, settings structure
+- Documents dependencies from requirements.txt or pyproject.toml
+
+### Rust Projects
+
+**Guides Created:**
+- `getting-started.md`: cargo build, cargo run
+- Crate-specific development guide
+
+**Architecture:**
+- Auto-detects from Cargo.toml
+- Documents crate dependencies
+
+### React Projects
+
+**Guides Created:**
+- `getting-started.md`: npm install, npm start
+- `component-development.md`: Component patterns, state management
+
+**Architecture:**
+- Auto-detects React components, hooks, context
+- Documents frontend architecture
+
+---
+
+**Command Specification Version:** 3.0.0
+**Last Updated:** {{CURRENT_DATE}}
+**Enhancements:** Codebase analysis, content seeding, migration, auto-generation, link validation, coverage metrics, framework-specific content, duplicate detection, TypeDoc integration, actionable recommendations

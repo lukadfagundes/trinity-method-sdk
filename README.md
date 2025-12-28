@@ -58,7 +58,7 @@ Quality isn't aspirational—it's systematically enforced through automated gate
 - **Investigation before coding** → Understand the problem first
 - **Persistent knowledge base** → Learn from every session
 - **Automated quality enforcement** → BAS gates ensure standards
-- **11-agent team coordination** → Right specialist for each task
+- **19-agent team coordination** → Right specialist for each task
 - **Institutional memory** → Patterns, strategies, and lessons preserved
 - **90-second deployment** → Complete development environment instantly
 
@@ -87,9 +87,9 @@ Trinity Method SDK is a **production-ready development methodology** that transf
    - Crisis management system for 5 crisis types (build, test, error, performance, security)
    - Automated codebase metrics collection and technical debt tracking
 
-### The 11-Agent Team
+### The 19-Agent Team
 
-Trinity coordinates **11 specialized agents** through intelligent orchestration:
+Trinity SDK includes **19 specialized agents** (core team of 14 primary agents + 5 infrastructure agents):
 
 **Planning Layer:**
 
@@ -111,29 +111,62 @@ Trinity coordinates **11 specialized agents** through intelligent orchestration:
 - **CAP** - Configuration Specialist (env vars, config files)
 - **URO** - Refactoring Specialist (technical debt reduction)
 
-**Leadership:**
+**Leadership & Audit:**
 
 - **ALY** - Chief Technology Officer (investigation orchestration, strategic coordination)
+- **JUNO** - Quality Auditor (comprehensive codebase audits, deployment verification)
 
-_(Note: AJ MAESTRO is deprecated v1.0 orchestrator, replaced by ALY in v2.0)_
+**Infrastructure (5 agents):**
+
+- **TAN** - Structure Specialist (directory structure validation)
+- **ZEN** - Knowledge Base Specialist (comprehensive documentation)
+- **INO** - Context Specialist (CLAUDE.md hierarchy management)
+- **EIN** - CI/CD Specialist (continuous integration/deployment automation)
+- **AJ MAESTRO** - Legacy Orchestrator (deprecated v1.0, replaced by ALY in v2.0)
 
 ### What Gets Deployed
 
-Trinity deploys **75+ production-ready components** in 90 seconds:
+Trinity deploys **64 production-ready components** in 90 seconds:
 
 **Methodology Infrastructure:**
 
-- `trinity/` - Complete Trinity Method structure
-- `trinity/work-orders/` - 6 work order templates (Investigation, Implementation, Analysis, Audit, Pattern, Verification)
-- `trinity/knowledge-base/` - 5 documentation files (ARCHITECTURE, ISSUES, To-do, Technical-Debt, Trinity)
-- `trinity/investigations/` - Investigation artifacts with guided questions
-- `trinity/archive/` - Session history and crisis reports
+- `trinity/knowledge-base/` - 9 living documentation files
+  - ARCHITECTURE.md (codebase metrics, architecture documentation)
+  - ISSUES.md (known issues and bug tracking)
+  - To-do.md (task management and priorities)
+  - Technical-Debt.md (technical debt tracking)
+  - Trinity.md (project-specific Trinity guide)
+  - TESTING-PRINCIPLES.md (testing standards)
+  - CODING-PRINCIPLES.md (code quality standards)
+  - DOCUMENTATION-CRITERIA.md (documentation standards)
+  - AI-DEVELOPMENT-GUIDE.md (AI-assisted development best practices)
+- `trinity/templates/` - Reusable templates
+  - `documentation/` - Documentation templates
+  - `investigations/` - 5 investigation templates (Bug, Performance, Security, System Analysis, Incident)
+  - `work-orders/` - Work order templates
+- `trinity/investigations/` - Active investigations with execution plans
+- `trinity/sessions/` - Session archives
+- `trinity/reports/` - Audit and integration reports
+- `trinity/work-orders/` - Active work orders
+- `trinity/patterns/` - Reusable patterns library
+- `trinity/archive/` - Archived sessions, reports, and investigations
 
 **Agent System:**
 
-- `.claude/agents/` - 18 agent markdown files (11 agents deployed to user projects)
-- `.claude/commands/` - 25 Trinity slash commands
-- `.claude/EMPLOYEE-DIRECTORY.md` - Agent selection guide
+- `.claude/agents/` - 19 specialized agents organized by category:
+  - `aj-team/` - AJ MAESTRO orchestration agents
+  - `audit/` - JUNO quality auditor
+  - `deployment/` - 6 deployment specialists (BON, CAP, EIN, INO, TAN, ZEN)
+  - `leadership/` - ALY strategic leadership
+  - `planning/` - 4 planning agents (MON, ROR, EUS, TRA)
+- `.claude/commands/` - 20 slash commands organized in 6 categories:
+  - `execution/` - 5 commands (orchestrate, audit, readme, docs, changelog)
+  - `infrastructure/` - 1 command (trinity-init)
+  - `investigation/` - 3 commands (create, plan, templates)
+  - `planning/` - 4 commands (requirements, design, decompose, plan)
+  - `session/` - 3 commands (start, continue, end)
+  - `utility/` - 3 commands (verify, agents, workorder)
+- `.claude/EMPLOYEE-DIRECTORY.md` - Complete 19-agent team guide
 
 **Context Hierarchy:**
 
@@ -170,125 +203,54 @@ npx @trinity-method/cli deploy
 4. ✅ **Install Dependencies**: `npm install` (or `pip install -r requirements-dev.txt`)
 5. ✅ **Setup Pre-commit**: `pip install pre-commit && pre-commit install`
 
-**Result:** Production-ready development environment with 11 agents, 25 commands, quality gates, and documentation.
+**Result:** Production-ready development environment with 19 agents, 20 slash commands, quality gates, and documentation.
 
-### The Investigation Workflow
-
-Trinity enforces investigation-first through scale-based workflows:
-
-#### SMALL Scale (1-2 files, 0 stop points)
+### Available Commands
 
 ```bash
-npx trinity investigate --type technical
-# Direct execution by KIL with BAS quality gate
-# Fast iteration for simple tasks
+# Deploy Trinity to your project
+npx @trinity-method/cli deploy
+
+# Update Trinity to latest version
+npx @trinity-method/cli update
 ```
 
-#### MEDIUM Scale (3-5 files, 2 stop points)
+### Using Trinity Method (Slash Commands)
 
-```bash
-npx trinity investigate --type feature
-# Stop 1: Design approval (ROR)
-# Implementation by KIL with BAS gates
-# Stop 2: Final review (DRA + user approval)
-```
+After deployment, access Trinity functionality through Claude Code slash commands:
 
-#### LARGE Scale (6+ files, 4 stop points)
+**Session Management:**
 
-```bash
-npx trinity investigate --type architecture
-# Stop 1: Requirements review (MON)
-# Stop 2: Design approval (ROR)
-# Stop 3: Plan approval (TRA)
-# Implementation with full BAS 6-phase gates
-# Stop 4: Comprehensive review (DRA + JUNO audit)
-```
+- `/trinity-start` - Start workflow guide
+- `/trinity-continue` - Resume after interruption
+- `/trinity-end` - End session and archive
 
-### Key Features in Action
+**Planning:**
 
-#### 1. Investigation Templates with Guided Questions
+- `/trinity-requirements` - Analyze requirements (MON)
+- `/trinity-design` - Create technical design (ROR)
+- `/trinity-decompose` - Break down tasks (EUS)
+- `/trinity-plan` - Create implementation plan (TRA)
 
-Create investigations with Trinity Method's systematic approach:
+**Execution:**
 
-```bash
-# Crisis investigation with guided recovery
-npx trinity create-investigation --template crisis
+- `/trinity-orchestrate` - Execute with ALY orchestration
+- `/trinity-audit` - Run codebase audit (JUNO)
+- `/trinity-readme` - Update README coverage (APO)
+- `/trinity-docs` - Organize docs/ directory (APO)
+- `/trinity-changelog` - Maintain CHANGELOG.md (APO)
 
-# Performance analysis with profiling questions
-npx trinity create-investigation --template performance
+**Investigation:**
 
-# Security assessment with CVSS scoring
-npx trinity create-investigation --template security
-```
+- `/trinity-create-investigation` - Create structured investigation
+- `/trinity-plan-investigation` - Generate investigation plan
+- `/trinity-investigate-templates` - View investigation templates
 
-Each template includes Trinity-guided questions ensuring comprehensive investigation.
+**Utility:**
 
-#### 2. Crisis Management System
-
-Automated detection and guided recovery for 5 crisis types:
-
-```bash
-npx trinity crisis
-
-# Detects: BUILD_FAILURE, TEST_FAILURE, ERROR_PATTERN,
-#          PERFORMANCE_DEGRADATION, SECURITY_VULNERABILITY
-# Guides: Step-by-step recovery with validation
-# Archives: Crisis reports to trinity/archive/crisis/
-```
-
-#### 3. Learning System Visibility
-
-Monitor institutional knowledge growth:
-
-```bash
-# View learned patterns with confidence scores
-npx trinity knowledge
-
-# Export learning data
-npx trinity knowledge --export
-
-# Display system metrics
-npx trinity analytics --period 30d
-```
-
-#### 4. Workflow Visualization
-
-See complete investigation plan before execution:
-
-```bash
-npx trinity orchestrate
-
-# Displays:
-# - Investigation scale (SMALL/MEDIUM/LARGE)
-# - All phases with agents assigned
-# - Stop points for user review
-# - Task dependencies and parallelization
-# - Estimated duration
-```
-
-### Commands Reference
-
-```bash
-# Core Commands
-npx trinity deploy          # Deploy Trinity to project
-npx trinity investigate     # Create investigation
-npx trinity status          # Check deployment status
-npx trinity update          # Update to latest version
-
-# Quality & Monitoring
-npx trinity crisis          # Crisis detection and recovery
-npx trinity analytics       # Performance analytics
-npx trinity benchmark       # Performance benchmarks
-npx trinity cache-stats     # Cache effectiveness metrics
-npx trinity learning-status # Learning system status
-
-# Session Management
-npx trinity review          # Review session history
-npx trinity dashboard       # Launch web dashboard
-
-# Development
-npx trinity analyze <file>  # Quick code analysis
-```
+- `/trinity-verify` - Verify Trinity deployment
+- `/trinity-agents` - View agent directory
+- `/trinity-workorder` - Create work orders
 
 ### Linting & Code Quality (85-90% Time Savings)
 
@@ -321,7 +283,7 @@ Trinity Method SDK is built exclusively for [Claude Code](https://claude.com/cla
 
 ### Why Claude Code?
 
-- **Deep Integration**: Trinity's 11 agents leverage Claude Code's agent architecture
+- **Deep Integration**: Trinity's 19-agent team leverages Claude Code's agent architecture
 - **Slash Commands**: Built-in `/trinity-*` commands for instant workflow access
 - **Hooks System**: Pre/post-action automation via Claude Code hooks
 - **Quality Focus**: Exceptional single-agent experience optimized for Claude
@@ -338,50 +300,98 @@ The Trinity Method **philosophy** is agent-agnostic, but this SDK is optimized f
 
 ```bash
 # Node.js/Express API
-cd my-api && npx trinity deploy
-# Result: API with ESLint, Prettier, pre-commit, 11 agents, quality gates
+cd my-api && npx @trinity-method/cli deploy
+# Result: API with ESLint, Prettier, pre-commit, 19 agents, quality gates
 
 # Python/Django Project
-cd my-django && npx trinity deploy
+cd my-django && npx @trinity-method/cli deploy
 # Result: Django with Black, Flake8, isort, pre-commit, full Trinity infrastructure
 
 # Flutter Mobile App
-cd my-flutter-app && npx trinity deploy
+cd my-flutter-app && npx @trinity-method/cli deploy
 # Result: Flutter with Dart Analyzer, pre-commit, investigation templates
 
 # Rust CLI Tool
-cd my-rust-cli && npx trinity deploy
+cd my-rust-cli && npx @trinity-method/cli deploy
 # Result: Rust with Clippy, Rustfmt, pre-commit, crisis management
 ```
 
 ### Documentation
 
-**Core Methodology:**
+After deploying Trinity to your project, comprehensive documentation is available in your project:
 
-- [Investigation-First Development](docs/methodology/investigation-first-complete.md)
-- [Trinity Framework](docs/methodology/trinity-framework.md)
-- [Agent Selection Guide](docs/agents/agent-selection-guide.md)
+**Trinity Knowledge Base:**
 
-**Workflows:**
+- `trinity/knowledge-base/ARCHITECTURE.md` - System architecture with codebase metrics
+- `trinity/knowledge-base/ISSUES.md` - Known issues and bug tracking
+- `trinity/knowledge-base/To-do.md` - Task management and priorities
+- `trinity/knowledge-base/Technical-Debt.md` - Technical debt tracking
+- `trinity/knowledge-base/Trinity.md` - Project-specific Trinity guide
+- `trinity/knowledge-base/TESTING-PRINCIPLES.md` - Testing standards
+- `trinity/knowledge-base/CODING-PRINCIPLES.md` - Code quality standards
 
-- [Deployment Workflow](docs/workflows/deploy-workflow.md)
-- [Investigation Workflow](docs/workflows/investigation-workflow.md)
-- [Session Workflow](docs/workflows/session-workflow.md)
+**Agent System:**
 
-**Best Practices:**
+- `.claude/EMPLOYEE-DIRECTORY.md` - Complete agent reference and selection guide
+- `.claude/agents/` - 19 specialized agent markdown files
 
-- [Testing Standards](docs/best-practices.md)
-- [Caching Strategies](docs/best-practices.md#caching-strategies)
-- [Quality Standards](docs/quality-standards.md) _(WO-023)_
+**SDK Documentation:**
+
+- [API Documentation](docs/) - TypeDoc-generated API reference
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Development setup, workflow, and standards
+- [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
 
 ### After Deployment
 
 Your project contains:
 
-- `.claude/EMPLOYEE-DIRECTORY.md` - Complete agent reference
-- `trinity/knowledge-base/Trinity.md` - Project-specific Trinity guide
-- `trinity/knowledge-base/ARCHITECTURE.md` - System architecture with metrics
-- `trinity/templates/` - 6 work order templates for complex tasks
+- **64 production-ready components** deployed in 90 seconds
+- **19 specialized agents** in `.claude/agents/` (organized by category: aj-team, audit, deployment, leadership, planning)
+- **20 slash commands** in `.claude/commands/` (organized by category: execution, infrastructure, investigation, planning, session, utility)
+- **Complete knowledge base** in `trinity/knowledge-base/` (ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md)
+- **Investigation templates** in `trinity/templates/investigations/` (bug, performance, security, system analysis, incident)
+- **Work order templates** in `trinity/templates/work-orders/`
+- **Session archives** in `trinity/sessions/`
+- **Audit reports** in `trinity/reports/`
+- **Linting tools** configured for your framework
+
+**Complete Deployed Structure:**
+
+```
+your-project/
+├── .claude/
+│   ├── agents/
+│   │   ├── aj-team/              # AJ MAESTRO orchestration agents
+│   │   ├── audit/                # JUNO quality auditor
+│   │   ├── deployment/           # Deployment specialists (BON, CAP, EIN, INO, TAN, ZEN)
+│   │   ├── leadership/           # ALY strategic leadership
+│   │   └── planning/             # MON, ROR, EUS, TRA agents
+│   ├── commands/
+│   │   ├── execution/            # trinity-orchestrate, trinity-audit, trinity-readme, trinity-docs, trinity-changelog
+│   │   ├── infrastructure/       # trinity-init
+│   │   ├── investigation/        # trinity-create-investigation, trinity-plan-investigation, trinity-investigate-templates
+│   │   ├── planning/             # trinity-requirements, trinity-design, trinity-decompose, trinity-plan
+│   │   ├── session/              # trinity-start, trinity-continue, trinity-end
+│   │   └── utility/              # trinity-verify, trinity-agents, trinity-workorder
+│   └── EMPLOYEE-DIRECTORY.md     # 19-agent team guide
+├── trinity/
+│   ├── knowledge-base/           # ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md, Trinity.md
+│   ├── templates/
+│   │   ├── documentation/        # Documentation templates
+│   │   ├── investigations/       # Bug, performance, security, system analysis, incident templates
+│   │   └── work-orders/          # Work order templates
+│   ├── investigations/           # Active investigations
+│   │   └── plans/                # Investigation execution plans
+│   ├── sessions/                 # Session archives
+│   ├── reports/                  # Audit and integration reports
+│   ├── work-orders/              # Active work orders
+│   ├── patterns/                 # Reusable patterns library
+│   └── archive/                  # Archived sessions, reports, investigations
+├── CLAUDE.md                     # Root context file
+└── src/CLAUDE.md                 # Framework-specific context
+```
+
+- **Pre-commit hooks** automatically enforcing quality standards
 
 ---
 

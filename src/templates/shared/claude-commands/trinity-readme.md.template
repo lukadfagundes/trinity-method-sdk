@@ -497,6 +497,545 @@ For EACH existing subdirectory README (from Phase 1 existing_readmes list):
 
 ---
 
+#### 2h. Command/Script/CLI Validation (COMPREHENSIVE)
+
+**CRITICAL: Verify ALL documented commands, scripts, and CLI tools actually exist**
+
+**Goal:** Find commands in README that don't exist in the codebase or have changed
+
+**Step 1: Extract Command References from README**
+
+Scan README.md for command patterns:
+- Bash/shell commands: `` `npm run test` ``, `` `python manage.py` ``, `` `cargo build` ``
+- CLI invocations: `` `npx trinity deploy` ``, `` `./scripts/setup.sh` ``
+- Script references: "Run `make install`", "Execute `build.sh`"
+- Package commands: `` `pip install` ``, `` `yarn start` ``, `` `go run` ``
+
+**Step 2: Categorize Commands**
+
+Group commands by type:
+
+1. **npm/yarn/pnpm scripts:**
+   - Extract: All `` `npm run <script>` ``, `` `yarn <script>` ``, `` `pnpm <script>` ``
+   - Verify against: `package.json` scripts section
+
+2. **Python scripts:**
+   - Extract: `` `python <script>` ``, `` `python -m <module>` ``, CLI tools
+   - Verify against: Actual .py files, pyproject.toml, setup.py
+
+3. **Shell scripts:**
+   - Extract: `` `./scripts/setup.sh` ``, `` `bash build.sh` ``
+   - Verify against: Actual script files in repository
+
+4. **Custom CLI tools:**
+   - Extract: `` `npx <package>` ``, custom binaries
+   - Verify against: package.json bin field, local executables
+
+5. **Makefile targets:**
+   - Extract: `` `make <target>` ``
+   - Verify against: Makefile contents
+
+**Step 3: Verification Process**
+
+For EACH documented command:
+
+```javascript
+// For npm scripts
+if (command matches "npm run <script>"):
+  Read package.json
+  Search for script in "scripts" section
+
+  if NOT found:
+    ❌ Inaccuracy: "npm run <script>" documented but script doesn't exist in package.json
+    Add to Phase 2.5 commitment
+
+// For script files
+if (command matches "./<path>/script.sh"):
+  Check if file exists at that path
+
+  if NOT found:
+    ❌ Inaccuracy: Script file documented but doesn't exist
+    Add to Phase 2.5 commitment
+
+// For custom CLI tools
+if (command matches "npx <tool>"):
+  Read package.json
+  Check if tool is in dependencies or bin
+
+  if NOT found:
+    ❌ Inaccuracy: CLI tool documented but not installed/configured
+    Add to Phase 2.5 commitment
+```
+
+**Step 4: Common Command Validation Patterns**
+
+**Node.js Projects:**
+```bash
+README says: `npm test`
+Verify: "test" exists in package.json scripts
+```
+
+**Python Projects:**
+```bash
+README says: `python manage.py migrate`
+Verify: manage.py exists and has migrate command
+```
+
+**Custom Scripts:**
+```bash
+README says: `./scripts/deploy.sh`
+Verify: scripts/deploy.sh file exists
+```
+
+**Makefile:**
+```bash
+README says: `make build`
+Verify: Makefile exists and has "build:" target
+```
+
+**Step 5: Record Inaccuracies**
+
+For each invalid command found, add to Phase 2.5 commitment:
+
+```markdown
+❌ **Non-existent Command**
+- **File:** README.md (line X)
+- **Current (WRONG):** "Run `npm run deploy`"
+- **Reality:** No "deploy" script exists in package.json
+- **Correct:** Remove reference OR add script to package.json
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+#### 2i. Code Example Validation (COMPREHENSIVE)
+
+**CRITICAL: Verify code examples in README actually work with current codebase**
+
+**Goal:** Find outdated code examples that don't match current API/structure
+
+**Step 1: Extract Code Examples from README**
+
+Find all code blocks in README.md:
+- `` ```javascript `` blocks
+- `` ```python `` blocks
+- `` ```bash `` blocks
+- `` ```typescript `` blocks
+- Inline code showing API usage
+
+**Step 2: Categorize Examples**
+
+1. **Import/Require Statements:**
+   ```javascript
+   import { SomeClass } from './src/lib'
+   ```
+   Verify: Does `./src/lib` export `SomeClass`?
+
+2. **API Usage Examples:**
+   ```javascript
+   const result = api.fetchData({ option: true })
+   ```
+   Verify: Does `api.fetchData` exist? Does it accept `option` parameter?
+
+3. **Configuration Examples:**
+   ```javascript
+   {
+     "setting": "value",
+     "newFeature": true
+   }
+   ```
+   Verify: Are these valid config options in current version?
+
+4. **Function Call Examples:**
+   ```python
+   result = calculate_total(items, tax_rate)
+   ```
+   Verify: Does `calculate_total` exist? Does it take these parameters?
+
+**Step 3: Validation Process**
+
+For code examples showing **function calls**:
+```bash
+Example shows: `api.login(username, password)`
+
+Use Grep to search codebase for:
+- "function login" (JavaScript)
+- "def login" (Python)
+- "fn login" (Rust)
+
+Check if function signature matches documented usage
+```
+
+For code examples showing **imports**:
+```bash
+Example shows: import { Auth } from '@/lib/auth'
+
+Use Grep to find:
+- export.*Auth in files matching lib/auth pattern
+
+Verify export actually exists
+```
+
+**Step 4: Common Validation Checks**
+
+1. **API signature changes:**
+   - README shows: `user.save()`
+   - Reality: `user.save()` now requires `user.save({ validate: true })`
+   - Result: ❌ Example is outdated
+
+2. **Deprecated methods:**
+   - README shows: `db.connect()`
+   - Reality: `db.connect()` was deprecated, now use `db.initialize()`
+   - Result: ❌ Example uses deprecated API
+
+3. **Changed file paths:**
+   - README shows: `import from './utils/helper'`
+   - Reality: File moved to `./lib/utils/helper`
+   - Result: ❌ Import path is wrong
+
+**Step 5: Record Inaccuracies**
+
+```markdown
+❌ **Outdated Code Example**
+- **File:** README.md (line X)
+- **Current (WRONG):** Shows `api.connect(url)` usage
+- **Reality:** API now requires `api.connect({ url, timeout })`
+- **Correct:** Update example to current API signature
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+#### 2j. API/Function Reference Validation (COMPREHENSIVE)
+
+**CRITICAL: Verify documented functions, classes, and APIs actually exist**
+
+**Goal:** Find README claims about APIs/functions that don't exist or are misnamed
+
+**Step 1: Extract API References from README**
+
+Look for documented APIs:
+- "The `calculateTotal()` function handles..."
+- "Use the `DataProcessor` class to..."
+- "Call `api.authenticate()` to..."
+- "The `useAuth()` hook provides..."
+
+**Step 2: Validation Process**
+
+For EACH mentioned function/class/API:
+
+```bash
+README mentions: "calculateTotal() function"
+
+Use Grep to search entire codebase:
+  Pattern 1: "function calculateTotal"
+  Pattern 2: "calculateTotal ="
+  Pattern 3: "def calculateTotal"
+  Pattern 4: "fn calculate_total"
+
+If NO matches found:
+  ❌ Inaccuracy: Function documented but doesn't exist
+  Add to Phase 2.5 commitment
+```
+
+**Step 3: Common Validation Patterns**
+
+**JavaScript/TypeScript:**
+```bash
+README claims: "useAuth() hook"
+Grep for: "export.*useAuth" OR "function useAuth"
+If not found: ❌ Hook doesn't exist
+```
+
+**Python:**
+```bash
+README claims: "DataProcessor class"
+Grep for: "class DataProcessor"
+If not found: ❌ Class doesn't exist
+```
+
+**Rust:**
+```bash
+README claims: "parse_config() function"
+Grep for: "pub fn parse_config" OR "fn parse_config"
+If not found: ❌ Function doesn't exist
+```
+
+**Step 4: Name Mismatch Detection**
+
+Common issues:
+- README says `getUserData()` but code has `fetchUserData()`
+- README says `AuthService` but code has `AuthenticationService`
+- README says `validate()` but code has `validateInput()`
+
+**Step 5: Record Inaccuracies**
+
+```markdown
+❌ **Non-existent API Reference**
+- **File:** README.md (line X)
+- **Current (WRONG):** "Call the `processPayment()` function"
+- **Reality:** No function named `processPayment` exists in codebase
+- **Correct:** Remove reference OR verify correct function name
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+#### 2k. Dependency Claims Validation (COMPREHENSIVE)
+
+**CRITICAL: Verify documented dependencies match actual project dependencies**
+
+**Goal:** Find mismatches between README claims and actual package manifests
+
+**Step 1: Identify Package Manifest File**
+
+Detect project type and read manifest:
+
+```javascript
+if exists("package.json"):
+  manifest = "package.json"
+  type = "Node.js"
+
+else if exists("pyproject.toml"):
+  manifest = "pyproject.toml"
+  type = "Python"
+
+else if exists("Cargo.toml"):
+  manifest = "Cargo.toml"
+  type = "Rust"
+
+else if exists("go.mod"):
+  manifest = "go.mod"
+  type = "Go"
+
+Read {manifest}
+```
+
+**Step 2: Extract Dependency Claims from README**
+
+Look for:
+- "Requires React 18+"
+- "Built with Express.js"
+- "Uses PostgreSQL database"
+- "Depends on axios, lodash, and moment"
+- Version badges showing specific versions
+
+**Step 3: Validation Process**
+
+**For Version Claims:**
+```bash
+README claims: "Requires Node 16+"
+
+Read package.json
+Check "engines" field:
+  "engines": { "node": ">=14.0.0" }  ← Mismatch!
+
+❌ Inaccuracy: README says Node 16+, package.json says 14+
+Add to Phase 2.5 commitment
+```
+
+**For Dependency Lists:**
+```bash
+README claims: "Built with Express, MongoDB, and Redis"
+
+Read package.json dependencies
+Check if listed:
+  ✅ express: found
+  ❌ mongodb: NOT found (uses mongoose instead)
+  ✅ redis: found
+
+❌ Inaccuracy: MongoDB not directly listed as dependency
+Add to Phase 2.5 commitment
+```
+
+**For Framework Claims:**
+```bash
+README claims: "React 17 application"
+
+Read package.json
+Check react version:
+  "react": "^18.2.0"  ← Mismatch!
+
+❌ Inaccuracy: README says React 17, actually using React 18
+Add to Phase 2.5 commitment
+```
+
+**Step 4: Common Validation Checks**
+
+1. **Node version mismatch:**
+   - README: "Node 14+"
+   - package.json engines: "node": ">=16.0.0"
+   - Result: ❌ Outdated requirement
+
+2. **Missing dependencies:**
+   - README: "Uses axios for HTTP"
+   - package.json: No axios dependency
+   - Result: ❌ Dependency not installed
+
+3. **Wrong framework version:**
+   - README: "Vue 2 project"
+   - package.json: "vue": "^3.0.0"
+   - Result: ❌ Wrong major version
+
+4. **Deprecated package claims:**
+   - README: "Uses moment.js"
+   - package.json: Uses date-fns instead
+   - Result: ❌ Wrong package reference
+
+**Step 5: Record Inaccuracies**
+
+```markdown
+❌ **Dependency Mismatch**
+- **File:** README.md (line X)
+- **Current (WRONG):** "Requires Node.js 14+"
+- **Reality:** package.json specifies "node": ">=16.9.0"
+- **Correct:** "Requires Node.js 16.9+"
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+#### 2l. Stale Content Detection (COMPREHENSIVE)
+
+**CRITICAL: Find markers of outdated/unmaintained content in README**
+
+**Goal:** Detect TODO markers, outdated dates, and other staleness indicators
+
+**Step 1: Search for Staleness Markers**
+
+Scan README.md for common stale content patterns:
+
+**TODO/WIP Markers:**
+```markdown
+- TODO: Add authentication docs
+- [ ] Update installation section
+- WIP: This section is under construction
+- FIXME: Verify these instructions
+- Coming soon: API documentation
+```
+
+**Outdated Date References:**
+```markdown
+- "Last updated: 2021"
+- "As of January 2022"
+- "In version 1.0 (released 2020)"
+```
+
+**Placeholder Text:**
+```markdown
+- "[Insert description here]"
+- "TBD"
+- "To be documented"
+- "{your-project-name}"
+- "Replace this with..."
+```
+
+**Deprecated Warnings:**
+```markdown
+- "⚠️ This feature is deprecated"
+- "DEPRECATED: Use XYZ instead"
+- "⚠️ Legacy API - do not use"
+```
+
+**Step 2: Validation Process**
+
+For EACH staleness marker found:
+
+```bash
+# TODO markers
+if README contains "TODO:":
+  Extract full TODO line
+  Determine if TODO is still valid or should be removed
+
+  if TODO is >6 months old based on git history:
+    ❌ Inaccuracy: Stale TODO marker
+    Add to Phase 2.5 commitment
+
+# Outdated dates
+if README contains year < (current_year - 1):
+  ❌ Inaccuracy: Reference to old year
+  Verify if section needs updating
+  Add to Phase 2.5 commitment
+
+# Placeholder text
+if README contains "[Insert" OR "TBD" OR "{your-":
+  ❌ Inaccuracy: Placeholder text never replaced
+  Add to Phase 2.5 commitment
+```
+
+**Step 3: Cross-Reference with Project State**
+
+**Check if "Coming Soon" features exist:**
+```bash
+README says: "Coming soon: Dark mode support"
+
+Use Grep to search codebase for dark mode implementation
+
+if dark mode implementation found:
+  ❌ Inaccuracy: Feature exists but README still says "coming soon"
+  Add to Phase 2.5 commitment
+```
+
+**Check deprecation warnings validity:**
+```bash
+README says: "⚠️ DEPRECATED: oldFunction() - use newFunction() instead"
+
+Use Grep to check if oldFunction still exists
+
+if oldFunction() removed from codebase:
+  ❌ Inaccuracy: Deprecation warning for removed function (should be deleted)
+  Add to Phase 2.5 commitment
+```
+
+**Step 4: Version-Specific Content Audit**
+
+Compare README version references with actual version:
+
+```bash
+Read package.json (or Cargo.toml, pyproject.toml)
+current_version = "2.5.0"
+
+Scan README for version mentions:
+  "In version 1.0" ← Outdated reference
+  "As of v2.0" ← Verify if still accurate for v2.5
+  "New in version 2.5" ← Current, keep
+```
+
+**Step 5: Record Inaccuracies**
+
+```markdown
+❌ **Stale Content Marker**
+- **File:** README.md (line X)
+- **Current (WRONG):** "TODO: Add deployment docs"
+- **Reality:** Deployment docs exist in docs/deployment.md
+- **Correct:** Replace TODO with link to deployment docs
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+```markdown
+❌ **Outdated Date Reference**
+- **File:** README.md (line Y)
+- **Current (WRONG):** "Last updated: January 2022"
+- **Reality:** Current year is 2025, content is stale
+- **Correct:** Update date or remove if unnecessary
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+```markdown
+❌ **Placeholder Text**
+- **File:** README.md (line Z)
+- **Current (WRONG):** "Clone the repository: git clone {repository-url}"
+- **Reality:** Actual repository URL should be inserted
+- **Correct:** Replace {repository-url} with actual URL from package.json repository field
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+**APO MUST audit ALL existing subdirectory READMEs, not just root.**
+
+---
+
 ### Phase 2.5: Fix Commitment (CRITICAL ACCOUNTABILITY)
 
 **Goal:** Create explicit list of ALL inaccuracies found in Phase 2 that MUST be fixed in Phases 3-5
@@ -1428,5 +1967,5 @@ If Phase 6 validation shows coverage < 100%, status = ❌ FAILED even if Phase 4
 
 ---
 
-**Command Specification Version:** 1.0.0
+**Command Specification Version:** 2.0.0
 **Last Updated:** 2025-12-27
