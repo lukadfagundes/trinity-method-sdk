@@ -14,14 +14,14 @@ flowchart LR
     end
 
     subgraph "Variable Registry"
-        VARS[Variable Map<br/>{{PROJECT_NAME}} → my-app<br/>{{FRAMEWORK}} → Node.js<br/>{{PACKAGE_MANAGER}} → npm<br/>{{LINTING_TOOL}} → ESLint<br/>{{CI_PLATFORM}} → GitHub Actions<br/>{{CURRENT_DATE}} → 2025-12-28<br/>{{VERSION}} → 2.0.0]
+        VARS["Variable Map<br/>PROJECT_NAME = my-app<br/>FRAMEWORK = Node.js<br/>PACKAGE_MANAGER = npm<br/>LINTING_TOOL = ESLint<br/>CI_PLATFORM = GitHub Actions<br/>CURRENT_DATE = 2025-12-28<br/>VERSION = 2.0.0"]
     end
 
     subgraph "Processing Engine"
         READER[Template Reader<br/>fs-extra.readFile]
-        PARSER[Variable Parser<br/>Regex: /{{([^}]+)}}/g]
-        SUBSTITUTOR[Variable Substitutor<br/>Replace {{VAR}} with value]
-        VALIDATOR[Output Validator<br/>Check no unresolved {{}}]
+        PARSER["Variable Parser<br/>Regex pattern matcher"]
+        SUBSTITUTOR["Variable Substitutor<br/>Replace VAR with value"]
+        VALIDATOR["Output Validator<br/>Check no unresolved variables"]
     end
 
     subgraph "Output Generation"
