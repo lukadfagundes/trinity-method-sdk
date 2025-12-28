@@ -429,6 +429,46 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
+## Development & Publishing
+
+### CI/CD Pipeline
+
+Trinity uses GitHub Actions for comprehensive continuous integration:
+
+**Automated Quality Checks:**
+
+- ✅ Multi-platform testing (Ubuntu, Windows, macOS)
+- ✅ Multi-version testing (Node.js 18.x, 20.x, 22.x)
+- ✅ Test suite execution (unit, integration, e2e, performance)
+- ✅ Code coverage validation (80%+ threshold enforced)
+- ✅ Linting and type checking
+- ✅ Security scanning (npm audit, dependency checks)
+- ✅ Build verification
+
+**CI Workflow Location:** [.github/workflows/ci.yml](.github/workflows/ci.yml)
+
+### Publishing to npm
+
+**Current Process:** Manual publishing after CI validation
+
+```bash
+# After pushing to main and CI passes
+npm login                    # Authenticate with npm
+npm publish                  # Publishes with prepublishOnly checks
+```
+
+**Automated Checks Before Publishing:**
+
+1. `prepublishOnly` script runs automatically
+2. TypeScript compilation (`npm run build`)
+3. Template copying to dist/
+4. Full test suite execution (`npm run test`)
+5. Only publishes if all checks pass
+
+**Note:** Automated npm publishing is not currently configured. Publishing requires manual `npm publish` after successful CI validation.
+
+---
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details

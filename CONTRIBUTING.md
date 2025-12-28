@@ -364,36 +364,107 @@ We follow **Semantic Versioning** (semver):
 - **MINOR:** New features, backward compatible (v1.0.0 → v1.1.0)
 - **PATCH:** Bug fixes, backward compatible (v1.0.0 → v1.0.1)
 
+### CI/CD Pipeline
+
+Trinity uses GitHub Actions for automated quality assurance:
+
+**CI Workflow** (`.github/workflows/ci.yml`):
+
+- ✅ Multi-platform testing (Ubuntu, Windows, macOS)
+- ✅ Multi-version testing (Node.js 18.x, 20.x, 22.x)
+- ✅ Comprehensive test suite (unit, integration, e2e, performance)
+- ✅ Code coverage validation (80%+ threshold enforced)
+- ✅ Linting and type checking (ESLint, TypeScript)
+- ✅ Code formatting verification (Prettier)
+- ✅ Security scanning (npm audit, dependency checks)
+- ✅ Build verification and artifact validation
+
+**Triggers:**
+
+- Push to `main` or `dev` branches
+- Pull requests targeting `main` or `dev`
+
 ### Release Checklist
 
-1. **Update Version:**
+1. **Ensure CI Passes:**
+
+   ```bash
+   # Push changes to trigger CI
+   git push origin main
+
+   # Wait for CI to complete
+   # Check: https://github.com/lukadfagundes/trinity-method-sdk/actions
+   ```
+
+   All CI jobs must pass before publishing:
+   - Test suite (all platforms)
+   - Coverage check (≥80%)
+   - Quality checks
+   - Performance benchmarks
+   - Build verification
+   - Security scan
+
+2. **Update Version:**
 
    ```bash
    npm version [major|minor|patch]
+   # This creates a git tag and updates package.json
    ```
 
-2. **Update CHANGELOG.md:**
+3. **Update CHANGELOG.md:**
    - Document all changes since last release
-   - Group by type (Features, Fixes, Breaking Changes)
+   - Group by type (Added, Changed, Deprecated, Removed, Fixed, Security)
+   - Follow [Keep a Changelog](https://keepachangelog.com/) format
 
-3. **Test Thoroughly:**
-
-   ```bash
-   npm test
-   npm run build
-   ```
-
-4. **Publish:**
+4. **Push Version Tag:**
 
    ```bash
-   npm publish
+   git push --follow-tags
    ```
 
-5. **Tag Release:**
+5. **Verify prepublishOnly Checks:**
+
+   The `prepublishOnly` script automatically runs before publishing:
+
    ```bash
-   git tag -a v1.0.0 -m "Release v1.0.0"
-   git push --tags
+   npm run build    # TypeScript compilation + template copying
+   npm run test     # Full test suite
    ```
+
+   If either fails, publishing is blocked automatically.
+
+6. **Publish to npm:**
+
+   ```bash
+   npm login              # Authenticate (if needed)
+   npm publish            # Publish with automatic prepublishOnly checks
+   ```
+
+   **Note:** Automated npm publishing is not currently configured. All releases require manual `npm publish` after successful CI validation.
+
+7. **Create GitHub Release:**
+   - Go to [Releases](https://github.com/lukadfagundes/trinity-method-sdk/releases)
+   - Click "Draft a new release"
+   - Select the version tag
+   - Copy CHANGELOG.md content for that version
+   - Publish release
+
+### Pre-Release Testing
+
+Before releasing, test the package locally:
+
+```bash
+# Build and pack
+npm run build
+npm pack
+
+# Test in another project
+cd /path/to/test-project
+npm install /path/to/trinity-method-sdk/trinity-method-sdk-X.Y.Z.tgz
+
+# Verify deployment works
+npx trinity deploy
+```
 
 ---
 
