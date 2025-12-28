@@ -3,7 +3,7 @@
 # Multi-platform testing: Ubuntu, Windows, macOS
 # Multi-version Node.js: 18.x, 20.x, 22.x
 
-name: Trinity CI/CD Pipeline
+name: Trinity CI Pipeline
 
 on:
   push:
