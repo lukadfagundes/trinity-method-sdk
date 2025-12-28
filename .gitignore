@@ -53,9 +53,6 @@ Thumbs.db
 node_modules/
 settings.local.json
 
-
-TODO-LIST.md
-
 # Trinity Method SDK
 node_modules/
 .claude/
