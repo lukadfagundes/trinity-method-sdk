@@ -15,6 +15,7 @@ export async function deployLintingTool(
 
   switch (tool.id) {
     case 'eslint':
+    case 'eslint-typescript': // Alias for eslint with TypeScript (backward compatibility)
       await deployESLint(tool, stack, templateDir, variables);
       break;
     case 'prettier':
