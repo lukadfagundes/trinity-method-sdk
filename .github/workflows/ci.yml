@@ -173,16 +173,7 @@ jobs:
         run: npm run build
 
       - name: Verify build artifacts
-        run: |
-          echo "Verifying dist/templates directory exists..."
-          echo "Current directory: $(pwd)"
-          echo "Checking dist directory..."
-          ls -la dist/ || echo "dist directory not found!"
-          echo "Checking dist/templates..."
-          ls -la dist/templates/ || echo "dist/templates not found!"
-          echo "Checking dist/templates/linting/nodejs..."
-          ls -la dist/templates/linting/nodejs/ || echo "nodejs templates not found!"
-          test -d dist/templates/linting/nodejs || (echo "ERROR: Templates missing" && exit 1)
+        run: node scripts/verify-build.cjs
 
       - name: Run linter
         run: npm run lint
