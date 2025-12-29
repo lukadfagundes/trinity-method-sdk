@@ -28,7 +28,6 @@ export async function updateGitignore(spinner: Spinner): Promise<boolean> {
     const trinityIgnores = [
       '',
       '# Trinity Method SDK',
-      'node_modules/',
       '.claude/',
       'trinity/',
       '*CLAUDE.md',

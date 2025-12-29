@@ -348,7 +348,7 @@
 ### Initial Project Setup (Recommended)
 **1. Deploy Trinity Method:**
 ```bash
-npx @trinity-method/cli deploy
+npx trinity-method-sdk deploy
 ```
 
 **2. Complete knowledge base (optional but recommended):**
@@ -360,7 +360,7 @@ npx @trinity-method/cli deploy
 ### Fast Deployment (Minimal)
 **Deploy without metrics:**
 ```bash
-npx @trinity-method/cli deploy --skip-audit
+npx trinity-method-sdk deploy --skip-audit
 ```
 
 **Complete manually when needed:**
@@ -393,7 +393,7 @@ npx @trinity-method/cli deploy --skip-audit
 ### CI/CD Customization (After Basic Deployment)
 **1. Deploy Trinity Method:**
 ```bash
-npx @trinity-method/cli deploy --ci-deploy
+npx trinity-method-sdk deploy --ci-deploy
 ```
 
 **2. Customize CI/CD (Ein):**
@@ -499,7 +499,7 @@ Trinity Method SDK can optionally configure linting tools during deployment.
 
 **To setup during deployment:**
 ```bash
-npx @trinity-method/cli deploy
+npx trinity-method-sdk deploy
 # Select "Recommended" or "Custom" when prompted
 ```
 

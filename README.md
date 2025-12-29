@@ -1,6 +1,6 @@
 # Trinity Method SDK
 
-[![npm version](https://img.shields.io/npm/v/@trinity-method/cli?color=success)](https://www.npmjs.com/package/@trinity-method/cli)
+[![npm version](https://img.shields.io/npm/v/trinity-method-sdk?color=success)](https://www.npmjs.com/package/trinity-method-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.9.0-brightgreen)](https://nodejs.org/)
 [![AI Agents](https://img.shields.io/badge/AI%20Agent-Claude%20Code-blue)](https://github.com/lukadfagundes/trinity-method-sdk)
@@ -185,14 +185,33 @@ Trinity deploys **64 production-ready components** in 90 seconds:
 
 ## How Trinity Works
 
+### Installation
+
+**Option 1: Use npx (Recommended - No installation needed)**
+
+```bash
+# Runs latest version without installing
+npx trinity-method-sdk deploy
+```
+
+**Option 2: Global Installation**
+
+```bash
+# Install once globally
+npm install -g trinity-method-sdk
+
+# Then use anywhere
+trinity deploy
+```
+
 ### Quick Start (90 Seconds to Production)
 
 ```bash
 # Navigate to your project
 cd your-project
 
-# Deploy Trinity Method
-npx @trinity-method/cli deploy
+# Deploy Trinity Method (using npx)
+npx trinity-method-sdk deploy
 ```
 
 **Interactive Wizard:**
@@ -209,10 +228,10 @@ npx @trinity-method/cli deploy
 
 ```bash
 # Deploy Trinity to your project
-npx @trinity-method/cli deploy
+npx trinity-method-sdk deploy
 
 # Update Trinity to latest version
-npx @trinity-method/cli update
+npx trinity-method-sdk update
 ```
 
 ### Using Trinity Method (Slash Commands)
@@ -300,19 +319,19 @@ The Trinity Method **philosophy** is agent-agnostic, but this SDK is optimized f
 
 ```bash
 # Node.js/Express API
-cd my-api && npx @trinity-method/cli deploy
+cd my-api && npx trinity-method-sdk deploy
 # Result: API with ESLint, Prettier, pre-commit, 19 agents, quality gates
 
 # Python/Django Project
-cd my-django && npx @trinity-method/cli deploy
+cd my-django && npx trinity-method-sdk deploy
 # Result: Django with Black, Flake8, isort, pre-commit, full Trinity infrastructure
 
 # Flutter Mobile App
-cd my-flutter-app && npx @trinity-method/cli deploy
+cd my-flutter-app && npx trinity-method-sdk deploy
 # Result: Flutter with Dart Analyzer, pre-commit, investigation templates
 
 # Rust CLI Tool
-cd my-rust-cli && npx @trinity-method/cli deploy
+cd my-rust-cli && npx trinity-method-sdk deploy
 # Result: Rust with Clippy, Rustfmt, pre-commit, crisis management
 ```
 
@@ -532,7 +551,7 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ### Project Resources
 
-- **npm Package**: [@trinity-method/cli](https://www.npmjs.com/package/@trinity-method/cli)
+- **npm Package**: [trinity-method-sdk](https://www.npmjs.com/package/trinity-method-sdk)
 - **GitHub**: [lukadfagundes/trinity-method-sdk](https://github.com/lukadfagundes/trinity-method-sdk)
 - **Issues**: [GitHub Issues](https://github.com/lukadfagundes/trinity-method-sdk/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/lukadfagundes/trinity-method-sdk/discussions)

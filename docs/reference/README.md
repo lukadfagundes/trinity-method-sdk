@@ -98,7 +98,7 @@ See [Multi-Framework Guide](../guides/multi-framework-guide.md) for detailed fra
 
 - **Trinity Method Philosophy** - Investigation-first development methodology
 - **Claude Code** - [claude.com/claude-code](https://claude.com/claude-code)
-- **npm Package** - [@trinity-method/cli](https://www.npmjs.com/package/@trinity-method/cli)
+- **npm Package** - [trinity-method-sdk](https://www.npmjs.com/package/trinity-method-sdk)
 - **GitHub Repository** - [lukadfagundes/trinity-method-sdk](https://github.com/lukadfagundes/trinity-method-sdk)
 
 ### Related Documentation
