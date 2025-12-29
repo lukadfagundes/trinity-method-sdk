@@ -48,6 +48,35 @@ export async function countPattern(dir: string, pattern: RegExp): Promise<number
 }
 
 /**
+ * Count consecutive comments in a single file
+ * @param file - File path to analyze
+ * @returns Number of commented code blocks in the file
+ */
+async function countCommentsInFile(file: string): Promise<number> {
+  const content = await fs.readFile(file, 'utf8');
+  const lines = content.split('\n');
+
+  let blockCount = 0;
+  let consecutiveComments = 0;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const isComment = trimmed.startsWith('//') || trimmed.startsWith('#');
+
+    if (isComment) {
+      consecutiveComments++;
+      if (consecutiveComments === 3) {
+        blockCount++;
+      }
+    } else {
+      consecutiveComments = 0;
+    }
+  }
+
+  return blockCount;
+}
+
+/**
  * Count commented code blocks (heuristic: 3+ consecutive comment lines)
  * @param dir - Directory to search
  * @returns Estimated count of commented code blocks
@@ -70,21 +99,7 @@ export async function countCommentedCode(dir: string): Promise<number> {
 
     let blockCount = 0;
     for (const file of files) {
-      const content = await fs.readFile(file, 'utf8');
-      const lines = content.split('\n');
-
-      let consecutiveComments = 0;
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('//') || trimmed.startsWith('#')) {
-          consecutiveComments++;
-          if (consecutiveComments === 3) {
-            blockCount++;
-          }
-        } else {
-          consecutiveComments = 0;
-        }
-      }
+      blockCount += await countCommentsInFile(file);
     }
 
     return blockCount;

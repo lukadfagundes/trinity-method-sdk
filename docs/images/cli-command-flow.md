@@ -62,7 +62,7 @@ flowchart TD
     COMPARE_VERSION -->|Yes| PROMPT_UPDATE{Prompt:<br/>Update to latest?}
 
     PROMPT_UPDATE -->|No| CANCEL([Update Cancelled])
-    PROMPT_UPDATE -->|Yes| CREATE_BACKUP[Create Timestamped Backup<br/>trinity/backups/backup-{timestamp}.tar.gz]
+    PROMPT_UPDATE -->|Yes| CREATE_BACKUP[Create Timestamped Backup<br/>trinity/backups/backup-YYYY-MM-DD.tar.gz]
 
     CREATE_BACKUP --> PRESERVE_USER[Preserve User Content<br/>ARCHITECTURE.md, ISSUES.md<br/>To-do.md, Technical-Debt.md]
     PRESERVE_USER --> REMOVE_OLD[Remove Old Templates<br/>Keep user content + backups]

@@ -21,6 +21,42 @@ interface CIDeployOptions {
 type GitPlatform = 'github' | 'gitlab' | 'unknown';
 
 /**
+ * Deploy GitLab CI template
+ * @param templatesPath - Path to templates directory
+ * @param options - Deployment options
+ * @param stats - Statistics object to update
+ */
+async function deployGitLabCI(
+  templatesPath: string,
+  options: CIDeployOptions,
+  stats: CIDeploymentStats
+): Promise<void> {
+  try {
+    const gitlabTemplate = path.join(templatesPath, 'gitlab-ci.yml');
+
+    if (!(await fs.pathExists(gitlabTemplate))) {
+      return;
+    }
+
+    const content = await fs.readFile(gitlabTemplate, 'utf8');
+    const gitlabCIExists = await fs.pathExists('.gitlab-ci.yml');
+
+    if (gitlabCIExists && !options.force) {
+      stats.skipped.push('.gitlab-ci.yml (already exists)');
+      return;
+    }
+
+    // Validate destination path for security
+    const destPath = validatePath('.gitlab-ci.yml');
+    await fs.writeFile(destPath, content);
+    stats.deployed.push('.gitlab-ci.yml');
+  } catch (error: unknown) {
+    const { getErrorMessage } = await import('./errors.js');
+    stats.errors.push({ file: '.gitlab-ci.yml', error: getErrorMessage(error) });
+  }
+}
+
+/**
  * Deploy CI/CD workflow templates based on detected Git platform
  *
  * @param options - Deployment options
@@ -76,28 +112,7 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
 
     // GitLab CI
     if (platform === 'gitlab') {
-      try {
-        const gitlabTemplate = path.join(templatesPath, 'gitlab-ci.yml');
-
-        if (await fs.pathExists(gitlabTemplate)) {
-          const content = await fs.readFile(gitlabTemplate, 'utf8');
-
-          // Check if .gitlab-ci.yml exists
-          const gitlabCIExists = await fs.pathExists('.gitlab-ci.yml');
-
-          if (gitlabCIExists && !options.force) {
-            stats.skipped.push('.gitlab-ci.yml (already exists)');
-          } else {
-            // Validate destination path for security
-            const destPath = validatePath('.gitlab-ci.yml');
-            await fs.writeFile(destPath, content);
-            stats.deployed.push('.gitlab-ci.yml');
-          }
-        }
-      } catch (error: unknown) {
-        const { getErrorMessage } = await import('./errors.js');
-        stats.errors.push({ file: '.gitlab-ci.yml', error: getErrorMessage(error) });
-      }
+      await deployGitLabCI(templatesPath, options, stats);
     }
 
     // Generic template (always deploy to trinity/templates/ci)

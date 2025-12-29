@@ -4,24 +4,23 @@
 
 import fs from 'fs-extra';
 import chalk from 'chalk';
-import type { DeployOptions, Stack, CodebaseMetrics, DeploymentProgress, PostInstallInstruction } from './types.js';
+import type {
+  DeployOptions,
+  Stack,
+  CodebaseMetrics,
+  DeploymentProgress,
+  PostInstallInstruction,
+} from './types.js';
 
 /**
- * Display deployment summary with statistics and next steps
- *
- * @param stats - Deployment progress statistics
- * @param options - Deploy command options
- * @param stack - Detected technology stack
- * @param metrics - Collected codebase metrics
+ * Display deployment statistics section
  */
-export async function displaySummary(
+function displayStatistics(
   stats: DeploymentProgress,
-  options: DeployOptions,
   stack: Stack,
-  metrics: CodebaseMetrics
-): Promise<void> {
-  console.log(chalk.green.bold('\n✅ Trinity Method deployed successfully!\n'));
-
+  claudeMdCount: number,
+  claudeMdSummary: string
+): void {
   console.log(chalk.cyan('📊 Deployment Statistics (v2.0):\n'));
   console.log(chalk.white(`   Directories Created: ${stats.directories || 17}`));
   console.log(
@@ -30,21 +29,8 @@ export async function displaySummary(
     )
   );
   console.log(chalk.white(`   Best Practices: 4 documents (CODING, TESTING, AI-DEV, DOCS)`));
-  console.log(
-    chalk.white(`   Templates Deployed: ${stats.templatesDeployed} (6 work orders)`)
-  );
+  console.log(chalk.white(`   Templates Deployed: ${stats.templatesDeployed} (6 work orders)`));
   console.log(chalk.white(`   Files Created: ${stats.rootFilesDeployed}`));
-
-  // Display CLAUDE.md deployment summary
-  const hasTests = await fs.pathExists('tests/CLAUDE.md');
-  const claudeMdCount = 2 + stack.sourceDirs.length + (hasTests ? 1 : 0);
-  const sourceDirsList =
-    stack.sourceDirs.length > 3
-      ? `${stack.sourceDirs.slice(0, 3).join(', ')}... (${stack.sourceDirs.length} total)`
-      : stack.sourceDirs.join(', ');
-  const claudeMdSummary = hasTests
-    ? `root + trinity + tests + ${sourceDirsList}`
-    : `root + trinity + ${sourceDirsList}`;
   console.log(chalk.white(`   CLAUDE.md Files: ${claudeMdCount} (${claudeMdSummary})`));
 
   const totalComponents =
@@ -54,8 +40,12 @@ export async function displaySummary(
     stats.rootFilesDeployed;
   console.log(chalk.white(`   Total Components: ${totalComponents}`));
   console.log('');
+}
 
-  // Display metrics summary if collected
+/**
+ * Display codebase metrics section
+ */
+function displayMetrics(options: DeployOptions, metrics: CodebaseMetrics): void {
   if (!options.skipAudit && metrics.totalFiles > 0) {
     console.log(chalk.cyan('🔍 Codebase Metrics:'));
     console.log(chalk.white(`   Files Analyzed: ${metrics.totalFiles}`));
@@ -72,7 +62,12 @@ export async function displaySummary(
     console.log(chalk.yellow('⚠️  Audit skipped - documents contain placeholders'));
     console.log(chalk.blue('   Deploy agents to complete documentation\n'));
   }
+}
 
+/**
+ * Display quick start commands section
+ */
+function displayQuickStartCommands(): void {
   console.log(chalk.cyan('📚 Quick Start Commands:\n'));
   console.log(
     chalk.white('  /trinity-init         ') +
@@ -85,31 +80,31 @@ export async function displaySummary(
     chalk.white('  /trinity-orchestrate  ') +
       chalk.gray('- AI-orchestrated implementation (AJ MAESTRO)')
   );
-  console.log(
-    chalk.white('  /trinity-requirements ') + chalk.gray('- Analyze requirements (MON)')
-  );
+  console.log(chalk.white('  /trinity-requirements ') + chalk.gray('- Analyze requirements (MON)'));
   console.log(
     chalk.white('  /trinity-design       ') + chalk.gray('- Create technical design (ROR)')
   );
+  console.log(chalk.white('  /trinity-plan         ') + chalk.gray('- Plan implementation (TRA)'));
   console.log(
-    chalk.white('  /trinity-plan         ') + chalk.gray('- Plan implementation (TRA)')
-  );
-  console.log(
-    chalk.white('  /trinity-decompose    ') +
-      chalk.gray('- Decompose into atomic tasks (EUS)')
+    chalk.white('  /trinity-decompose    ') + chalk.gray('- Decompose into atomic tasks (EUS)')
   );
   console.log(chalk.white('\n  📋 Legacy Commands:'));
   console.log(chalk.white('  /trinity-workorder    ') + chalk.gray('- Create a work order'));
   console.log(chalk.white('  /trinity-agents       ') + chalk.gray('- View agent directory'));
-  console.log(
-    chalk.white('  /trinity-continue     ') + chalk.gray('- Resume after interruption')
-  );
+  console.log(chalk.white('  /trinity-continue     ') + chalk.gray('- Resume after interruption'));
   console.log(chalk.white('  /trinity-end          ') + chalk.gray('- End session & archive\n'));
   console.log(
     chalk.yellow('💡 Tip: ') +
-      chalk.white('Run /trinity-init, then use /trinity-orchestrate for AI-powered implementation\n')
+      chalk.white(
+        'Run /trinity-init, then use /trinity-orchestrate for AI-powered implementation\n'
+      )
   );
+}
 
+/**
+ * Display next steps section
+ */
+function displayNextSteps(options: DeployOptions, stack: Stack): void {
   console.log(chalk.cyan('📚 Next Steps:\n'));
 
   let step = 1;
@@ -117,12 +112,9 @@ export async function displaySummary(
   // Linting dependencies installation
   if (options.lintingDependencies && options.lintingDependencies.length > 0) {
     console.log(chalk.white(`   ${step}. Install linting dependencies:`));
-
-    if (stack.framework === 'Python') {
-      console.log(chalk.yellow('      pip install -r requirements-dev.txt\n'));
-    } else {
-      console.log(chalk.yellow('      npm install\n'));
-    }
+    const installCmd =
+      stack.framework === 'Python' ? 'pip install -r requirements-dev.txt' : 'npm install';
+    console.log(chalk.yellow(`      ${installCmd}\n`));
     step++;
   }
 
@@ -151,4 +143,38 @@ export async function displaySummary(
     });
     console.log('');
   }
+}
+
+/**
+ * Display deployment summary with statistics and next steps
+ *
+ * @param stats - Deployment progress statistics
+ * @param options - Deploy command options
+ * @param stack - Detected technology stack
+ * @param metrics - Collected codebase metrics
+ */
+export async function displaySummary(
+  stats: DeploymentProgress,
+  options: DeployOptions,
+  stack: Stack,
+  metrics: CodebaseMetrics
+): Promise<void> {
+  console.log(chalk.green.bold('\n✅ Trinity Method deployed successfully!\n'));
+
+  // Calculate CLAUDE.md deployment summary
+  const hasTests = await fs.pathExists('tests/CLAUDE.md');
+  const claudeMdCount = 2 + stack.sourceDirs.length + (hasTests ? 1 : 0);
+  const sourceDirsList =
+    stack.sourceDirs.length > 3
+      ? `${stack.sourceDirs.slice(0, 3).join(', ')}... (${stack.sourceDirs.length} total)`
+      : stack.sourceDirs.join(', ');
+  const claudeMdSummary = hasTests
+    ? `root + trinity + tests + ${sourceDirsList}`
+    : `root + trinity + ${sourceDirsList}`;
+
+  // Display all sections
+  displayStatistics(stats, stack, claudeMdCount, claudeMdSummary);
+  displayMetrics(options, metrics);
+  displayQuickStartCommands();
+  displayNextSteps(options, stack);
 }
