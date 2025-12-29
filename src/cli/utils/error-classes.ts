@@ -24,7 +24,14 @@ export class TrinityCLIError extends Error {
   ) {
     super(message);
     this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
+
+    // Fix prototype chain for instanceof checks in Node.js 22+
+    Object.setPrototypeOf(this, new.target.prototype);
+
+    // Capture stack trace
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 
   /**
