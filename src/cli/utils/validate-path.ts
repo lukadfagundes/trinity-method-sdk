@@ -157,6 +157,12 @@ export async function safeCopy(
   // Check if source exists and is not a symlink
   if (await fs.pathExists(validSrc)) {
     await validateNotSymlink(validSrc);
+
+    // If source is a directory, recursively check for symlinks inside
+    const stats = await fs.stat(validSrc);
+    if (stats.isDirectory()) {
+      await validateDirectoryNoSymlinks(validSrc);
+    }
   } else {
     throw new Error(`Source path does not exist: ${src}\n` + `Resolved to: ${validSrc}`);
   }
@@ -166,4 +172,38 @@ export async function safeCopy(
     dereference: false, // Don't follow symlinks (security)
     overwrite: true, // Allow overwriting existing files
   });
+}
+
+/**
+ * Recursively validate that a directory contains no symlinks
+ *
+ * Security rationale:
+ * - Prevents copying directories that contain malicious symlinks
+ * - Ensures all files in the directory tree are actual files, not symlinks
+ *
+ * @param dirPath - Directory path to validate recursively
+ * @throws Error if any symlink is found in the directory tree
+ * @private
+ */
+async function validateDirectoryNoSymlinks(dirPath: string): Promise<void> {
+  const entries = await fs.readdir(dirPath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+
+    // Check if this entry is a symlink using lstat
+    const stats = await fs.lstat(fullPath);
+    if (stats.isSymbolicLink()) {
+      throw new Error(
+        `Symlink detected in directory: ${fullPath}\n` +
+          `For security, symlinks are not allowed in Trinity operations.\n` +
+          `Please remove the symlink and use the actual file or directory instead.`
+      );
+    }
+
+    // Recursively check subdirectories
+    if (entry.isDirectory()) {
+      await validateDirectoryNoSymlinks(fullPath);
+    }
+  }
 }
