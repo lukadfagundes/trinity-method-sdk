@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - dev
     tags:
       - 'v*.*.*'
   workflow_dispatch:
@@ -47,6 +48,7 @@ jobs:
         run: npm ci
 
       - name: Validate version tag
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
         run: |
           echo "Validating version tag..."
 
@@ -73,6 +75,7 @@ jobs:
           echo "Version validation successful"
 
       - name: Check CHANGELOG
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
         run: |
           echo "Checking CHANGELOG.md..."
 
@@ -184,6 +187,8 @@ jobs:
     name: Publish to npm
     runs-on: ubuntu-latest
     needs: build
+    # Only publish to npm when pushing to main branch
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
     environment:
       name: production
       url: https://www.npmjs.com/package/trinity-method-sdk
