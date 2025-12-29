@@ -1,6 +1,6 @@
 # Trinity Method SDK - CI/CD Guide
 
-**Version:** 2.0.0
+**Version:** 2.0.1
 **Last Updated:** 2025-12-28
 **Maintained by:** EIN (CI/CD Specialist)
 
@@ -427,10 +427,10 @@ npm token create --type automation
 
 ```bash
 # Verify package is available on npm
-npm view trinity-method-sdk@2.0.0
+npm view trinity-method-sdk@2.0.1
 
 # Install and test
-npm install -g trinity-method-sdk@2.0.0
+npm install -g trinity-method-sdk@2.0.1
 trinity --version
 
 # Test deployment
@@ -663,5 +663,5 @@ chore: Update dependencies
 ---
 
 **Maintained by:** EIN (CI/CD Specialist)
-**Trinity Version:** 2.0.0
+**Trinity Version:** 2.0.1
 **Last Updated:** 2025-12-28

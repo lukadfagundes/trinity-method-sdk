@@ -19,6 +19,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [2.0.1] - 2025-12-29
+
+### Added
+
+- Installation instructions in README.md with npx and global install options
+- Automatic npm deployment on every push to main branch via GitHub Actions CD workflow
+
+### Changed
+
+- **CD Workflow:** Modified to deploy to npm on all main branch pushes (not just version tags)
+- **CD Workflow:** GitHub releases now only created for version tags, not regular commits
+- Updated all package references from `@trinity-method/cli` to `trinity-method-sdk`
+
+### Fixed
+
+- Removed redundant `node_modules/` from Trinity's .gitignore additions
+
 ## [2.0.0] - 2025-12-21
 
 ### Added

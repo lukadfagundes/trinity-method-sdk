@@ -110,7 +110,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
       PACKAGE_MANAGER: stack.packageManager || 'npm',
       BACKEND_FRAMEWORK: stack.framework,
       CURRENT_DATE: new Date().toISOString(),
-      TRINITY_VERSION: pkg.version || '2.0.0',
+      TRINITY_VERSION: pkg.version || '2.0.1',
     };
 
     // STEP 4: Create directory structure

@@ -212,7 +212,7 @@ describe('detectStack', () => {
     });
 
     it('should detect Flask framework', async () => {
-      await fs.writeFile('requirements.txt', 'flask==2.0.0\nrequests==2.28.0\n');
+      await fs.writeFile('requirements.txt', 'flask==2.0.1\nrequests==2.28.0\n');
 
       const stack = await detectStack();
 

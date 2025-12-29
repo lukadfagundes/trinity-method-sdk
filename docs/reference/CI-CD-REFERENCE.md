@@ -1,6 +1,6 @@
 # CI/CD Quick Reference
 
-**Trinity Method SDK v2.0.0**
+**Trinity Method SDK v2.0.1**
 **EIN (CI/CD Specialist)**
 
 ---
@@ -424,6 +424,6 @@ gh release delete v2.0.1 --yes
 
 ---
 
-**Last Updated:** 2025-12-28
-**Trinity Version:** 2.0.0
+**Last Updated:** 2025-12-29
+**Trinity Version:** 2.0.1
 **Maintained by:** EIN (CI/CD Specialist)
