@@ -220,17 +220,13 @@ jobs:
         if: github.event.inputs.dry_run == 'true'
         run: |
           echo "DRY RUN: Would publish to npm"
-          npm publish --dry-run
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npm publish --dry-run --provenance --access public
 
       - name: Publish to npm
         if: github.event.inputs.dry_run != 'true'
         run: |
           echo "Publishing to npm registry..."
-          npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npm publish --provenance --access public
 
       - name: Verify publication
         if: github.event.inputs.dry_run != 'true'
