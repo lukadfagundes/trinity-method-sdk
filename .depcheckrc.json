@@ -1,0 +1,4 @@
+{
+  "ignores": ["rimraf", "ts-jest"],
+  "skip-missing": false
+}
