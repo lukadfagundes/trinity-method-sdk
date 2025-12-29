@@ -479,17 +479,15 @@ Trinity uses GitHub Actions for comprehensive continuous integration and deploym
 
 **CI Workflow Location:** [.github/workflows/ci.yml](.github/workflows/ci.yml)
 
-#### Continuous Deployment (CD)
+#### Publishing to npm
 
-**Note:** Due to limitations with npm Trusted Publishers and packages initially published via traditional authentication, the CD pipeline currently requires manual publishing. Automated deployment via GitHub Actions will be re-enabled in a future update.
-
-**Publishing Workflow:**
+**Manual Publishing Workflow:**
 
 ```bash
 # 1. Update version and changelog
 npm version patch  # or minor, major
 
-# 2. Build and publish manually
+# 2. Build and publish
 npm run build
 npm publish --access public
 
@@ -498,28 +496,14 @@ git tag -a v2.0.1 -m "Release v2.0.1"
 git push origin main --follow-tags
 ```
 
-**CD Pipeline (Validation Only):**
-
-The CD workflow still runs on pushes to main and provides:
-
-1. **Pre-deployment Validation**: Verify CI passed, build successful
-2. **Build & Trinity Validation**: Validate Trinity components
-3. **GitHub Release**: Auto-creates releases for version tags with CHANGELOG
-
-**CD Workflow Location:** [.github/workflows/cd.yml](.github/workflows/cd.yml)
-
 **Automated Checks Before Publishing:**
 
-1. `prepublishOnly` script runs automatically
-2. TypeScript compilation (`npm run build`)
-3. Template copying to dist/
-4. Full test suite execution (`npm run test`)
-5. Only publishes if all checks pass
+The `prepublishOnly` script runs automatically before every publish:
 
-**Documentation:**
-
-- **Complete CI/CD Guide**: [docs/guides/CI-CD-GUIDE.md](docs/guides/CI-CD-GUIDE.md)
-- **Quick Reference**: [docs/reference/CI-CD-REFERENCE.md](docs/reference/CI-CD-REFERENCE.md)
+1. TypeScript compilation (`npm run build`)
+2. Template copying to dist/
+3. Full test suite execution (`npm run test`)
+4. Only publishes if all checks pass
 
 ---
 

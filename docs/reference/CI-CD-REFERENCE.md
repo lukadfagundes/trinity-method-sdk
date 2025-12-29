@@ -8,9 +8,9 @@
 ## Quick Links
 
 - **CI Workflow:** `.github/workflows/ci.yml`
-- **CD Workflow:** `.github/workflows/cd.yml`
 - **Full Guide:** [CI-CD-GUIDE.md](../guides/CI-CD-GUIDE.md)
 - **Actions Dashboard:** `https://github.com/{user}/{repo}/actions`
+- **npm Package:** [trinity-method-sdk](https://www.npmjs.com/package/trinity-method-sdk)
 
 ---
 
@@ -27,22 +27,6 @@
 | `success-check`      | Final validation                  | All pushes/PRs | ~1 min   |
 
 **Total Execution Time:** ~20-25 minutes (jobs run in parallel)
-
----
-
-## CD Pipeline Jobs
-
-| Job              | Description             | Trigger           | Duration |
-| ---------------- | ----------------------- | ----------------- | -------- |
-| `validate`       | Pre-deployment checks   | Main/tags         | ~5 min   |
-| `build`          | Build release artifacts | Main/tags         | ~2 min   |
-| `publish`        | Manual npm publish      | Manual only       | N/A      |
-| `github-release` | Create GitHub release   | Version tags only | ~1 min   |
-| `notify`         | Deployment summary      | Main/tags         | ~1 min   |
-
-**Total Execution Time:** ~9 minutes (excluding manual npm publish)
-
-**Note:** npm publishing is currently manual due to npm Trusted Publisher limitations with packages initially published via traditional authentication.
 
 ---
 
@@ -66,7 +50,7 @@
 | Agent Templates | 19    | `src/templates/agents/`                 | File count, structure         |
 | Slash Commands  | 19+   | `src/templates/shared/claude-commands/` | File count, critical commands |
 | Knowledge Base  | 4+    | `src/templates/knowledge-base/`         | Required files                |
-| CI/CD Templates | 2     | `src/templates/ci/`                     | ci.yml, cd.yml                |
+| CI/CD Templates | 1     | `src/templates/ci/`                     | ci.yml                        |
 
 ---
 
