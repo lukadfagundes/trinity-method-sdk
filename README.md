@@ -481,53 +481,32 @@ Trinity uses GitHub Actions for comprehensive continuous integration and deploym
 
 #### Continuous Deployment (CD)
 
-**Automated Publishing to npm:**
+**Note:** Due to limitations with npm Trusted Publishers and packages initially published via traditional authentication, the CD pipeline currently requires manual publishing. Automated deployment via GitHub Actions will be re-enabled in a future update.
 
-The CD pipeline automatically publishes to npm when you push version tags to the main branch:
+**Publishing Workflow:**
 
 ```bash
-# Create release commit and tag (triggers CD pipeline on main branch only)
-git commit --allow-empty -m "chore: release v2.0.0"
-git tag -a v2.0.0 -m "Trinity Method SDK v2.0.0"
+# 1. Update version and changelog
+npm version patch  # or minor, major
+
+# 2. Build and publish manually
+npm run build
+npm publish --access public
+
+# 3. Create git tag and push
+git tag -a v2.0.1 -m "Release v2.0.1"
 git push origin main --follow-tags
 ```
 
-**CD Pipeline Workflow:**
+**CD Pipeline (Validation Only):**
 
-1. **Pre-deployment Validation**: Verify CI passed, tag format correct (v\*), on main branch
-2. **Build & Trinity Validation**: Build artifacts, validate Trinity components
-3. **npm Publish**: Automated publishing using `NPM_TOKEN` secret
-4. **GitHub Release**: Create GitHub release with CHANGELOG
-5. **Deployment Summary**: Post-deployment notifications and metrics
+The CD workflow still runs on pushes to main and provides:
+
+1. **Pre-deployment Validation**: Verify CI passed, build successful
+2. **Build & Trinity Validation**: Validate Trinity components
+3. **GitHub Release**: Auto-creates releases for version tags with CHANGELOG
 
 **CD Workflow Location:** [.github/workflows/cd.yml](.github/workflows/cd.yml)
-
-**Important:** The CD pipeline only triggers on the `main` branch. Tags pushed to `dev` or `testing` branches will not trigger automated deployment.
-
-**Required Setup:**
-
-Before automated deployment works, you must configure the `NPM_TOKEN` secret:
-
-1. Create npm granular access token (see [.env.example](.env.example) for detailed instructions)
-2. Add to GitHub Secrets:
-   - Go to: **Settings → Secrets and variables → Actions → New repository secret**
-   - Name: `NPM_TOKEN`
-   - Value: [your npm token]
-
-**Documentation:**
-
-- **Complete CI/CD Guide**: [docs/guides/CI-CD-GUIDE.md](docs/guides/CI-CD-GUIDE.md)
-- **Quick Reference**: [docs/reference/CI-CD-REFERENCE.md](docs/reference/CI-CD-REFERENCE.md)
-
-### Manual Publishing (Optional)
-
-You can still publish manually if needed:
-
-```bash
-# After pushing to main and CI passes
-npm login                    # Authenticate with npm
-npm publish                  # Publishes with prepublishOnly checks
-```
 
 **Automated Checks Before Publishing:**
 
@@ -537,7 +516,10 @@ npm publish                  # Publishes with prepublishOnly checks
 4. Full test suite execution (`npm run test`)
 5. Only publishes if all checks pass
 
-**Note:** Manual publishing is now optional. The CD pipeline handles automated publishing when you create version tags (recommended workflow).
+**Documentation:**
+
+- **Complete CI/CD Guide**: [docs/guides/CI-CD-GUIDE.md](docs/guides/CI-CD-GUIDE.md)
+- **Quick Reference**: [docs/reference/CI-CD-REFERENCE.md](docs/reference/CI-CD-REFERENCE.md)
 
 ---
 

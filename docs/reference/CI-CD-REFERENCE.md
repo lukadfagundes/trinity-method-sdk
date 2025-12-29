@@ -32,15 +32,17 @@
 
 ## CD Pipeline Jobs
 
-| Job              | Description             | Trigger      | Duration |
-| ---------------- | ----------------------- | ------------ | -------- |
-| `validate`       | Pre-deployment checks   | Version tags | ~5 min   |
-| `build`          | Build release artifacts | Version tags | ~2 min   |
-| `publish`        | Publish to npm          | Version tags | ~1 min   |
-| `github-release` | Create GitHub release   | Version tags | ~1 min   |
-| `notify`         | Deployment summary      | Version tags | ~1 min   |
+| Job              | Description             | Trigger           | Duration |
+| ---------------- | ----------------------- | ----------------- | -------- |
+| `validate`       | Pre-deployment checks   | Main/tags         | ~5 min   |
+| `build`          | Build release artifacts | Main/tags         | ~2 min   |
+| `publish`        | Manual npm publish      | Manual only       | N/A      |
+| `github-release` | Create GitHub release   | Version tags only | ~1 min   |
+| `notify`         | Deployment summary      | Main/tags         | ~1 min   |
 
-**Total Execution Time:** ~10 minutes
+**Total Execution Time:** ~9 minutes (excluding manual npm publish)
+
+**Note:** npm publishing is currently manual due to npm Trusted Publisher limitations with packages initially published via traditional authentication.
 
 ---
 
