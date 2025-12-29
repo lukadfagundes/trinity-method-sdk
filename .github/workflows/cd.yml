@@ -195,6 +195,9 @@ jobs:
     environment:
       name: production
       url: https://www.npmjs.com/package/trinity-method-sdk
+    permissions:
+      id-token: write # Required for OIDC authentication with npm
+      contents: read
 
     steps:
       - name: Checkout code
