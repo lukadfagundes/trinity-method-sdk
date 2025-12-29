@@ -19,7 +19,7 @@ const mockSpinner: Ora = {
   warn: () => mockSpinner,
   info: () => mockSpinner,
   stop: () => mockSpinner,
-  text: ''
+  text: '',
 };
 
 export default function ora(_text?: string): Ora {

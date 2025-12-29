@@ -13,10 +13,7 @@ import type { DeployOptions, Spinner } from './types.js';
  * @param spinner - Spinner instance for status updates
  * @throws Error if Trinity already deployed and --force not used
  */
-export async function checkPreFlight(
-  options: DeployOptions,
-  spinner: Spinner
-): Promise<void> {
+export async function checkPreFlight(options: DeployOptions, spinner: Spinner): Promise<void> {
   spinner.start('Running pre-flight checks...');
 
   // Check if Trinity is already deployed
@@ -24,20 +21,10 @@ export async function checkPreFlight(
 
   if (trinityExists && !options.force) {
     spinner.fail();
-    console.log(
-      chalk.yellow(
-        '\nTrinity Method is already deployed in this project.'
-      )
-    );
-    console.log(
-      chalk.cyan(
-        '\nUse --force flag to redeploy (this will overwrite existing files):'
-      )
-    );
+    console.log(chalk.yellow('\nTrinity Method is already deployed in this project.'));
+    console.log(chalk.cyan('\nUse --force flag to redeploy (this will overwrite existing files):'));
     console.log(chalk.white('  npx trinity deploy --force\n'));
-    throw new Error(
-      'Trinity already deployed. Use --force to redeploy.'
-    );
+    throw new Error('Trinity already deployed. Use --force to redeploy.');
   }
 
   if (trinityExists && options.force) {

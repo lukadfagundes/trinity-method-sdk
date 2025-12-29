@@ -9,7 +9,7 @@
 # Environment Setup
 # ====================
 environment:
-  node_version: "20.x"
+  node_version: '20.x'
   ci: true
 
 # ====================
@@ -39,7 +39,7 @@ lint:
 test:
   stage: test
   matrix:
-    node_version: ["18.x", "20.x"]
+    node_version: ['18.x', '20.x']
   commands:
     - npm test
   artifacts:
@@ -52,7 +52,7 @@ test:
 
 test_with_coverage:
   stage: test
-  node_version: "20.x"
+  node_version: '20.x'
   commands:
     - npm run test:coverage
   artifacts:
@@ -86,7 +86,7 @@ build:
 # ====================
 deploy_trinity:
   stage: deploy
-  node_version: "20.x"
+  node_version: '20.x'
   depends_on:
     - test_with_coverage
     - build

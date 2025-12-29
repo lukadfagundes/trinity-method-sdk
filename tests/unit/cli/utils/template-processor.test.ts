@@ -5,7 +5,11 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { processTemplate, extractVariables, formatMetrics } from '../../../../src/cli/utils/template-processor.js';
+import {
+  processTemplate,
+  extractVariables,
+  formatMetrics,
+} from '../../../../src/cli/utils/template-processor.js';
 import type { Stack, CodebaseMetrics } from '../../../../src/cli/types.js';
 
 describe('processTemplate', () => {

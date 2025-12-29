@@ -35,10 +35,7 @@ import fs from 'fs-extra';
  * validatePath('C:\\Windows\\System32'); // throws Error
  * ```
  */
-export function validatePath(
-  userPath: string,
-  baseDir: string = process.cwd()
-): string {
+export function validatePath(userPath: string, baseDir: string = process.cwd()): string {
   // Check for null bytes (path injection attempt)
   if (userPath.includes('\0')) {
     throw new Error(
@@ -161,9 +158,7 @@ export async function safeCopy(
   if (await fs.pathExists(validSrc)) {
     await validateNotSymlink(validSrc);
   } else {
-    throw new Error(
-      `Source path does not exist: ${src}\n` + `Resolved to: ${validSrc}`
-    );
+    throw new Error(`Source path does not exist: ${src}\n` + `Resolved to: ${validSrc}`);
   }
 
   // Copy with security options

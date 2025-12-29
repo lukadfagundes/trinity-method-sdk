@@ -3,7 +3,13 @@
  */
 
 import type { Ora } from 'ora';
-import type { DeployOptions, Stack, CodebaseMetrics, LintingTool, PostInstallInstruction } from '../../types.js';
+import type {
+  DeployOptions,
+  Stack,
+  CodebaseMetrics,
+  LintingTool,
+  PostInstallInstruction,
+} from '../../types.js';
 
 export type { DeployOptions, Stack, CodebaseMetrics, LintingTool, PostInstallInstruction };
 

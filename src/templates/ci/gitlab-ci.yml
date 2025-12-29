@@ -4,8 +4,8 @@ stages:
   - deploy
 
 variables:
-  NODE_VERSION: "20"
-  CI: "true"
+  NODE_VERSION: '20'
+  CI: 'true'
 
 .node_template: &node_template
   image: node:${NODE_VERSION}
@@ -34,7 +34,7 @@ test:unit:
   stage: test
   parallel:
     matrix:
-      - NODE_VERSION: ["18", "20"]
+      - NODE_VERSION: ['18', '20']
   script:
     - npm test
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
@@ -73,7 +73,7 @@ test:coverage:
 build:
   <<: *node_template
   stage: build
-  needs: ["test:unit"]
+  needs: ['test:unit']
   script:
     - npm run build || echo "No build script found"
   artifacts:
@@ -89,7 +89,7 @@ build:
 deploy:trinity:
   <<: *node_template
   stage: deploy
-  needs: ["test:coverage", "build"]
+  needs: ['test:coverage', 'build']
   script:
     - npx trinity deploy --agent claude --ci-deploy --yes
   artifacts:
