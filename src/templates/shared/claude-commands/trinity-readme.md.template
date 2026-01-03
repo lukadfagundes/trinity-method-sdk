@@ -49,6 +49,30 @@ The `/trinity-readme` command invokes APO (Documentation Specialist) to manage R
 
 ---
 
+## DOCUMENTATION RULES
+
+**These rules apply to ALL documentation created by this command. NO EXCEPTIONS.**
+
+### Rule 1: No Self-Serving Trinity Documentation
+
+**❌ FORBIDDEN:**
+- Including information about Trinity Method in project documentation
+- Explaining what Trinity Method is in README/docs
+- Mentioning Trinity agents (APO, MON, ROR, KIL, BAS, etc.) in user-facing docs
+- Documenting Trinity slash commands in project docs
+- Adding Trinity Method badges, links, or references to project documentation
+- Describing the Trinity Method SDK in project documentation
+
+**✅ CORRECT:**
+- Document the USER'S codebase exclusively
+- Focus on the project's functionality, architecture, and usage
+- Trinity Method is a development tool, not the subject of documentation
+- The project documentation is about the project, not about how it was documented
+
+**Why:** Trinity Method SDK is a tool for developers. The project's documentation should focus exclusively on the project's code, features, and usage - not on the development methodology used to create it.
+
+---
+
 ## When to Use `/trinity-readme`
 
 ### Perfect Use Cases:

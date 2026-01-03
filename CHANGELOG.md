@@ -19,6 +19,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [2.0.2] - 2026-01-02
+
+### Added
+
+- **DOCUMENTATION RULES** section to all APO documentation commands (`/trinity-docs`, `/trinity-readme`, `/trinity-changelog`)
+  - Rule 1: No Self-Serving Trinity Documentation - Prevents APO from including Trinity Method information in user project documentation
+  - Provides clear ✅/❌ examples and rationale for focusing exclusively on user's codebase
+- Explicit **Write tool execution commands** throughout `/trinity-docs` Phase 2
+  - Added 🚨 CRITICAL EXECUTION REQUIREMENT section at Phase 2 start
+  - Added **EXECUTION REQUIRED** code blocks for each seeding step
+  - Added **Phase 2 Execution Summary** with mandatory file creation checklist
+  - Ensures APO creates actual documentation files instead of just showing templates
+
+### Changed
+
+- **`/trinity-docs` command:** Enhanced Phase 2 with explicit Write tool requirements
+  - Step 2 (Guides): Added execution requirements for getting-started.md and framework-specific guides
+  - Step 3 (API): Added execution requirements for api/README.md
+  - Step 4 (Architecture): Added execution requirements for architecture/overview.md
+  - Step 5 (Reference): Added execution requirements for reference/README.md
+  - Phase now requires minimum 4 files to be created: getting-started.md, api/README.md, architecture/overview.md, reference/README.md
+
+### Fixed
+
+- **APO file creation issue:** `/trinity-docs` now explicitly commands APO to use Write tool, preventing scenario where directory structure is created but documentation files are not written
+
 ## [2.0.1] - 2025-12-29
 
 ### Added

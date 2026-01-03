@@ -31,7 +31,7 @@ const VARIABLE_RESOLVERS: Record<string, (vars: Record<string, string | number>)
     toString(v.DEPLOYMENT_TIMESTAMP || v.timestamp) || new Date().toISOString(),
   LANGUAGE: (v) => toString(v.LANGUAGE || v.language) || 'Unknown',
   PACKAGE_MANAGER: (v) => toString(v.PACKAGE_MANAGER || v.packageManager) || 'npm',
-  TRINITY_VERSION: (v) => toString(v.TRINITY_VERSION) || '2.0.1',
+  TRINITY_VERSION: (v) => toString(v.TRINITY_VERSION) || '2.0.2',
   TECHNOLOGY_STACK: (v) => toString(v.TECHNOLOGY_STACK || v.TECH_STACK || v.techStack) || 'Unknown',
   PRIMARY_FRAMEWORK: (v) =>
     toString(v.PRIMARY_FRAMEWORK || v.FRAMEWORK || v.framework) || 'Generic',

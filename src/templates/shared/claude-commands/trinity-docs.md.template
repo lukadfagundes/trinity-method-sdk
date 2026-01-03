@@ -56,6 +56,30 @@ The `/trinity-docs` command invokes APO (Documentation Specialist) to **create a
 
 ---
 
+## DOCUMENTATION RULES
+
+**These rules apply to ALL documentation created by this command. NO EXCEPTIONS.**
+
+### Rule 1: No Self-Serving Trinity Documentation
+
+**❌ FORBIDDEN:**
+- Including information about Trinity Method in project documentation
+- Explaining what Trinity Method is in README/docs
+- Mentioning Trinity agents (APO, MON, ROR, KIL, BAS, etc.) in user-facing docs
+- Documenting Trinity slash commands in project docs
+- Adding Trinity Method badges, links, or references to project documentation
+- Describing the Trinity Method SDK in project documentation
+
+**✅ CORRECT:**
+- Document the USER'S codebase exclusively
+- Focus on the project's functionality, architecture, and usage
+- Trinity Method is a development tool, not the subject of documentation
+- The project documentation is about the project, not about how it was documented
+
+**Why:** Trinity Method SDK is a tool for developers. The project's documentation should focus exclusively on the project's code, features, and usage - not on the development methodology used to create it.
+
+---
+
 ## When to Use `/trinity-docs`
 
 ### Perfect Use Cases:
@@ -440,6 +464,14 @@ for each file1 in all_md_files:
 
 **Goal:** Create hierarchical docs/ structure with seeded initial content
 
+**🚨 CRITICAL EXECUTION REQUIREMENT:**
+
+APO MUST use the **Write tool** to create documentation files in this phase.
+- Creating directories is NOT enough
+- Showing content templates is NOT enough
+- APO MUST execute `Write("docs/guides/getting-started.md", content)` commands
+- Minimum 4 files MUST be created: getting-started.md, api/README.md, architecture/overview.md, reference/README.md
+
 **Standard Directory Structure:**
 
 ```
@@ -479,8 +511,34 @@ for each dir in required_dirs:
 
 **CRITICAL: Create useful starter guides based on project type, not empty placeholders**
 
+**✅ APO MUST:**
+1. USE Write tool to create docs/guides/getting-started.md with project-specific content
+2. USE Write tool to create framework-specific guides (if applicable)
+3. Content MUST be based on actual project metadata from Phase 1
+4. NO generic placeholders - use real project name, version, dependencies
+
+**EXECUTION REQUIRED:**
+```javascript
+// APO MUST execute these Write commands:
+
+// 1. Create getting-started.md
+Write("docs/guides/getting-started.md", getting_started_content);
+
+// 2. Create framework-specific guide (if detected)
+if (framework === "Express" || framework === "NestJS") {
+  Write("docs/guides/api-development.md", api_dev_content);
+}
+if (framework === "React" || framework === "Next.js") {
+  Write("docs/guides/component-development.md", component_dev_content);
+}
+if (framework === "Django" || framework === "Flask") {
+  Write("docs/guides/django-development.md", django_dev_content);
+}
+```
+
+**CONTENT TEMPLATE for docs/guides/getting-started.md:**
+
 ```markdown
-### docs/guides/getting-started.md
 
 # Getting Started with {{PROJECT_NAME}}
 
@@ -663,8 +721,20 @@ python manage.py startapp myapp
 
 **Step 3: Seed docs/api/ Content (ENHANCEMENT 2 + 8)**
 
+**✅ APO MUST:**
+1. USE Write tool to create docs/api/README.md
+2. Include links to auto-generated API docs if detected in Phase 1
+3. If no auto-generated docs, create basic API documentation structure
+
+**EXECUTION REQUIRED:**
+```javascript
+// APO MUST execute this Write command:
+Write("docs/api/README.md", api_readme_content);
+```
+
+**CONTENT TEMPLATE for docs/api/README.md:**
+
 ```markdown
-### docs/api/README.md
 
 # API Documentation
 
@@ -729,8 +799,21 @@ Consider using tools like:
 
 **CRITICAL: Create real architecture documentation from codebase analysis**
 
+**✅ APO MUST:**
+1. USE Write tool to create docs/architecture/overview.md
+2. Content MUST be auto-generated from Phase 1 codebase analysis
+3. Include actual directory structure, detected patterns, entry points
+4. NO generic templates - use real project metadata
+
+**EXECUTION REQUIRED:**
+```javascript
+// APO MUST execute this Write command:
+Write("docs/architecture/overview.md", architecture_overview_content);
+```
+
+**CONTENT TEMPLATE for docs/architecture/overview.md:**
+
 ```markdown
-### docs/architecture/overview.md
 
 # Architecture Overview
 
@@ -864,8 +947,21 @@ For detailed API documentation, see [../api/](../api/).
 
 **Step 5: Seed docs/reference/ Content (ENHANCEMENT 2)**
 
+**✅ APO MUST:**
+1. USE Write tool to create docs/reference/README.md
+2. Include actual CLI commands from package.json scripts
+3. Document environment variables if .env.example exists
+4. List configuration options if detected
+
+**EXECUTION REQUIRED:**
+```javascript
+// APO MUST execute this Write command:
+Write("docs/reference/README.md", reference_readme_content);
+```
+
+**CONTENT TEMPLATE for docs/reference/README.md:**
+
 ```markdown
-### docs/reference/README.md
 
 # Reference Documentation
 
@@ -1028,6 +1124,23 @@ See [../README.md](../README.md) for complete documentation index.
 {Content from Step 5 - already seeded with CLI commands, env vars}
 ```
 
+**Phase 2 Execution Summary:**
+
+**✅ MANDATORY FILE CREATIONS:**
+
+APO MUST have executed Write tool for these files (minimum required):
+1. ✅ docs/guides/getting-started.md
+2. ✅ docs/api/README.md
+3. ✅ docs/architecture/overview.md
+4. ✅ docs/reference/README.md
+
+**Optional (based on detected framework):**
+- docs/guides/{framework}-development.md (if Express/React/Django/etc detected)
+
+**VERIFICATION:**
+
+If APO did NOT create these files using Write tool, APO has FAILED Phase 2.
+
 **APO Output:**
 
 ```markdown
@@ -1040,7 +1153,9 @@ See [../README.md](../README.md) for complete documentation index.
 - ✅ docs/reference/
 - ✅ docs/images/
 
-**Content Seeded:** {count} files created
+**Files Created with Write Tool:** {count} files
+
+**VERIFICATION - Files Created:**
 
 **Guides:**
 - ✅ docs/guides/getting-started.md ({line_count} lines)
