@@ -1,7 +1,7 @@
 # Trinity Method SDK - CI/CD Guide
 
-**Version:** 2.0.1
-**Last Updated:** 2025-12-28
+**Version:** 2.0.2
+**Last Updated:** 2026-01-02
 **Maintained by:** EIN (CI/CD Specialist)
 
 ---
@@ -387,7 +387,7 @@ git push origin --tags
 **Option B: Manual Workflow Dispatch**
 
 1. Go to: Actions → Trinity CD Pipeline → Run workflow
-2. Enter version (e.g., `2.0.1`)
+2. Enter version (e.g., `2.0.2`)
 3. Choose dry-run (optional)
 4. Click "Run workflow"
 
@@ -427,10 +427,10 @@ npm token create --type automation
 
 ```bash
 # Verify package is available on npm
-npm view trinity-method-sdk@2.0.1
+npm view trinity-method-sdk@2.0.2
 
 # Install and test
-npm install -g trinity-method-sdk@2.0.1
+npm install -g trinity-method-sdk@2.0.2
 trinity --version
 
 # Test deployment
@@ -517,20 +517,20 @@ Use consistent casing for file names
 
 #### Version Mismatch
 
-**Error:** Version mismatch - Tag: 2.0.1, package.json: 2.0.0
+**Error:** Version mismatch - Tag: 2.0.2, package.json: 2.0.0
 
 **Solution:**
 
 ```bash
 # Update package.json version
-npm version 2.0.1 --no-git-tag-version
+npm version 2.0.2 --no-git-tag-version
 
 # Commit changes
 git add package.json
-git commit -m "Bump version to 2.0.1"
+git commit -m "Bump version to 2.0.2"
 
 # Create tag
-git tag v2.0.1
+git tag v2.0.2
 git push origin --tags
 ```
 
@@ -554,7 +554,7 @@ git push origin --tags
 ```bash
 # Delete existing release (GitHub UI)
 # Or use gh CLI
-gh release delete v2.0.1 --yes
+gh release delete v2.0.2 --yes
 
 # Re-run workflow
 ```
@@ -663,5 +663,5 @@ chore: Update dependencies
 ---
 
 **Maintained by:** EIN (CI/CD Specialist)
-**Trinity Version:** 2.0.1
-**Last Updated:** 2025-12-28
+**Trinity Version:** 2.0.2
+**Last Updated:** 2026-01-02

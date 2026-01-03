@@ -1,6 +1,6 @@
-# Trinity Method SDK v2.0.1 - Continuous Deployment Pipeline
+# Trinity Method SDK v2.0.2 - Continuous Deployment Pipeline
 # EIN (CI/CD Specialist) - Automated deployment to npm registry
-# Triggered on version tags on main branch (v2.0.1, v2.0.1, etc.)
+# Triggered on version tags on main branch (v2.0.0, v2.0.1, etc.)
 
 name: Trinity CD Pipeline
 
@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to publish (e.g., 2.0.1)'
+        description: 'Version to publish (e.g., 2.0.2)'
         required: true
         type: string
       dry_run:
