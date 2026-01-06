@@ -1,6 +1,6 @@
 # Deployment Guide: Advanced Trinity Method Scenarios
 
-**Trinity Version:** 2.0.5
+**Trinity Version:** 2.0.6
 **Last Updated:** 2026-01-02
 
 ## Overview
@@ -825,4 +825,4 @@ jobs:
 
 ---
 
-**Trinity Method SDK v2.0.5** - Investigation-first development methodology
+**Trinity Method SDK v2.0.6** - Investigation-first development methodology

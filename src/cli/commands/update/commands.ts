@@ -35,9 +35,15 @@ function determineCommandCategory(filename: string): string {
     filename.includes('decompose')
   ) {
     return 'planning';
-  } else if (filename.includes('orchestrate')) {
+  } else if (
+    filename.includes('orchestrate') ||
+    filename.includes('audit') ||
+    filename.includes('changelog') ||
+    filename.includes('docs') ||
+    filename.includes('readme')
+  ) {
     return 'execution';
-  } else if (filename.includes('investigation')) {
+  } else if (filename.includes('investigation') || filename.includes('investigate')) {
     return 'investigation';
   } else if (filename.includes('init')) {
     return 'infrastructure';

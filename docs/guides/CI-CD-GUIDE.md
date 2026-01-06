@@ -1,6 +1,6 @@
 # Trinity Method SDK - CI/CD Guide
 
-**Version:** 2.0.5
+**Version:** 2.0.6
 **Last Updated:** 2026-01-02
 **Maintained by:** EIN (CI/CD Specialist)
 
@@ -369,10 +369,10 @@ The `prepublishOnly` script runs automatically before every publish:
 
 ```bash
 # Verify package is available on npm
-npm view trinity-method-sdk@2.0.5
+npm view trinity-method-sdk@2.0.6
 
 # Install and test
-npm install -g trinity-method-sdk@2.0.5
+npm install -g trinity-method-sdk@2.0.6
 trinity --version
 
 # Test deployment
@@ -459,20 +459,20 @@ Use consistent casing for file names
 
 #### Version Mismatch
 
-**Error:** Version mismatch - Tag: 2.0.5, package.json: 2.0.0
+**Error:** Version mismatch - Tag: 2.0.6, package.json: 2.0.0
 
 **Solution:**
 
 ```bash
 # Update package.json version
-npm version 2.0.5 --no-git-tag-version
+npm version 2.0.6 --no-git-tag-version
 
 # Commit changes
 git add package.json
-git commit -m "Bump version to 2.0.5"
+git commit -m "Bump version to 2.0.6"
 
 # Create tag
-git tag v2.0.5
+git tag v2.0.6
 git push origin --tags
 ```
 
@@ -510,7 +510,7 @@ npm publish --access public
 ```bash
 # Delete existing release (GitHub UI)
 # Or use gh CLI
-gh release delete v2.0.5 --yes
+gh release delete v2.0.6 --yes
 
 # Re-run workflow
 ```
@@ -619,5 +619,5 @@ chore: Update dependencies
 ---
 
 **Maintained by:** EIN (CI/CD Specialist)
-**Trinity Version:** 2.0.5
+**Trinity Version:** 2.0.6
 **Last Updated:** 2026-01-02

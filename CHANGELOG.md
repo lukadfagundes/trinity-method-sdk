@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [2.0.6] - 2026-01-06
+
+### Fixed
+
+- **CRITICAL: Command categorization logic** - Fixed `trinity update` to correctly categorize slash commands
+  - Execution commands (`audit`, `changelog`, `docs`, `readme`) were falling through to utility category
+  - Investigation commands containing `investigate` were not being matched properly
+  - Commands now deploy to correct category directories (session, planning, execution, investigation, infrastructure, utility)
+  - Prevents duplicate commands in wrong directories during updates
+
 ## [2.0.5] - 2026-01-06
 
 ### Fixed
