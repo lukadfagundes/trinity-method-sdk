@@ -29,9 +29,20 @@ export async function updateAgents(spinner: Ora, stats: UpdateStats): Promise<vo
     const targetPath = path.join('.claude/agents', agentDir);
 
     if (await fs.pathExists(sourcePath)) {
-      await fs.copy(sourcePath, targetPath, { overwrite: true });
+      await fs.ensureDir(targetPath);
       const files = await fs.readdir(sourcePath);
-      stats.agentsUpdated += files.length;
+
+      // Copy each file individually, stripping .template extension
+      for (const file of files) {
+        if (file.endsWith('.md.template')) {
+          const sourceFile = path.join(sourcePath, file);
+          const deployedFileName = file.replace('.template', '');
+          const targetFile = path.join(targetPath, deployedFileName);
+
+          await fs.copy(sourceFile, targetFile, { overwrite: true });
+          stats.agentsUpdated++;
+        }
+      }
     }
   }
 

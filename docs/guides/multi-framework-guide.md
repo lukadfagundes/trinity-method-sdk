@@ -1,6 +1,6 @@
 # Multi-Framework Guide: Trinity Across Languages
 
-**Trinity Version:** 2.0.6
+**Trinity Version:** 2.0.7
 **Last Updated:** 2026-01-02
 
 ## Overview
@@ -588,4 +588,4 @@ pre-commit run --all-files
 
 ---
 
-**Trinity Method SDK v2.0.6** - Investigation-first development for all frameworks
+**Trinity Method SDK v2.0.7** - Investigation-first development for all frameworks

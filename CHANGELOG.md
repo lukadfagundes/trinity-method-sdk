@@ -19,6 +19,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [2.0.7] - 2026-01-06
+
+### Fixed
+
+- **CRITICAL: Agent file extension handling** - Fixed agent updates to strip `.template` extension
+  - Agents were being copied with `.md.template` extension, creating duplicates alongside old `.md` files
+  - Now correctly strips `.template` extension during deployment to `.claude/agents/` subdirectories
+  - Each agent file copied individually with proper extension handling
+
+- **CRITICAL: Template directory structure** - Fixed template updates to use correct directory structure
+  - Work order templates were being deployed to wrong directory (`trinity/templates/` instead of `trinity/templates/work-orders/`)
+  - Documentation templates (`trinity/templates/documentation/`) were not being updated at all
+  - Investigation templates (`trinity/templates/investigations/`) were not being updated at all
+  - Now correctly deploys all 3 template types to their proper subdirectories with `.template` extension stripped
+  - Total templates updated: 13 files (6 work-orders + 2 documentation + 5 investigations)
+
 ## [2.0.6] - 2026-01-06
 
 ### Fixed
@@ -26,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CRITICAL: Command categorization logic** - Fixed `trinity update` to correctly categorize slash commands
   - Execution commands (`audit`, `changelog`, `docs`, `readme`) were falling through to utility category
   - Investigation commands containing `investigate` were not being matched properly
-  - Commands now deploy to correct category directories (session, planning, execution, investigation, infrastructure, utility)
+  - Commands now deploy to correct category directories (session, planning, execution, investigation, infrastructure, infrastructure, utility)
   - Prevents duplicate commands in wrong directories during updates
 
 ## [2.0.5] - 2026-01-06
