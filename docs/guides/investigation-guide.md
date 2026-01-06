@@ -1,6 +1,6 @@
 # Investigation Guide: Structured Problem-Solving with Trinity
 
-**Trinity Version:** 2.0.3
+**Trinity Version:** 2.0.4
 **Last Updated:** 2026-01-02
 
 ## Overview
@@ -809,4 +809,4 @@ Always complete investigations:
 
 ---
 
-**Trinity Method SDK v2.0.3** - Investigation-First Development
+**Trinity Method SDK v2.0.4** - Investigation-First Development

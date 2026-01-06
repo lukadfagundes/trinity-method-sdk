@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [2.0.4] - 2026-01-06
+
+### Fixed
+
+- **CRITICAL: Update command path resolution** - Fixed `trinity update` to use centralized SDK path resolution
+  - Update command was using hardcoded `@trinity-method/sdk` path instead of `trinity-method-sdk`
+  - Commands, agents, templates, and knowledge base files now update correctly with global installations
+  - Fixed "Commands template path not found, skipping" warning
+
 ## [2.0.3] - 2026-01-06
 
 ### Fixed

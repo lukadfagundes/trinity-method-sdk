@@ -50,7 +50,7 @@ async function deployRootClaudeMarkdown(
  */
 async function deployVersionFile(pkgVersion: string): Promise<number> {
   const versionPath = validatePath('trinity/VERSION');
-  await fs.writeFile(versionPath, pkgVersion || '2.0.3');
+  await fs.writeFile(versionPath, pkgVersion || '2.0.4');
   return 1;
 }
 

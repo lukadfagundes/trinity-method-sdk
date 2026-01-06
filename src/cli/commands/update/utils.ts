@@ -4,18 +4,13 @@
  * @module cli/commands/update/utils
  */
 
-import fs from 'fs-extra';
-import path from 'path';
+import { getSDKPath as getCentralSDKPath } from '../../utils/get-sdk-path.js';
 
 /**
  * Get SDK path for reading template files
+ * Uses centralized SDK path resolution that supports dev, local, and global installs
  * @returns Path to SDK directory
  */
 export async function getSDKPath(): Promise<string> {
-  // In tests it's process.cwd(), in production it's node_modules/@trinity-method/sdk
-  const sdkPath = (await fs.pathExists(path.join(process.cwd(), 'dist/templates')))
-    ? process.cwd() // Running from SDK root (tests or dev)
-    : path.join(process.cwd(), 'node_modules', '@trinity-method', 'sdk'); // Installed package
-
-  return sdkPath;
+  return getCentralSDKPath();
 }
