@@ -3,7 +3,7 @@
 **Project:** trinity-method-sdk
 **Type:** Node.js
 **Framework:** TypeScript CLI
-**Version:** 2.0.2
+**Version:** 2.0.3
 **Last Updated:** 2026-01-02
 
 ## System Overview

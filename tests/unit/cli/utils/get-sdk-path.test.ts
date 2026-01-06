@@ -44,8 +44,10 @@ describe('get-sdk-path', () => {
       // In tests, this resolves to the actual SDK location
       const sdkPath = await getSDKPath();
 
-      // Should contain 'Trinity Method SDK' (the actual SDK location)
-      expect(sdkPath).toContain('Trinity Method SDK');
+      // Should return an absolute path
+      expect(path.isAbsolute(sdkPath)).toBe(true);
+      // Should contain 'trinity' (works for both 'Trinity Method SDK' and 'trinity-method-sdk')
+      expect(sdkPath.toLowerCase()).toContain('trinity');
     });
 
     it('should handle absolute paths correctly', async () => {
@@ -130,7 +132,8 @@ describe('get-sdk-path', () => {
       const packageJsonPath = await getPackageJsonPath();
 
       // Should resolve to SDK location via import.meta.url
-      expect(sdkPath).toContain('Trinity Method SDK');
+      expect(path.isAbsolute(sdkPath)).toBe(true);
+      expect(sdkPath.toLowerCase()).toContain('trinity');
       expect(templatesPath).toContain('dist');
       expect(packageJsonPath).toContain('package.json');
     });
@@ -160,8 +163,9 @@ describe('get-sdk-path', () => {
     it('should construct SDK path correctly', async () => {
       const sdkPath = await getSDKPath();
 
-      // Should resolve to Trinity Method SDK location
-      expect(sdkPath).toContain('Trinity Method SDK');
+      // Should resolve to SDK location (contains 'trinity')
+      expect(path.isAbsolute(sdkPath)).toBe(true);
+      expect(sdkPath.toLowerCase()).toContain('trinity');
     });
 
     it('should handle nested directory structures', async () => {

@@ -14,7 +14,7 @@ flowchart LR
     end
 
     subgraph "Variable Registry"
-        VARS["Variable Map<br/>PROJECT_NAME = my-app<br/>FRAMEWORK = Node.js<br/>PACKAGE_MANAGER = npm<br/>LINTING_TOOL = ESLint<br/>CI_PLATFORM = GitHub Actions<br/>CURRENT_DATE = 2025-12-28<br/>VERSION = 2.0.2"]
+        VARS["Variable Map<br/>PROJECT_NAME = my-app<br/>FRAMEWORK = Node.js<br/>PACKAGE_MANAGER = npm<br/>LINTING_TOOL = ESLint<br/>CI_PLATFORM = GitHub Actions<br/>CURRENT_DATE = 2025-12-28<br/>VERSION = 2.0.3"]
     end
 
     subgraph "Processing Engine"
@@ -101,7 +101,7 @@ This project uses {{LINTING_TOOL}} for code quality.
 **Framework:** Node.js
 **Package Manager:** npm
 **Deployed:** 2025-12-29
-**Version:** 2.0.2
+**Version:** 2.0.3
 
 ## Quick Start
 
@@ -126,7 +126,7 @@ This project uses ESLint for code quality.
 | `{{LINTING_TOOL}}` | User selection | `ESLint`, `Black`, `Clippy`, `Dart Analyzer` |
 | `{{CI_PLATFORM}}` | User selection | `GitHub Actions`, `GitLab CI`, `CircleCI`, `Jenkins` |
 | `{{CURRENT_DATE}}` | System date | `2025-12-28` |
-| `{{VERSION}}` | SDK version | `2.0.2` |
+| `{{VERSION}}` | SDK version | `2.0.3` |
 | `{{NODE_VERSION}}` | Minimum Node.js version | `16.9.0` |
 
 ## Processing Implementation

@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [2.0.3] - 2026-01-06
+
+### Fixed
+
+- **CRITICAL: Global install support** - Fixed SDK path resolution to work with global installations
+  - Changed package name from incorrect `@trinity-method/sdk` to `trinity-method-sdk` in path resolution
+  - Added `import.meta.url` support for resolving SDK location in global installs
+  - `trinity update` command now works correctly when SDK is installed globally
+  - Fixed "ENOENT: no such file or directory" error when running update command
+
 ## [2.0.2] - 2026-01-02
 
 ### Added
