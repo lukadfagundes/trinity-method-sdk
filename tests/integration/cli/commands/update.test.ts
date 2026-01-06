@@ -460,7 +460,7 @@ describe('Update Command - Integration Tests', () => {
 
       promptSpy.mockResolvedValueOnce({ confirm: true });
 
-      // Update will fail without SDK templates, but should not crash
+      // Update should now work with SDK templates found via import.meta.url
       let errorThrown = false;
       try {
         await update({ dryRun: false });
@@ -468,8 +468,8 @@ describe('Update Command - Integration Tests', () => {
         errorThrown = true;
       }
 
-      // Error should be caught and handled
-      expect(errorThrown).toBe(true);
+      // Update should succeed now that SDK path resolution is fixed
+      expect(errorThrown).toBe(false);
     });
 
     it('should maintain directory structure after failed update', async () => {

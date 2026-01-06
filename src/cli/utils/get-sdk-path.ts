@@ -4,19 +4,32 @@
  */
 
 import path from 'path';
+import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
 
 /**
  * Get the SDK root directory path
- * Auto-detects: SDK root (tests/dev) or node_modules/@trinity-method/sdk (production)
+ * Auto-detects: SDK root (tests/dev), local install, or global install
  */
 export async function getSDKPath(): Promise<string> {
-  // Check if dist/templates exists in current directory (running from SDK root)
+  // Check if dist/templates exists in current directory (running from SDK root during dev/test)
   if (await fs.pathExists(path.join(process.cwd(), 'dist/templates'))) {
     return process.cwd();
   }
-  // Otherwise assume installed as npm package
-  return path.join(process.cwd(), 'node_modules', '@trinity-method', 'sdk');
+
+  // Check local node_modules (for local installs)
+  const localPath = path.join(process.cwd(), 'node_modules', 'trinity-method-sdk');
+  if (await fs.pathExists(localPath)) {
+    return localPath;
+  }
+
+  // For global install, use import.meta.url to find the SDK root
+  // import.meta.url points to dist/cli/utils/get-sdk-path.js, so go up 3 levels to reach SDK root
+  const currentFilePath = fileURLToPath(import.meta.url);
+  const globalPath = path.resolve(path.dirname(currentFilePath), '..', '..', '..');
+
+  // Return global path (works for global installs)
+  return globalPath;
 }
 
 /**
