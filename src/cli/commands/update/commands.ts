@@ -70,10 +70,12 @@ export async function updateCommands(spinner: Ora, stats: UpdateStats): Promise<
   // Copy all command files
   const commandFiles = await fs.readdir(commandsTemplatePath);
   for (const file of commandFiles) {
-    if (file.endsWith('.md')) {
+    if (file.endsWith('.md.template')) {
       const sourcePath = path.join(commandsTemplatePath, file);
       const category = determineCommandCategory(file);
-      const targetPath = path.join('.claude/commands', category, file);
+      // Remove .template extension for deployed file
+      const deployedFileName = file.replace('.template', '');
+      const targetPath = path.join('.claude/commands', category, deployedFileName);
 
       await fs.copy(sourcePath, targetPath, { overwrite: true });
       stats.commandsUpdated++;

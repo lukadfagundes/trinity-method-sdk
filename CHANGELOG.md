@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [2.0.5] - 2026-01-06
+
+### Fixed
+
+- **CRITICAL: Slash command file updates** - Fixed `trinity update` command file extension handling
+  - Update commands module was looking for `.md` files but templates use `.md.template` extension
+  - Now correctly processes `.md.template` files and strips extension for deployed files
+  - Slash commands now update properly (20 command files) when running `trinity update`
+  - Matches the pattern used by knowledge-base update module
+
 ## [2.0.4] - 2026-01-06
 
 ### Fixed
