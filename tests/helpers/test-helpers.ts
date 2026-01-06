@@ -32,7 +32,7 @@ export async function cleanupTempDir(dir: string): Promise<void> {
  */
 export async function createMockTrinityDeployment(
   targetDir: string,
-  version: string = '2.0.4'
+  version: string = '2.0.5'
 ): Promise<void> {
   // Create trinity directory structure
   await fs.ensureDir(path.join(targetDir, 'trinity/knowledge-base'));

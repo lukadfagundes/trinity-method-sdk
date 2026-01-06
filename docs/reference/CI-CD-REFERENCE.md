@@ -1,6 +1,6 @@
 # CI/CD Quick Reference
 
-**Trinity Method SDK v2.0.4**
+**Trinity Method SDK v2.0.5**
 **EIN (CI/CD Specialist)**
 
 ---
@@ -391,13 +391,13 @@ git push origin main --force
 
 ```bash
 # Unpublish from npm (within 72 hours)
-npm unpublish trinity-method-sdk@2.0.4
+npm unpublish trinity-method-sdk@2.0.5
 
 # Or deprecate version
-npm deprecate trinity-method-sdk@2.0.4 "Critical bug, use 2.0.0"
+npm deprecate trinity-method-sdk@2.0.5 "Critical bug, use 2.0.0"
 
 # Delete GitHub release
-gh release delete v2.0.4 --yes
+gh release delete v2.0.5 --yes
 ```
 
 ---
@@ -410,6 +410,6 @@ gh release delete v2.0.4 --yes
 
 ---
 
-**Trinity Version:** 2.0.4
+**Trinity Version:** 2.0.5
 **Last Updated:** 2026-01-02
 **Maintained by:** EIN (CI/CD Specialist)

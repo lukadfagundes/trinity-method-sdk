@@ -1,6 +1,6 @@
 # Agent Quick Reference Card
 
-**Trinity Version:** 2.0.4
+**Trinity Version:** 2.0.5
 **Last Updated:** 2026-01-02
 
 Quick lookup table for Trinity's 19-agent team.
@@ -150,4 +150,4 @@ AJ MAESTRO → MON → ROR → EUS → TRA → KIL → BAS (loop) → DRA → Co
 
 ---
 
-**Trinity Method SDK v2.0.4** - 19-Agent Team Quick Reference
+**Trinity Method SDK v2.0.5** - 19-Agent Team Quick Reference
