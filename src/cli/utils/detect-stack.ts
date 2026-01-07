@@ -14,6 +14,7 @@ const COMMON_SOURCE_DIRS = [
   'database',
   'packages',
   'apps',
+  'bot',
 ];
 
 // Nested directory patterns (2-level and 3-level)
@@ -33,12 +34,17 @@ const NESTED_PATTERNS: string[][] = [
   ['client', 'src'],
   ['client', 'lib'],
   ['client', 'app'],
+  // 2-level patterns - bot variations
+  ['bot', 'src'],
+  ['bot', 'lib'],
+  ['bot', 'app'],
   // 2-level patterns - src nested
   ['src', 'backend'],
   ['src', 'frontend'],
   ['src', 'database'],
   ['src', 'server'],
   ['src', 'client'],
+  ['src', 'bot'],
 
   // 3-level patterns - src nested deeply
   ['src', 'backend', 'src'],

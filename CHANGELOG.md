@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Bot directory support** - Added `bot/` as a recognized source directory
+  - `bot/` directory now detected during deployment
+  - Framework-specific CLAUDE.md automatically deployed to `bot/` directory
+  - Supports nested patterns: `bot/src`, `bot/lib`, `bot/app`, `src/bot`
+
 ### Changed
 
 ### Deprecated
