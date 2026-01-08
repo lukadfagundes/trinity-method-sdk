@@ -36,6 +36,7 @@ program
   .description('Update Trinity Method to latest version')
   .option('--all', 'Update all registered Trinity projects')
   .option('--dry-run', 'Preview changes without writing files')
+  .option('--force', 'Force update even if already up to date')
   .action(errorHandler.wrap(update));
 
 program.parse();

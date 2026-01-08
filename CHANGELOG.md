@@ -9,11 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Bot directory support** - Added `bot/` as a recognized source directory
-  - `bot/` directory now detected during deployment
-  - Framework-specific CLAUDE.md automatically deployed to `bot/` directory
-  - Supports nested patterns: `bot/src`, `bot/lib`, `bot/app`, `src/bot`
-
 ### Changed
 
 ### Deprecated
@@ -23,6 +18,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+## [2.0.8] - 2026-01-08
+
+### Added
+
+- **Bot directory support** - Added `bot/` as a recognized source directory
+  - `bot/` directory now detected during deployment
+  - Framework-specific CLAUDE.md automatically deployed to `bot/` directory
+  - Supports nested patterns: `bot/src`, `bot/lib`, `bot/app`, `src/bot`
+
+- **Force update flag** - Added `--force` flag to `trinity update` command
+  - Allows forcing re-update even when already at latest version
+  - Useful for repairing corrupted deployments or applying template fixes
+  - Usage: `trinity update --force`
 
 ## [2.0.7] - 2026-01-06
 

@@ -18,6 +18,7 @@ export interface DeployOptions {
 export interface UpdateOptions {
   all?: boolean;
   dryRun?: boolean;
+  force?: boolean;
 }
 
 export interface LintingTool {

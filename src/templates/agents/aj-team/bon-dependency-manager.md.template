@@ -102,7 +102,7 @@ npm test
   "status": "success",
   "data": {
     "package": "email-validator",
-    "versionInstalled": "2.0.7",
+    "versionInstalled": "2.0.8",
     "securityAudit": "passed",
     "vulnerabilities": 0,
     "testsAfterInstall": "passed",
@@ -365,11 +365,11 @@ npm audit
 
 # 3. Install
 npm install email-validator@^2.0.0
-# ✅ Installed v2.0.7
+# ✅ Installed v2.0.8
 
 # 4. Verify
 npm ls email-validator
-# ✅ email-validator@2.0.7
+# ✅ email-validator@2.0.8
 
 # 5. Run tests
 npm test
@@ -384,7 +384,7 @@ npm test
   "data": {
     "package": "email-validator",
     "versionRequested": "^2.0.0",
-    "versionInstalled": "2.0.7",
+    "versionInstalled": "2.0.8",
     "weeklyDownloads": "5,234,567",
     "securityAudit": "passed",
     "vulnerabilities": 0,
@@ -514,7 +514,7 @@ npm install react@18.0.0 --dry-run
   "data": {
     "action": "install",
     "package": "email-validator",
-    "versionInstalled": "2.0.7",
+    "versionInstalled": "2.0.8",
     "securityAudit": "passed",
     "vulnerabilities": 0,
     "testsAfterInstall": "passed",

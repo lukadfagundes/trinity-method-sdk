@@ -53,9 +53,13 @@ export async function update(options: UpdateOptions): Promise<void> {
     // STEP 2: Version check
     const versionInfo = await detectInstalledSDKVersion(spinner);
 
-    if (versionInfo.isUpToDate) {
+    if (versionInfo.isUpToDate && !options.force) {
       console.log(chalk.green('✅ Already up to date\n'));
       return;
+    }
+
+    if (options.force && versionInfo.isUpToDate) {
+      console.log(chalk.yellow('⚠️  Forcing update (already at latest version)\n'));
     }
 
     // STEP 3: Dry-run preview or confirmation

@@ -492,7 +492,7 @@ npm run build
 npm publish --access public
 
 # 3. Create git tag and push
-git tag -a v2.0.7 -m "Release v2.0.7"
+git tag -a v2.0.8 -m "Release v2.0.8"
 git push origin main --follow-tags
 ```
 
