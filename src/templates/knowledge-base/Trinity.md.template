@@ -1,5 +1,6 @@
 # Trinity Method Implementation - {{PROJECT_NAME}}
-**Version**: 7.0
+** Trinity Version:** 2.0.9
+**Last Updated**: {{date}}
 **Technology Stack**: {{TECHNOLOGY_STACK}}
 **Framework**: {{PRIMARY_FRAMEWORK}}
 **Last Updated**: {{CURRENT_DATE}}
@@ -431,7 +432,7 @@ Updates_Required:
 2. **Update Section**: Modify protocols, baselines, or workflows
 3. **Document Rationale**: Why was this change made?
 4. **Update Metrics**: Adjust success criteria if needed
-5. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}`
+5. **Update Timestamp**: Set `**Last Updated**: {{CURRENT_DATE}}`
 
 **Quality Checklist:**
 - [ ] Change improves methodology (not just one-off adjustment)

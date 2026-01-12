@@ -19,6 +19,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## [2.0.9] - 2026-01-12
+
+### Changed
+
+- **Trinity-docs command specification** - Added evidence-based documentation verification
+  - Added Rule 2: Evidence-Based Documentation Only - prevents documenting uninstalled tools
+  - Added Phase 1 Step 6: Tool & Feature Verification for all project types
+  - Added tool verification report to Phase 5 output
+  - Prevents aspirational/best-practice content that doesn't exist in codebase
+  - Addresses incident where Lighthouse was documented without being installed
+
+- **Trinity-readme command specification** - Removed Trinity self-documentation conflicts
+  - Deleted Type C Template that documented Trinity infrastructure (violated Rule 1)
+  - Added Rule 1 Enforcement Checklist with verification commands
+  - Added Phase 1 Step 4.5: Filter Gitignored and Trinity Directories
+  - Added Trinity Detection Warning to explicitly skip trinity/ and .claude/
+  - Removed trinity/ from glob patterns and project structure examples
+  - Addresses incident where trinity/ was included in README file tree despite being gitignored
+
+- **Trinity-readme command specification** - Added LICENSE file verification for badges
+  - Added Phase 1 Step 7: License Verification - reads actual LICENSE file
+  - LICENSE file is now source of truth (priority over package.json)
+  - Detects license type from file header (MIT, ISC, Apache, GPL, BSD, etc.)
+  - Warns when package.json license field doesn't match LICENSE file
+  - Falls back to package.json only if LICENSE file doesn't exist
+  - Addresses incident where ISC badge was generated despite MIT LICENSE file
+
+- **Trinity-docs command specification** - Added Trinity reference sanitization enforcement
+  - Added Rule 1 Forbidden Patterns - explicit list of patterns that must not appear in docs/
+  - Added Phase 4.5: Trinity Reference Sanitization - scans and removes Trinity references
+  - Added Rule 1 Compliance verification to Phase 5 report with pass/fail status
+  - Removed Trinity report link from docs/README.md template footer
+  - Prevents Trinity Method, agent names, commands, and infrastructure references in user docs
+  - Addresses incident where 7 documentation files contained Trinity Method references
+
 ## [2.0.8] - 2026-01-08
 
 ### Added

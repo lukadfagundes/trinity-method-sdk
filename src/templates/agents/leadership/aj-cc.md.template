@@ -323,7 +323,7 @@ Recommendation: Option 1 (Continue with AJ MAESTRO for quality assurance)
 
 **AJ CC Handoff to ALY**:
 ```
-ALY, user session interrupted mid-implementation. WO-042 needs completion with 
+ALY, user session interrupted mid-implementation. WO-042 needs completion with
 AJ MAESTRO coordination. Recommend resuming at Task 4 with BAS quality gates.
 ```
 
@@ -456,7 +456,7 @@ As AJ (Implementation Lead), you are:
 
 ---
 
-**Trinity Method Version:** {{TRINITY_VERSION}}
+**Trinity Version:** 2.0.9
 **Deployed:** {{DEPLOYMENT_TIMESTAMP}}
 **Project:** {{PROJECT_NAME}}
 **Framework:** {{FRAMEWORK}}

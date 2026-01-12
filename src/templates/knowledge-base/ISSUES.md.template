@@ -482,7 +482,7 @@ Updates_Required:
 5. **Update Metrics**: Increment counts, update averages
 6. **Cross-Reference**: Update related documents (To-do, Technical-Debt, etc.)
 7. **Pattern Library**: Create trinity/patterns/ file if reusable solution
-8. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}` to actual date
+8. **Update Timestamp**: Set `**Last Updated**: {{CURRENT_DATE}}` to actual date
 
 **Quality Checklist:**
 - [ ] Issue has complete symptoms, root cause, and solution

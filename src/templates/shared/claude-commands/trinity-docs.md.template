@@ -78,6 +78,114 @@ The `/trinity-docs` command invokes APO (Documentation Specialist) to **create a
 
 **Why:** Trinity Method SDK is a tool for developers. The project's documentation should focus exclusively on the project's code, features, and usage - not on the development methodology used to create it.
 
+#### Rule 1 Forbidden Patterns
+
+**APO MUST scan for and REMOVE these patterns from ALL generated documentation:**
+
+**Trinity Infrastructure References:**
+- ❌ `trinity/` paths (e.g., `trinity/reports/`, `trinity/knowledge-base/`)
+- ❌ `.claude/` paths (e.g., `.claude/agents/`, `.claude/commands/`)
+- ❌ Links to CLAUDE.md files
+- ❌ Links to Trinity reports or session files
+
+**Trinity Agent Names:**
+- ❌ APO, MON, ROR, KIL, BAS, DRA, URO, EUS, TRA, EIN, INO, TAN, ZEN, JUNO, BON, CAP (when referring to agents)
+- ✅ OK if these are actual project variable/function names in code examples
+
+**Trinity Commands:**
+- ❌ `/trinity-start`, `/trinity-audit`, `/trinity-readme`, `/trinity-docs`, etc.
+- ❌ Any slash commands starting with `/trinity-`
+
+**Trinity Method Terminology:**
+- ❌ "Trinity Method v2.0"
+- ❌ "Trinity infrastructure"
+- ❌ "Trinity SDK"
+- ❌ "Trinity orchestration"
+- ❌ "Trinity workflow"
+- ❌ References to Trinity Method as a development tool
+
+**Exceptions:**
+- ✅ "Trinity" as a project name (e.g., "Trinity Healthcare App")
+- ✅ "Trinity" in code comments if part of project code
+- ✅ Database names, class names, or other project-specific uses of "Trinity"
+
+**Verification Command:**
+```bash
+# After generating all docs, run:
+grep -rni "trinity\|/trinity-\|APO\|MON\|ROR\|KIL\|BAS" docs/
+
+# Expected result: NO MATCHES (or only project-specific Trinity usage)
+```
+
+**If Trinity references found:**
+1. Remove the reference from the documentation
+2. Log the violation in Phase 5 report
+3. Update templates to prevent future violations
+
+### Rule 2: Evidence-Based Documentation Only
+
+**CRITICAL: Only document tools, libraries, and features that actually exist in this codebase.**
+
+**Before documenting ANY tool, you MUST verify:**
+
+1. **Package Manager Verification**
+   - Node.js: Check `package.json` dependencies or devDependencies
+   - Python: Check `requirements.txt`, `pyproject.toml`, or `setup.py`
+   - Rust: Check `Cargo.toml` dependencies
+   - Go: Check `go.mod` require statements
+
+2. **Configuration File Verification**
+   - Check for tool config files (`.eslintrc.js`, `jest.config.js`, `.lighthouserc.json`, etc.)
+   - Check for tool-specific directories (`.github/workflows/`, `__tests__/`, etc.)
+
+3. **Usage Evidence**
+   - Search for tool imports/usage in code
+   - Check `package.json` scripts for tool commands
+   - Look for generated files/reports from the tool
+
+**❌ DO NOT DOCUMENT:**
+- Tools you "recognize" for this project type
+- "Best practice" or "recommended" tools not actually installed
+- Tools from your training data that "PWA projects typically use"
+- Features without verified implementation code
+
+**✅ ONLY DOCUMENT:**
+- Tools explicitly listed in package manager files
+- Tools with configuration files present
+- Features with actual implementation code you can reference
+
+**Example - Lighthouse:**
+```bash
+# BEFORE documenting Lighthouse, verify:
+1. grep '"lighthouse"' package.json → NOT FOUND ❌
+2. Check for .lighthouserc.json → DOES NOT EXIST ❌
+3. Check for lighthouse-reports/ → DOES NOT EXIST ❌
+CONCLUSION: Do NOT document Lighthouse
+
+# Verification failed = Skip entirely
+```
+
+**Example - Jest (Verified):**
+```bash
+# BEFORE documenting Jest, verify:
+1. grep '"jest"' package.json → FOUND ✅
+2. Check for jest.config.js → EXISTS ✅
+3. Check for __tests__/ or *.test.js → EXISTS ✅
+CONCLUSION: Document Jest
+
+# Verification passed = Document with confidence
+```
+
+**Why This Matters:**
+This command is used globally across all stacks. Without verification:
+- Node.js PWAs would document Lighthouse (assumed tool)
+- Python projects would document Sphinx (assumed tool)
+- Rust projects would document cargo-deny (assumed tool)
+
+**Result:** Documentation describes an "ideal" project, not the actual project.
+
+**With verification:** Documentation accurately reflects only installed tools and implemented features.
+
 ---
 
 ## When to Use `/trinity-docs`
@@ -345,7 +453,77 @@ if exists(".env.example"):
   project_metadata.has_env_example = true
 ```
 
-**Step 6: Detect Auto-Generated API Documentation (ENHANCEMENT 8)**
+**Step 6: Tool & Feature Verification (CRITICAL)**
+
+**Before creating any documentation content, verify what tools actually exist.**
+
+**For Node.js/TypeScript Projects:**
+```bash
+# Read package.json
+package_json = read("package.json")
+all_deps = {
+  ...package_json.dependencies,
+  ...package_json.devDependencies
+}
+
+# Verify common tools
+verified_tools = {
+  typescript: "typescript" in all_deps,
+  jest: "jest" in all_deps && exists("jest.config.js" or "jest.config.ts"),
+  eslint: "eslint" in all_deps && exists(".eslintrc.*" or "eslint.config.js"),
+  prettier: "prettier" in all_deps && exists(".prettierrc*"),
+  lighthouse: "lighthouse" in all_deps && exists(".lighthouserc.json"),
+  webpack: "webpack" in all_deps && exists("webpack.config.js"),
+  vite: "vite" in all_deps && exists("vite.config.*"),
+  next: "next" in all_deps,
+  react: "react" in all_deps
+}
+```
+
+**For Python Projects:**
+```bash
+# Check requirements files
+deps = []
+if exists("requirements.txt"):
+  deps += read("requirements.txt").lines
+if exists("pyproject.toml"):
+  deps += extract_dependencies("pyproject.toml")
+
+verified_tools = {
+  pytest: "pytest" in deps && exists("pytest.ini" or "pyproject.toml[tool.pytest]"),
+  black: "black" in deps && exists("pyproject.toml[tool.black]"),
+  mypy: "mypy" in deps && exists("mypy.ini" or "pyproject.toml[tool.mypy]"),
+  sphinx: "sphinx" in deps && exists("docs/conf.py")
+}
+```
+
+**For Rust Projects:**
+```bash
+# Check Cargo.toml
+cargo = read("Cargo.toml")
+deps = extract_dependencies(cargo)
+
+verified_tools = {
+  serde: "serde" in deps,
+  tokio: "tokio" in deps,
+  clippy: exists("clippy.toml"),
+  cargo_deny: exists("deny.toml")
+}
+```
+
+**Verification Report:**
+Log what was verified for transparency:
+```
+✅ TypeScript: Found in package.json + tsconfig.json exists
+✅ Jest: Found in package.json + jest.config.js exists
+✅ ESLint: Found in package.json + .eslintrc.js exists
+❌ Lighthouse: NOT in package.json, no .lighthouserc.json → SKIP
+❌ Prettier: NOT in package.json, no .prettierrc → SKIP
+```
+
+**CRITICAL:** Use this `verified_tools` object in Phase 2 to conditionally create documentation. **Do NOT document unverified tools.**
+
+**Step 7: Detect Auto-Generated API Documentation (ENHANCEMENT 8)**
 
 ```bash
 # Detect TypeDoc (Node.js/TypeScript)
@@ -543,7 +721,7 @@ if (framework === "Django" || framework === "Flask") {
 # Getting Started with {{PROJECT_NAME}}
 
 **Version:** {{VERSION}}
-**Last Updated:** {{CURRENT_DATE}}
+**Last Updated**: {{CURRENT_DATE}}
 
 ## Overview
 
@@ -821,7 +999,7 @@ Write("docs/architecture/overview.md", architecture_overview_content);
 **Type:** {project_metadata.type}
 **Framework:** {project_metadata.framework}
 **Version:** {project_metadata.version}
-**Last Updated:** {{CURRENT_DATE}}
+**Last Updated**: {{CURRENT_DATE}}
 
 ## System Overview
 
@@ -1505,9 +1683,7 @@ To contribute to documentation:
 
 ---
 
-**Documentation Coverage:** {coverage_score}/100 (see [Organization Report](../trinity/reports/DOCS-ORGANIZATION-{date}.md))
-
-*Last updated: {{CURRENT_DATE}}*
+***Last Updated**: {{CURRENT_DATE}}*
 ```
 
 **Step 5: Build Complete Documentation Index**
@@ -1784,6 +1960,12 @@ if unfixable_links.length > 0:
 - **Auto-generated API docs:** {✅ {api_docs.type} | ❌ None}
 - **Duplicate docs:** {duplicates.length} potential duplicates
 
+**Tool Verification Report:**
+- ✅ **Verified & Documented:** {list verified tools that will be documented}
+- ❌ **Not Found (Skipped):** {list tools checked but not found}
+- **Total Tools Verified:** {verified_count}
+- **Tools Documented:** {documented_count}
+
 ### Phase 2: Directory Structure & Content Seeding
 - **Directories created:** {created_dirs.length}
 - **Content files created:** {count}
@@ -1806,6 +1988,62 @@ if unfixable_links.length > 0:
 - **Links fixed:** {fixed_links.length}
 - **Unfixable links:** {unfixable_links.length}
 - **Files indexed:** {all_docs.length}
+
+### Phase 4.5: Trinity Reference Sanitization
+- **Files scanned:** {all_docs.length}
+- **Trinity references found:** {trinity_references.length}
+- **Auto-fixed violations:** {violations_fixed.length}
+- **Manual review required:** {violations_remaining.length}
+
+**Validation:** {✅ PASS | ❌ FAIL}
+{if PASS:}
+- ✅ Zero Trinity references in docs/ directory
+{if FAIL:}
+- ❌ {violations_remaining.length} Trinity references require manual removal
+
+{if violations_remaining.length > 0:}
+**Violations Requiring Manual Removal:**
+{for each violation:}
+- ⚠️ **{violation.file}:{violation.line}**
+  - Pattern: `{violation.pattern}`
+  - Context: {violation.context}
+  - **Action Required:** Remove Trinity reference manually
+
+**Rule 1 Reminder:**
+Trinity Method is a development tool, not a project feature. User-facing documentation
+must focus exclusively on the project itself, not the methodology used to create it.
+
+---
+
+## Rule 1 Compliance (Trinity-Free Documentation)
+
+**Verification:** Scanned all docs/ files for Trinity Method references
+
+**Scan Results:**
+- Files scanned: {all_docs.length}
+- Trinity references found: {trinity_references.length}
+- Auto-fixed: {violations_fixed.length}
+- Manual review required: {violations_remaining.length}
+
+{if violations_remaining.length === 0:}
+**✅ PASS: Zero Trinity references in user-facing documentation**
+
+All generated documentation focuses exclusively on the project's code, features, and
+usage. No references to Trinity Method, Trinity agents, or Trinity infrastructure.
+
+{else:}
+**❌ FAIL: Trinity references present in documentation**
+
+**Violations Requiring Manual Removal:**
+{for each violation:}
+- ⚠️ **{file}:{line}**
+  - Pattern: `{pattern}`
+  - Context: {context}
+  - **Action Required:** Remove Trinity reference manually
+
+**Rule 1 Reminder:**
+Trinity Method is a development tool, not a project feature. User-facing documentation
+must focus exclusively on the project itself, not the methodology used to create it.
 
 ---
 
@@ -2071,6 +2309,137 @@ docs/
 **Documentation Status:** {✅ Production-Ready | ⚠️ Needs Content Expansion | ❌ Incomplete}
 ```
 
+---
+
+## Phase 4.5: Trinity Reference Sanitization
+
+**CRITICAL: Remove all Trinity Method references from generated documentation**
+
+**Goal:** Ensure zero Trinity references in user-facing docs/ directory
+
+**Step 1: Scan Generated Documentation**
+
+```javascript
+// Search all generated docs for Trinity references
+trinity_references = []
+
+all_docs = glob("docs/**/*.md")
+
+for each doc in all_docs:
+  content = read(doc)
+
+  // Search for Trinity patterns
+  patterns = [
+    "Trinity Method",
+    "trinity/",
+    ".claude/",
+    "APO", "MON", "ROR", "KIL", "BAS", "DRA", "URO", "EUS", "TRA",
+    "/trinity-",
+    "CLAUDE.md",
+    "Trinity infrastructure"
+  ]
+
+  for each pattern in patterns:
+    if content.includes(pattern):
+      matches = find_all_matches(content, pattern)
+      for each match in matches:
+        trinity_references.push({
+          file: doc,
+          pattern: pattern,
+          line: match.line,
+          context: match.context
+        })
+```
+
+**Step 2: Remove Trinity References**
+
+```javascript
+violations_fixed = []
+violations_remaining = []
+
+for each reference in trinity_references:
+  // Attempt automatic fix
+  fixed = attempt_fix(reference)
+
+  if fixed:
+    violations_fixed.push(reference)
+  else:
+    // Flag for manual review
+    violations_remaining.push(reference)
+
+// Common fixes:
+function attempt_fix(reference):
+  content = read(reference.file)
+
+  // Fix 1: Remove Trinity report links
+  if reference.pattern.includes("trinity/reports/"):
+    content = remove_line_containing(content, "trinity/reports/")
+    write(reference.file, content)
+    return true
+
+  // Fix 2: Remove Trinity glossary entries
+  if reference.file.endsWith("glossary.md") and reference.pattern == "Trinity Method":
+    // Check if entire section is about Trinity
+    section = extract_section(content, reference.line)
+    if section_is_about_trinity(section):
+      content = remove_section(content, section)
+      write(reference.file, content)
+      return true
+
+  // Fix 3: Remove Trinity agent mentions
+  if reference.pattern in ["APO", "MON", "ROR", "KIL", "BAS"]:
+    // Only remove if in context of Trinity Method (not project code)
+    if context_is_methodology(reference.context):
+      content = remove_sentence_containing(content, reference.pattern)
+      write(reference.file, content)
+      return true
+
+  // Cannot auto-fix
+  return false
+```
+
+**Step 3: Validate Zero Trinity References**
+
+```javascript
+// Re-scan after fixes
+final_scan = scan_for_trinity_references("docs/")
+
+if final_scan.length > 0:
+  ERROR: "❌ Trinity references still present in docs/ after sanitization"
+  LOG: "Violations requiring manual review: {final_scan.length}"
+  for each violation in final_scan:
+    LOG: "  - {violation.file}:{violation.line}: {violation.pattern}"
+```
+
+**APO Output:**
+
+```markdown
+=== PHASE 4.5: TRINITY REFERENCE SANITIZATION ===
+
+**Scan Results:**
+- Total Trinity references found: {trinity_references.length}
+- Auto-fixed: {violations_fixed.length}
+- Manual review required: {violations_remaining.length}
+
+**Auto-Fixed Violations:**
+{for each fixed:}
+- ✅ {file}:{line}: Removed "{pattern}"
+
+{if violations_remaining.length > 0:}
+**Manual Review Required:**
+{for each violation:}
+- ⚠️ {file}:{line}: "{pattern}" in context: {context}
+  - **Action Required:** Manually review and remove Trinity reference
+
+**Validation:** {✅ PASS | ❌ FAIL}
+{if PASS:}
+- ✅ Zero Trinity references in docs/ directory
+{if FAIL:}
+- ❌ {violations_remaining.length} Trinity references require manual removal
+```
+
+---
+
 **APO Output:**
 
 ```markdown
@@ -2204,5 +2573,5 @@ docs/
 ---
 
 **Command Specification Version:** 3.0.0
-**Last Updated:** {{CURRENT_DATE}}
+**Last Updated**: {{CURRENT_DATE}}
 **Enhancements:** Codebase analysis, content seeding, migration, auto-generation, link validation, coverage metrics, framework-specific content, duplicate detection, TypeDoc integration, actionable recommendations

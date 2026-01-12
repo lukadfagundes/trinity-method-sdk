@@ -429,5 +429,5 @@ When investigation is complete:
 
 **Investigation Status:** {{status}}
 **Completion:** [X%]
-**Last Updated:** {{lastUpdated}}
+**Last Updated**: {{lastUpdated}}
 **Next Review:** {{nextReview}}

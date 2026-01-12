@@ -58,8 +58,8 @@ Location: `trinity/knowledge-base/ARCHITECTURE.md`
 **Framework:** {{FRAMEWORK}}
 **Tech Stack:** {{TECH_STACK}}
 **Source Directory:** {{SOURCE_DIR}}
-**Trinity Version:** {{TRINITY_VERSION}} (v2.0)
-**Last Updated:** {{DEPLOYMENT_TIMESTAMP}}
+**Trinity Version:** {{TRINITY_VERSION}}
+**Last Updated**: {{DEPLOYMENT_TIMESTAMP}}
 
 ## System Overview
 
@@ -305,7 +305,7 @@ Location: `trinity/knowledge-base/To-do.md`
 ```markdown
 # {{PROJECT_NAME}} - Tasks
 
-**Last Updated:** {{DEPLOYMENT_TIMESTAMP}}
+**Last Updated**: {{DEPLOYMENT_TIMESTAMP}}
 **Framework:** {{FRAMEWORK}}
 **Trinity Version:** {{TRINITY_VERSION}} (v2.0)
 
@@ -445,7 +445,7 @@ When finished, confirm:
 
 ---
 
-**Trinity Method Version:** {{TRINITY_VERSION}} (v2.0)
+**Trinity Method Version:** {{TRINITY_VERSION}}
 **Deployed:** {{DEPLOYMENT_TIMESTAMP}}
 **Specialist:** ZEN (Knowledge Base)
-**v2.0 Integration:** Complete
+**v2.0.9 Integration:** Complete

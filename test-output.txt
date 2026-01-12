@@ -1,12 +1,12 @@
 
-> trinity-method-sdk@2.0.8 pretest
+> trinity-method-sdk@2.0.9 pretest
 > npm run type-check
 
 
-> trinity-method-sdk@2.0.8 type-check
+> trinity-method-sdk@2.0.9 type-check
 > tsc --noEmit
 
 
-> trinity-method-sdk@2.0.8 test
+> trinity-method-sdk@2.0.9 test
 > node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js
 

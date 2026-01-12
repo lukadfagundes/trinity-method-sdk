@@ -2,7 +2,7 @@
 **Project:** {{PROJECT_NAME}}
 **Framework:** {{FRAMEWORK}}
 **Trinity Version:** {{TRINITY_VERSION}}
-**Last Updated:** {{DEPLOYMENT_TIMESTAMP}}
+**Last Updated**: {{DEPLOYMENT_TIMESTAMP}}
 
 ---
 

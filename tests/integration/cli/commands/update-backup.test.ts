@@ -249,7 +249,7 @@ describe('Update Backup - Integration', () => {
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // Simulate failed update corrupting trinity
-      await fs.writeFile('trinity/VERSION', '2.0.8-corrupted');
+      await fs.writeFile('trinity/VERSION', '2.0.9-corrupted');
       await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Corrupted');
 
       // Rollback

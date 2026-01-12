@@ -354,7 +354,7 @@ Updates_Required:
 2. **Update Section**: Modify appropriate priority section or backlog
 3. **Cross-Reference**: Check if ISSUES/Technical-Debt need updates
 4. **Recalculate Metrics**: Update velocity, sprint status if needed
-5. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}`
+5. **Update Timestamp**: Set `**Last Updated**: {{CURRENT_DATE}}`
 
 **Quality Checklist:**
 - [ ] All tasks have clear descriptions (what needs to be done)

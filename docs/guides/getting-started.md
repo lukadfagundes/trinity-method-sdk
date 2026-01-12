@@ -1,7 +1,7 @@
 # Getting Started with Trinity Method SDK
 
-**Trinity Version:** 2.0.8
-**Last Updated:** 2026-01-02
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 ## Overview
 

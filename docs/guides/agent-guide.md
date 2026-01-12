@@ -1,7 +1,7 @@
 # Agent Guide: The 19-Agent Trinity Team
 
-**Version:** 2.0.8
-**Last Updated:** 2026-01-02
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 ## Overview
 
@@ -991,4 +991,4 @@ Use specialist agents for focused tasks:
 
 ---
 
-**Trinity Method SDK v2.0.8** - Investigation-first development methodology
+**Trinity Method SDK v2.0.9** - Investigation-first development methodology

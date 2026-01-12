@@ -48,7 +48,7 @@ git log --oneline -5
 ```bash
 cat trinity/work-orders/WO-042-jwt-refresh-implementation.md
 # Status: IN PROGRESS
-# Last updated: 2 hours ago
+# **Last Updated**: 2 hours ago
 # Progress: Task 3/7
 ```
 

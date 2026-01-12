@@ -71,6 +71,27 @@ The `/trinity-readme` command invokes APO (Documentation Specialist) to manage R
 
 **Why:** Trinity Method SDK is a tool for developers. The project's documentation should focus exclusively on the project's code, features, and usage - not on the development methodology used to create it.
 
+### Rule 1 Enforcement Checklist
+
+Before finalizing any README, verify:
+
+- [ ] No trinity/ directory in file tree
+- [ ] No .claude/ directory in file tree
+- [ ] No Trinity commands documented (unless project IS Trinity Method)
+- [ ] No references to Trinity agents (MON, ROR, KIL, etc.)
+- [ ] No Trinity session files documented
+- [ ] No Trinity work orders documented
+
+**Verification Command:**
+```bash
+# Check for forbidden Trinity references in README
+grep -i "trinity/" README.md && echo "❌ VIOLATION: Documents trinity/ directory"
+grep -i "\.claude/" README.md && echo "❌ VIOLATION: Documents .claude/ directory"
+grep -i "/trinity-" README.md && echo "❌ VIOLATION: Documents Trinity commands"
+```
+
+**If any violations found:** Remove the offending documentation immediately.
+
 ---
 
 ## When to Use `/trinity-readme`
@@ -298,6 +319,52 @@ for (let i = 0; i < glob_output_lines; i++) {
 }
 ```
 
+**Step 4.5: Filter Gitignored and Trinity Directories (CRITICAL)**
+
+**CRITICAL: Remove Trinity infrastructure and gitignored directories from documentation.**
+
+```bash
+# Filter out Trinity infrastructure (ALWAYS excluded)
+filtered_directories = []
+
+for each directory in all_directories:
+  # ALWAYS skip Trinity infrastructure
+  if directory.includes("trinity/") or directory.includes(".claude/"):
+    echo "SKIP: $directory (Trinity infrastructure - never document)"
+    continue
+
+  # Check if gitignored (optional but recommended)
+  if git check-ignore -q "$directory" 2>/dev/null; then
+    echo "SKIP: $directory (gitignored)"
+    continue
+  fi
+
+  # Include this directory
+  filtered_directories.push(directory)
+  echo "INCLUDE: $directory"
+done
+```
+
+**Trinity Detection Warning:**
+
+If you detect trinity/ or .claude/ directories during Phase 1:
+
+1. **Acknowledge detection:** "Detected Trinity Method infrastructure (trinity/ directory found)"
+2. **Skip documentation:** Do NOT include trinity/ in file tree or README content
+3. **Skip template:** Do NOT use Trinity-specific templates
+4. **Continue normally:** Process other directories (backend/, frontend/, etc.)
+
+**Example Output:**
+```
+✓ Detected directories: backend/, frontend/, docs/, trinity/
+✓ Filtering Trinity infrastructure and gitignored directories...
+  - trinity/ (Trinity infrastructure) → SKIP
+  - .claude/ (Trinity infrastructure) → SKIP
+✓ Final directories to document: backend/, frontend/, docs/
+```
+
+**Rule:** Trinity infrastructure (trinity/, .claude/) is ALWAYS excluded from user-facing READMEs, even if not gitignored.
+
 **Step 5: Report Complete Inventory (Using Validated Count)**
 
 APO MUST output:
@@ -352,7 +419,8 @@ APO MUST answer ALL checklist items:
    - If NO: STOP and use Glob output count
 
 6. **Project Structure Sanity:**
-   - For project with backend/, frontend/, database/, trinity/, do I expect nested CLAUDE.md files? ✅ YES | ❌ NO
+   - For project with backend/, frontend/, database/, do I expect nested CLAUDE.md files? ✅ YES | ❌ NO
+   - Do I see trinity/ or .claude/ directories? ⚠️ IGNORE (methodology infrastructure, not project code)
    - If YES but none found: Re-run Glob with explicit paths
 
 **Self-Verification Action:**
@@ -362,11 +430,78 @@ IF any critical item = ❌ NO:
     - backend/**/CLAUDE.md
     - frontend/**/CLAUDE.md
     - database/**/CLAUDE.md
-    - trinity/**/CLAUDE.md
+    - src/**/CLAUDE.md
+    - lib/**/CLAUDE.md
   Merge results and re-validate
+
+**Note:** Do NOT include trinity/ or .claude/ patterns - these are methodology infrastructure.
 
 **Checklist Completion:** ✅ 6/6 items verified
 ```
+
+**Step 7: License Verification (CRITICAL)**
+
+**CRITICAL: Verify actual LICENSE file before generating license badges.**
+
+Before generating any license badge, read and verify the LICENSE file:
+
+1. **Check for LICENSE file:**
+   ```bash
+   # Check for LICENSE file (various naming conventions)
+   if exists("LICENSE"): LICENSE_FILE = "LICENSE"
+   elif exists("LICENSE.md"): LICENSE_FILE = "LICENSE.md"
+   elif exists("LICENSE.txt"): LICENSE_FILE = "LICENSE.txt"
+   elif exists("LICENCE"): LICENSE_FILE = "LICENCE"
+   else: LICENSE_FILE = null
+   ```
+
+2. **Read LICENSE file and detect type:**
+   ```javascript
+   // Read first 3 lines to identify license type
+   firstLine = read(LICENSE_FILE).lines[0].toUpperCase()
+   firstThreeLines = read(LICENSE_FILE).lines.slice(0, 3).join(' ').toUpperCase()
+
+   // Detect license type from file header
+   if (firstLine.includes('MIT LICENSE')): DETECTED_LICENSE = 'MIT'
+   elif (firstLine.includes('ISC LICENSE')): DETECTED_LICENSE = 'ISC'
+   elif (firstLine.includes('APACHE LICENSE')): DETECTED_LICENSE = 'Apache-2.0'
+   elif (firstLine.includes('BSD 3-CLAUSE')): DETECTED_LICENSE = 'BSD-3-Clause'
+   elif (firstLine.includes('BSD 2-CLAUSE')): DETECTED_LICENSE = 'BSD-2-Clause'
+   elif (firstThreeLines.includes('GNU GENERAL PUBLIC LICENSE VERSION 3')): DETECTED_LICENSE = 'GPL-3.0'
+   elif (firstThreeLines.includes('GNU GENERAL PUBLIC LICENSE VERSION 2')): DETECTED_LICENSE = 'GPL-2.0'
+   elif (firstThreeLines.includes('GNU LESSER GENERAL PUBLIC LICENSE')): DETECTED_LICENSE = 'LGPL-3.0'
+   else: DETECTED_LICENSE = null
+   ```
+
+3. **Compare with package.json (if exists):**
+   ```javascript
+   if exists("package.json"):
+     PACKAGE_LICENSE = read("package.json").license
+
+     if (DETECTED_LICENSE && PACKAGE_LICENSE && DETECTED_LICENSE != PACKAGE_LICENSE):
+       echo "⚠️  WARNING: package.json claims ${PACKAGE_LICENSE} but LICENSE file is ${DETECTED_LICENSE}"
+       echo "Using LICENSE file as source of truth: ${DETECTED_LICENSE}"
+   ```
+
+4. **Determine badge license (priority order):**
+   ```javascript
+   // Priority: LICENSE file > package.json > default
+   if (DETECTED_LICENSE):
+     BADGE_LICENSE = DETECTED_LICENSE  // Use LICENSE file (source of truth)
+   elif (PACKAGE_LICENSE):
+     BADGE_LICENSE = PACKAGE_LICENSE   // Fall back to package.json
+   else:
+     BADGE_LICENSE = "Unlicensed"      // Default if neither found
+   ```
+
+5. **Generate license badge:**
+   ```markdown
+   [![License](https://img.shields.io/badge/License-${BADGE_LICENSE}-yellow)](LICENSE)
+   ```
+
+**Rule:** The LICENSE file is the legal source of truth. package.json metadata is secondary.
+
+**Mismatch Detection:** If LICENSE file and package.json disagree, always use LICENSE file and warn user to update package.json.
 
 ---
 
@@ -940,7 +1075,7 @@ Scan README.md for common stale content patterns:
 
 **Outdated Date References:**
 ```markdown
-- "Last updated: 2021"
+- "**Last Updated**: 2021"
 - "As of January 2022"
 - "In version 1.0 (released 2020)"
 ```
@@ -1039,7 +1174,7 @@ Scan README for version mentions:
 ```markdown
 ❌ **Outdated Date Reference**
 - **File:** README.md (line Y)
-- **Current (WRONG):** "Last updated: January 2022"
+- **Current (WRONG):** "**Last Updated**: January 2022"
 - **Reality:** Current year is 2025, content is stale
 - **Correct:** Update date or remove if unnecessary
 - **Fix in:** Phase 3 (Root README Update)
@@ -1331,33 +1466,6 @@ for each directory in directories_to_create:
 
   ## Documentation
   See [{directory}/CLAUDE.md](CLAUDE.md) for architecture details.
-  ```
-
-**Type C: Trinity Directory**
-- **Detection:** Directory name is "trinity"
-- **Template:**
-  ```markdown
-  # Trinity Method
-
-  Trinity Method v2.0 implementation for {project name}.
-
-  ## Directory Structure
-  {Use ls to show trinity/ subdirectories}
-
-  ## Key Files
-  {List actual files in trinity/knowledge-base/ with line counts}
-
-  ## Trinity Commands
-  ```bash
-  /trinity-start          # Start workflow guide
-  /trinity-audit          # Run codebase audit
-  /trinity-readme         # Update READMEs
-  /trinity-docs           # Organize docs/
-  /trinity-changelog      # Update CHANGELOG
-  ```
-
-  ## Documentation
-  See [trinity/CLAUDE.md](CLAUDE.md) for Trinity Method context.
   ```
 
 **Type D: Test Directory**
@@ -1991,5 +2099,5 @@ If Phase 6 validation shows coverage < 100%, status = ❌ FAILED even if Phase 4
 
 ---
 
-**Command Specification Version:** 2.0.0
-**Last Updated:** 2025-12-27
+** Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12

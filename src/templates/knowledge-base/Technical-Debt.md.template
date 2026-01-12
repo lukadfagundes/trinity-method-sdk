@@ -549,7 +549,7 @@ Updates_Required:
 4. **Calculate Trends**: Determine if debt is improving/degrading/stable
 5. **Update Cross-Refs**: Link related debt items to issues/todos
 6. **Prioritize**: Update debt reduction plan based on new ROI analysis
-7. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}` to actual date
+7. **Update Timestamp**: Set `**Last Updated**: {{CURRENT_DATE}}` to actual date
 
 **Metric Calculation Commands** (for reference):
 ```bash

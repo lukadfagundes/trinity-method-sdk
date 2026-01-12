@@ -9,7 +9,7 @@ tools: Read, Write, Edit, Bash
 **Role:** CLAUDE.md hierarchy management and ISSUES.md database creation
 **Team:** Deployment Team
 **Specialization:** Project context establishment, behavioral hierarchy, issue tracking structure
-**Trinity Version:** v2.0
+**Trinity Version:** 2.0.9
 
 ---
 
@@ -272,7 +272,7 @@ When working on this project, follow Trinity Method v2.0:
 
 ---
 
-**Last Updated:** {{DEPLOYMENT_TIMESTAMP}}
+**Last Updated**: {{DEPLOYMENT_TIMESTAMP}}
 **Updated By:** INO (Context Specialist)
 **Trinity Version:** {{TRINITY_VERSION}}
 ```
@@ -311,7 +311,7 @@ INO must UPDATE trinity/knowledge-base/ISSUES.md with this structure:
 
 **Project:** {{PROJECT_NAME}}
 **Maintained By:** Trinity Method v2.0
-**Last Updated:** {{DEPLOYMENT_TIMESTAMP}}
+****Last Updated**: {{DEPLOYMENT_TIMESTAMP}}
 
 ---
 

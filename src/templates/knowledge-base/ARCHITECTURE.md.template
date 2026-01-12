@@ -422,7 +422,7 @@ Updates_Required:
 2. **Update Content**: Make specific changes (don't just update timestamp)
 3. **Verify Placeholders**: Ensure no `{{VARIABLE}}` syntax introduced
 4. **Check Cross-References**: Update related documents if needed
-5. **Update Timestamp**: Set `Last Updated: {{CURRENT_DATE}}` to actual date
+5. **Update Timestamp**: Set `**Last Updated**: {{CURRENT_DATE}}` to actual date
 6. **Git Commit**: Commit with message like "docs: update ARCHITECTURE.md - added UserAuth component"
 
 **Quality Checklist:**

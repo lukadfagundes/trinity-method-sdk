@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} - Trinity Method
 
-**Version:** {{TRINITY_VERSION}}
+** Trinity Version:** {{TRINITY_VERSION}}
 **Deployed:** {{DEPLOYMENT_TIMESTAMP}}
 
 ---

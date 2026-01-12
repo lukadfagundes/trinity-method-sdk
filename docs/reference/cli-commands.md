@@ -1,7 +1,7 @@
 # CLI Commands Reference
 
-**Trinity Version:** 2.0.8
-**Last Updated:** 2026-01-02
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 Complete reference for Trinity Method SDK command-line interface.
 
@@ -214,7 +214,7 @@ ls -lh trinity/backups/
 🔄 Trinity Method Update
 
 📦 Current Version: 1.5.0
-📦 Latest Version: 2.0.8
+📦 Latest Version: 2.0.9
 
 Creating backup...
 ✓ Backup created: trinity/backups/backup-2025-12-28T12-30-00.tar.gz
@@ -232,7 +232,7 @@ Updating Trinity components...
 ✓ Updating knowledge base
 ✓ Restoring user content
 
-✅ Trinity updated successfully! (v2.0.8)
+✅ Trinity updated successfully! (v2.0.9)
 
 Remove backup? (y/N): N
 Backup preserved: trinity/backups/backup-2025-12-28T12-30-00.tar.gz
@@ -300,7 +300,7 @@ Shows the currently installed Trinity Method SDK version.
 ### Output
 
 ```
-Trinity Method SDK v2.0.8
+Trinity Method SDK v2.0.9
 ```
 
 ### Examples
@@ -407,4 +407,4 @@ Trinity does not use a configuration file in v2.0. All configuration is done via
 
 ---
 
-**Trinity Method SDK v2.0.8** - Command-Line Interface Reference
+**Trinity Method SDK v2.0.9** - Command-Line Interface Reference
