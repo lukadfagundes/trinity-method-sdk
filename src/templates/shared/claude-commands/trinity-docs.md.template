@@ -22,7 +22,6 @@ The `/trinity-docs` command invokes APO (Documentation Specialist) to **create a
 - Generate docs/README.md navigation file
 - Validate and fix documentation links
 - Integrate auto-generated API docs (TypeDoc, Rustdoc, etc.)
-- Provide actionable recommendations for empty categories
 
 **What This Command Does NOT Handle:**
 - ❌ Root README.md (use `/trinity-readme`)
@@ -53,6 +52,53 @@ The `/trinity-docs` command invokes APO (Documentation Specialist) to **create a
 - Defer work to future execution
 - Move Trinity infrastructure files (trinity/, CLAUDE.md)
 - Move technical source READMEs (src/README.md, etc.)
+
+---
+
+## VERIFICATION-FIRST EXECUTION
+
+**CRITICAL: Verification must complete BEFORE any documentation is created.**
+
+**Execution Order (MANDATORY):**
+1. ✅ Phase 1: Discovery & Codebase Analysis
+2. ✅ Phase 1.5: Verification Enforcement Gate (MANDATORY)
+3. ✅ Phase 2: Content Seeding (uses verified_tools)
+4. ✅ Phase 3: Migration
+5. ✅ Phase 4: Link Validation
+6. ✅ Phase 4.5: Trinity Reference Sanitization
+7. ✅ Phase 5: Report Generation
+
+**❌ FORBIDDEN Execution Paths:**
+- Skipping Phase 1.5 verification
+- Creating documentation before verification completes
+- Assuming tools exist based on project type or best practices
+- Documenting tools not found in package manager files
+
+**Verification Principle:**
+> "Only document what EXISTS, never what SHOULD exist."
+
+**Examples:**
+
+**✅ CORRECT:**
+```javascript
+// Phase 1.5: Read package.json
+package_json = Read("package.json")
+verified_tools.jest = "jest" in package_json.devDependencies  // Result: false
+
+// Phase 2: Conditional documentation
+if (verified_tools.jest) {
+  Write("docs/guides/testing.md", jest_content)  // SKIPPED - jest not verified
+} else {
+  // Do not create testing.md, jest is not installed
+}
+```
+
+**❌ INCORRECT:**
+```javascript
+// Phase 2: Assumed documentation
+Write("docs/guides/testing.md", jest_content)  // Created WITHOUT verification
+// Result: Documentation for tool that doesn't exist
+```
 
 ---
 
@@ -176,6 +222,73 @@ CONCLUSION: Document Jest
 # Verification passed = Document with confidence
 ```
 
+**Example - Security Middleware (Common Mistake):**
+```bash
+# Node.js PWA project - Developer assumes security middleware
+# BEFORE documenting Helmet, verify:
+1. grep '"helmet"' package.json → NOT FOUND ❌
+2. Check for helmet config in app.ts → NO HELMET USAGE ❌
+3. Check package.json scripts for helmet setup → NOT FOUND ❌
+CONCLUSION: Do NOT document Helmet
+
+# Actual implementation check:
+grep -n "helmet" server/src/app.ts → NO MATCHES ❌
+grep -n "rateLimit" server/src/app.ts → NO MATCHES ❌
+
+RESULT: Skip security middleware documentation entirely
+```
+
+**Example - Logging (Common Mistake):**
+```bash
+# Node.js project - Developer assumes Winston for production apps
+# BEFORE documenting Winston, verify:
+1. grep '"winston"' package.json → NOT FOUND ❌
+2. Check actual logging in code:
+   grep -r "console\.log\|console\.error" server/src/ → FOUND ✅
+   grep -r "winston" server/src/ → NOT FOUND ❌
+CONCLUSION: Do NOT document Winston
+
+CORRECT APPROACH:
+- Document that project uses console.log() for logging
+- Optionally note: "Consider adding Winston for production logging"
+- Do NOT create detailed Winston documentation for non-existent tool
+```
+
+**Example - CI/CD (Common Mistake):**
+```bash
+# Any project - Developer assumes GitHub Actions for modern repos
+# BEFORE documenting CI/CD, verify:
+1. ls .github/workflows/ → Directory doesn't exist ❌
+2. Check for .gitlab-ci.yml → NOT FOUND ❌
+3. Check for .circleci/ → NOT FOUND ❌
+CONCLUSION: Do NOT document CI/CD
+
+RESULT: Skip CI/CD documentation entirely (or note "No CI/CD configured")
+```
+
+**Why These Mistakes Happen:**
+- **Assumption-Based Documentation**: Developer assumes "production app = Winston logging"
+- **Best Practice Projection**: "Security middleware is a best practice, so it must exist"
+- **Framework Stereotypes**: "Express apps always have helmet configured"
+
+**How Verification Prevents These Mistakes:**
+```javascript
+// Phase 1.5 verification catches these:
+verified_tools = {
+  winston: "winston" in all_deps,        // false → do not document
+  helmet: "helmet" in all_deps,          // false → do not document
+  github_actions: exists(".github/workflows/")  // false → do not document
+}
+
+// Phase 2 conditional documentation:
+if (verified_tools.winston) {
+  Write("docs/guides/logging.md", winston_content)  // SKIPPED
+} else {
+  // Instead document actual console.log() usage
+  Write("docs/guides/logging.md", console_log_content)  // CREATED
+}
+```
+
 **Why This Matters:**
 This command is used globally across all stacks. Without verification:
 - Node.js PWAs would document Lighthouse (assumed tool)
@@ -185,6 +298,95 @@ This command is used globally across all stacks. Without verification:
 **Result:** Documentation describes an "ideal" project, not the actual project.
 
 **With verification:** Documentation accurately reflects only installed tools and implemented features.
+
+---
+
+### Rule 3: No Deferred Work - MANDATORY EXECUTION REQUIREMENT
+
+**THIS IS NOT OPTIONAL. THIS IS NOT A SUGGESTION. THIS IS A MANDATORY EXECUTION REQUIREMENT.**
+
+APO is an **EXECUTION agent**, NOT a planning agent. When APO writes documentation, it **MUST be 100% complete and immediately usable**, never a skeleton with placeholder content.
+
+**This rule has NO EXCEPTIONS. Violations will cause Phase 2.5 to ABORT the command.**
+
+**❌ FORBIDDEN PATTERNS (Will Cause Command ABORT):**
+
+APO MUST NOT create ANY of the following in generated documentation:
+
+1. **Deferred Work Indicators:**
+   - "Coming Soon"
+   - "Planned Guides"
+   - "Future Documentation"
+   - "Will be written later"
+   - "To be documented"
+   - "TBD" or "TODO" sections
+
+2. **Incomplete Guide Files:**
+   - Empty files with only headers
+   - Placeholder content like "This guide will cover..."
+   - Sections that say "This section will be expanded"
+
+3. **Reference to Non-Existent Files:**
+   - Linking to guides that don't exist
+   - README navigation pointing to files APO didn't create
+   - "See also" sections referencing missing documentation
+
+**✅ CORRECT BEHAVIOR:**
+
+1. **If framework detected → Create COMPLETE guide immediately:**
+   ```javascript
+   if (verified_tools.express) {
+     // ✅ CORRECT: Create complete API development guide NOW
+     Write("docs/guides/api-development.md", comprehensive_api_guide_content);
+
+     // ❌ WRONG: Create placeholder
+     Write("docs/guides/README.md", "API Development Guide - Coming Soon");
+   }
+   ```
+
+2. **If feature detected → Document it completely or don't mention it:**
+   ```javascript
+   if (has_spotify_integration) {
+     // ✅ CORRECT: Create complete Spotify guide
+     Write("docs/guides/spotify-integration.md", complete_spotify_guide);
+
+     // ❌ WRONG: Add to "Planned Guides" section
+     planned_guides.push("Spotify Integration - Coming Soon");
+   }
+   ```
+
+3. **If missing critical files → Create them:**
+   ```javascript
+   if (not exists("server/.env.example") && exists("server/.env")) {
+     // ✅ CORRECT: Create the missing file based on actual .env
+     env_vars = extract_env_var_names("server/.env");
+     Write("server/.env.example", generate_env_example(env_vars));
+
+     // ❌ WRONG: Document non-existent file
+     Write("docs/guides/getting-started.md", "Copy .env.example to .env");
+   }
+   ```
+
+**Enforcement:**
+
+Phase 2.5 Validation 2 scans ALL documentation files for forbidden patterns. If ANY forbidden pattern is found, the command ABORTS immediately.
+
+**Required Actions (NOT optional):**
+
+✅ **DO:** Read actual implementation files and extract real code examples
+✅ **DO:** Use real configuration from actual config files
+✅ **DO:** Reference actual file paths from the project
+✅ **DO:** Create 100+ line guides with substantial content
+✅ **DO:** Document what EXISTS in the codebase NOW
+
+❌ **DO NOT:** Describe what "should" exist or "will" be added
+❌ **DO NOT:** Reference best practices unless actually implemented
+❌ **DO NOT:** Use generic examples from external sources
+❌ **DO NOT:** Create section headers with no content
+❌ **DO NOT:** Write aspirational documentation
+❌ **DO NOT:** Leave TODO comments for "future documentation"
+
+**If APO violates this rule, Phase 2.5 will detect it and ABORT with detailed error messages showing exactly where the violations occurred.**
 
 ---
 
@@ -636,6 +838,1153 @@ for each file1 in all_md_files:
 - .env.example: {✅ YES | ❌ NO}
 ```
 
+**Step 8: Read and Parse Codebase to Identify Features Requiring Documentation**
+
+**CRITICAL: APO MUST read actual code files and parse them to identify ALL implemented features that require dedicated documentation guides.**
+
+**This is NOT optional analysis. APO MUST execute Read operations on actual files.**
+
+**APO's Execution Requirements:**
+
+For EACH item below, APO MUST:
+1. Use Glob to find relevant files
+2. Use Read to read EVERY file found
+3. Parse file contents to extract actual implementations
+4. Store findings for Phase 2 documentation
+5. Log what was found (with counts and file references)
+
+**Features to Discover (MANDATORY FILE READING):**
+
+1. **Project structure (MUST examine actual directories)**
+   - Read directory listings for controllers, services, routes, models, jobs, workers, etc.
+   - Document actual file naming patterns found
+   - List actual configuration files discovered
+
+2. **Dependencies and imports (MUST read package files)**
+   - Read package manager files (package.json, requirements.txt, Cargo.toml, go.mod, etc.)
+   - Extract actual third-party libraries installed
+   - Identify framework-specific packages used
+
+3. **Environment variables and configuration (MUST read config files)**
+   - Read .env files, .env.example if they exist
+   - Read configuration directories
+   - Extract actual secrets, API keys, credential names used
+
+4. **Code patterns (MUST read implementation files)**
+   - Read route definition files (covered in Step 8b)
+   - Read controller/handler implementation files
+   - Read service layer files
+   - Extract actual data access patterns
+   - Identify background job definitions from actual files
+
+5. **Major features and integrations (MUST read integration code)**
+   - Read integration files to discover what this codebase actually DOES
+   - Read service files to identify external services integrated
+   - Read infrastructure files to document required infrastructure
+
+**APO MUST identify features by reading actual files, such as:**
+
+**Infrastructure & Operations:**
+- Build and deployment processes
+- Docker/containerization
+- CI/CD pipelines
+- Database operations and migrations
+- Caching systems
+- Message queues/background jobs
+
+**External Integrations:**
+- Authentication providers (OAuth, SAML, etc.)
+- Payment processors
+- Email/SMS services
+- Cloud storage providers
+- Third-party APIs (Spotify, Google, Twilio, etc.)
+- Analytics services
+- Monitoring/logging services
+
+**Application Features:**
+- File upload/download systems
+- Real-time features (WebSockets, SSE, polling)
+- Search functionality
+- Notification systems
+- Scheduled tasks/cron jobs
+- API rate limiting
+- Session management
+
+**APO MUST determine by reading actual files:**
+- Which features are complex enough to need dedicated guides (based on actual code complexity)
+- What implementation details users need to understand (from actual implementations)
+- What configuration/setup steps are required (from actual config files)
+
+**APO Output:**
+
+```markdown
+=== PHASE 1: FEATURE ANALYSIS ===
+
+**Features Identified in Codebase:**
+
+{for each significant feature detected:}
+**{Feature Name}**
+- **Evidence:** {what you found - files, routes, env vars, dependencies}
+- **Implementation:** {brief description of how it's implemented}
+- **Documentation Needed:** {YES/NO and why}
+
+**Example:**
+**Spotify OAuth Integration**
+- **Evidence:** spotifyController.ts, routes /api/spotify/auth and /api/spotify/callback, env vars SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET, dependency spotify-web-api-node
+- **Implementation:** OAuth 2.0 flow with token storage, playback control endpoints
+- **Documentation Needed:** YES - Users need to set up Spotify Developer App and configure environment variables
+
+**Guides APO Will Create:**
+1. Getting Started (ALWAYS)
+2. {Framework} Development (if framework detected)
+3. {Feature 1 Guide} (e.g., Spotify Integration)
+4. {Feature 2 Guide} (e.g., Database Management)
+5. {Feature N Guide}
+6. Deployment (if build/deployment infrastructure exists)
+
+**Total Feature Guides:** {count}
+```
+
+**IMPORTANT:** APO is not limited to predefined feature types. If the codebase has a unique integration or feature not listed above, APO MUST identify it by reading the actual implementation and create appropriate documentation based on what was found.
+
+**NO ASSUMPTIONS:** If files aren't found, the feature ISN'T documented. Simple as that.
+
+---
+
+**Step 8b: Implementation File Discovery & Analysis (MANDATORY - REGEX PARSING REQUIRED)**
+
+**CRITICAL: This step is the ROOT CAUSE FIX for assumption-based documentation.**
+
+APO MUST read actual implementation files to build inventories of what EXISTS in the codebase. This step is NOT optional. This step is NOT a suggestion. APO MUST execute Read operations to discover actual implementations.
+
+**Why This Step Exists:**
+When APO reads actual files → documentation is accurate (e.g., database schema: 100% accurate)
+When APO assumes patterns → documentation has errors (e.g., API endpoints: 65% accurate with 16 errors)
+
+**Goal:** Build complete inventories by reading source files, NOT by assuming "standard patterns."
+
+**8b.1: API Endpoint Discovery (Backend Projects)**
+
+If backend framework detected in Step 5, APO MUST discover ALL API endpoints:
+
+```javascript
+// Step 1: Locate ALL route files
+const backend_framework = project_metadata.framework; // express, nestjs, fastify, django, flask, fastapi
+
+const route_file_patterns = {
+  express: ["server/src/routes/**/*.{ts,js}", "src/routes/**/*.{ts,js}", "routes/**/*.{ts,js}", "app/routes/**/*.{ts,js}"],
+  nestjs: ["src/**/*.controller.{ts,js}", "apps/**/src/**/*.controller.{ts,js}"],
+  fastify: ["src/routes/**/*.{ts,js}", "routes/**/*.{ts,js}"],
+  django: ["**/urls.py", "**/views.py"],
+  flask: ["app.py", "**/*_routes.py", "**/*_views.py", "**/routes.py"],
+  fastapi: ["app/routers/**/*.py", "routers/**/*.py", "app/api/**/*.py", "**/routes/**/*.py"]
+};
+
+let route_files = [];
+if (backend_framework && route_file_patterns[backend_framework]) {
+  for (const pattern of route_file_patterns[backend_framework]) {
+    const matches = Glob({pattern: pattern});
+    route_files.push(...matches);
+  }
+}
+
+LOG: `✅ Found ${route_files.length} route files for ${backend_framework}`;
+
+if (route_files.length === 0 && backend_framework) {
+  LOG: `⚠️ WARNING: Backend framework '${backend_framework}' detected but ZERO route files found`;
+  LOG: `Searched patterns: ${route_file_patterns[backend_framework].join(", ")}`;
+  LOG: "API documentation will be minimal without route discovery";
+}
+
+// Step 2: Read EVERY route file (MANDATORY)
+const all_routes = [];
+for (const file of route_files) {
+  const content = Read(file);
+  all_routes.push({file, content});
+  LOG: `✅ Read ${file} (${content.split("\n").length} lines)`;
+}
+
+// Step 3: Parse route definitions from actual code
+const endpoint_inventory = [];
+
+for (const {file, content} of all_routes) {
+
+  // Express: router.METHOD('path', handler)
+  if (backend_framework === "express") {
+    const patterns = [
+      /router\.(get|post|put|delete|patch)\(['"]([^'"]+)['"]/gi,
+      /app\.(get|post|put|delete|patch)\(['"]([^'"]+)['"]/gi
+    ];
+
+    for (const pattern of patterns) {
+      const matches = [...content.matchAll(pattern)];
+      for (const match of matches) {
+        endpoint_inventory.push({
+          method: match[1].toUpperCase(),
+          path: match[2],
+          file: file,
+          framework: "express"
+        });
+      }
+    }
+  }
+
+  // NestJS: @Get('path')
+  else if (backend_framework === "nestjs") {
+    const decorator_pattern = /@(Get|Post|Put|Delete|Patch)\(['"]?([^'")\s]*?)['"]?\)/gi;
+    const controller_pattern = /@Controller\(['"]([^'"]+)['"]\)/i;
+
+    const controller_match = content.match(controller_pattern);
+    const base_path = controller_match ? controller_match[1] : "";
+
+    const matches = [...content.matchAll(decorator_pattern)];
+    for (const match of matches) {
+      const method = match[1].toUpperCase();
+      const path = match[2] || "";
+      const full_path = `/${base_path}/${path}`.replace(/\/+/g, "/");
+
+      endpoint_inventory.push({
+        method: method,
+        path: full_path,
+        file: file,
+        framework: "nestjs"
+      });
+    }
+  }
+
+  // Fastify: fastify.METHOD('path', handler)
+  else if (backend_framework === "fastify") {
+    const pattern = /fastify\.(get|post|put|delete|patch)\(['"]([^'"]+)['"]/gi;
+    const matches = [...content.matchAll(pattern)];
+    for (const match of matches) {
+      endpoint_inventory.push({
+        method: match[1].toUpperCase(),
+        path: match[2],
+        file: file,
+        framework: "fastify"
+      });
+    }
+  }
+
+  // Django: path('path/', view)
+  else if (backend_framework === "django") {
+    const pattern = /path\(['"]([^'"]+)['"],\s*([^,\s]+)/gi;
+    const matches = [...content.matchAll(pattern)];
+    for (const match of matches) {
+      endpoint_inventory.push({
+        method: "GET/POST",  // Django views handle multiple methods
+        path: match[1],
+        view: match[2].trim(),
+        file: file,
+        framework: "django"
+      });
+    }
+  }
+
+  // Flask: @app.route('path', methods=['GET'])
+  else if (backend_framework === "flask") {
+    const pattern = /@(?:app|bp|blueprint)\.route\(['"]([^'"]+)['"](?:,\s*methods=\[([^\]]+)\])?\)/gi;
+    const matches = [...content.matchAll(pattern)];
+    for (const match of matches) {
+      const path = match[1];
+      const methods_str = match[2] || "'GET'";
+      const methods = methods_str.replace(/['"]/g, "").split(",").map(m => m.trim());
+
+      for (const method of methods) {
+        endpoint_inventory.push({
+          method: method,
+          path: path,
+          file: file,
+          framework: "flask"
+        });
+      }
+    }
+  }
+
+  // FastAPI: @app.get("/path") or @router.get("/path")
+  else if (backend_framework === "fastapi") {
+    const pattern = /@(?:app|router)\.(get|post|put|delete|patch)\(['"]([^'"]+)['"]/gi;
+    const matches = [...content.matchAll(pattern)];
+    for (const match of matches) {
+      endpoint_inventory.push({
+        method: match[1].toUpperCase(),
+        path: match[2],
+        file: file,
+        framework: "fastapi"
+      });
+    }
+  }
+}
+
+LOG: `✅ Extracted ${endpoint_inventory.length} endpoints from route files`;
+
+// ============================================================
+// ENFORCEMENT GATE: Verify Endpoint Count Accuracy (ADDITION 1)
+// ============================================================
+
+LOG: "";
+LOG: "=== ENDPOINT COUNT VERIFICATION ===";
+LOG: "Verifying parsed endpoint count matches actual router.METHOD() calls...";
+
+// Count regex matches per file to verify parsing accuracy
+const endpoint_count_by_file = {};
+for (const {file, content} of all_routes) {
+  // Count ALL router method occurrences
+  const method_pattern = /router\.(get|post|put|delete|patch|all)\(/gi;
+  const matches = [...content.matchAll(method_pattern)];
+
+  endpoint_count_by_file[file] = matches.length;
+
+  LOG: `  ${file}: ${matches.length} router.METHOD() calls detected`;
+}
+
+// Verify inventory count matches regex count
+const regex_total = Object.values(endpoint_count_by_file).reduce((sum, count) => sum + count, 0);
+const inventory_total = endpoint_inventory.length;
+
+LOG: "";
+LOG: `Regex Pattern Count: ${regex_total} endpoints`;
+LOG: `Parsed Inventory Count: ${inventory_total} endpoints`;
+
+if (regex_total !== inventory_total) {
+  ERROR: "";
+  ERROR: "❌ CRITICAL ERROR: Endpoint count mismatch detected";
+  ERROR: `Regex detected ${regex_total} router.METHOD() calls`;
+  ERROR: `Parsed inventory contains ${inventory_total} endpoints`;
+  ERROR: `Difference: ${Math.abs(regex_total - inventory_total)} endpoints`;
+  ERROR: "";
+  ERROR: "This indicates a parsing error. Common causes:";
+  ERROR: "  1. Regex pattern missed edge cases (multi-line definitions, dynamic routes)";
+  ERROR: "  2. Parsing logic incorrectly filtered valid endpoints";
+  ERROR: "  3. Manual counting used instead of programmatic parsing";
+  ERROR: "";
+  ERROR: "REQUIRED ACTION: Fix parsing logic before proceeding to Phase 2";
+  ERROR: "";
+  ABORT_COMMAND();
+} else {
+  LOG: `✅ Verification PASSED: Counts match (${inventory_total} endpoints)`;
+}
+
+LOG: "";
+LOG: "=== ENDPOINT COUNT VERIFICATION COMPLETE ===";
+LOG: "";
+
+// Store final verified count
+global.verified_endpoint_count = inventory_total;
+
+// Step 4: Resolve API base path
+const entry_files = [
+  "server/src/index.ts", "server/src/index.js",
+  "server/src/app.ts", "server/src/app.js",
+  "server/src/server.ts", "server/src/server.js",
+  "src/index.ts", "src/index.js",
+  "src/app.ts", "src/app.js",
+  "app.py", "main.py"
+];
+
+let api_base_path = "";
+
+for (const entry_file of entry_files) {
+  if (exists(entry_file)) {
+    const entry_content = Read(entry_file);
+
+    // Express/Node.js: app.use('/api', routes)
+    const express_base = entry_content.match(/app\.use\(['"]([^'"]*\/api[^'"]*)['"]/);
+    if (express_base) {
+      api_base_path = express_base[1];
+      break;
+    }
+
+    // Django: path('api/', include(...))
+    const django_base = entry_content.match(/path\(['"]([^'"]*api[^'"]*)['"]/);
+    if (django_base) {
+      api_base_path = "/" + django_base[1].replace(/\/$/, "");
+      break;
+    }
+  }
+}
+
+// Step 5: Build complete paths
+for (const endpoint of endpoint_inventory) {
+  if (api_base_path && !endpoint.path.startsWith(api_base_path)) {
+    endpoint.full_path = `${api_base_path}${endpoint.path}`.replace(/\/+/g, "/");
+  } else {
+    endpoint.full_path = endpoint.path;
+  }
+}
+
+// Step 6: Group by resource for documentation
+const endpoints_by_resource = {};
+for (const endpoint of endpoint_inventory) {
+  const parts = endpoint.full_path.split("/").filter(p => p && !p.startsWith(":"));
+  const resource = parts[parts.length - 1] || parts[parts.length - 2] || "root";
+
+  if (!endpoints_by_resource[resource]) {
+    endpoints_by_resource[resource] = [];
+  }
+  endpoints_by_resource[resource].push(endpoint);
+}
+
+// Store for Phase 2 (CRITICAL)
+global.discovered_endpoints = endpoint_inventory;
+global.endpoints_by_resource = endpoints_by_resource;
+global.api_base_path = api_base_path;
+
+LOG: "";
+LOG: "=== PHASE 1 STEP 8b: API ENDPOINT DISCOVERY ===";
+LOG: `Backend Framework: ${backend_framework || "none"}`;
+LOG: `Route Files Found: ${route_files.length}`;
+LOG: `Route Files Read: ${all_routes.length}`;
+LOG: `Endpoints Extracted: ${endpoint_inventory.length}`;
+LOG: `API Base Path: ${api_base_path || "(none)"}`;
+LOG: `Resources Identified: ${Object.keys(endpoints_by_resource).length}`;
+LOG: "";
+LOG: "**Discovered Endpoints:**";
+for (const resource in endpoints_by_resource) {
+  LOG: ``;
+  LOG: `**${resource}** (${endpoints_by_resource[resource].length} endpoints):`;
+  for (const endpoint of endpoints_by_resource[resource]) {
+    LOG: `  ${endpoint.method} ${endpoint.full_path}`;
+  }
+}
+LOG: "";
+LOG: "✅ Endpoint inventory complete - will be used in Phase 2 API documentation";
+```
+
+**8b.2: Frontend Component Discovery (Frontend Projects)**
+
+If frontend framework detected, APO MUST discover component structure:
+
+```javascript
+const frontend_framework = project_metadata.framework; // react, vue, angular
+
+const component_patterns = {
+  react: ["client/src/components/**/*.{tsx,jsx}", "src/components/**/*.{tsx,jsx}", "client/src/pages/**/*.{tsx,jsx}"],
+  vue: ["src/components/**/*.vue", "src/views/**/*.vue"],
+  angular: ["src/app/**/*.component.ts"]
+};
+
+let component_files = [];
+if (frontend_framework && component_patterns[frontend_framework]) {
+  for (const pattern of component_patterns[frontend_framework]) {
+    const matches = Glob({pattern: pattern});
+    component_files.push(...matches);
+  }
+}
+
+LOG: `✅ Found ${component_files.length} component files for ${frontend_framework}`;
+
+// Read component files to understand structure
+const component_inventory = [];
+for (const file of component_files.slice(0, 20)) {  // Sample first 20 to avoid excessive reads
+  const content = Read(file);
+  component_inventory.push({
+    file: file,
+    name: extract_component_name(file, content)
+  });
+}
+
+global.discovered_components = component_inventory;
+LOG: `✅ Analyzed ${component_inventory.length} components`;
+```
+
+**8b.3: Database Schema Discovery (ORM Projects)**
+
+If ORM detected, APO MUST read schema files:
+
+```javascript
+// Prisma
+if (verified_tools.prisma && exists("prisma/schema.prisma")) {
+  const schema_content = Read("prisma/schema.prisma");
+
+  // Parse models
+  const model_matches = [...schema_content.matchAll(/model\s+(\w+)\s*\{([^}]+)\}/g)];
+  const models = model_matches.map(match => ({
+    name: match[1],
+    fields: match[2].trim()
+  }));
+
+  global.discovered_schema = {
+    type: "prisma",
+    file: "prisma/schema.prisma",
+    models: models,
+    model_count: models.length
+  };
+
+  LOG: `✅ Read prisma/schema.prisma (${models.length} models discovered)`;
+}
+
+// Sequelize/TypeORM models
+else if (verified_tools.sequelize || verified_tools.typeorm) {
+  const model_files = Glob({pattern: "**/models/**/*.{ts,js}"});
+
+  global.discovered_schema = {
+    type: verified_tools.sequelize ? "sequelize" : "typeorm",
+    model_files: model_files,
+    model_count: model_files.length
+  };
+
+  LOG: `✅ Found ${model_files.length} model files`;
+}
+```
+
+**8b.4: Configuration & Environment Discovery**
+
+APO MUST read actual configuration files:
+
+```javascript
+// Environment variables
+const env_files = [".env", "server/.env", ".env.development"];
+for (const env_file of env_files) {
+  if (exists(env_file)) {
+    const env_content = Read(env_file);
+    const env_vars = env_content
+      .split("\n")
+      .filter(line => line && !line.startsWith("#") && line.includes("="))
+      .map(line => line.split("=")[0].trim());
+
+    global.discovered_env_vars = env_vars;
+    LOG: `✅ Read ${env_file} (${env_vars.length} variables)`;
+
+    // Create .env.example if missing
+    const example_file = `${env_file}.example`;
+    if (!exists(example_file)) {
+      const example_content = env_content
+        .split("\n")
+        .map(line => {
+          if (line.includes("=") && !line.startsWith("#")) {
+            const key = line.split("=")[0];
+            return `${key}=`;
+          }
+          return line;
+        })
+        .join("\n");
+
+      Write(example_file, example_content);
+      LOG: `✅ Created ${example_file}`;
+    }
+
+    break;  // Only process first env file found
+  }
+}
+
+// npm/yarn scripts
+if (exists("package.json")) {
+  const pkg_content = Read("package.json");
+  const pkg = JSON.parse(pkg_content);
+  global.discovered_scripts = pkg.scripts || {};
+  LOG: `✅ Found ${Object.keys(global.discovered_scripts).length} npm scripts`;
+}
+```
+
+**8b.5: ENFORCEMENT GATE**
+
+```javascript
+// Verify discovery was successful
+if (backend_framework && endpoint_inventory.length === 0) {
+  ERROR: "⚠️ CRITICAL WARNING: Backend framework detected but ZERO endpoints extracted";
+  ERROR: `Framework: ${backend_framework}`;
+  ERROR: `Route files found: ${route_files.length}`;
+  ERROR: `Route files read: ${all_routes.length}`;
+  ERROR: "";
+  ERROR: "This indicates a problem with route file parsing. API documentation will be incomplete.";
+  ERROR: "Possible causes:";
+  ERROR: "  1. Route files use non-standard patterns";
+  ERROR: "  2. Parsing regex needs framework-specific adjustment";
+  ERROR: "  3. Route files are in non-standard locations";
+  ERROR: "";
+  ERROR: "RECOMMENDATION: API documentation will be created but may be incomplete.";
+}
+
+// Log completion
+LOG: "";
+LOG: "=== PHASE 1 STEP 8b COMPLETE ===";
+LOG: `Endpoints discovered: ${endpoint_inventory.length}`;
+LOG: `Components analyzed: ${component_inventory.length}`;
+LOG: `Schema models found: ${global.discovered_schema?.model_count || 0}`;
+LOG: `Environment variables: ${global.discovered_env_vars?.length || 0}`;
+LOG: "";
+```
+
+**Why This Step Is Critical:**
+
+This step fixes the root cause of the test failure. Without this step:
+- APO assumes "standard REST patterns" → 16 endpoint errors
+- APO assumes "typical CRUD" → 10 undocumented endpoints
+- APO documents non-existent features → 3 false positives
+
+With this step:
+- APO reads actual route files → accurate endpoint paths
+- APO discovers ALL routes → complete documentation
+- APO documents only what EXISTS → zero false positives
+
+---
+
+### Phase 1.5: VERIFICATION ENFORCEMENT GATE
+
+**CRITICAL: This phase is MANDATORY and cannot be skipped. APO cannot proceed to Phase 2 without completing verification.**
+
+**Goal:** Build verified_tools object and output verification report
+
+**Step 1: Execute Verification Script**
+
+```javascript
+// APO MUST execute these Read/Glob commands to build verified_tools
+
+if (project_type === "Node.js") {
+  // Read package.json
+  package_json = Read("package.json")
+  all_deps = {...package_json.dependencies, ...package_json.devDependencies}
+
+  // Build verified_tools object
+  verified_tools = {
+    // Core tools
+    typescript: "typescript" in all_deps && exists("tsconfig.json"),
+    javascript: exists("package.json"),
+
+    // Testing tools
+    jest: "jest" in all_deps && (exists("jest.config.js") || exists("jest.config.ts")),
+    mocha: "mocha" in all_deps,
+    vitest: "vitest" in all_deps,
+    supertest: "supertest" in all_deps,
+    testing_library_react: "@testing-library/react" in all_deps,
+
+    // Linting/Formatting
+    eslint: "eslint" in all_deps && (exists(".eslintrc.js") || exists("eslint.config.js") || exists(".eslintrc.json")),
+    prettier: "prettier" in all_deps && (exists(".prettierrc") || exists(".prettierrc.json")),
+
+    // Build tools
+    webpack: "webpack" in all_deps && exists("webpack.config.js"),
+    vite: "vite" in all_deps && (exists("vite.config.ts") || exists("vite.config.js")),
+    next: "next" in all_deps,
+
+    // Frameworks
+    react: "react" in all_deps,
+    express: "express" in all_deps,
+    nestjs: "@nestjs/core" in all_deps,
+
+    // Logging
+    winston: "winston" in all_deps,
+    pino: "pino" in all_deps,
+    bunyan: "bunyan" in all_deps,
+
+    // Security
+    helmet: "helmet" in all_deps,
+    express_rate_limit: "express-rate-limit" in all_deps,
+    bcrypt: "bcrypt" in all_deps || "bcryptjs" in all_deps,
+    jsonwebtoken: "jsonwebtoken" in all_deps,
+
+    // Monitoring
+    sentry: "@sentry/node" in all_deps || "sentry" in all_deps,
+    newrelic: "newrelic" in all_deps,
+
+    // Database tools
+    prisma: "@prisma/client" in all_deps && exists("prisma/schema.prisma"),
+    typeorm: "typeorm" in all_deps,
+    sequelize: "sequelize" in all_deps,
+    mongoose: "mongoose" in all_deps,
+
+    // Performance
+    lighthouse: "lighthouse" in all_deps && exists(".lighthouserc.json"),
+
+    // CI/CD
+    github_actions: exists(".github/workflows/"),
+    gitlab_ci: exists(".gitlab-ci.yml"),
+    circle_ci: exists(".circleci/config.yml")
+  }
+
+} else if (project_type === "Python") {
+  // Read requirements.txt or pyproject.toml
+  if (exists("requirements.txt")) {
+    requirements = Read("requirements.txt")
+    all_deps = parse_requirements(requirements)
+  } else if (exists("pyproject.toml")) {
+    pyproject = Read("pyproject.toml")
+    all_deps = parse_pyproject_deps(pyproject)
+  }
+
+  verified_tools = {
+    django: "django" in all_deps,
+    flask: "flask" in all_deps,
+    fastapi: "fastapi" in all_deps,
+    pytest: "pytest" in all_deps && (exists("pytest.ini") || exists("pyproject.toml")),
+    sphinx: "sphinx" in all_deps && exists("docs/conf.py"),
+    black: "black" in all_deps,
+    mypy: "mypy" in all_deps
+  }
+
+} else if (project_type === "Rust") {
+  // Read Cargo.toml
+  cargo_toml = Read("Cargo.toml")
+  all_deps = parse_cargo_deps(cargo_toml)
+
+  verified_tools = {
+    tokio: "tokio" in all_deps,
+    axum: "axum" in all_deps,
+    actix_web: "actix-web" in all_deps,
+    serde: "serde" in all_deps,
+    sqlx: "sqlx" in all_deps,
+    rustdoc: exists("src/lib.rs")  // Rustdoc is built-in
+  }
+}
+```
+
+**Step 2: Usage Evidence Verification (MANDATORY)**
+
+**CRITICAL: Installation check alone is INSUFFICIENT. APO MUST verify actual usage.**
+
+For each tool where `verified_tools.{tool} = true` after Step 1, APO MUST perform usage verification:
+
+**2a. Import/Require Verification:**
+
+```javascript
+// For each tool marked as installed, check if it's actually imported
+for (const tool in verified_tools) {
+  if (verified_tools[tool] === true) {
+    // Search for imports/requires in source code
+    const src_dirs = ["src/", "server/", "app/", "lib/"];
+    let has_imports = false;
+
+    for (const dir of src_dirs) {
+      if (exists(dir)) {
+        // Check ES6 imports
+        const es6_imports = Grep({
+          pattern: `from ['"\`]${tool}['"\`]`,
+          path: dir,
+          output_mode: "files_with_matches"
+        });
+
+        // Check CommonJS requires
+        const cjs_requires = Grep({
+          pattern: `require\\(['"\`]${tool}['"\`]\\)`,
+          path: dir,
+          output_mode: "files_with_matches"
+        });
+
+        if (es6_imports.length > 0 || cjs_requires.length > 0) {
+          has_imports = true;
+          break;
+        }
+      }
+    }
+
+    if (!has_imports) {
+      verified_tools[tool] = false;
+      exclusion_reasons[tool] = "Installed but never imported in codebase";
+    }
+  }
+}
+```
+
+**2b. Tool-Specific Usage Pattern Verification:**
+
+```javascript
+// Additional verification for specific tool types
+
+// Validation Libraries
+if (verified_tools["express-validator"]) {
+  const has_validation = Grep({
+    pattern: "validationResult|check|body|param|query",
+    path: "server/",
+    output_mode: "files_with_matches"
+  });
+
+  if (has_validation.length === 0) {
+    verified_tools["express-validator"] = false;
+    exclusion_reasons["express-validator"] = "No validation chains found in code";
+  }
+}
+
+// Testing Frameworks
+if (verified_tools.jest || verified_tools.mocha || verified_tools.vitest) {
+  const test_files = [
+    ...Glob({pattern: "**/*.test.{ts,js,tsx,jsx}"}),
+    ...Glob({pattern: "**/*.spec.{ts,js,tsx,jsx}"})
+  ];
+
+  if (test_files.length === 0) {
+    if (verified_tools.jest) {
+      verified_tools.jest = false;
+      exclusion_reasons.jest = "No test files found (0 .test.* files)";
+    }
+    if (verified_tools.mocha) {
+      verified_tools.mocha = false;
+      exclusion_reasons.mocha = "No test files found (0 .spec.* files)";
+    }
+    if (verified_tools.vitest) {
+      verified_tools.vitest = false;
+      exclusion_reasons.vitest = "No test files found (0 .test.* files)";
+    }
+  }
+}
+
+// Security Middleware (helmet, cors, etc.)
+if (verified_tools.helmet) {
+  const helmet_usage = Grep({
+    pattern: "helmet\\(",
+    path: "server/",
+    output_mode: "files_with_matches"
+  });
+
+  if (helmet_usage.length === 0) {
+    verified_tools.helmet = false;
+    exclusion_reasons.helmet = "Middleware never called in app initialization";
+  }
+}
+
+// Logging Libraries
+if (verified_tools.winston || verified_tools.pino) {
+  const logging_imports = Grep({
+    pattern: "winston|pino",
+    path: "server/",
+    output_mode: "files_with_matches"
+  });
+
+  if (logging_imports.length === 0) {
+    if (verified_tools.winston) {
+      verified_tools.winston = false;
+      exclusion_reasons.winston = "Never imported or used";
+    }
+    if (verified_tools.pino) {
+      verified_tools.pino = false;
+      exclusion_reasons.pino = "Never imported or used";
+    }
+  }
+}
+```
+
+**Step 3: Output Enhanced Verification Report (MANDATORY)**
+
+APO MUST output the 3-step verification report to console AND include in Phase 5 report.
+
+**Enhanced Format:**
+```markdown
+=== PHASE 1.5: VERIFICATION ENFORCEMENT GATE ===
+
+**Project Type:** {project_type}
+**Package Manager:** {package.json | Cargo.toml | requirements.txt}
+**Source Directories Scanned:** {src_dirs_list}
+
+**VERIFIED TOOLS (3-Step Verification Passed):**
+✅ express:
+   - Package: Found in package.json dependencies
+   - Import: Found in server/src/app.ts (line 3)
+   - Usage: Found in 6 route files
+
+✅ prisma:
+   - Package: Found in package.json dependencies (@prisma/client)
+   - Config: prisma/schema.prisma exists (8 models detected)
+   - Usage: @prisma/client imported in 5 service files
+
+✅ react:
+   - Package: Found in package.json dependencies
+   - Import: Found in 12 component files
+   - Usage: JSX syntax detected in client/src/
+
+✅ cors:
+   - Package: Found in package.json dependencies
+   - Import: Found in server/src/app.ts
+   - Usage: cors() middleware configured with origin
+
+**PARTIALLY VERIFIED (Installed but Not Used):**
+⚠️ express-validator:
+   - Package: ✅ Found in package.json dependencies
+   - Import: ❌ NOT FOUND (searched server/src/*)
+   - Usage: ❌ NOT FOUND (no validationResult, check, body, param calls)
+   - **VERDICT: Will NOT be documented (unused dependency)**
+
+⚠️ jest:
+   - Package: ✅ Found in package.json devDependencies
+   - Config: ✅ jest.config.js exists
+   - Test Files: ❌ NOT FOUND (0 .test.ts files, 0 .spec.ts files)
+   - **VERDICT: Will NOT be documented (no tests written)**
+
+**UNVERIFIED TOOLS (Not Installed):**
+❌ winston: NOT in package.json
+❌ helmet: NOT in package.json
+❌ lighthouse: NOT in package.json, no .lighthouserc.json
+❌ github_actions: .github/workflows/ directory does not exist
+
+**VERIFICATION SUMMARY:**
+- Total tools checked: {total_count}
+- Fully verified (✅): {verified_count}
+- Partially verified (⚠️): {partially_verified_count}
+- Unverified (❌): {unverified_count}
+- **Tools that will be documented: {verified_count}**
+
+**EXCLUSIONS (Why tools were excluded):**
+{for each tool in exclusion_reasons:}
+- {tool}: {reason}
+
+**GATE STATUS: ✅ PASS - Proceeding to Phase 2 with verified_tools object**
+```
+
+**Step 4: GATE - Block Phase 2 if Verification Not Complete**
+
+```javascript
+// Enforcement check
+if (!verified_tools || Object.keys(verified_tools).length === 0) {
+  ERROR: "❌ VERIFICATION GATE FAILED: verified_tools object is empty or missing";
+  ERROR: "Cannot proceed to Phase 2 without completing Phase 1.5 verification";
+  ERROR: "";
+  ERROR: "This indicates Phase 1.5 was not executed properly.";
+  ABORT_COMMAND();
+}
+
+// Verify 3-step process was completed
+if (!usage_verification_completed) {
+  ERROR: "❌ VERIFICATION GATE FAILED: Step 2 (Usage Verification) was not completed";
+  ERROR: "APO MUST perform import/usage checks for all tools";
+  ERROR: "";
+  ERROR: "Phase 1.5 Step 2 is MANDATORY and cannot be skipped.";
+  ABORT_COMMAND();
+}
+
+// Log verification completion
+LOG: "✅ Verification gate passed. verified_tools contains {count} entries.";
+LOG: "✅ Usage verification completed. {excluded_count} tools excluded due to no usage.";
+LOG: "Proceeding to Phase 2 with conditional documentation...";
+```
+
+**APO MUST:**
+1. Build verified_tools object from actual package files
+2. Output verification report showing verified vs unverified tools
+3. Pass verification gate before Phase 2
+4. Use verified_tools in ALL Phase 2 Write operations
+
+---
+
+### Phase 1.6: Prerequisite File Creation (MANDATORY - SENSIBLE DEFAULTS REQUIRED)
+
+**Goal:** Create missing prerequisite files BEFORE Phase 2 documentation references them.
+
+**CRITICAL:** This phase executes AFTER verification (Phase 1.5) but BEFORE content creation (Phase 2). Files created here will be referenced by Phase 2 documentation.
+
+**WHY THIS PHASE EXISTS:**
+
+Previous test failure: `.env.example` was created AFTER documentation referenced it (backward workflow). This phase fixes that by creating prerequisite files FIRST.
+
+**Step 1: .env.example Creation**
+
+If .env exists but .env.example does NOT exist, create the template:
+
+```javascript
+const env_files = [".env", "server/.env", "backend/.env", "api/.env", "app/.env"];
+const files_created = [];
+
+for (const env_file of env_files) {
+  if (exists(env_file)) {
+    const example_file = `${env_file}.example`;
+
+    if (!exists(example_file)) {
+      LOG: `📝 Creating ${example_file} (prerequisite for getting-started.md)`;
+
+      const env_content = Read(env_file);
+
+      // Strip values, keep keys and comments
+      const example_content = env_content
+        .split("\n")
+        .map(line => {
+          // Keep blank lines and comments
+          if (!line.trim() || line.trim().startsWith("#")) {
+            return line;
+          }
+
+          // Generate example values based on key name patterns (ADDITION 2)
+          if (line.includes("=")) {
+            const [key, original_value] = line.split("=").map(s => s.trim());
+            const key_upper = key.toUpperCase();
+
+            // ============================================================
+            // Sensible Default Generation Logic
+            // ============================================================
+
+            let example_value = "";
+
+            // Database URLs (keep example values, strip credentials)
+            if (key_upper.includes("DATABASE") && key_upper.includes("URL")) {
+              if (original_value && original_value.includes("file:")) {
+                // SQLite - keep the example
+                example_value = original_value;
+              } else if (original_value && original_value.includes("postgresql")) {
+                // PostgreSQL - keep pattern, strip credentials
+                example_value = `"postgresql://user:password@localhost:5432/dbname"`;
+              } else if (original_value && original_value.includes("mongodb")) {
+                // MongoDB - keep pattern, strip credentials
+                example_value = `"mongodb://localhost:27017/dbname"`;
+              } else {
+                // Generic database URL
+                example_value = `"file:./dev.db"`;  // Default to SQLite
+              }
+            }
+
+            // Port numbers (detect common port or use sensible default)
+            else if (key_upper === "PORT" || key_upper.endsWith("_PORT")) {
+              if (original_value && /^\d+$/.test(original_value)) {
+                // Keep the actual port number (it's not sensitive)
+                example_value = original_value;
+              } else {
+                // Use common backend port
+                example_value = "3001";
+              }
+            }
+
+            // Frontend/CORS URLs (use localhost)
+            else if (key_upper.includes("FRONTEND") || key_upper.includes("ORIGIN") || key_upper.includes("CLIENT_URL")) {
+              example_value = `"http://localhost:5173"`;  // Vite default
+            }
+
+            // API keys (descriptive placeholder)
+            else if (key_upper.includes("API_KEY") || key_upper.includes("APIKEY")) {
+              const service = key.split("_")[0].toLowerCase();
+              example_value = `"your_${service}_api_key_here"`;
+            }
+
+            // Client IDs (OAuth)
+            else if (key_upper.includes("CLIENT_ID")) {
+              const service = key.split("_")[0].toLowerCase();
+              example_value = `"your_${service}_client_id_here"`;
+            }
+
+            // Client Secrets (OAuth)
+            else if (key_upper.includes("SECRET") || key_upper.includes("CLIENT_SECRET")) {
+              const service = key.split("_")[0].toLowerCase();
+              example_value = `"your_${service}_client_secret_here"`;
+            }
+
+            // OAuth Redirect URIs (derive from detected services)
+            else if (key_upper.includes("REDIRECT") && key_upper.includes("URI")) {
+              const service = key.split("_")[0].toLowerCase();
+              // Derive from discovered endpoints if available
+              if (global.discovered_endpoints) {
+                const callback_endpoint = global.discovered_endpoints.find(e =>
+                  e.path.includes(service) && e.path.includes("callback")
+                );
+                if (callback_endpoint) {
+                  example_value = `"http://localhost:3001${callback_endpoint.full_path}"`;
+                } else {
+                  example_value = `"http://localhost:3001/api/${service}/callback"`;
+                }
+              } else {
+                example_value = `"http://localhost:3001/api/${service}/callback"`;
+              }
+            }
+
+            // JWT Secrets (generate example)
+            else if (key_upper.includes("JWT") && key_upper.includes("SECRET")) {
+              example_value = `"your_jwt_secret_key_here_min_32_chars"`;
+            }
+
+            // Boolean flags (keep original if present)
+            else if (original_value && (original_value.trim() === "true" || original_value.trim() === "false")) {
+              example_value = original_value;
+            }
+
+            // Node environment (common values)
+            else if (key_upper === "NODE_ENV") {
+              example_value = `"development"`;
+            }
+
+            // Default: Empty with inline comment
+            else {
+              example_value = `  # TODO: Add example value for ${key}`;
+            }
+
+            return `${key}=${example_value}`;
+          }
+
+          return line;
+        })
+        .join("\n");
+
+      Write(example_file, example_content);
+      files_created.push(example_file);
+
+      LOG: `✅ Created ${example_file} with ${example_content.split("\n").length} lines`;
+    } else {
+      LOG: `ℹ️  ${example_file} already exists`;
+    }
+
+    break; // Only process first .env file found
+  }
+}
+```
+
+**Step 2: Docker Environment Template**
+
+If docker-compose.yml exists but no .env.example:
+
+```javascript
+if (exists("docker-compose.yml") && !exists(".env.example") && files_created.length === 0) {
+  LOG: `📝 Docker Compose detected but no .env.example found`;
+  LOG: `Creating .env.example from docker-compose.yml environment variables`;
+
+  const compose_content = Read("docker-compose.yml");
+
+  // Extract environment variable names from docker-compose.yml
+  // Pattern: ${VAR_NAME}, $VAR_NAME, or environment: VAR_NAME=
+  const env_var_matches = [
+    ...compose_content.matchAll(/\$\{([A-Z_][A-Z0-9_]*)\}/g),
+    ...compose_content.matchAll(/\$([A-Z_][A-Z0-9_]*)/g),
+    ...compose_content.matchAll(/([A-Z_][A-Z0-9_]*)=/g)
+  ];
+
+  const unique_vars = [...new Set(env_var_matches.map(m => m[1]))];
+
+  if (unique_vars.length > 0) {
+    const template_content = unique_vars.map(v => `${v}=`).join("\n");
+    Write(".env.example", `# Docker Compose Environment Variables\n\n${template_content}\n`);
+    files_created.push(".env.example");
+    LOG: `✅ Created .env.example with ${unique_vars.length} variables from Docker Compose`;
+  }
+}
+```
+
+**Step 3: Phase 1.6 Report**
+
+```javascript
+LOG: "";
+LOG: "=== PHASE 1.6: PREREQUISITE FILE CREATION ===";
+
+if (files_created.length > 0) {
+  LOG: `Files Created: ${files_created.length}`;
+  for (const file of files_created) {
+    LOG: `  ✅ ${file}`;
+  }
+  LOG: "";
+  LOG: "✅ All prerequisite files ready for Phase 2 documentation";
+} else {
+  LOG: "ℹ️  No prerequisite files needed (all templates already exist)";
+}
+
+LOG: "";
+
+// Store for Phase 2 documentation
+global.prerequisite_files_created = files_created;
+```
+
+**Enforcement:**
+- This phase MUST complete before Phase 2
+- Any file referenced in Phase 2 documentation MUST exist
+- Phase 2 getting-started.md can now safely reference .env.example
+
+**Phase 2 Integration:**
+
+When Phase 2 creates getting-started.md, it should reference the template:
+
+```markdown
+### Environment Configuration
+
+Create your environment file by copying the template:
+
+\`\`\`bash
+cd server
+cp .env.example .env
+\`\`\`
+
+Then edit \`server/.env\` with your actual configuration values.
+```
+
 ---
 
 ### Phase 2: Directory Structure & Content Seeding
@@ -648,7 +1997,58 @@ APO MUST use the **Write tool** to create documentation files in this phase.
 - Creating directories is NOT enough
 - Showing content templates is NOT enough
 - APO MUST execute `Write("docs/guides/getting-started.md", content)` commands
-- Minimum 4 files MUST be created: getting-started.md, api/README.md, architecture/overview.md, reference/README.md
+
+**🚨 VERIFICATION REQUIREMENT:**
+
+APO MUST use the **verified_tools object from Phase 1.5** to conditionally create documentation.
+- ❌ Do NOT document tools where verified_tools.{tool} === false
+- ❌ Do NOT document features without verified implementation
+- ✅ ONLY create documentation for verified_tools.{tool} === true
+
+**🚨 MINIMUM FILE REQUIREMENTS (Dynamic based on verification):**
+
+**Always Required (Base Minimum: 4 files):**
+- docs/guides/getting-started.md
+- docs/api/README.md
+- docs/architecture/overview.md
+- docs/reference/README.md
+
+**Conditionally Required (Added to minimum based on Phase 1.5 verification):**
+- IF backend framework detected: +1 (docs/guides/api-development.md)
+- IF frontend framework detected: +1 (docs/guides/component-development.md)
+- IF ORM detected: +2 (docs/guides/database-management.md, docs/reference/database-schema.md)
+- IF testing framework detected: +1 (docs/guides/testing.md)
+
+**Minimum File Calculation:**
+```javascript
+minimum_required = 4;  // Base files
+
+// Check for backend framework
+if (verified_tools.express || verified_tools.nestjs || verified_tools.fastify ||
+    verified_tools.django || verified_tools.flask || verified_tools.fastapi) {
+  minimum_required += 1;  // api-development.md required
+}
+
+// Check for frontend framework
+if (verified_tools.react || verified_tools.vue || verified_tools.angular || verified_tools.next) {
+  minimum_required += 1;  // component-development.md required
+}
+
+// Check for ORM/Database
+if (verified_tools.prisma || verified_tools.typeorm || verified_tools.sequelize || verified_tools.mongoose) {
+  minimum_required += 2;  // database-management.md + database-schema.md required
+}
+
+// Check for testing framework
+if (verified_tools.jest || verified_tools.mocha || verified_tools.vitest || verified_tools.pytest) {
+  minimum_required += 1;  // testing.md required
+}
+
+// Example: Express + React + Prisma project
+// minimum_required = 4 + 1 + 1 + 2 = 8 files
+```
+
+**Phase 2 cannot complete with fewer than minimum_required files.**
 
 **Standard Directory Structure:**
 
@@ -685,217 +2085,490 @@ for each dir in required_dirs:
     created_dirs.push(dir)
 ```
 
+**Step 2.5: Architecture Diagram Generation (MANDATORY - BLOCKING REQUIREMENT)**
+
+**CRITICAL:** If `docs/images/` directory is created, it MUST be populated with architecture diagrams.
+
+APO MUST create Mermaid-style markdown diagrams for discovered architectures:
+
+```javascript
+// Only execute if backend OR frontend exists
+if (project_metadata.framework || project_metadata.architecture) {
+
+  LOG: "📊 Generating architecture diagrams...";
+
+  const diagrams_to_create = [];
+
+  // Diagram 1: MVC Request Flow (if MVC detected)
+  if (project_metadata.architecture === "MVC" ||
+      project_metadata.architecture === "MVC + Service Layer") {
+
+    const mvc_diagram = `# MVC Request Flow
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Client
+    participant Routes
+    participant Controller
+    participant Service
+    participant Database
+
+    Client->>Routes: HTTP Request
+    Routes->>Controller: Route to handler
+    Controller->>Service: Call business logic
+    Service->>Database: Query/Update data
+    Database-->>Service: Return data
+    Service-->>Controller: Return result
+    Controller-->>Routes: Format response
+    Routes-->>Client: HTTP Response
+\`\`\`
+
+**Components:**
+- **Routes**: Define URL paths and HTTP methods
+- **Controllers**: Handle requests, validate input, format responses
+- **Services**: Contain business logic, database operations
+- **Database**: Data persistence layer (${project_metadata.database || "Database"})
+`;
+
+    diagrams_to_create.push({
+      file: "docs/images/architecture-mvc-flow.md",
+      content: mvc_diagram,
+      type: "MVC Request Flow"
+    });
+  }
+
+  // Diagram 2: Database Schema ER Diagram (if ORM detected)
+  if (global.discovered_schema && global.discovered_schema.model_count > 0) {
+
+    const models = global.discovered_schema.models;
+    let mermaid_entities = [];
+
+    for (const model of models) {
+      // Parse fields for ER diagram
+      const field_lines = [];
+
+      for (const field of model.fields) {
+        // Extract field type and name
+        let field_type = "string";
+        let field_name = field;
+
+        // Parse Prisma field format: "fieldName Type @attributes"
+        if (field.includes(" ")) {
+          const parts = field.split(/\s+/);
+          field_name = parts[0];
+          field_type = parts[1].replace(/[\[\]\?]/g, ""); // Remove [], ? modifiers
+        }
+
+        field_lines.push(`        ${field_type} ${field_name}`);
+      }
+
+      mermaid_entities.push(`    ${model.name} {\n${field_lines.join("\n")}\n    }`);
+    }
+
+    // Parse relationships from model fields
+    const relationships = [];
+
+    for (const model of models) {
+      for (const field of model.fields) {
+        // Detect foreign key relationships (e.g., "campaignId Int")
+        if (field.includes("Id ") && !field.includes("@id")) {
+          const parts = field.split(/\s+/);
+          const fieldName = parts[0];
+          const relatedModel = fieldName.replace(/Id$/, "");
+
+          // Find if related model exists
+          const relatedModelExists = models.some(m =>
+            m.name.toLowerCase() === relatedModel.toLowerCase()
+          );
+
+          if (relatedModelExists) {
+            const capitalizedRelated = relatedModel.charAt(0).toUpperCase() + relatedModel.slice(1);
+            relationships.push({
+              from: model.name,
+              to: capitalizedRelated,
+              cardinality: "o|",
+              label: "belongs to"
+            });
+          }
+        }
+      }
+    }
+
+    const relationship_lines = relationships.map(r =>
+      `    ${r.from} ||--${r.cardinality} ${r.to} : "${r.label}"`
+    );
+
+    const er_diagram = `# Database Schema
+
+\`\`\`mermaid
+erDiagram
+${mermaid_entities.join("\n")}
+${relationship_lines.join("\n")}
+\`\`\`
+
+**Models:** ${models.length}
+**Relationships:** ${relationships.length}
+
+**Schema Details:**
+- **Primary Keys**: Auto-generated IDs on all models
+- **Foreign Keys**: Enforce referential integrity
+- **Cascade Deletes**: Configured for parent-child relationships
+`;
+
+    diagrams_to_create.push({
+      file: "docs/images/database-schema.md",
+      content: er_diagram,
+      type: "Database ER Diagram"
+    });
+  }
+
+  // Diagram 3: API Endpoint Map (if endpoints discovered)
+  if (global.discovered_endpoints && global.discovered_endpoints.length > 0) {
+
+    const resources = global.endpoints_by_resource || {};
+    let flowchart_nodes = [];
+
+    flowchart_nodes.push("    Client[Client Application]");
+    flowchart_nodes.push("    API[API Server]");
+
+    for (const resource in resources) {
+      const endpoints = resources[resource];
+      const endpoint_list = endpoints.map(e => `${e.method} ${e.path}`).join("<br/>");
+      flowchart_nodes.push(`    ${resource}[${resource.toUpperCase()}<br/>${endpoint_list}]`);
+    }
+
+    // Add connections
+    const connections = Object.keys(resources).map(r => `    API --> ${r}`);
+
+    const api_diagram = `# API Endpoint Flow
+
+\`\`\`mermaid
+flowchart TD
+    Client --> API
+${flowchart_nodes.slice(2).join("\n")}
+${connections.join("\n")}
+\`\`\`
+
+**Total Endpoints:** ${global.discovered_endpoints.length}
+**Resources:** ${Object.keys(resources).length}
+
+**Base URL:** \`${global.api_base_path || "/api"}\`
+`;
+
+    diagrams_to_create.push({
+      file: "docs/images/api-endpoint-flow.md",
+      content: api_diagram,
+      type: "API Endpoint Map"
+    });
+  }
+
+  // Diagram 4: Component Hierarchy (if React/Vue detected)
+  if ((project_metadata.framework === "React" || project_metadata.framework === "Vue") &&
+      global.discovered_components && global.discovered_components.length > 0) {
+
+    const components = global.discovered_components;
+
+    // Build component tree nodes
+    let component_nodes = ["    App[App Root Component]"];
+    let component_connections = [];
+
+    // Group components by directory
+    const component_groups = {};
+
+    for (const comp of components) {
+      const dir = comp.file.split("/").slice(-2, -1)[0]; // Get parent directory
+      if (!component_groups[dir]) {
+        component_groups[dir] = [];
+      }
+      component_groups[dir].push(comp.name);
+    }
+
+    // Create flowchart nodes and connections
+    for (const group in component_groups) {
+      const group_components = component_groups[group];
+      component_nodes.push(`    ${group}Group[${group}/<br/>${group_components.join("<br/>")}]`);
+      component_connections.push(`    App --> ${group}Group`);
+    }
+
+    const component_diagram = `# Component Hierarchy
+
+\`\`\`mermaid
+flowchart TD
+${component_nodes.join("\n")}
+${component_connections.join("\n")}
+\`\`\`
+
+**Total Components:** ${components.length}
+**Component Groups:** ${Object.keys(component_groups).length}
+
+**Component Features:**
+${Object.entries(component_groups).map(([group, comps]) =>
+  `- **${group}/**: ${comps.join(", ")}`
+).join("\n")}
+`;
+
+    diagrams_to_create.push({
+      file: "docs/images/component-hierarchy.md",
+      content: component_diagram,
+      type: "Component Hierarchy"
+    });
+  }
+
+  // ============================================================
+  // MANDATORY EXECUTION: Write ALL Diagram Files (ADDITION 3)
+  // ============================================================
+
+  LOG: "";
+  LOG: "=== PHASE 2 STEP 2.5: MERMAID DIAGRAM GENERATION ===";
+
+  if (diagrams_to_create.length === 0) {
+    LOG: "ℹ️  No diagrams required (no architecture or database detected)";
+  } else {
+    LOG: `Generating ${diagrams_to_create.length} Mermaid diagrams...`;
+    LOG: "";
+
+    const diagrams_created = [];
+
+    // MANDATORY: Execute Write for EVERY diagram
+    for (const diagram of diagrams_to_create) {
+      LOG: `📊 Creating ${diagram.file}...`;
+
+      Write(diagram.file, diagram.content);
+
+      diagrams_created.push(diagram.file);
+
+      LOG: `✅ Created ${diagram.file} (${diagram.content.split("\n").length} lines)`;
+    }
+
+    LOG: "";
+    LOG: `✅ Successfully created ${diagrams_created.length} diagram files`;
+
+    // Store for Phase 2.5 validation
+    global.diagrams_created = diagrams_created;
+    global.diagrams_to_create = diagrams_to_create;
+  }
+
+  LOG: "";
+  LOG: "=== PHASE 2 STEP 2.5 COMPLETE ===";
+  LOG: "";
+
+  // ============================================================
+  // ENFORCEMENT GATE: Verify Diagrams Were Created
+  // ============================================================
+
+  // Verify docs/images/ is not empty
+  const images_dir_files = Glob({pattern: "docs/images/*"});
+
+  if (diagrams_to_create.length > 0 && images_dir_files.length === 0) {
+    ERROR: "";
+    ERROR: "❌ CRITICAL ERROR: Diagram generation FAILED";
+    ERROR: `Expected to create ${diagrams_to_create.length} diagrams`;
+    ERROR: `docs/images/ directory contains 0 files`;
+    ERROR: "";
+    ERROR: "This indicates Write commands were not executed.";
+    ERROR: "REQUIRED ACTION: Execute Write() for all diagrams in diagrams_to_create array";
+    ERROR: "";
+    ABORT_COMMAND();
+  }
+
+  // Verify count matches
+  if (diagrams_to_create.length > 0 && diagrams_to_create.length !== images_dir_files.length) {
+    WARN: "";
+    WARN: "⚠️ WARNING: Diagram count mismatch";
+    WARN: `Expected: ${diagrams_to_create.length} diagrams`;
+    WARN: `Actually created: ${images_dir_files.length} files`;
+    WARN: "";
+  }
+
+} else {
+  LOG: "⏭️  Skipping diagram generation (no backend/frontend framework detected)";
+  global.diagrams_created = [];
+  global.diagrams_to_create = [];
+}
+```
+
+**Enforcement:**
+- If `docs/images/` created → MUST generate at least 1 diagram
+- If MVC detected → MUST create MVC flow diagram
+- If database schema discovered → MUST create ER diagram
+- If API endpoints discovered → MUST create API flow diagram
+- Phase 2.6 validates `diagram_count > 0` if architecture detected
+
+---
+
+### Phase 2.1: MANDATORY FRAMEWORK GUIDE ENFORCEMENT
+
+**CRITICAL: This phase is MANDATORY and cannot be skipped.**
+
+APO MUST create framework-specific guides based on Phase 1.5 verification results. These are NOT optional suggestions.
+
+**Rule 1: Backend Framework Guide (MANDATORY)**
+
+```javascript
+// Check if any backend framework was verified
+const backend_framework_detected =
+  verified_tools.express ||
+  verified_tools.nestjs ||
+  verified_tools.fastify ||
+  verified_tools.django ||
+  verified_tools.flask ||
+  verified_tools.fastapi;
+
+if (backend_framework_detected) {
+  // APO MUST execute Write command
+  const api_guide_content = analyze_and_document_api_architecture();
+  Write("docs/guides/api-development.md", api_guide_content);
+
+  // GATE CHECK - ABORT if file not created
+  if (!exists("docs/guides/api-development.md")) {
+    ERROR: "❌ PHASE 2.1 FAILURE: api-development.md MUST be created";
+    ERROR: `Backend framework detected: ${get_detected_backend_framework()}`;
+    ERROR: "Cannot proceed without creating mandatory backend framework guide";
+    ABORT_COMMAND();
+  }
+
+  LOG: `✅ Created api-development.md for ${get_detected_backend_framework()}`;
+}
+```
+
+**Rule 2: Frontend Framework Guide (MANDATORY)**
+
+```javascript
+// Check if any frontend framework was verified
+const frontend_framework_detected =
+  verified_tools.react ||
+  verified_tools.vue ||
+  verified_tools.angular ||
+  verified_tools.next;
+
+if (frontend_framework_detected) {
+  // APO MUST execute Write command
+  const component_guide_content = analyze_and_document_component_patterns();
+  Write("docs/guides/component-development.md", component_guide_content);
+
+  // GATE CHECK - ABORT if file not created
+  if (!exists("docs/guides/component-development.md")) {
+    ERROR: "❌ PHASE 2.1 FAILURE: component-development.md MUST be created";
+    ERROR: `Frontend framework detected: ${get_detected_frontend_framework()}`;
+    ERROR: "Cannot proceed without creating mandatory frontend framework guide";
+    ABORT_COMMAND();
+  }
+
+  LOG: `✅ Created component-development.md for ${get_detected_frontend_framework()}`;
+}
+```
+
+**Rule 3: Database/ORM Documentation (MANDATORY)**
+
+```javascript
+// Check if any ORM was verified
+const orm_detected =
+  verified_tools.prisma ||
+  verified_tools.typeorm ||
+  verified_tools.sequelize ||
+  verified_tools.mongoose;
+
+if (orm_detected) {
+  // APO MUST create BOTH database guides
+  const db_management_content = analyze_database_usage();
+  Write("docs/guides/database-management.md", db_management_content);
+
+  const schema_content = read_and_parse_schema_file();
+  Write("docs/reference/database-schema.md", schema_content);
+
+  // GATE CHECK - ABORT if either file not created
+  if (!exists("docs/guides/database-management.md")) {
+    ERROR: "❌ PHASE 2.1 FAILURE: database-management.md MUST be created";
+    ERROR: `ORM detected: ${get_detected_orm()}`;
+    ERROR: "Cannot proceed without creating mandatory database guide";
+    ABORT_COMMAND();
+  }
+
+  if (!exists("docs/reference/database-schema.md")) {
+    ERROR: "❌ PHASE 2.1 FAILURE: database-schema.md MUST be created";
+    ERROR: `ORM detected: ${get_detected_orm()}`;
+    ERROR: "Cannot proceed without creating mandatory schema reference";
+    ABORT_COMMAND();
+  }
+
+  LOG: `✅ Created database-management.md for ${get_detected_orm()}`;
+  LOG: `✅ Created database-schema.md with schema reference`;
+}
+```
+
+**Rule 4: Testing Framework Guide (MANDATORY)**
+
+```javascript
+// Check if any testing framework was verified
+const testing_framework_detected =
+  verified_tools.jest ||
+  verified_tools.mocha ||
+  verified_tools.vitest ||
+  verified_tools.pytest;
+
+if (testing_framework_detected) {
+  // APO MUST execute Write command
+  const testing_guide_content = analyze_and_document_testing_approach();
+  Write("docs/guides/testing.md", testing_guide_content);
+
+  // GATE CHECK - ABORT if file not created
+  if (!exists("docs/guides/testing.md")) {
+    ERROR: "❌ PHASE 2.1 FAILURE: testing.md MUST be created";
+    ERROR: `Testing framework detected: ${get_detected_testing_framework()}`;
+    ERROR: "Cannot proceed without creating mandatory testing guide";
+    ABORT_COMMAND();
+  }
+
+  LOG: `✅ Created testing.md for ${get_detected_testing_framework()}`;
+}
+```
+
+---
+
 **Step 2: Seed docs/guides/ Content (ENHANCEMENT 2)**
 
-**CRITICAL: Create useful starter guides based on project type, not empty placeholders**
+**CRITICAL: Create COMPLETE documentation guides. This is NOT optional guidance.**
 
 **✅ APO MUST:**
 1. USE Write tool to create docs/guides/getting-started.md with project-specific content
-2. USE Write tool to create framework-specific guides (if applicable)
+2. USE Write tool to create ALL applicable feature-specific guides
 3. Content MUST be based on actual project metadata from Phase 1
 4. NO generic placeholders - use real project name, version, dependencies
+5. READ actual code files to document real implementations, not assumptions
 
-**EXECUTION REQUIRED:**
+**MANDATORY EXECUTION REQUIREMENTS:**
+
+APO MUST execute Write commands for ALL applicable guides. Phase 2.1 enforces framework guides; this step handles additional feature guides.
+
+**Core Documentation (ALWAYS CREATE):**
 ```javascript
-// APO MUST execute these Write commands:
-
-// 1. Create getting-started.md
+// APO MUST execute this Write command:
 Write("docs/guides/getting-started.md", getting_started_content);
-
-// 2. Create framework-specific guide (if detected)
-if (framework === "Express" || framework === "NestJS") {
-  Write("docs/guides/api-development.md", api_dev_content);
-}
-if (framework === "React" || framework === "Next.js") {
-  Write("docs/guides/component-development.md", component_dev_content);
-}
-if (framework === "Django" || framework === "Flask") {
-  Write("docs/guides/django-development.md", django_dev_content);
-}
 ```
 
-**CONTENT TEMPLATE for docs/guides/getting-started.md:**
+**Feature-Specific Documentation (CONDITIONAL MANDATORY):**
 
-```markdown
+APO MUST create guides for features detected in Phase 1 Step 8. Examples include:
+- Deployment (build scripts/Dockerfile/CI-CD) → deployment.md
+- OAuth integration (provider detection) → {provider}-integration.md
+- Docker (Dockerfile/docker-compose.yml) → docker.md
+- Payment providers → payment-integration.md
+- WebSocket (socket.io/ws) → websockets.md
+- File uploads (multer/formidable) → file-uploads.md
+- Email (nodemailer/sendgrid) → email-setup.md
+- Caching (redis/memcached) → caching.md
+- Search (elasticsearch/algolia) → search-integration.md
+- Background jobs (bull/agenda/celery) → background-jobs.md
 
-# Getting Started with {{PROJECT_NAME}}
+**APO is not limited to these.** Create guides for ANY unique features identified in Phase 1 Step 8.
 
-**Version:** {{VERSION}}
-**Last Updated**: {{CURRENT_DATE}}
+**All Guides Requirements:**
+- Read actual code (not generic templates)
+- Document reality (what EXISTS, not best practices)
+- Complete content (minimum 100 lines, with real code examples)
+- No deferred work (no "Coming Soon" or placeholders)
 
-## Overview
-
-{project_metadata.description or "This guide will help you get started with {{PROJECT_NAME}}."}
-
-## Prerequisites
-
-{if project_metadata.type === "Node.js":}
-- Node.js ≥ {extract from package.json engines or "16.0.0"}
-- npm or yarn package manager
-
-{if project_metadata.type === "Python":}
-- Python ≥ {extract from pyproject.toml or "3.8"}
-- pip package manager
-
-{if project_metadata.type === "Rust":}
-- Rust {extract from Cargo.toml or "latest stable"}
-- Cargo build tool
-
-{if project_metadata.type === "Flutter":}
-- Flutter SDK {extract from pubspec.yaml or "latest"}
-- Dart SDK
-
-## Installation
-
-{if project_metadata.type === "Node.js":}
-```bash
-# Clone the repository
-git clone {repository URL from package.json or placeholder}
-cd {{PROJECT_NAME}}
-
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-```
-
-{if project_metadata.type === "Python":}
-```bash
-# Clone the repository
-git clone {repository URL}
-cd {{PROJECT_NAME}}
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run application
-python main.py
-```
-
-{if project_metadata.type === "Rust":}
-```bash
-# Clone the repository
-git clone {repository URL}
-cd {{PROJECT_NAME}}
-
-# Build project
-cargo build
-
-# Run project
-cargo run
-```
-
-## Project Structure
-
-```
-{actual src/ directory structure from Phase 1 scan}
-```
-
-## Next Steps
-
-- [API Documentation](../api/) - Learn about available APIs
-- [Architecture Overview](../architecture/overview.md) - Understand system design
-{if has CONTRIBUTING.md:}
-- [Contributing Guide](../../CONTRIBUTING.md) - Contribute to the project
-
-## Common Issues
-
-{if project_metadata.type === "Node.js":}
-### "Module not found" errors
-- Ensure you've run `npm install`
-- Clear node_modules and reinstall: `rm -rf node_modules && npm install`
-
-{if project_metadata.type === "Python":}
-### Import errors
-- Ensure virtual environment is activated
-- Reinstall dependencies: `pip install -r requirements.txt`
-
-## Support
-
-{Placeholder for support information}
-- GitHub Issues: [repository]/issues
-- Documentation: [docs/](../)
-```
-
-**Create Framework-Specific Guides (ENHANCEMENT 10)**
-
-```markdown
-{if framework === "Express":}
-### docs/guides/api-development.md
-
-# API Development Guide
-
-## Creating Routes
-
-```javascript
-// src/routes/example.js
-const express = require('express');
-const router = express.Router();
-
-router.get('/example', (req, res) => {
-  res.json({ message: 'Example endpoint' });
-});
-
-module.exports = router;
-```
-
-## Middleware
-
-{Examples based on detected middleware patterns in codebase}
-
-## Error Handling
-
-{if error handling patterns detected, show them}
-
-{if framework === "React":}
-### docs/guides/component-development.md
-
-# Component Development Guide
-
-## Component Structure
-
-```jsx
-// Functional Component Example
-import React from 'react';
-
-export const ExampleComponent = ({ prop1, prop2 }) => {
-  return (
-    <div>
-      {/* Component content */}
-    </div>
-  );
-};
-```
-
-## State Management
-
-{if Redux detected: show Redux patterns}
-{if Context API detected: show Context patterns}
-
-{if framework === "Django":}
-### docs/guides/django-development.md
-
-# Django Development Guide
-
-## Creating Apps
-
-```bash
-python manage.py startapp myapp
-```
-
-## Models and Migrations
-
-{Examples of model creation and migration workflow}
-
-## Admin Panel
-
-{Django admin setup instructions}
-```
+---
 
 **Step 3: Seed docs/api/ Content (ENHANCEMENT 2 + 8)**
 
@@ -904,74 +2577,200 @@ python manage.py startapp myapp
 2. Include links to auto-generated API docs if detected in Phase 1
 3. If no auto-generated docs, create basic API documentation structure
 
-**EXECUTION REQUIRED:**
 ```javascript
-// APO MUST execute this Write command:
-Write("docs/api/README.md", api_readme_content);
+// APO MUST execute: Write("docs/api/README.md", api_readme_content);
 ```
 
-**CONTENT TEMPLATE for docs/api/README.md:**
+**api/README.md Content Requirements (MANDATORY):**
 
-```markdown
+**CRITICAL: APO MUST use discovered_endpoints from Phase 1 Step 8b. NO ASSUMPTIONS.**
 
-# API Documentation
+APO MUST build API documentation using ONLY the endpoint inventory discovered in Phase 1 Step 8b.
 
-{if project_metadata.api_docs (TypeDoc/Rustdoc/etc):}
+```javascript
+// MANDATORY: Use discovered endpoints from Phase 1 Step 8b
+if (global.discovered_endpoints && global.discovered_endpoints.length > 0) {
 
-**Auto-Generated API Reference:** [{api_docs.type}]({api_docs.entry})
+  // Build API documentation from ACTUAL discovered endpoints
+  let api_content = `# API Reference\n\n`;
+  api_content += `## Overview\n\n`;
+  api_content += `This API provides **${global.discovered_endpoints.length} endpoints** across ${Object.keys(global.endpoints_by_resource).length} resource categories.\n\n`;
 
-Full API documentation is available in the auto-generated {api_docs.type} documentation.
+  if (global.api_base_path) {
+    api_content += `**Base Path:** \`${global.api_base_path}\`\n\n`;
+  }
 
-{else if framework matches API framework (Express, FastAPI, etc):}
+  api_content += `---\n\n`;
 
-**{project_metadata.name}** API documentation.
+  // Document each resource group
+  for (const [resource, endpoints] of Object.entries(global.endpoints_by_resource)) {
+    api_content += `## ${capitalize(resource)}\n\n`;
+    api_content += `${endpoints.length} endpoint${endpoints.length !== 1 ? 's' : ''}\n\n`;
 
-## Endpoints
+    // Sort endpoints by method then path
+    endpoints.sort((a, b) => {
+      if (a.method !== b.method) return a.method.localeCompare(b.method);
+      return a.full_path.localeCompare(b.full_path);
+    });
 
-{if Express and routes detected:}
-### Available Routes
+    for (const endpoint of endpoints) {
+      api_content += `### ${endpoint.method} ${endpoint.full_path}\n\n`;
+      api_content += `**Source:** \`${endpoint.file}\`\n\n`;
 
-{scan src/ for route files and list endpoints}
+      // Add request/response placeholders
+      api_content += `**Request:**\n\`\`\`json\n// TODO: Add request format\n\`\`\`\n\n`;
+      api_content += `**Response:**\n\`\`\`json\n// TODO: Add response format\n\`\`\`\n\n`;
+      api_content += `---\n\n`;
+    }
+  }
 
-- `GET /api/example` - Example endpoint
-{list actual detected routes from codebase}
+  // Link to auto-generated API docs if detected
+  if (project_metadata.api_docs) {
+    api_content += `## Auto-Generated Documentation\n\n`;
+    api_content += `Additional API documentation is available via ${project_metadata.api_docs.type}:\n\n`;
+    api_content += `[View ${project_metadata.api_docs.type} Documentation](../${project_metadata.api_docs.location}${project_metadata.api_docs.entry})\n\n`;
+  }
 
-## Authentication
+  Write("docs/api/README.md", api_content);
 
-{if authentication patterns detected, document them}
+  LOG: `✅ Created docs/api/README.md with ${global.discovered_endpoints.length} endpoints`;
 
-## Request/Response Format
+} else if (backend_framework) {
+  // Backend framework detected but endpoint discovery failed
+  ERROR: "⚠️ WARNING: Backend framework detected but no endpoints discovered";
+  ERROR: `Framework: ${backend_framework}`;
+  ERROR: "Phase 1 Step 8b endpoint discovery may have failed";
+  ERROR: "Creating minimal API documentation template";
 
-All API responses follow this format:
+  let minimal_api_content = `# API Reference\n\n`;
+  minimal_api_content += `## Overview\n\n`;
+  minimal_api_content += `This project uses ${backend_framework} for its backend framework.\n\n`;
+  minimal_api_content += `⚠️ **Note:** Automatic endpoint discovery did not find route definitions. `;
+  minimal_api_content += `API endpoints may need to be documented manually.\n\n`;
 
-```json
-{
-  "success": true,
-  "data": {},
-  "error": null
+  if (project_metadata.api_docs) {
+    minimal_api_content += `## Auto-Generated Documentation\n\n`;
+    minimal_api_content += `[View ${project_metadata.api_docs.type} Documentation](../${project_metadata.api_docs.location}${project_metadata.api_docs.entry})\n\n`;
+  }
+
+  Write("docs/api/README.md", minimal_api_content);
+
+  LOG: `⚠️ Created minimal docs/api/README.md (endpoint discovery failed)`;
+
+} else {
+  // No backend framework - skip API documentation
+  LOG: "No backend framework detected - skipping API documentation";
 }
 ```
 
-{else:}
+**CRITICAL RULES:**
+- ONLY document endpoints in `global.discovered_endpoints`
+- Count endpoints using `discovered_endpoints.length`, NOT estimates like "30+"
+- Group endpoints by resource using `endpoints_by_resource`
+- Include HTTP method, full path, and source file for each endpoint
+- NO "standard CRUD" assumptions - only document what was discovered
+- NO documenting endpoints not found in Phase 1 Step 8b discovery
 
-API documentation for {{PROJECT_NAME}}.
+---
 
-## Overview
+**Step 3.5: Validate Referenced Files (Rule 3 Enforcement)**
 
-{Framework-specific API documentation guidance}
+**CRITICAL: If documentation references a file, that file MUST exist. This enforces Rule 3 (No Deferred Work).**
 
-{if project_metadata.type === "Node.js":}
-Consider using tools like:
-- Swagger/OpenAPI for REST APIs
-- GraphQL documentation for GraphQL APIs
-- TypeDoc for TypeScript API reference
+**NOTE:** Phase 1.6 creates .env.example files BEFORE Phase 2 documentation. This step handles other file types that may be referenced in documentation.
 
-{if project_metadata.type === "Python":}
-Consider using tools like:
-- Sphinx for Python API reference
-- FastAPI automatic documentation (available at /docs)
-- Django REST Framework browsable API
+APO MUST verify that all files referenced in documentation actually exist, and remove broken references.
+
+```javascript
+// Scan all created documentation files
+const docs_created = Glob({pattern: "docs/**/*.md"});
+const missing_references = [];
+
+for (const doc of docs_created) {
+  const content = Read(doc);
+
+  // Extract file references using common patterns
+  const file_patterns = [
+    /`([^`]+\.config\.[^`]+)`/g,         // config files (.eslintrc.js, jest.config.js, etc.)
+    /`([^`]+package\.json[^`]*)`/g,      // package.json
+    /`([^`]+Dockerfile[^`]*)`/g,         // Dockerfile
+    /`([^`]+docker-compose[^`]*)`/g      // docker-compose files
+  ];
+
+  for (const pattern of file_patterns) {
+    const matches = [...content.matchAll(pattern)];
+    for (const match of matches) {
+      const file_ref = match[1];
+
+      if (!exists(file_ref)) {
+        missing_references.push({
+          doc: doc,
+          file: file_ref
+        });
+      }
+    }
+  }
+}
+
+// Handle missing file references
+const references_removed = [];
+
+for (const {doc, file} of missing_references) {
+
+  // Case 1: Config files (.eslintrc.js, etc.) - don't create, remove reference
+  if (file.includes(".config.") || file.includes("rc.")) {
+    LOG: `⚠️ Documentation references ${file} but file doesn't exist`;
+    LOG: `Removing reference from ${doc} (config file should not be auto-created)`;
+
+    let doc_content = Read(doc);
+    // Remove the backtick-wrapped reference
+    doc_content = doc_content.replace(new RegExp(`\`${file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\``, "g"), file);
+
+    Write(doc, doc_content);
+    references_removed.push({doc, file});
+  }
+
+  // Case 2: Documentation files (.md) - broken link, remove it
+  else if (file.endsWith(".md")) {
+    LOG: `⚠️ Documentation links to ${file} but file doesn't exist`;
+    LOG: `Removing broken link from ${doc}`;
+
+    let doc_content = Read(doc);
+    // Remove markdown links: [text](file)
+    const link_pattern = new RegExp(`\\[([^\\]]+)\\]\\(${file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`, "g");
+    doc_content = doc_content.replace(link_pattern, "$1"); // Keep text, remove link
+
+    Write(doc, doc_content);
+    references_removed.push({doc, file});
+  }
+
+  // Case 3: Other files - log warning but leave reference
+  else {
+    LOG: `⚠️ Documentation references ${file} but file doesn't exist`;
+    LOG: `Leaving reference in place - may be intentional or user-created`;
+  }
+}
+
+LOG: "";
+LOG: "=== REFERENCED FILE VALIDATION ===";
+LOG: `Total missing references found: ${missing_references.length}`;
+LOG: `References removed: ${references_removed.length}`;
+LOG: "";
+LOG: "NOTE: .env.example files are created in Phase 1.6 (before documentation)";
+
+if (references_removed.length > 0) {
+  LOG: "";
+  LOG: "**Broken References Removed:**";
+  for (const {doc, file} of references_removed) {
+    LOG: `  ✅ ${doc}: Removed reference to ${file}`;
+  }
+}
+
+LOG: "";
+LOG: "✅ Referenced file validation complete";
 ```
+
+---
 
 **Step 4: Auto-Generate docs/architecture/overview.md (ENHANCEMENT 4)**
 
@@ -983,145 +2782,20 @@ Consider using tools like:
 3. Include actual directory structure, detected patterns, entry points
 4. NO generic templates - use real project metadata
 
-**EXECUTION REQUIRED:**
 ```javascript
-// APO MUST execute this Write command:
-Write("docs/architecture/overview.md", architecture_overview_content);
+// APO MUST execute: Write("docs/architecture/overview.md", architecture_overview_content);
 ```
 
-**CONTENT TEMPLATE for docs/architecture/overview.md:**
-
-```markdown
-
-# Architecture Overview
-
-**Project:** {{PROJECT_NAME}}
-**Type:** {project_metadata.type}
-**Framework:** {project_metadata.framework}
-**Version:** {project_metadata.version}
-**Last Updated**: {{CURRENT_DATE}}
-
-## System Overview
-
-{project_metadata.description}
-
-## Technology Stack
-
-**Runtime/Language:** {project_metadata.type} {version}
-**Framework:** {project_metadata.framework}
-
-{if project_metadata.type === "Node.js":}
-**Package Manager:** npm/yarn
-**Build Tool:** {detect from package.json scripts}
-
-{if project_metadata.dependencies.length > 0:}
-**Key Dependencies:**
-{list major dependencies from package.json}
-- {dependency}: {purpose detected or version}
-
-{if database detected:}
-**Database:** {detected database from dependencies}
-
-## Architecture Pattern
-
-**Pattern:** {project_metadata.architecture}
-
-{if architecture === "MVC":}
-This project follows the Model-View-Controller (MVC) architectural pattern:
-- **Models:** Data structures and business logic
-- **Views:** Presentation layer
-- **Controllers:** Request handling and coordination
-
-{if architecture === "React Component Architecture":}
-This project follows React's component-based architecture:
-- **Components:** Reusable UI building blocks
-- **Pages:** Top-level route components
-- **Hooks:** Custom React hooks for shared logic
-- **Context:** Global state management
-
-{if architecture === "Service Layer Architecture":}
-This project uses a service-oriented architecture:
-- **Services:** Business logic layer
-- **Repositories:** Data access layer
-- **Controllers:** API endpoint handlers
-
-## Directory Structure
-
-```
-{actual src/ directory structure from Phase 1 analysis}
-```
-
-**Key Directories:**
-{for each major directory in src/:}
-- **{directory}:** {purpose based on name/content}
-
-## Entry Points
-
-{if project_metadata.entry_point:}
-**Main Entry:** {entry_point}
-
-{if CLI commands detected from package.json:}
-**CLI Commands:**
-{list npm scripts or CLI commands}
-- `{command}`: {purpose}
-
-## Data Flow
-
-{if architecture pattern is recognized, describe typical data flow}
-
-{if API framework:}
-1. Request received at endpoint
-2. Middleware processing
-3. Controller handles request
-4. Service layer executes business logic
-5. Repository accesses data
-6. Response sent to client
-
-## Configuration
-
-{if .env.example exists:}
-**Environment Variables:** See [.env.example](../../.env.example)
-
-{list detected config files:}
-**Configuration Files:**
-- {config file}: {purpose}
-
-## Build & Deployment
-
-{from package.json scripts or build system:}
-**Build Command:** `{build command}`
-**Development:** `{dev command}`
-**Production:** `{start command}`
-
-## Architecture Diagrams
-
-*Architecture diagrams can be added to the [images/](../images/) directory and linked here.*
-
-Recommended diagrams:
-- System architecture diagram
-- Component interaction diagram
-- Data flow diagram
-- Deployment architecture
-
-## Design Decisions
-
-{if ADR files detected, link to them}
-
-Key architectural decisions are documented in:
-- [Architecture Decision Records](adr/) - ADRs documenting major technical decisions
-
-## Performance Considerations
-
-{Framework-specific performance guidance}
-
-## Security Considerations
-
-{Framework-specific security guidance}
+**architecture/overview.md Content Requirements:**
+- System overview from actual project metadata
+- Technology stack (only VERIFIED dependencies from verified_tools)
+- Architecture pattern detected from codebase structure
+- Directory structure from Phase 1 analysis
+- Entry points and CLI commands from package.json
+- Configuration files detected
+- Build & deployment commands from actual scripts
 
 ---
-
-For detailed API documentation, see [../api/](../api/).
-```
 
 **Step 5: Seed docs/reference/ Content (ENHANCEMENT 2)**
 
@@ -1131,64 +2805,17 @@ For detailed API documentation, see [../api/](../api/).
 3. Document environment variables if .env.example exists
 4. List configuration options if detected
 
-**EXECUTION REQUIRED:**
 ```javascript
-// APO MUST execute this Write command:
-Write("docs/reference/README.md", reference_readme_content);
+// APO MUST execute: Write("docs/reference/README.md", reference_readme_content);
 ```
 
-**CONTENT TEMPLATE for docs/reference/README.md:**
+**reference/README.md Content Requirements:**
+- CLI commands from package.json scripts
+- Environment variables from .env.example if exists
+- Development tools (only VERIFIED from verified_tools)
+- VERIFIED production and dev dependencies
 
-```markdown
-
-# Reference Documentation
-
-Quick reference materials for {{PROJECT_NAME}}.
-
-## CLI Commands
-
-{if package.json scripts detected:}
-### npm Scripts
-
-{for each script in package.json.scripts:}
-- **`npm run {script}`** - {infer purpose from script name or command}
-
-{if Makefile detected:}
-### Make Commands
-
-{for each target in Makefile:}
-- **`make {target}`** - {purpose}
-
-## Environment Variables
-
-{if .env.example exists:}
-See [.env.example](../../.env.example) for all available environment variables.
-
-**Required Variables:**
-{parse .env.example and list required vars}
-- `{VAR_NAME}` - {purpose}
-
-## Configuration
-
-{list detected config files and their purpose}
-
-## API Reference
-
-{if auto-generated API docs:}
-See [API Documentation](../api/) for complete API reference.
-
-## Dependencies
-
-**Production Dependencies:** {count}
-{list major production dependencies}
-
-**Development Dependencies:** {count}
-{list major dev dependencies}
-
-## Glossary
-
-{Project-specific terminology}
-```
+---
 
 **Step 6: Migrate CONTRIBUTING.md to Reference (if exists)**
 
@@ -1200,78 +2827,19 @@ if exists("CONTRIBUTING.md"):
 
 **Step 7: Create Category README Files**
 
-For each category, create README.md that lists actual content:
+APO must create README.md in each category directory that lists actual created content (not placeholder lists).
 
-```markdown
-### docs/guides/README.md
-
-# Guides
-
-User guides and tutorials for {{PROJECT_NAME}}.
-
-## Available Guides
-
-{if getting-started.md created:}
-- [Getting Started](getting-started.md) - Quick start guide for new users
-
-{if framework-specific guide created:}
-- [{Framework} Development](....md) - {Framework}-specific development guide
-
-{if scattered docs migrated to guides/:}
-{list migrated files}
-
-## Planned Guides
-
-*Additional guides can be added to this directory. Common guide topics include:*
-- Deployment guide
-- Testing guide
-- Troubleshooting guide
-- Advanced features guide
-
-## Contributing
-
-To add a new guide:
-1. Create a new .md file in this directory
-2. Follow the guide template format:
-   - Clear title and objective
-   - Prerequisites section
-   - Step-by-step instructions
-   - Expected outcomes
-   - Troubleshooting tips
-3. Update this README with a link to your guide
-
----
-
-See [../README.md](../README.md) for complete documentation index.
+```javascript
+// docs/guides/README.md - List actual guides created
+// docs/architecture/README.md - Link to overview.md
+// docs/reference/README.md - Already created in Step 5
 ```
-
-```markdown
-### docs/api/README.md
-
-{Content from Step 3 - already seeded with project-specific info}
-```
-
-```markdown
-### docs/architecture/README.md
-
-# Architecture Documentation
-
-System architecture and design documentation for {{PROJECT_NAME}}.
-
-## Architecture Overview
-
-**Main Document:** [Architecture Overview](overview.md) - Complete system architecture
-
-{if ADR directory exists or should be created:}
-## Architecture Decision Records (ADRs)
-
-*Architecture Decision Records document significant architectural decisions made during development.*
 
 {if ADR files exist:}
 {list ADR files}
 
 {else:}
-ADRs can be added to the `adr/` subdirectory following the [ADR template format](https://github.com/joelparkerhenderson/architecture-decision-record).
+*No Architecture Decision Records found. If project uses ADRs, they should be in `adr/` subdirectory.*
 
 ## Architecture Diagrams
 
@@ -1279,13 +2847,7 @@ ADRs can be added to the `adr/` subdirectory following the [ADR template format]
 {list diagram files}
 
 {else:}
-*Architecture diagrams can be added to [../images/](../images/) directory.*
-
-Recommended diagrams:
-- System architecture diagram
-- Component interaction diagram
-- Data flow diagram
-- Deployment architecture
+*No architecture diagrams generated (no backend/frontend framework detected in Phase 1).*
 
 ## Technology Stack
 
@@ -1364,6 +2926,521 @@ If APO did NOT create these files using Write tool, APO has FAILED Phase 2.
 - Framework: {project_metadata.framework}
 - Architecture: {project_metadata.architecture}
 - Dependencies: {major_deps_count} major dependencies documented
+```
+
+---
+
+### Phase 2.5: CONTENT VALIDATION GATE (MANDATORY)
+
+**CRITICAL: APO MUST validate its own output before proceeding to Phase 3.**
+
+This phase ensures Phase 2 created complete, accurate documentation without deferred work or broken links.
+
+**Validation 1: Minimum File Count Check**
+
+```javascript
+// Count files created (exclude README.md files which are navigation)
+const guides_created = Glob({pattern: "docs/guides/*.md"})
+  .filter(f => !f.endsWith("README.md"));
+
+const reference_created = Glob({pattern: "docs/reference/*.md"})
+  .filter(f => !f.endsWith("README.md"));
+
+// Verify minimum file count
+if (guides_created.length < 1) {
+  ERROR: "❌ PHASE 2.5 FAILURE: No guides were created";
+  ERROR: `Found ${guides_created.length} guides, expected at least 1 (getting-started.md)`;
+  ABORT_COMMAND();
+}
+
+// Verify minimum_required calculation was met (from Phase 2 requirements)
+const actual_total = guides_created.length + reference_created.length;
+if (actual_total < minimum_required) {
+  ERROR: "❌ PHASE 2.5 FAILURE: Insufficient documentation files created";
+  ERROR: `Created ${actual_total} files, required minimum ${minimum_required}`;
+  ERROR: "Based on verification: backend=${backend_framework_detected}, frontend=${frontend_framework_detected}, orm=${orm_detected}";
+  ABORT_COMMAND();
+}
+
+LOG: `✅ File count validation passed: ${actual_total} files created (minimum: ${minimum_required})`;
+```
+
+**Validation 2: Enhanced Forbidden Pattern Detection**
+
+```javascript
+const FORBIDDEN_PATTERNS = [
+  // General deferred work patterns
+  "Coming Soon",
+  "Planned Guides",
+  "Future Documentation",
+  "Will be written",
+  "To be documented",
+  "TODO:",
+  "TBD",
+  "This guide will cover",
+  "This section will be expanded",
+
+  // Diagram-related deferred work
+  "diagrams can be added",
+  "diagrams will be created",
+  "architecture diagrams later",
+  "(diagram placeholder)",
+  "[insert diagram]",
+  "diagram coming soon",
+  "no diagrams yet",
+
+  // Aspirational statements without implementation
+  "recommended diagrams:",
+  "consider adding diagram",
+  "suggested diagrams:"
+];
+
+const all_docs = Glob({pattern: "docs/**/*.md"});
+const violations = [];
+
+for (const doc of all_docs) {
+  const content = Read(doc);
+
+  for (const pattern of FORBIDDEN_PATTERNS) {
+    // Case-insensitive search
+    if (content.toLowerCase().includes(pattern.toLowerCase())) {
+      violations.push({
+        file: doc,
+        pattern: pattern,
+        line: find_line_number(content, pattern)
+      });
+    }
+  }
+}
+
+// Special check: "Recommended diagrams" without actual diagrams
+for (const doc of all_docs) {
+  const content = Read(doc);
+
+  if (content.toLowerCase().includes("recommended diagrams:")) {
+    const diagram_files = Glob({pattern: "docs/images/*.md"});
+
+    if (diagram_files.length === 0) {
+      violations.push({
+        file: doc,
+        pattern: "Recommended diagrams without actual diagram files",
+        line: find_line_number(content, "recommended diagrams:")
+      });
+    }
+  }
+}
+
+if (violations.length > 0) {
+  ERROR: "❌ PHASE 2.5 FAILURE: Documentation contains deferred work patterns";
+  ERROR: "APO is an EXECUTION agent - all documentation must be COMPLETE";
+  ERROR: "";
+  ERROR: "Forbidden patterns found:";
+  for (const violation of violations) {
+    ERROR: `  ${violation.file}:${violation.line} - "${violation.pattern}"`;
+  }
+  ERROR: "";
+  ERROR: "Rule 3 violation: No deferred work or placeholder content allowed";
+  ABORT_COMMAND();
+}
+
+LOG: "✅ Forbidden pattern check passed: No deferred work detected";
+```
+
+**Validation 3: Broken Link Detection**
+
+```javascript
+const all_docs = Glob({pattern: "docs/**/*.md"});
+const broken_links = [];
+
+for (const doc of all_docs) {
+  const content = Read(doc);
+
+  // Extract markdown links: [text](link)
+  const link_pattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const links = [...content.matchAll(link_pattern)];
+
+  for (const match of links) {
+    const link_text = match[1];
+    const link_target = match[2];
+
+    // Only check internal links (relative paths)
+    if (!link_target.startsWith("http://") &&
+        !link_target.startsWith("https://") &&
+        !link_target.startsWith("#")) {
+
+      // Resolve relative path from doc location
+      const doc_dir = get_directory(doc);
+      const resolved_path = resolve_path(doc_dir, link_target);
+
+      // Remove anchor if present
+      const file_path = resolved_path.split("#")[0];
+
+      if (!exists(file_path)) {
+        broken_links.push({
+          file: doc,
+          link_text: link_text,
+          link_target: link_target,
+          resolved_path: file_path
+        });
+      }
+    }
+  }
+}
+
+if (broken_links.length > 0) {
+  ERROR: "❌ PHASE 2.5 FAILURE: Documentation contains broken internal links";
+  ERROR: "";
+  ERROR: "Broken links found:";
+  for (const broken of broken_links) {
+    ERROR: `  ${broken.file}`;
+    ERROR: `    [${broken.link_text}](${broken.link_target})`;
+    ERROR: `    → Resolved to: ${broken.resolved_path} (does not exist)`;
+  }
+  ERROR: "";
+  ERROR: "APO MUST NOT link to files it didn't create";
+  ABORT_COMMAND();
+}
+
+LOG: "✅ Link validation passed: No broken internal links";
+```
+
+**Validation 4: Framework Guide Existence (Redundant Safety Check)**
+
+```javascript
+// This is redundant with Phase 2.1 but acts as final safety net
+const framework_violations = [];
+
+if (backend_framework_detected && !exists("docs/guides/api-development.md")) {
+  framework_violations.push("api-development.md (backend framework detected)");
+}
+
+if (frontend_framework_detected && !exists("docs/guides/component-development.md")) {
+  framework_violations.push("component-development.md (frontend framework detected)");
+}
+
+if (orm_detected && !exists("docs/guides/database-management.md")) {
+  framework_violations.push("database-management.md (ORM detected)");
+}
+
+if (orm_detected && !exists("docs/reference/database-schema.md")) {
+  framework_violations.push("database-schema.md (ORM detected)");
+}
+
+if (testing_framework_detected && !exists("docs/guides/testing.md")) {
+  framework_violations.push("testing.md (testing framework detected)");
+}
+
+if (framework_violations.length > 0) {
+  ERROR: "❌ PHASE 2.5 FAILURE: Mandatory framework guides missing";
+  ERROR: "Missing files:";
+  for (const violation of framework_violations) {
+    ERROR: `  - ${violation}`;
+  }
+  ERROR: "";
+  ERROR: "Phase 2.1 should have caught this. This is a critical failure.";
+  ABORT_COMMAND();
+}
+
+LOG: "✅ Framework guide validation passed: All mandatory guides exist";
+```
+
+**Validation 5: Critical File Existence Check**
+
+```javascript
+// Verify core files were created
+const critical_files = [
+  "docs/guides/getting-started.md",
+  "docs/api/README.md",
+  "docs/architecture/overview.md",
+  "docs/reference/README.md"
+];
+
+const missing_critical = critical_files.filter(f => !exists(f));
+
+if (missing_critical.length > 0) {
+  ERROR: "❌ PHASE 2.5 FAILURE: Critical core files missing";
+  ERROR: "Missing files:";
+  for (const file of missing_critical) {
+    ERROR: `  - ${file}`;
+  }
+  ABORT_COMMAND();
+}
+
+LOG: "✅ Critical file check passed: All core files exist";
+```
+
+**Validation 6: Empty Directory Check (Enhanced)**
+
+APO MUST check for directories created but left empty. ABORT if critical directories are empty.
+
+```javascript
+// Check for directories that were created but contain no content
+const required_directories = [
+  {path: "docs/guides/", min_files: 2, purpose: "Development guides"},
+  {path: "docs/api/", min_files: 1, purpose: "API documentation"},
+  {path: "docs/architecture/", min_files: 1, purpose: "Architecture overview"},
+  {path: "docs/reference/", min_files: 1, purpose: "Quick references"},
+  {path: "docs/images/", min_files: 0, purpose: "Diagrams (optional if no architecture)"}
+];
+
+const empty_directories = [];
+const validation_failures = [];
+
+for (const dir of required_directories) {
+  if (exists(dir.path)) {
+    // Count actual content files (exclude README.md as that's just navigation)
+    const content_files = Glob({pattern: `${dir.path}**/*.{md,png,jpg,jpeg,svg,gif}`})
+      .filter(f => !f.endsWith("/README.md") && f !== `${dir.path}README.md`);
+
+    const file_count = content_files.length;
+
+    LOG: `📁 ${dir.path}: ${file_count} files`;
+
+    // Special handling for images/
+    if (dir.path === "docs/images/") {
+      // If architecture was detected, diagrams MUST exist
+      if (project_metadata.framework || project_metadata.architecture) {
+        if (file_count === 0) {
+          validation_failures.push({
+            directory: dir.path,
+            reason: "Architecture detected but ZERO diagrams generated",
+            severity: "CRITICAL",
+            expected: "1+ diagram files",
+            actual: file_count
+          });
+        }
+      } else {
+        // Otherwise images/ is optional
+        if (file_count === 0) {
+          empty_directories.push(dir.path);
+        }
+      }
+      continue;
+    }
+
+    // All other directories MUST have minimum files
+    if (file_count < dir.min_files) {
+      validation_failures.push({
+        directory: dir.path,
+        expected: `${dir.min_files}+ files`,
+        actual: file_count,
+        purpose: dir.purpose,
+        severity: "CRITICAL"
+      });
+    } else if (file_count === 0) {
+      empty_directories.push(dir.path);
+    }
+  }
+}
+
+// CRITICAL failures - ABORT command
+if (validation_failures.length > 0) {
+  ERROR: "";
+  ERROR: "❌ PHASE 2.5 VALIDATION 6 FAILED";
+  ERROR: `${validation_failures.length} directories are empty or incomplete:`;
+  ERROR: "";
+
+  for (const failure of validation_failures) {
+    ERROR: `  ❌ ${failure.directory}`;
+    ERROR: `     Purpose: ${failure.purpose || "Critical directory"}`;
+    ERROR: `     Expected: ${failure.expected}`;
+    ERROR: `     Actual: ${failure.actual} files`;
+    ERROR: `     Reason: ${failure.reason || "Below minimum file count"}`;
+    ERROR: `     Severity: ${failure.severity}`;
+    ERROR: "";
+  }
+
+  ERROR: "COMMAND ABORTED: Empty or incomplete directories detected.";
+  ERROR: "APO must generate content for all created directories.";
+  ERROR: "";
+
+  ABORT_COMMAND();
+}
+
+// Non-critical warnings
+if (empty_directories.length > 0) {
+  LOG: "⚠️ Empty directory warning (non-critical):";
+  for (const dir of empty_directories) {
+    LOG: `  - ${dir} (acceptable for optional directories)`;
+  }
+  LOG: "";
+
+  // Store for Phase 5 report
+  global.empty_directories_detected = empty_directories;
+} else {
+  LOG: "✅ Empty directory check passed: All directories have content";
+}
+```
+
+**Validation 7: .env.example Population Check (ADDITION 5)**
+
+```javascript
+// ============================================================
+// Validation 7: .env.example Population Check
+// ============================================================
+
+let env_example_validation_passed = true;
+let env_example_warnings = [];
+
+// Check if .env.example files exist
+const env_example_files = [
+  ".env.example",
+  "server/.env.example",
+  "backend/.env.example",
+  "api/.env.example",
+  "app/.env.example"
+];
+
+let found_env_example = null;
+for (const file of env_example_files) {
+  if (exists(file)) {
+    found_env_example = file;
+    break;
+  }
+}
+
+if (found_env_example) {
+  const env_content = Read(found_env_example);
+
+  // Check for empty values (KEY= with no value)
+  const lines = env_content.split("\n");
+  const empty_value_lines = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    // Skip comments and blank lines
+    if (!line || line.startsWith("#")) continue;
+
+    // Check for KEY= with empty value (excluding TODO comments)
+    if (/^[A-Z_][A-Z0-9_]*=\s*$/.test(line) && !line.includes("TODO")) {
+      empty_value_lines.push({
+        line_number: i + 1,
+        content: line
+      });
+    }
+  }
+
+  if (empty_value_lines.length > 0) {
+    env_example_validation_passed = false;
+
+    WARN: "";
+    WARN: "⚠️ PHASE 2.5 VALIDATION WARNING: .env.example has empty values";
+    WARN: `File: ${found_env_example}`;
+    WARN: `Empty values found: ${empty_value_lines.length}`;
+    WARN: "";
+    WARN: "Empty value lines:";
+    for (const {line_number, content} of empty_value_lines.slice(0, 5)) {
+      WARN: `  Line ${line_number}: ${content}`;
+    }
+    if (empty_value_lines.length > 5) {
+      WARN: `  ... and ${empty_value_lines.length - 5} more`;
+    }
+    WARN: "";
+    WARN: "Phase 1.6 should have populated these with sensible defaults.";
+    WARN: "This makes .env.example less useful for developers.";
+    WARN: "";
+
+    env_example_warnings.push(`${empty_value_lines.length} empty values in ${found_env_example}`);
+  } else {
+    LOG: `✅ .env.example validation passed: All values populated`;
+  }
+} else {
+  // No .env.example found - this is acceptable if no .env exists
+  LOG: "ℹ️  No .env.example file found (acceptable if project has no environment variables)";
+}
+```
+
+**Validation 8: API Endpoint Count Accuracy Check (ADDITION 6)**
+
+```javascript
+// ============================================================
+// Validation 8: API Endpoint Count Accuracy Check
+// ============================================================
+
+let endpoint_validation_passed = true;
+let endpoint_validation_errors = [];
+
+if (global.verified_endpoint_count && global.verified_endpoint_count > 0) {
+  // Read API documentation to verify endpoint count matches
+  if (exists("docs/api/README.md")) {
+    const api_docs = Read("docs/api/README.md");
+
+    // Extract documented endpoint count
+    // Look for patterns like "33 endpoints" or "Total: 33"
+    const count_patterns = [
+      /provides\s+\*\*(\d+)\s+endpoints?\*\*/i,
+      /total:?\s+\*\*(\d+)\*\*/i,
+      /(\d+)\s+endpoints?\s+across/i
+    ];
+
+    let documented_count = null;
+    for (const pattern of count_patterns) {
+      const match = api_docs.match(pattern);
+      if (match) {
+        documented_count = parseInt(match[1], 10);
+        break;
+      }
+    }
+
+    if (documented_count !== null) {
+      const actual_count = global.verified_endpoint_count;
+
+      if (documented_count !== actual_count) {
+        endpoint_validation_passed = false;
+
+        ERROR: "";
+        ERROR: "❌ PHASE 2.5 VALIDATION FAILURE: Endpoint count mismatch";
+        ERROR: `Documented in docs/api/README.md: ${documented_count} endpoints`;
+        ERROR: `Actual count from Phase 1 Step 8b: ${actual_count} endpoints`;
+        ERROR: `Difference: ${Math.abs(documented_count - actual_count)} endpoints`;
+        ERROR: "";
+        ERROR: "This indicates Phase 2 documentation did not use global.discovered_endpoints correctly.";
+        ERROR: "APO MUST use the verified endpoint inventory from Phase 1, not manual counts.";
+        ERROR: "";
+
+        endpoint_validation_errors.push(`Endpoint count: documented ${documented_count}, actual ${actual_count}`);
+
+        // This is CRITICAL - ABORT
+        ABORT_COMMAND();
+      } else {
+        LOG: `✅ Endpoint count validation passed: ${actual_count} endpoints documented correctly`;
+      }
+    } else {
+      WARN: "⚠️ Could not extract endpoint count from docs/api/README.md for validation";
+    }
+  }
+}
+```
+
+**PHASE 2.5 COMPLETION:**
+
+```javascript
+if (all_validations_passed) {
+  LOG: "";
+  LOG: "=== PHASE 2.5: CONTENT VALIDATION GATE ===";
+  LOG: "✅ File count validation: PASSED";
+  LOG: "✅ Forbidden pattern check: PASSED";
+  LOG: "✅ Link validation: PASSED";
+  LOG: "✅ Framework guide validation: PASSED";
+  LOG: "✅ Critical file check: PASSED";
+  if (empty_directories.length > 0) {
+    LOG: `⚠️ Empty directory check: ${empty_directories.length} empty directories flagged`;
+  } else {
+    LOG: "✅ Empty directory check: PASSED";
+  }
+  LOG: "";
+  LOG: `📊 Documentation Statistics:`;
+  LOG: `   - Guides created: ${guides_created.length}`;
+  LOG: `   - Reference docs created: ${reference_created.length}`;
+  LOG: `   - Total files: ${actual_total}`;
+  LOG: `   - Minimum required: ${minimum_required}`;
+  LOG: "";
+  LOG: "✅ PHASE 2.5 PASSED - Proceeding to Phase 3";
+} else {
+  // Should never reach here - ABORT called above
+  ABORT_COMMAND();
+}
 ```
 
 ---
@@ -1809,83 +3886,6 @@ else if coverage_metrics.total >= 60: grade = "D (Needs Improvement)"
 else: grade = "F (Poor)"
 ```
 
-**Step 2: Generate Actionable Recommendations for Empty Categories (ENHANCEMENT 7)**
-
-```javascript
-recommendations = []
-
-// Check guides/
-guides_count = count_md_files("docs/guides/", exclude="README.md")
-if guides_count === 0:
-  recommendations.push({
-    category: "guides",
-    priority: "HIGH",
-    items: [
-      "Create Getting Started guide with installation steps",
-      "Document common workflows and use cases",
-      "Add troubleshooting guide for common issues"
-    ]
-  })
-else if guides_count < 3:
-  recommendations.push({
-    category: "guides",
-    priority: "MEDIUM",
-    items: [
-      "Add deployment guide",
-      "Create testing guide",
-      "Document advanced features"
-    ]
-  })
-
-// Check architecture/
-arch_count = count_md_files("docs/architecture/", exclude="README.md")
-if arch_count === 0 or not exists("docs/architecture/overview.md"):
-  recommendations.push({
-    category: "architecture",
-    priority: "HIGH",
-    items: [
-      "✅ AUTO-GENERATED: Architecture overview created",
-      "Add system architecture diagram to images/",
-      "Create component interaction diagram",
-      "Document architecture decision records (ADRs)"
-    ]
-  })
-
-// Check API documentation
-if not api_docs and api_count === 0:
-  recommendations.push({
-    category: "api",
-    priority: "MEDIUM",
-    items: [
-      "Generate API documentation using TypeDoc/Rustdoc/Sphinx",
-      "Document API endpoints and request/response formats",
-      "Add API authentication and authorization guide"
-    ]
-  })
-
-// Check for duplicates
-if duplicates.length > 0:
-  recommendations.push({
-    category: "quality",
-    priority: "MEDIUM",
-    items: [
-      f"Review {duplicates.length} potential duplicate documentation files",
-      "Consolidate overlapping content",
-      "Remove or rename duplicate files"
-    ]
-  })
-
-// Check for broken links
-if unfixable_links.length > 0:
-  recommendations.push({
-    category: "quality",
-    priority: "HIGH",
-    items: [
-      f"Fix {unfixable_links.length} broken documentation links (see Phase 4 report)"
-    ]
-  })
-```
-
 **Required Report Structure:**
 
 ```markdown
@@ -1910,6 +3910,44 @@ if unfixable_links.length > 0:
 **Documentation Coverage:** {coverage_metrics.total}/100 - Grade: {grade}
 
 **COMMAND EXECUTION STATUS:** {✅ SUCCESS | ⚠️ PARTIAL SUCCESS}
+
+---
+
+## Feature Documentation Created
+
+**Core Guides:**
+- ✅ Getting Started
+- ✅ Development Workflow
+
+**Framework-Specific Guides:**
+{if Express/React/Django guide created:}
+- ✅ {framework} Development Guide
+
+**Feature Integration Guides:**
+{if deployment guide created:}
+- ✅ Deployment Guide ({deployment_detected.build_tool})
+{if database guide created:}
+- ✅ Database Management ({database tool})
+{if oauth guide created:}
+- ✅ {oauth_provider} Integration Guide
+{if docker guide created:}
+- ✅ Docker Guide
+{if payment guide created:}
+- ✅ Payment Integration Guide
+{if websocket guide created:}
+- ✅ WebSocket Guide
+{if upload guide created:}
+- ✅ File Upload Guide
+{if email guide created:}
+- ✅ Email Setup Guide
+{if cache guide created:}
+- ✅ Caching Guide
+{if search guide created:}
+- ✅ Search Integration Guide
+{if testing guide created:}
+- ✅ Testing Guide
+
+**Total Feature Guides Created:** {feature_guide_count}
 
 ---
 
@@ -1966,6 +4004,97 @@ if unfixable_links.length > 0:
 - **Total Tools Verified:** {verified_count}
 - **Tools Documented:** {documented_count}
 
+### Phase 1.5: Verification Enforcement Gate (3-Step Process)
+
+**Verification Status:** {✅ COMPLETED | ❌ SKIPPED}
+
+{if verification completed:}
+
+**Package Manager Files Read:**
+{if Node.js:}
+- ✅ package.json read ({dependencies_count} deps, {devDependencies_count} devDeps)
+{if Python:}
+- ✅ requirements.txt / pyproject.toml read ({dependencies_count} deps)
+{if Rust:}
+- ✅ Cargo.toml read ({dependencies_count} deps)
+
+**Source Directories Scanned:**
+{list of directories scanned for imports/usage:}
+- {src_directory} ({file_count} files scanned)
+
+**Verification Results:**
+- Total tools checked: {total_tools_checked}
+- Fully verified (✅): {verified_count} tools
+- Partially verified (⚠️): {partially_verified_count} tools
+- Unverified (❌): {unverified_count} tools
+- **Tools that will be documented: {verified_count}**
+
+**Fully Verified Tools (3-Step Process Passed):**
+{for each tool where verified_tools[tool] === true:}
+- ✅ **{tool}**:
+  - Package: Found in {package_file}
+  - Import: Found in {import_files_count} files
+  - Usage: {usage_description}
+
+**Example:**
+- ✅ **express**:
+  - Package: Found in package.json dependencies
+  - Import: Found in server/src/app.ts (line 3)
+  - Usage: Found in 6 route files
+
+- ✅ **prisma**:
+  - Package: Found in package.json (@prisma/client)
+  - Config: prisma/schema.prisma exists (8 models detected)
+  - Usage: @prisma/client imported in 5 service files
+
+**Partially Verified Tools (Installed but Not Used - EXCLUDED from Documentation):**
+{for each tool in exclusion_reasons:}
+- ⚠️ **{tool}**:
+  - Package: ✅ Found in {package_file}
+  - Import: ❌ NOT FOUND (searched {directories})
+  - Usage: ❌ NOT FOUND ({specific_patterns_searched})
+  - **VERDICT: Will NOT be documented ({reason})**
+
+**Example:**
+- ⚠️ **express-validator**:
+  - Package: ✅ Found in package.json dependencies
+  - Import: ❌ NOT FOUND (searched server/src/*)
+  - Usage: ❌ NOT FOUND (no validationResult, check, body, param calls)
+  - **VERDICT: Will NOT be documented (unused dependency)**
+
+- ⚠️ **jest**:
+  - Package: ✅ Found in package.json devDependencies
+  - Config: ✅ jest.config.js exists
+  - Test Files: ❌ NOT FOUND (0 .test.ts files, 0 .spec.ts files)
+  - **VERDICT: Will NOT be documented (no tests written)**
+
+**Unverified Tools (Not Installed):**
+{for each tool where not in package.json:}
+- ❌ {tool}: NOT in {package_file}
+
+**Exclusion Summary:**
+{if exclusion_reasons has entries:}
+**Why some tools were excluded from documentation:**
+{for each tool, reason in exclusion_reasons:}
+- {tool}: {reason}
+
+**Verification Gate:** ✅ PASSED - Proceeded to Phase 2 with verified_tools
+**Usage Verification:** ✅ COMPLETED - {excluded_count} tools excluded due to no usage
+
+{else if verification skipped:}
+
+**❌ VERIFICATION WAS SKIPPED**
+
+**CRITICAL ERROR:** Phase 1.5 verification was not executed. Documentation may contain
+references to tools and features that do not exist in the codebase.
+
+**Required Action:**
+1. Re-run `/trinity-docs` command
+2. Ensure Phase 1.5 verification completes before Phase 2
+3. Verify that verification report appears in command output
+
+**Risk:** Documentation describes aspirational features instead of actual implementation.
+
 ### Phase 2: Directory Structure & Content Seeding
 - **Directories created:** {created_dirs.length}
 - **Content files created:** {count}
@@ -1974,6 +4103,61 @@ if unfixable_links.length > 0:
   - Architecture: {arch_created_count} (✅ AUTO-GENERATED overview)
   - Reference: {ref_created_count}
 - **Category READMEs:** 4 created with project-specific content
+
+### Phase 2.1: Mandatory Framework Guide Enforcement
+- **Backend Framework Detected:** {backend_framework_name | "None"}
+  - {if detected:} ✅ api-development.md created
+- **Frontend Framework Detected:** {frontend_framework_name | "None"}
+  - {if detected:} ✅ component-development.md created
+- **ORM Detected:** {orm_name | "None"}
+  - {if detected:} ✅ database-management.md created
+  - {if detected:} ✅ database-schema.md created
+- **Testing Framework Detected:** {testing_framework_name | "None"}
+  - {if detected:} ✅ testing.md created
+
+**Phase 2.1 Status:** {✅ PASSED | ❌ FAILED}
+{if PASSED:}
+- ✅ All mandatory framework guides created
+{if FAILED:}
+- ❌ Missing mandatory guides: {list}
+
+### Phase 2.5: Content Validation Gate
+**Validation Status:** {✅ PASSED | ❌ FAILED}
+
+{if PASSED:}
+**Validation Results:**
+- ✅ File count validation: {actual_files} files created (minimum: {minimum_required})
+- ✅ Forbidden pattern check: No deferred work detected
+- ✅ Link validation: No broken internal links
+- ✅ Framework guide validation: All mandatory guides exist
+- ✅ Critical file check: All core files exist
+
+**Statistics:**
+- Guides created: {guides_count}
+- Reference docs created: {reference_count}
+- Total documentation files: {total_files}
+
+{if FAILED:}
+**VALIDATION FAILURES:**
+{if file_count_failed:}
+- ❌ File count validation FAILED: {actual_files} files created, required {minimum_required}
+
+{if forbidden_patterns_found:}
+- ❌ Forbidden pattern check FAILED: {violations_count} deferred work patterns found
+  {for each violation:}
+  - {file}:{line} - "{pattern}"
+
+{if broken_links_found:}
+- ❌ Link validation FAILED: {broken_links_count} broken internal links found
+  {for each broken_link:}
+  - {file} → {target} (does not exist)
+
+{if framework_guides_missing:}
+- ❌ Framework guide validation FAILED: Missing {missing_count} mandatory guides
+  {for each missing:}
+  - {guide_name}
+
+**COMMAND ABORTED:** Phase 2.5 validation failures prevented command completion
 
 ### Phase 3: Scattered Documentation Migration
 - **Files migrated:** {migrated_files.length}
@@ -2245,64 +4429,6 @@ docs/
 
 ---
 
-## Recommendations
-
-{if recommendations.length > 0:}
-
-{for each category_recommendation in recommendations:}
-### {category_recommendation.category} - Priority: {priority}
-
-{for each item in category_recommendation.items:}
-- {item}
-
-{else:}
-**No recommendations** - Documentation is comprehensive ✅
-
----
-
-## Next Steps
-
-### Immediate Actions
-
-{if unfixable_links.length > 0:}
-1. **Fix Broken Links** ({unfixable_links.length} links)
-   - Review links requiring manual attention (see Link Validation Results)
-
-{if duplicates.length > 0:}
-2. **Review Duplicate Documentation** ({duplicates.length} cases)
-   - Consolidate or clarify differences between similar files
-
-{if guides_count < 3:}
-3. **Expand Guides**
-   - Add deployment guide
-   - Create testing guide
-   - Document troubleshooting steps
-
-{if not api_docs and framework matches API framework:}
-4. **Generate API Documentation**
-   - Run TypeDoc/Rustdoc/Sphinx to generate API reference
-   - Document API endpoints and authentication
-
-### Future Enhancements
-
-{if not exists("docs/architecture/adr/"):}
-- **Architecture Decision Records**
-  - Start documenting architectural decisions using ADR format
-  - Create `docs/architecture/adr/` directory
-
-{if not has_architecture_diagrams:}
-- **Architecture Diagrams**
-  - Create system architecture diagram
-  - Add component interaction diagram
-  - Document deployment architecture
-
-- **Advanced Guides**
-  - Performance optimization guide
-  - Security best practices
-  - Debugging guide
-
----
-
 **Report Generated:** {timestamp}
 **Report Location:** trinity/reports/DOCS-ORGANIZATION-{date}.md
 
@@ -2462,10 +4588,6 @@ if final_scan.length > 0:
 - ✅ {migrated_files.length} scattered docs migrated
 - ✅ {fixed_links.length} broken links fixed
 - ✅ Complete navigation structure
-
-{if recommendations.length > 0:}
-**Recommendations:** {recommendations.length} categories
-- {list priority recommendations}
 
 **Report Location:** trinity/reports/DOCS-ORGANIZATION-{date}.md
 ```
