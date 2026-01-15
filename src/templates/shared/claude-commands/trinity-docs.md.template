@@ -86,10 +86,10 @@ if (VALIDATE_TEMPLATES) {
   LOG: "";
 
   const template_paths = [
-    "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template",
-    "trinity/templates/documentation/mermaid-diagrams/database-er.md.template",
-    "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template",
-    "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template",
+    "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
+    "trinity/templates/documentation/mermaid-diagrams/database-er.md",
+    "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
+    "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md",
     "trinity/templates/documentation/guides/getting-started.md",
     "trinity/templates/documentation/guides/api-development.md",
     "trinity/templates/documentation/guides/deployment.md",
@@ -407,26 +407,26 @@ LOG: "Verifying all required templates exist before execution...";
 LOG: "";
 
 const required_templates = [
-  // Mermaid diagrams (WO-1.8)
-  "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template",
-  "trinity/templates/documentation/mermaid-diagrams/database-er.md.template",
-  "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template",
-  "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template",
+  // Mermaid diagrams (WO-1.8) - deployed without .template suffix
+  "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
+  "trinity/templates/documentation/mermaid-diagrams/database-er.md",
+  "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md",
+  "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
   
-  // Guides (WO-002)
-  "trinity/templates/documentation/guides/getting-started.md.template",
-  "trinity/templates/documentation/guides/api-development.md.template",
-  "trinity/templates/documentation/guides/deployment.md.template",
-  "trinity/templates/documentation/guides/contributing.md.template",
+  // Guides (WO-002) - deployed without .template suffix
+  "trinity/templates/documentation/guides/getting-started.md",
+  "trinity/templates/documentation/guides/api-development.md",
+  "trinity/templates/documentation/guides/deployment.md",
+  "trinity/templates/documentation/guides/contributing.md",
   
-  // API docs (WO-002)
-  "trinity/templates/documentation/api-docs/README.md.template",
+  // API docs (WO-002) - deployed without .template suffix
+  "trinity/templates/documentation/api-docs/README.md",
   
-  // Configuration (WO-003)
-  "trinity/templates/documentation/config/env-example-generator.md.template",
+  // Configuration (WO-003) - deployed without .template suffix
+  "trinity/templates/documentation/config/env-example-generator.md",
   
-  // JUNO internal report (WO-1.8)
-  "trinity/templates/documentation/reports/juno-internal-report.md.template"
+  // JUNO internal report (WO-1.8) - deployed without .template suffix
+  "trinity/templates/documentation/reports/juno-internal-report.md"
 ];
 
 const missing_templates = [];
@@ -496,7 +496,7 @@ You are JUNO, the Quality Auditor. Your task is to audit this codebase and gener
 
 ## Report Template to Use
 
-**Template File:** \`trinity/templates/documentation/reports/juno-internal-report.md.template\`
+**Template File:** \`trinity/templates/documentation/reports/juno-internal-report.md\`
 
 **Instructions:**
 1. **Read the template** to understand the complete structure required
@@ -594,7 +594,7 @@ const actual_components = all_component_files.filter(f =>
 
 **Read the template first:**
 \`\`\`javascript
-const template_content = Read("trinity/templates/documentation/reports/juno-internal-report.md.template");
+const template_content = Read("trinity/templates/documentation/reports/juno-internal-report.md");
 // Study the structure to understand ALL {{VARIABLES}} you need to fill
 \`\`\`
 
@@ -1184,10 +1184,10 @@ LOG: "";
 LOG: "Verifying template accessibility...";
 
 const template_paths = {
-  mvc_flow: "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template",
-  database_er: "trinity/templates/documentation/mermaid-diagrams/database-er.md.template",
-  component_hierarchy: "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template",
-  api_endpoint_map: "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template"
+  mvc_flow: "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
+  database_er: "trinity/templates/documentation/mermaid-diagrams/database-er.md",
+  component_hierarchy: "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
+  api_endpoint_map: "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md"
 };
 
 const template_status = {};
@@ -1270,7 +1270,7 @@ For EACH diagram marked "Required: YES" in Section A:
 \`\`\`
 Diagram 1: MVC Flow Diagram
 - Required: YES
-- Template: trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template
+- Template: trinity/templates/documentation/mermaid-diagrams/mvc-flow.md
 - Variables:
   - {{DATABASE}}: "SQLite"
   - {{FRAMEWORK}}: "Express"
@@ -1280,7 +1280,7 @@ Diagram 1: MVC Flow Diagram
 **You must:**
 \`\`\`javascript
 // 1. Read template
-const template = Read("trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template");
+const template = Read("trinity/templates/documentation/mermaid-diagrams/mvc-flow.md");
 
 // 2. Replace variables
 const diagram = template
@@ -1651,11 +1651,11 @@ LOG: "";
 LOG: "Verifying template accessibility...";
 
 const template_paths = {
-  getting_started: "trinity/templates/documentation/guides/getting-started.md.template",
-  api_development: "trinity/templates/documentation/guides/api-development.md.template",
-  deployment: "trinity/templates/documentation/guides/deployment.md.template",
-  contributing: "trinity/templates/documentation/guides/contributing.md.template",
-  api_readme: "trinity/templates/documentation/api-docs/README.md.template"
+  getting_started: "trinity/templates/documentation/guides/getting-started.md",
+  api_development: "trinity/templates/documentation/guides/api-development.md",
+  deployment: "trinity/templates/documentation/guides/deployment.md",
+  contributing: "trinity/templates/documentation/guides/contributing.md",
+  api_readme: "trinity/templates/documentation/api-docs/README.md"
 };
 
 const template_status = {};
@@ -2141,7 +2141,7 @@ For EACH file marked "Required: YES" in Section C:
 
 \`\`\`javascript
 // 1. Read template from SECTION C
-const template_path = "trinity/templates/documentation/config/env-example-generator.md.template";
+const template_path = "trinity/templates/documentation/config/env-example-generator.md";
 const template = Read(template_path);
 
 // 2. Extract variables from SECTION C
