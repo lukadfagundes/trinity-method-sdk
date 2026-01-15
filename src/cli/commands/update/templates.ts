@@ -14,6 +14,44 @@ import { getSDKPath } from './utils.js';
 const TEMPLATE_DIRS = ['work-orders', 'documentation', 'investigations'];
 
 /**
+ * Recursively copy files from source to target directory
+ * @param sourcePath - source directory path
+ * @param targetPath - target directory path
+ * @param stats - update statistics to track progress
+ */
+async function copyTemplatesRecursively(
+  sourcePath: string,
+  targetPath: string,
+  stats: UpdateStats
+): Promise<void> {
+  const entries = await fs.readdir(sourcePath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const sourceFile = path.join(sourcePath, entry.name);
+    const targetFile = path.join(targetPath, entry.name);
+
+    if (entry.isDirectory()) {
+      // Recursively copy subdirectories
+      await fs.ensureDir(targetFile);
+      await copyTemplatesRecursively(sourceFile, targetFile, stats);
+    } else if (entry.isFile()) {
+      // Copy template files (.md.template files get .template stripped)
+      if (entry.name.endsWith('.md.template')) {
+        const deployedFileName = entry.name.replace('.template', '');
+        const targetFilePath = path.join(targetPath, deployedFileName);
+        await fs.copy(sourceFile, targetFilePath, { overwrite: true });
+        stats.templatesUpdated++;
+      }
+      // Copy plain .md files (e.g., Mermaid diagram templates)
+      else if (entry.name.endsWith('.md')) {
+        await fs.copy(sourceFile, targetFile, { overwrite: true });
+        stats.templatesUpdated++;
+      }
+    }
+  }
+}
+
+/**
  * Update template files from SDK to trinity/templates/
  * @param spinner - ora spinner instance for status display
  * @param stats - update statistics to track progress
@@ -30,19 +68,7 @@ export async function updateTemplates(spinner: Ora, stats: UpdateStats): Promise
 
     if (await fs.pathExists(sourcePath)) {
       await fs.ensureDir(targetPath);
-      const files = await fs.readdir(sourcePath);
-
-      // Copy each file individually, stripping .template extension
-      for (const file of files) {
-        if (file.endsWith('.md.template')) {
-          const sourceFile = path.join(sourcePath, file);
-          const deployedFileName = file.replace('.template', '');
-          const targetFile = path.join(targetPath, deployedFileName);
-
-          await fs.copy(sourceFile, targetFile, { overwrite: true });
-          stats.templatesUpdated++;
-        }
-      }
+      await copyTemplatesRecursively(sourcePath, targetPath, stats);
     }
   }
 
