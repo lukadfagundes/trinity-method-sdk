@@ -86,10 +86,10 @@ if (VALIDATE_TEMPLATES) {
   LOG: "";
 
   const template_paths = [
-    "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template",
-    "trinity/templates/documentation/mermaid-diagrams/database-er.md.template",
-    "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template",
-    "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template",
+    "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
+    "trinity/templates/documentation/mermaid-diagrams/database-er.md",
+    "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
+    "trinity/templates/documentation/mermaid-diagrams/api-flow.md",
     "trinity/templates/documentation/guides/getting-started.md",
     "trinity/templates/documentation/guides/api-development.md",
     "trinity/templates/documentation/guides/deployment.md",
@@ -406,188 +406,575 @@ global.trinity_docs_session.performance_metrics.juno_start = Date.now();
 
 // Invoke JUNO agent
 Task({
-  subagent_type: "JUNO (Quality Auditor)",
+  subagent_type: "JUNO",
   description: "Audit codebase for documentation needs",
   prompt: `
 # JUNO Documentation Audit Task
 
-**Objective:** Analyze the codebase and create a comprehensive documentation checklist report using the internal report template.
+**Objective:** Analyze the codebase and create a comprehensive documentation checklist report.
 
 ## Your Mission
 
-You are JUNO, the Quality Auditor. Your task is to audit this codebase and generate a structured report for APO consumption.
+You are JUNO, the Quality Auditor. Your task is to audit this codebase and create a detailed report identifying what documentation needs to be created.
 
-**CRITICAL:** This is a READ-ONLY operation. DO NOT create any documentation files. Only analyze and create the audit report.
+**CRITICAL:** This is a READ-ONLY operation. DO NOT create any files. Only analyze and report.
 
----
+## Your Report MUST Include
 
-## Report Template to Use
+This is not optional. Your report MUST contain:
 
-**Template File:** \`trinity/templates/documentation/reports/juno-internal-report.md.template\`
+1. **Executive Summary** - Project overview with architecture type, database, API count, component count
+2. **SECTION A: ARCHITECTURE & DIAGRAMS** - Complete list of required diagrams with ALL data values pre-filled
+3. **SECTION B: API DOCUMENTATION & GUIDES** - Complete list of guides with ALL variable values pre-filled
+4. **SECTION C: CONFIGURATION & SETUP** - Configuration files needed with ALL variable values
 
-**Instructions:**
-1. **Read the template** to understand the complete structure required
-2. **Analyze the codebase** to gather all data for every {{VARIABLE}}
-3. **Replace ALL placeholders** with actual discovered values (no placeholders like "[Database detected]")
-4. **Output the completed report** to: \`trinity/reports/DOCS-AUDIT-{timestamp}.md\`
+**CRITICAL CLARIFICATION - JUNO's Responsibility for Diagrams:**
+JUNO does NOT generate complete Mermaid syntax. JUNO provides:
+- All entity/model/component NAMES (actual from codebase)
+- All relationship data (foreign keys, parent-child, etc.)
+- All variable values (database type, framework, base paths)
+- Complete lists (ALL components, ALL models, ALL endpoints)
 
-**Timestamp Format:** YYYY-MM-DD-HHmm (e.g., 2026-01-15-1530)
+APO-1 will use this data to generate Mermaid diagrams. JUNO must ensure data is:
+1. COMPLETE - no missing entities or relationships
+2. ACCURATE - no invented names, all from codebase
+3. STRUCTURED - organized for easy extraction by APO-1
 
----
+**Example of Correct JUNO Output:**
+```
+**Diagram 2: Database ER Diagram**
+- Required: YES
+- Template: trinity/templates/documentation/mermaid-diagrams/database-er.md
+- Variables:
+  - {{DATABASE_TYPE}}: "SQLite"
+  - {{ORM}}: "Prisma"
+- **Models (8):** Campaign, FlowNode, FlowEdge, Encounter, Enemy, Loot, Drawing, SpotifyToken
+- **Relationships (11 foreign keys):**
+  - Campaign has many FlowNodes (campaignId FK)
+  - Campaign has many Encounters (campaignId FK)
+  - Encounter has many Enemies (encounterId FK)
+  - Encounter has many Loot (encounterId FK)
+  - FlowNode has many Drawings (nodeId FK)
+  - FlowNode references Campaign (campaignId FK)
+  - FlowEdge references FlowNode source (sourceId FK)
+  - FlowEdge references FlowNode target (targetId FK)
+  - FlowEdge references Campaign (campaignId FK)
+  - Drawing references FlowNode (nodeId FK)
+  - SpotifyToken standalone
+- Output: docs/architecture/database-schema.md
+```
 
-## Critical Requirements
+**DO NOT include inline Mermaid syntax like:**
+```mermaid
+Campaign ||--o{ Flow : "has many"
+```
+This is APO-1's responsibility.
 
-**ZERO TOLERANCE RULES:**
-- ALL {{VARIABLE}} placeholders MUST be replaced with actual values
-- Component names MUST exist in codebase (verify with Glob)
-- Model names MUST come from actual schema files
-- Endpoint counts MUST match actual route files
-- Testing framework MUST be from package.json (not assumed)
-- Use ONLY discovered data - NO invented names, NO assumptions
+**MINIMUM REQUIREMENTS:**
+- Report must be at least 2000 characters (substantial, not minimal)
+- All three sections (A, B, C) MUST be present
+- All variable values MUST be pre-filled with actual detected values (no placeholders like "[Database type detected]")
+- Component names MUST be actual component names from codebase (not invented)
+- Testing framework MUST be accurately detected (check package.json and config files)
 
-**Autonomous Execution:**
-- Do NOT ask user for input
-- Do NOT prompt for decisions
-- Proceed directly to analyze and generate report
-- If ambiguous: use sensible defaults based on codebase evidence
+## Analysis Tasks
 
----
+### 1. Codebase Architecture Analysis
 
-## Discovery Logic
+Analyze and document:
 
-Use the following patterns to discover codebase information:
+**Backend Framework Detection:**
+- Read package.json completely
+- Check dependencies for: express, fastify, koa, hapi, nestjs
+- Identify main server file (app.ts, server.ts, index.ts, main.ts)
+- Determine architecture pattern (MVC, REST API, GraphQL, Microservices, etc.)
+- Identify database (Prisma, TypeORM, Sequelize, Mongoose, raw SQL)
 
-### 1. Framework and Technology Detection
+**Frontend Framework Detection:**
+- Read package.json completely
+- Check for: react, vue, angular, svelte, solid
+- Identify component directories (components/, src/components/, client/components/)
+- Use Glob to find actual component files
 
-**Package Analysis:**
+**Testing Framework Detection (CRITICAL - Rec 11):**
 \`\`\`javascript
+LOG: "Detecting testing infrastructure...";
+
 const pkg_json = Read("package.json");
 const pkg = JSON.parse(pkg_json);
 
-// Detect frameworks, database, ORM, testing from dependencies
-// Backend: express, fastify, koa, hapi, nestjs
-// Frontend: react, vue, angular, svelte, solid
-// Database/ORM: prisma, typeorm, sequelize, mongoose, knex
-// Testing: jest, vitest, mocha, jasmine, cypress, playwright
+const testing_info = {
+  framework: null,
+  test_command: null,
+  test_count: 0,
+  config_file: null
+};
+
+// Check package.json devDependencies
+if (pkg.devDependencies) {
+  if (pkg.devDependencies.jest || pkg.dependencies?.jest) {
+    testing_info.framework = "Jest";
+    testing_info.config_file = exists("jest.config.js") ? "jest.config.js" :
+                               exists("jest.config.ts") ? "jest.config.ts" : null;
+  } else if (pkg.devDependencies.vitest || pkg.dependencies?.vitest) {
+    testing_info.framework = "Vitest";
+    testing_info.config_file = exists("vitest.config.js") ? "vitest.config.js" :
+                               exists("vitest.config.ts") ? "vitest.config.ts" : null;
+  } else if (pkg.devDependencies.mocha || pkg.dependencies?.mocha) {
+    testing_info.framework = "Mocha";
+  } else if (pkg.devDependencies.jasmine || pkg.dependencies?.jasmine) {
+    testing_info.framework = "Jasmine";
+  }
+}
+
+// Check for test command in scripts
+if (pkg.scripts && pkg.scripts.test) {
+  testing_info.test_command = pkg.scripts.test;
+}
+
+// Count test files
+const test_patterns = ["**/*.test.{ts,tsx,js,jsx}", "**/*.spec.{ts,tsx,js,jsx}"];
+let all_test_files = [];
+for (const pattern of test_patterns) {
+  const files = Glob({pattern: pattern});
+  all_test_files = [...all_test_files, ...files];
+}
+testing_info.test_count = all_test_files.length;
+
+LOG: \`Testing Framework: \${testing_info.framework || "None detected"}\`;
+LOG: \`Test Files: \${testing_info.test_count}\`;
+LOG: \`Test Command: \${testing_info.test_command || "Not configured"}\`;
 \`\`\`
 
-### 2. Component Discovery (CRITICAL - ZERO TOLERANCE)
+**Component Discovery (CRITICAL - ZERO TOLERANCE FOR INVENTED NAMES) (Rec 2, Rec 12):**
 
-**RULE:** Every component name MUST exist in codebase (verified with Glob)
+**CRITICAL REQUIREMENT:** Every component name in your report MUST exist in the codebase.
+
+**Verification Process:**
+1. Use Glob to discover all component files
+2. Extract actual component names from file paths
+3. List ONLY discovered components - DO NOT add, invent, or assume any components
+4. If you're unsure whether a component exists, DO NOT include it
+5. Self-validate: Re-run Glob and compare to your list (must match exactly)
 
 \`\`\`javascript
-// Find React/Vue components
-const component_patterns = ["client/**/*.{tsx,jsx}", "src/**/*.{tsx,jsx}", "**/*.vue"];
-const all_component_files = [/* use Glob for each pattern */];
+LOG: "Discovering frontend components...";
 
-// Filter out tests, configs, entry points
+// Find all React/Vue component files
+const component_patterns = [
+  "client/**/*.{tsx,jsx}",
+  "src/**/*.{tsx,jsx}",
+  "client/**/*.vue",
+  "src/**/*.vue"
+];
+
+let all_component_files = [];
+for (const pattern of component_patterns) {
+  const files = Glob({pattern: pattern});
+  all_component_files = [...all_component_files, ...files];
+}
+
+// Filter out non-component files (tests, configs, entry points)
 const actual_components = all_component_files.filter(f =>
-  !f.includes('.test.') && !f.includes('.spec.') && !f.includes('.config.')
+  !f.includes('.test.') &&
+  !f.includes('.spec.') &&
+  !f.endsWith('main.tsx') &&
+  !f.endsWith('main.jsx') &&
+  !f.endsWith('index.tsx') &&  // May include if it exports a component
+  !f.endsWith('index.jsx') &&
+  !f.includes('setupTests') &&
+  !f.includes('vite.config') &&
+  !f.includes('.config.')
 );
 
-// Extract names and paths for template variables
-// List ALL components with paths in report for APO-1 verification
+// Extract component names with full paths for verification
+const component_list = actual_components.map(f => {
+  const path_parts = f.split('/');
+  const filename = path_parts[path_parts.length - 1];
+  const component_name = filename.replace(/\.(tsx|jsx|vue)$/, '');
+
+  return {
+    name: component_name,
+    path: f,
+    type: f.includes('/pages/') || f.includes('/routes/') ? 'page' : 'component'
+  };
+});
+
+LOG: \`Detected Components: \${actual_components.length} total\`;
+LOG: \`  - Pages: \${component_list.filter(c => c.type === 'page').length}\`;
+LOG: \`  - Components: \${component_list.filter(c => c.type === 'component').length}\`;
+
+// SELF-VALIDATION: Ensure no components were added beyond discovery
+const discovered_names = component_list.map(c => c.name);
+LOG: "";
+LOG: "Component Discovery Self-Check:";
+LOG: \`  Discovered: \${discovered_names.length} components\`;
+LOG: \`  Will list: \${discovered_names.length} components (MUST MATCH)\`;
+LOG: "";
 \`\`\`
 
-### 3. Database Schema Analysis
+**In Your Report:**
+List EVERY discovered component with its file path for APO-1 verification.
 
+**Example Format:**
+\`\`\`
+**Diagram 4: Component Hierarchy**
+- Required: YES
+- Template: trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md
+- Variables:
+  - {{ROOT_COMPONENT}}: "App"
+- **CRITICAL FOR APO-1 - Use ONLY the components listed below:**
+- **DO NOT invent components not in this list:**
+
+**Discovered Components (12 total):**
+1. App (client/src/App.tsx) - page
+2. HomePage (client/src/pages/HomePage.tsx) - page
+3. CampaignPage (client/src/pages/CampaignPage.tsx) - page
+... (list ALL discovered components)
+
+**APO-1 MUST verify each component exists at the listed path before including in diagram.**
+
+- Output: docs/frontend/component-hierarchy.md
+\`\`\`
+
+**ZERO TOLERANCE:** If APO-1 detects ANY component in the diagram that is not in the above list, verification MUST ABORT.
+
+**Database Schema Analysis:**
+- If Prisma: Parse prisma/schema.prisma for models and relationships
+- If TypeORM: Find entity files (@Entity decorators)
+- If Mongoose: Find schema definitions
+- Count models/entities and relationships
+- Extract actual model names for Mermaid diagrams
+
+**API Endpoint Discovery:**
 \`\`\`javascript
-// Prisma: Parse prisma/schema.prisma for models and relationships
-// TypeORM: Find @Entity decorator files
-// Mongoose: Find schema definitions
-// Extract: model names, relationships (foreign keys), counts
+LOG: "Discovering API endpoints...";
+
+// Find route files
+const route_patterns = [
+  "server/routes/**/*.{ts,js}",
+  "src/routes/**/*.{ts,js}",
+  "api/**/*.{ts,js}",
+  "server/api/**/*.{ts,js}"
+];
+
+let all_route_files = [];
+for (const pattern of route_patterns) {
+  const files = Glob({pattern: pattern});
+  all_route_files = [...all_route_files, ...files];
+}
+
+// Parse each route file for endpoints
+const endpoints = [];
+for (const route_file of all_route_files) {
+  const content = Read(route_file);
+
+  // Match patterns: router.get(), app.post(), etc.
+  const http_methods = ['get', 'post', 'put', 'patch', 'delete'];
+  for (const method of http_methods) {
+    const regex = new RegExp(\`\\\\.(\\${method})\\\\(['"\\\`]([^'"\\\`]+)['"\\\`]\`, 'g');
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+      endpoints.push({
+        method: method.toUpperCase(),
+        path: match[2],
+        file: route_file
+      });
+    }
+  }
+}
+
+LOG: \`API Endpoints: \${endpoints.length} discovered\`;
+
+// Group by resource
+const resource_groups = {};
+for (const ep of endpoints) {
+  const resource = ep.path.split('/')[1] || 'root';
+  if (!resource_groups[resource]) {
+    resource_groups[resource] = [];
+  }
+  resource_groups[resource].push(ep);
+}
+
+LOG: \`Resource Groups: \${Object.keys(resource_groups).length}\`;
 \`\`\`
 
-### 4. API Endpoint Discovery
+### 2. Existing Documentation Inventory
 
-\`\`\`javascript
-// Find route files in: server/routes/, src/routes/, api/, server/api/
-// Parse for HTTP methods: router.get(), app.post(), etc.
-// Extract: method, path, file location
-// Group by resource for SECTION B template variable
-\`\`\`
+Check what documentation already exists:
+- docs/ directory structure (use Glob)
+- README.md completeness
+- Inline code comments
+- API documentation files
+- Architecture diagrams
 
-### 5. Environment Variables
+### 3. Documentation Gap Analysis
 
-\`\`\`javascript
-// Check for .env file
-// Grep codebase for process.env.VARIABLE_NAME patterns
-// Extract all unique environment variable names for SECTION C
-\`\`\`
+Compare what exists vs. what should exist based on codebase complexity.
+
+## Output: Create Audit Report
+
+Create a report file: **trinity/reports/DOCS-AUDIT-{timestamp}.md**
+
+The report MUST contain THREE sections (one per APO instance):
 
 ---
 
-## Template Usage Instructions
+### SECTION A: ARCHITECTURE & DIAGRAMS
+**Assigned to:** APO-1
 
-**Read the template first:**
-\`\`\`javascript
-const template_content = Read("trinity/templates/documentation/reports/juno-internal-report.md.template");
-// Study the structure to understand ALL {{VARIABLES}} you need to fill
-\`\`\`
+List required Mermaid diagrams based on detected architecture:
 
-**Perform all discovery tasks above, then fill the template:**
-- Replace {{PROJECT_NAME}} with actual name from package.json
-- Replace {{BACKEND_FRAMEWORK}} with detected framework
-- Replace {{MODEL_COUNT}} with actual count from schema
-- Replace {{ENDPOINT_COUNT}} with actual discovered count
-- Replace {{COMPONENT_NAMES}} with comma-separated list of actual components
-- **ALL {{VARIABLES}} must be replaced - zero tolerance for placeholders**
+**Diagram 1: MVC Flow Diagram**
+- Required: YES/NO (if MVC architecture detected)
+- Template: trinity/templates/documentation/mermaid-diagrams/mvc-flow.md
+- Variables:
+  - {{DATABASE}}: [ACTUAL database type detected, e.g., "SQLite", "PostgreSQL", "MongoDB"]
+  - {{FRAMEWORK}}: [ACTUAL framework detected, e.g., "Express", "Fastify", "NestJS"]
+- Output: docs/images/architecture-mvc-flow.md
 
-**Output the completed report:**
-\`\`\`javascript
-const completed_report = /* filled template with all variables replaced */;
-Write("trinity/reports/DOCS-AUDIT-{timestamp}.md", completed_report);
-\`\`\`
+**Diagram 2: Database ER Diagram**
+- Required: YES/NO (if ORM detected)
+- Template: trinity/templates/documentation/mermaid-diagrams/database-er.md
+- Variables:
+  - {{ENTITIES}}: [Provide COMPLETE Mermaid entity syntax for ALL models - actual Mermaid code, not descriptions]
+  - {{RELATIONSHIPS}}: [Provide COMPLETE Mermaid relationship syntax - actual Mermaid code]
+- Entities: [List ALL actual model names from database schema, e.g., "User, Post, Comment, Tag (4 models)"]
+- Relationships: [Count actual foreign key relationships from schema]
+- Output: docs/images/database-schema.md
+
+**Diagram 3: API Endpoint Map**
+- Required: YES/NO (if API endpoints detected)
+- Template: trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md
+- Variables:
+  - {{RESOURCES}}: [Provide COMPLETE Mermaid flowchart syntax with ALL resources and endpoints - actual Mermaid code]
+  - {{BASE_PATH}}: [ACTUAL API base path from route files, e.g., "/api", "/api/v1", or "/" if none]
+- Endpoints: [ACTUAL total count from endpoint discovery: X endpoints across Y resource groups]
+- Output: docs/images/api-endpoint-flow.md
+
+**Diagram 4: Component Hierarchy**
+- Required: YES/NO (if React/Vue detected)
+- Template: trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md
+- Variables:
+  - {{COMPONENT_GROUPS}}: [Provide COMPLETE Mermaid flowchart syntax with component tree - actual Mermaid code]
+  - {{ROOT_COMPONENT}}: [ACTUAL root component name from codebase, e.g., "App", "Root"]
+- **CRITICAL FOR APO-1 - Use ONLY the components listed below:**
+- **DO NOT invent components not in this list:**
+
+**Detected Components ([N] total):**
+1. [ActualComponentName1] (path/to/Component1.tsx) - [page/component]
+2. [ActualComponentName2] (path/to/Component2.tsx) - [page/component]
+... (list ALL discovered components from component discovery)
+
+- Output: docs/images/component-hierarchy.md
 
 ---
 
-## Self-Validation (Rec 3)
+### SECTION B: API DOCUMENTATION & GUIDES
+**Assigned to:** APO-2
 
-Before returning, verify report completeness:
+**API Documentation:**
+- Required: YES/NO (if API endpoints detected)
+- Template: trinity/templates/documentation/api-docs/README.md
+- Endpoints to document: [List ALL endpoints with method, path, description from endpoint discovery]
+  Example:
+  - GET /api/users - Retrieve all users
+  - POST /api/users - Create new user
+  - GET /api/users/:id - Get user by ID
+  ... (list ALL discovered endpoints)
+- Output: docs/api/README.md
+
+**Guide 1: Getting Started**
+- Required: YES
+- Template: trinity/templates/documentation/guides/getting-started.md
+- Variables:
+  - {{PROJECT_NAME}}: [ACTUAL name from package.json]
+  - {{PACKAGE_MANAGER}}: [ACTUAL detected: npm/yarn/pnpm based on lock file presence]
+  - {{DATABASE}}: [ACTUAL database type]
+  - {{INSTALL_STEPS}}: [ACTUAL installation commands based on package manager]
+  - {{RUN_COMMAND}}: [ACTUAL dev server command from package.json scripts.dev or scripts.start]
+  - {{TEST_COMMAND}}: [ACTUAL test command from package.json scripts.test, or "No tests configured" if none]
+  - {{TESTING_FRAMEWORK}}: [ACTUAL framework from detection above: Jest/Vitest/Mocha/None]
+- Output: docs/guides/getting-started.md
+
+**Guide 2: API Development**
+- Required: YES/NO (if backend detected)
+- Template: trinity/templates/documentation/guides/api-development.md
+- Variables:
+  - {{FRAMEWORK}}: [ACTUAL: Express/Fastify/Koa/NestJS/etc.]
+  - {{ROUTER_PATTERN}}: [ACTUAL: Describe how routes are organized from analysis]
+  - {{VALIDATION_LIBRARY}}: [ACTUAL: Zod/Joi/express-validator/etc. if detected in package.json, or "None" if not found]
+  - {{AUTH_METHOD}}: [ACTUAL: JWT/OAuth/Session/Passport if detected in code/dependencies, or "Not configured" if not found]
+  - {{DATABASE_ORM}}: [ACTUAL: Prisma/TypeORM/Sequelize/Mongoose/etc.]
+- Output: docs/guides/api-development.md
+
+**Guide 3: Deployment**
+- Required: YES
+- Template: trinity/templates/documentation/guides/deployment.md
+- Variables:
+  - {{PROJECT_NAME}}: [ACTUAL from package.json]
+  - {{BUILD_COMMAND}}: [ACTUAL build command from package.json scripts.build]
+  - {{ENV_VARS}}: [ACTUAL list of environment variables from .env file if exists, or "None configured" if .env doesn't exist]
+  - {{DATABASE_MIGRATIONS}}: [ACTUAL migration commands if ORM detected, or "N/A" if no ORM]
+- Output: docs/guides/deployment.md
+
+**Guide 4: Contributing**
+- Required: YES
+- Template: trinity/templates/documentation/guides/contributing.md
+- Variables:
+  - {{PROJECT_NAME}}: [ACTUAL from package.json]
+  - {{GIT_WORKFLOW}}: [ACTUAL: Describe workflow based on branch structure if .git exists]
+  - {{CODE_STYLE}}: [ACTUAL: ESLint + Prettier if detected in package.json, or "Not configured"]
+  - {{TEST_REQUIREMENTS}}: [ACTUAL: Based on testing framework detection, or "No testing requirements" if none]
+- Output: docs/guides/contributing.md
+
+---
+
+### SECTION C: CONFIGURATION & SETUP
+**Assigned to:** APO-3
+
+**File 1: .env.example**
+- Required: YES/NO (if .env exists OR environment variables detected in code)
+- Template: trinity/templates/documentation/env-example-generator.md
+- Variables:
+  - {{ENV_KEYS}}: [ACTUAL list of ALL environment variable keys detected from .env, or from grep search of process.env usage]
+  - {{PROJECT_METADATA}}: [ACTUAL: Project name, description, version from package.json]
+- Environment Variables: [List ALL detected keys: DATABASE_URL, API_KEY, PORT, etc.]
+- Output: .env.example (or server/.env.example if monorepo detected)
+
+**File 2: Root README Update**
+- Required: YES (if README.md lacks documentation links)
+- Action: Add "Documentation" section with links to docs/guides/getting-started.md
+- **CRITICAL:** Must validate that linked files will exist after APO-2 completes
+- Output: README.md (update existing)
+
+---
+
+## Report Format Requirements
+
+**Executive Summary:**
+- Project name and type (from package.json)
+- Architecture detected (MVC/REST API/GraphQL/Microservices/etc.)
+- Backend framework and version
+- Frontend framework and version (if applicable)
+- Database type and model count
+- API endpoint count (actual discovered count)
+- Frontend component count (actual discovered count)
+- Testing framework (actual detected: Jest/Vitest/Mocha/None)
+- Total documentation files to create (count)
+
+**Section Headers:**
+Use clear markdown headers exactly as shown:
+- ## SECTION A: ARCHITECTURE & DIAGRAMS
+- ## SECTION B: API DOCUMENTATION & GUIDES
+- ## SECTION C: CONFIGURATION & SETUP
+
+**Completeness:**
+Each section must include:
+- Clear YES/NO for each item
+- All variable values filled in with ACTUAL detected values (no placeholders like "[Database type detected]")
+- Complete Mermaid syntax for diagrams (actual Mermaid code, not descriptions like "[Provide Mermaid syntax]")
+- Specific file paths for outputs
+- Actual component names (not invented names)
+- Actual testing framework (not guessed)
+
+**Save Location:**
+trinity/reports/DOCS-AUDIT-{timestamp}.md
+
+Use timestamp format: YYYY-MM-DD-HHmm (e.g., 2026-01-14-1030)
+
+---
+
+## Self-Validation Checklist (Rec 3)
+
+Before returning your report, you MUST verify completeness:
 
 \`\`\`javascript
+LOG: "";
+LOG: "=== JUNO SELF-VALIDATION ===";
+LOG: "";
+
+// Read your created report
 const report_path = "trinity/reports/DOCS-AUDIT-{timestamp}.md";
 const report_content = Read(report_path);
 
-const validation_checks = {
-  file_exists: report_content.length > 0,
-  has_all_sections: report_content.includes("SECTION A") &&
-                    report_content.includes("SECTION B") &&
-                    report_content.includes("SECTION C"),
+// Validation checks
+const validation_results = {
+  file_created: exists(report_path),
+  has_section_a: report_content.includes("## SECTION A:"),
+  has_section_b: report_content.includes("## SECTION B:"),
+  has_section_c: report_content.includes("## SECTION C:"),
+  has_executive_summary: report_content.includes("## Executive Summary") || report_content.includes("Executive Summary:"),
   min_length: report_content.length >= 2000,
-  no_placeholders: !report_content.includes("[") && !report_content.includes("{{"),
-  component_verification: /* Glob each listed component path to verify exists */
+  no_placeholders: !report_content.match(/\[([A-Z][a-z]+ ){2,}[a-z]+\]/), // Matches "[Database type detected]" style placeholders
+  has_mermaid_code: report_content.includes("erDiagram") || report_content.includes("flowchart") || report_content.includes("graph"),
 };
 
-// All checks must pass before proceeding
-if (!Object.values(validation_checks).every(v => v === true)) {
-  ERROR: "JUNO self-validation failed - fix report before returning";
-  return "VALIDATION_FAILED";
+LOG: "Validation Results:";
+LOG: \`  File created: \${validation_results.file_created ? "✅" : "❌"}\`;
+LOG: \`  Section A present: \${validation_results.has_section_a ? "✅" : "❌"}\`;
+LOG: \`  Section B present: \${validation_results.has_section_b ? "✅" : "❌"}\`;
+LOG: \`  Section C present: \${validation_results.has_section_c ? "✅" : "❌"}\`;
+LOG: \`  Executive Summary: \${validation_results.has_executive_summary ? "✅" : "❌"}\`;
+LOG: \`  Minimum length (2000 chars): \${validation_results.min_length ? "✅" : "❌"} (\${report_content.length} chars)\`;
+LOG: \`  No placeholders: \${validation_results.no_placeholders ? "✅" : "❌"}\`;
+LOG: \`  Mermaid code present: \${validation_results.has_mermaid_code ? "✅" : "❌"}\`;
+LOG: "";
+
+const all_passed = Object.values(validation_results).every(v => v === true);
+
+if (!all_passed) {
+  ERROR: "";
+  ERROR: "❌ JUNO SELF-VALIDATION FAILED";
+  ERROR: "";
+  ERROR: "Your report is incomplete. Please fix the following:";
+  for (const [check, passed] of Object.entries(validation_results)) {
+    if (!passed) {
+      ERROR: \`   ❌ \${check}\`;
+    }
+  }
+  ERROR: "";
+  ERROR: "Fix the report before returning. The report MUST be complete and substantial.";
+  ERROR: "";
+
+  // DO NOT ABORT - instead, return to JUNO to fix
+  return "VALIDATION_FAILED: Report incomplete, please review and fix issues listed above.";
 }
 
-LOG: "✅ JUNO self-validation passed";
+LOG: "✅ Self-validation passed: Report is complete and ready for APO execution";
+LOG: "";
 \`\`\`
 
 ---
 
-## Completion Summary
+## Completion
 
-Return concise summary after validation passes:
+After self-validation passes, return a summary:
 
 \`\`\`
-JUNO Audit Complete
+JUNO Documentation Audit Complete
+
 Report: trinity/reports/DOCS-AUDIT-{timestamp}.md
 
-Architecture: [type]
-Backend: [framework] [version]
-Frontend: [framework] [version]
-Database: [type] ([N] models)
-API: [N] endpoints
-Components: [N] total
-Testing: [framework or None]
+Executive Summary:
+- Architecture: [MVC/REST API/etc.]
+- Backend: [Framework name and version]
+- Frontend: [Framework name and version, or N/A]
+- Database: [Type] ([N] models)
+- API Endpoints: [N] endpoints across [X] resource groups
+- Components: [N] React/Vue components
+- Testing: [Framework name or None]
 
-Documentation: [N] files to generate
-Status: Ready for APO execution
+Documentation To Create:
+- Section A: [N] diagrams
+- Section B: [N] guides + API docs
+- Section C: [N] config files
+
+Total: [N] files to generate
+
+Self-Validation: ✅ PASSED
+
+Status: Ready for parallel APO execution
 \`\`\`
   `
 });
@@ -1111,10 +1498,10 @@ LOG: "";
 LOG: "Verifying template accessibility...";
 
 const template_paths = {
-  mvc_flow: "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template",
-  database_er: "trinity/templates/documentation/mermaid-diagrams/database-er.md.template",
-  component_hierarchy: "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template",
-  api_endpoint_map: "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template"
+  mvc_flow: "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
+  database_er: "trinity/templates/documentation/mermaid-diagrams/database-er.md",
+  component_hierarchy: "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
+  api_flow: "trinity/templates/documentation/mermaid-diagrams/api-flow.md"
 };
 
 const template_status = {};
@@ -1197,7 +1584,7 @@ For EACH diagram marked "Required: YES" in Section A:
 \`\`\`
 Diagram 1: MVC Flow Diagram
 - Required: YES
-- Template: trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template
+- Template: trinity/templates/documentation/mermaid-diagrams/mvc-flow.md
 - Variables:
   - {{DATABASE}}: "SQLite"
   - {{FRAMEWORK}}: "Express"
@@ -1207,7 +1594,7 @@ Diagram 1: MVC Flow Diagram
 **You must:**
 \`\`\`javascript
 // 1. Read template
-const template = Read("trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template");
+const template = Read("trinity/templates/documentation/mermaid-diagrams/mvc-flow.md");
 
 // 2. Replace variables
 const diagram = template

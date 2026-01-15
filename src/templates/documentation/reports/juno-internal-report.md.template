@@ -1,0 +1,353 @@
+# JUNO Documentation Audit Report
+
+**Project:** {{PROJECT_NAME}}
+**Date:** {{AUDIT_DATE}}
+**Audit Type:** Trinity Documentation Generation v2.0.9
+
+---
+
+## Executive Summary
+
+**Project Type:** {{PROJECT_TYPE}}
+**Architecture Pattern:** {{ARCHITECTURE_PATTERN}}
+
+### Technology Stack
+
+**Backend:**
+- Framework: {{BACKEND_FRAMEWORK}} {{BACKEND_VERSION}}
+- Database: {{DATABASE_TYPE}}
+- ORM: {{ORM}} {{ORM_VERSION}}
+- Additional: {{BACKEND_ADDITIONAL}}
+
+**Frontend:**
+- Framework: {{FRONTEND_FRAMEWORK}} {{FRONTEND_VERSION}}
+- Build Tool: {{BUILD_TOOL}} {{BUILD_TOOL_VERSION}}
+- State Management: {{STATE_MANAGEMENT}}
+- Additional: {{FRONTEND_ADDITIONAL}}
+
+**Testing:**
+- Framework: {{TESTING_FRAMEWORK}}
+- Coverage: {{TEST_COVERAGE}}
+
+### Codebase Metrics
+
+**Database Schema:**
+- Models/Entities: {{MODEL_COUNT}}
+- Model Names: {{MODEL_NAMES}}
+
+**API Layer:**
+- Total Endpoints: {{ENDPOINT_COUNT}}
+- Resources: {{RESOURCE_COUNT}}
+- Route Files: {{ROUTE_FILE_COUNT}}
+
+**Frontend Components:**
+- Component Count: {{COMPONENT_COUNT}}
+- Component Type: {{COMPONENT_TYPE}}
+- Component Names: {{COMPONENT_NAMES}}
+
+---
+
+## SECTION A: ARCHITECTURE & DIAGRAMS
+
+### Diagram 1: MVC Flow Diagram
+
+**Required:** {{MVC_REQUIRED}}
+**Priority:** {{MVC_PRIORITY}}
+**Estimated Time:** {{MVC_TIME}}
+
+**Template Path:** `trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template`
+
+**Variables to Replace:**
+- `{{DATABASE}}`: "{{DATABASE_VALUE}}"
+- `{{FRAMEWORK}}`: "{{FRAMEWORK_VALUE}}"
+- `{{ORM}}`: "{{ORM_VALUE}}"
+- `{{CONTROLLERS}}`: "{{CONTROLLERS_VALUE}}"
+- `{{MODELS}}`: "{{MODELS_VALUE}}"
+- `{{VIEWS}}`: "{{VIEWS_VALUE}}"
+
+**Output File:** `docs/architecture/mvc-flow.md`
+
+**Description:** {{MVC_DESCRIPTION}}
+
+---
+
+### Diagram 2: Database ER Diagram
+
+**Required:** {{ER_REQUIRED}}
+**Priority:** {{ER_PRIORITY}}
+**Estimated Time:** {{ER_TIME}}
+
+**Template Path:** `trinity/templates/documentation/mermaid-diagrams/database-er.md.template`
+
+**Variables to Replace:**
+- `{{DATABASE_TYPE}}`: "{{DATABASE_TYPE_VALUE}}"
+- `{{ENTITIES}}`: "{{ENTITIES_VALUE}}"
+- `{{RELATIONSHIPS}}`: "{{RELATIONSHIPS_VALUE}}"
+
+**Output File:** `docs/architecture/database-er.md`
+
+**Description:** {{ER_DESCRIPTION}}
+
+---
+
+### Diagram 3: API Endpoint Map
+
+**Required:** {{API_MAP_REQUIRED}}
+**Priority:** {{API_MAP_PRIORITY}}
+**Estimated Time:** {{API_MAP_TIME}}
+
+**Template Path:** `trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template`
+
+**Variables to Replace:**
+- `{{BASE_URL}}`: "{{BASE_URL_VALUE}}"
+- `{{RESOURCES}}`: "{{RESOURCES_VALUE}}"
+- `{{ENDPOINT_COUNT}}`: "{{ENDPOINT_COUNT_VALUE}}"
+
+**Output File:** `docs/api/endpoint-map.md`
+
+**Description:** {{API_MAP_DESCRIPTION}}
+
+---
+
+### Diagram 4: Component Hierarchy
+
+**Required:** {{COMPONENT_REQUIRED}}
+**Priority:** {{COMPONENT_PRIORITY}}
+**Estimated Time:** {{COMPONENT_TIME}}
+
+**Template Path:** `trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template`
+
+**Variables to Replace:**
+- `{{FRAMEWORK}}`: "{{COMPONENT_FRAMEWORK_VALUE}}"
+- `{{COMPONENTS}}`: "{{COMPONENTS_VALUE}}"
+- `{{COMPONENT_COUNT}}`: "{{COMPONENT_COUNT_VALUE}}"
+
+**Output File:** `docs/architecture/component-hierarchy.md`
+
+**Description:** {{COMPONENT_DESCRIPTION}}
+
+---
+
+## SECTION B: API DOCUMENTATION & GUIDES
+
+### File 1: API Documentation
+
+**Required:** {{API_DOCS_REQUIRED}}
+**Priority:** {{API_DOCS_PRIORITY}}
+**Estimated Time:** {{API_DOCS_TIME}}
+
+**Template Path:** `trinity/templates/documentation/guides/api-documentation.md.template`
+
+**Endpoints to Document:** {{ENDPOINT_COUNT}}
+
+**Variables to Replace:**
+- `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
+- `{{BASE_URL}}`: "{{API_BASE_URL}}"
+- `{{AUTHENTICATION}}`: "{{AUTH_METHOD}}"
+- `{{ENDPOINTS}}`: "{{ENDPOINTS_DETAILED}}"
+
+**Output File:** `docs/api/README.md`
+
+**Description:** Complete REST API documentation with all {{ENDPOINT_COUNT}} endpoints, authentication methods, request/response examples, and error handling.
+
+---
+
+### File 2: Getting Started Guide
+
+**Required:** {{GETTING_STARTED_REQUIRED}}
+**Priority:** {{GETTING_STARTED_PRIORITY}}
+**Estimated Time:** {{GETTING_STARTED_TIME}}
+
+**Template Path:** `trinity/templates/documentation/guides/getting-started.md.template`
+
+**Variables to Replace:**
+- `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
+- `{{TECH_STACK}}`: "{{TECH_STACK_SUMMARY}}"
+- `{{PREREQUISITES}}`: "{{PREREQUISITES_LIST}}"
+- `{{INSTALLATION_STEPS}}`: "{{INSTALLATION_STEPS}}"
+- `{{FIRST_RUN}}`: "{{FIRST_RUN_INSTRUCTIONS}}"
+
+**Output File:** `docs/guides/getting-started.md`
+
+**Description:** Step-by-step guide for new developers to set up the project locally.
+
+---
+
+### File 3: API Development Guide
+
+**Required:** {{API_DEV_REQUIRED}}
+**Priority:** {{API_DEV_PRIORITY}}
+**Estimated Time:** {{API_DEV_TIME}}
+
+**Template Path:** `trinity/templates/documentation/guides/api-development.md.template`
+
+**Variables to Replace:**
+- `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
+- `{{FRAMEWORK}}`: "{{BACKEND_FRAMEWORK}}"
+- `{{ORM}}`: "{{ORM}}"
+- `{{ROUTE_PATTERN}}`: "{{ROUTE_PATTERN_EXAMPLE}}"
+- `{{CONTROLLER_PATTERN}}`: "{{CONTROLLER_PATTERN_EXAMPLE}}"
+
+**Output File:** `docs/guides/api-development.md`
+
+**Description:** Guidelines for creating new API endpoints following project patterns.
+
+---
+
+### File 4: Deployment Guide
+
+**Required:** {{DEPLOYMENT_REQUIRED}}
+**Priority:** {{DEPLOYMENT_PRIORITY}}
+**Estimated Time:** {{DEPLOYMENT_TIME}}
+
+**Template Path:** `trinity/templates/documentation/guides/deployment.md.template`
+
+**Variables to Replace:**
+- `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
+- `{{BUILD_COMMAND}}`: "{{BUILD_COMMAND}}"
+- `{{START_COMMAND}}`: "{{START_COMMAND}}"
+- `{{ENV_VARS}}`: "{{ENV_VARS_PRODUCTION}}"
+- `{{DEPLOYMENT_PLATFORMS}}`: "{{DEPLOYMENT_PLATFORMS}}"
+
+**Output File:** `docs/guides/deployment.md`
+
+**Description:** Production deployment instructions with environment configuration.
+
+---
+
+### File 5: Contributing Guide
+
+**Required:** {{CONTRIBUTING_REQUIRED}}
+**Priority:** {{CONTRIBUTING_PRIORITY}}
+**Estimated Time:** {{CONTRIBUTING_TIME}}
+
+**Template Path:** `trinity/templates/documentation/guides/contributing.md.template`
+
+**Variables to Replace:**
+- `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
+- `{{CODE_STYLE}}`: "{{CODE_STYLE_GUIDE}}"
+- `{{COMMIT_CONVENTION}}`: "{{COMMIT_CONVENTION}}"
+- `{{BRANCH_STRATEGY}}`: "{{BRANCH_STRATEGY}}"
+- `{{PR_PROCESS}}`: "{{PR_PROCESS}}"
+
+**Output File:** `CONTRIBUTING.md`
+
+**Description:** Guidelines for contributing to the project with code standards and workflow.
+
+---
+
+## SECTION C: CONFIGURATION & SETUP
+
+### File 1: .env.example
+
+**Required:** {{ENV_REQUIRED}}
+**Priority:** {{ENV_PRIORITY}}
+**Estimated Time:** {{ENV_TIME}}
+
+**Environment Variables ({{ENV_VAR_COUNT}}):**
+
+{{ENV_VAR_LIST_DETAILED}}
+
+**Output File:** `.env.example`
+
+**Description:** Template environment file with all required and optional variables documented.
+
+---
+
+### File 2: README.md Updates
+
+**Required:** YES
+**Priority:** HIGH
+**Estimated Time:** 30 minutes
+
+**Updates Required:**
+
+**Documentation Links to Add:**
+```markdown
+## Documentation
+
+- [Getting Started Guide](docs/guides/getting-started.md)
+- [API Documentation](docs/api/README.md)
+- [Architecture Diagrams](docs/architecture/)
+- [Deployment Guide](docs/guides/deployment.md)
+- [API Development Guide](docs/guides/api-development.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
+```
+
+**Architecture Section to Add:**
+```markdown
+## Architecture
+
+This project follows a {{ARCHITECTURE_PATTERN}} architecture pattern.
+
+For detailed architecture diagrams, see:
+- [MVC Flow Diagram](docs/architecture/mvc-flow.md)
+- [Database ER Diagram](docs/architecture/database-er.md)
+- [API Endpoint Map](docs/api/endpoint-map.md)
+- [Component Hierarchy](docs/architecture/component-hierarchy.md)
+```
+
+**Output File:** `README.md` (append sections)
+
+---
+
+## INSTRUCTIONS FOR APO AGENTS
+
+This report provides ALL data needed for parallel documentation generation.
+
+### APO-1 (Architecture Diagrams)
+**Your Mission:** Generate all diagrams from SECTION A
+- Read each diagram's template file
+- Replace all variables with values provided in this report
+- Create output files at specified paths
+- Validate Mermaid syntax before writing
+
+### APO-2 (API Docs & Guides)
+**Your Mission:** Generate all guides from SECTION B
+- Read each guide's template file
+- Replace all variables with values provided in this report
+- Create output files at specified paths
+- Ensure all internal links are valid
+
+### APO-3 (Configuration Files)
+**Your Mission:** Generate config files from SECTION C
+- Create .env.example with all variables documented
+- Update README.md with documentation links
+- Verify no sensitive data in output files
+- Ensure proper file formatting
+
+---
+
+## QUALITY SELF-VALIDATION
+
+**Before submitting this report, verify:**
+
+✅ **Completeness:**
+- [ ] All 4 diagrams in SECTION A have template paths and variables
+- [ ] All 5 guides in SECTION B have template paths and variables
+- [ ] SECTION C has complete environment variable list
+- [ ] All {{VARIABLES}} replaced with actual discovered values
+
+✅ **Accuracy:**
+- [ ] Model names exist in codebase (verified with Glob)
+- [ ] Endpoint count matches actual route files
+- [ ] Component names exist in codebase (verified with Glob)
+- [ ] Technology versions from package.json
+
+✅ **Format:**
+- [ ] Report ≥2000 characters
+- [ ] All sections present (A, B, C)
+- [ ] No placeholder text like "[Database type detected]"
+- [ ] All file paths use forward slashes
+
+✅ **Autonomous Execution:**
+- [ ] No "TODO" or "PENDING" markers
+- [ ] No requests for user input
+- [ ] All data sourced from codebase analysis
+- [ ] Ready for immediate APO consumption
+
+---
+
+**Report Generated By:** JUNO (Quality Auditor)
+**Format Version:** 2.0.9
+**Purpose:** Structured input for parallel APO documentation generation
