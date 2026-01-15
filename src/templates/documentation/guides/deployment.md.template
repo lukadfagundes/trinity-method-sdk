@@ -1,0 +1,565 @@
+# Deployment Guide
+
+This guide covers deploying {{PROJECT_NAME}} to various platforms and environments.
+
+---
+
+## Prerequisites
+
+Before deploying, ensure:
+
+- ✅ All tests pass: `{{TEST_COMMAND}}`
+- ✅ Build succeeds: `{{BUILD_COMMAND}}`
+- ✅ Environment variables configured
+- ✅ Database migrations ready
+- ✅ Production dependencies installed
+
+---
+
+## Environment Configuration
+
+### Required Environment Variables
+
+{{ENV_VARS_LIST}}
+
+### Environment Files
+
+**Development:** `.env.development`
+**Staging:** `.env.staging`
+**Production:** `.env.production`
+
+---
+
+## Build Process
+
+### 1. Install Production Dependencies
+
+```bash
+{{PACKAGE_MANAGER}} install --production
+```
+
+### 2. Run Build
+
+```bash
+{{BUILD_COMMAND}}
+```
+
+Build output location: `{{BUILD_OUTPUT_DIRECTORY}}`
+
+### 3. Verify Build
+
+```bash
+{{BUILD_VERIFICATION_COMMAND}}
+```
+
+---
+
+## Database Migrations
+
+{{DATABASE_MIGRATIONS}}
+
+---
+
+## Deployment Platforms
+
+### Option 1: Heroku
+
+#### Setup
+
+1. Install Heroku CLI:
+```bash
+curl https://cli-assets.heroku.com/install.sh | sh
+```
+
+2. Login to Heroku:
+```bash
+heroku login
+```
+
+3. Create Heroku app:
+```bash
+heroku create {{PROJECT_NAME}}-production
+```
+
+#### Configure Environment Variables
+
+```bash
+{{HEROKU_ENV_VARS}}
+```
+
+#### Deploy
+
+```bash
+git push heroku main
+```
+
+#### Database Setup
+
+```bash
+{{HEROKU_DATABASE_SETUP}}
+```
+
+#### View Logs
+
+```bash
+heroku logs --tail
+```
+
+---
+
+### Option 2: Vercel
+
+#### Setup
+
+1. Install Vercel CLI:
+```bash
+npm install -g vercel
+```
+
+2. Login to Vercel:
+```bash
+vercel login
+```
+
+#### Deploy
+
+```bash
+vercel --prod
+```
+
+#### Configuration
+
+Create `vercel.json`:
+
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "{{MAIN_SERVER_FILE}}",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "{{MAIN_SERVER_FILE}}"
+    }
+  ],
+  "env": {{VERCEL_ENV_VARS}}
+}
+```
+
+---
+
+### Option 3: Docker
+
+#### Dockerfile
+
+```dockerfile
+FROM node:{{NODE_VERSION}}-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN {{PACKAGE_MANAGER}} install --production
+
+# Copy application code
+COPY . .
+
+# Build application
+RUN {{BUILD_COMMAND}}
+
+# Expose port
+EXPOSE {{PORT}}
+
+# Start application
+CMD ["{{START_COMMAND}}"]
+```
+
+#### docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "{{PORT}}:{{PORT}}"
+    environment:
+{{DOCKER_ENV_VARS}}
+    depends_on:
+      - {{DATABASE_SERVICE}}
+
+{{DATABASE_SERVICE_CONFIG}}
+```
+
+#### Build and Run
+
+```bash
+# Build image
+docker build -t {{PROJECT_NAME}} .
+
+# Run container
+docker run -p {{PORT}}:{{PORT}} {{PROJECT_NAME}}
+
+# Or use docker-compose
+docker-compose up -d
+```
+
+---
+
+### Option 4: AWS (EC2)
+
+#### Setup
+
+1. Launch EC2 instance (Ubuntu 20.04 LTS)
+2. Configure security group (allow port {{PORT}})
+3. SSH into instance
+
+#### Install Dependencies
+
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Node.js
+curl -fsSL https://deb.nodesource.com/setup_{{NODE_VERSION}}.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Install {{PACKAGE_MANAGER}}
+{{PACKAGE_MANAGER_INSTALL_COMMAND}}
+
+# Install PM2 (process manager)
+sudo npm install -g pm2
+```
+
+#### Deploy Application
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd {{PROJECT_NAME}}
+
+# Install dependencies
+{{PACKAGE_MANAGER}} install --production
+
+# Build application
+{{BUILD_COMMAND}}
+
+# Configure environment
+cp .env.example .env
+nano .env  # Edit environment variables
+
+# Start with PM2
+pm2 start {{START_SCRIPT}} --name {{PROJECT_NAME}}
+pm2 save
+pm2 startup
+```
+
+#### Nginx Configuration
+
+```nginx
+server {
+    listen 80;
+    server_name {{DOMAIN_NAME}};
+
+    location / {
+        proxy_pass http://localhost:{{PORT}};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+---
+
+### Option 5: DigitalOcean App Platform
+
+#### Setup
+
+1. Create DigitalOcean account
+2. Navigate to App Platform
+3. Connect GitHub repository
+
+#### Configuration
+
+**App Spec (`.do/app.yaml`):**
+
+```yaml
+name: {{PROJECT_NAME}}
+services:
+  - name: api
+    github:
+      repo: <username>/{{PROJECT_NAME}}
+      branch: main
+    build_command: {{BUILD_COMMAND}}
+    run_command: {{START_COMMAND}}
+    http_port: {{PORT}}
+    environment_slug: node-js
+    envs:
+{{DIGITALOCEAN_ENV_VARS}}
+
+databases:
+{{DIGITALOCEAN_DATABASE_CONFIG}}
+```
+
+#### Deploy
+
+Push to main branch to trigger automatic deployment.
+
+---
+
+## SSL/TLS Configuration
+
+### Let's Encrypt (Free SSL)
+
+```bash
+# Install certbot
+sudo apt install certbot python3-certbot-nginx
+
+# Obtain certificate
+sudo certbot --nginx -d {{DOMAIN_NAME}}
+
+# Auto-renewal (runs twice daily)
+sudo systemctl enable certbot.timer
+```
+
+---
+
+## Monitoring & Logging
+
+### Application Monitoring
+
+{{MONITORING_SETUP}}
+
+### Error Tracking
+
+{{ERROR_TRACKING_SETUP}}
+
+### Log Aggregation
+
+{{LOG_AGGREGATION_SETUP}}
+
+---
+
+## Performance Optimization
+
+### Production Optimizations
+
+1. **Enable Compression:**
+```typescript
+import compression from 'compression';
+app.use(compression());
+```
+
+2. **Enable Caching:**
+```typescript
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'public, max-age=300');
+  next();
+});
+```
+
+3. **Connection Pooling:**
+{{CONNECTION_POOLING_CONFIG}}
+
+4. **Rate Limiting:**
+```typescript
+import rateLimit from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use('/api/', limiter);
+```
+
+---
+
+## Health Checks
+
+### Health Check Endpoint
+
+```typescript
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    database: await checkDatabaseConnection()
+  });
+});
+```
+
+### Readiness Check
+
+```typescript
+app.get('/ready', async (req, res) => {
+  const checks = {
+    database: await checkDatabaseConnection(),
+    dependencies: await checkDependencies()
+  };
+
+  const ready = Object.values(checks).every(check => check === true);
+  res.status(ready ? 200 : 503).json(checks);
+});
+```
+
+---
+
+## Backup & Recovery
+
+### Database Backups
+
+{{DATABASE_BACKUP_INSTRUCTIONS}}
+
+### Application Backup
+
+```bash
+# Backup application files
+tar -czf {{PROJECT_NAME}}-backup-$(date +%Y%m%d).tar.gz /path/to/app
+
+# Upload to S3 (optional)
+aws s3 cp {{PROJECT_NAME}}-backup-$(date +%Y%m%d).tar.gz s3://backups/
+```
+
+---
+
+## Rollback Strategy
+
+### Quick Rollback
+
+**Heroku:**
+```bash
+heroku rollback
+```
+
+**Docker:**
+```bash
+docker-compose down
+docker-compose up -d <previous-image-tag>
+```
+
+**PM2:**
+```bash
+pm2 stop {{PROJECT_NAME}}
+git checkout <previous-commit>
+{{PACKAGE_MANAGER}} install
+{{BUILD_COMMAND}}
+pm2 restart {{PROJECT_NAME}}
+```
+
+---
+
+## CI/CD Pipeline
+
+### GitHub Actions
+
+**File:** `.github/workflows/deploy.yml`
+
+```yaml
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '{{NODE_VERSION}}'
+
+      - name: Install dependencies
+        run: {{PACKAGE_MANAGER}} install
+
+      - name: Run tests
+        run: {{TEST_COMMAND}}
+
+      - name: Build
+        run: {{BUILD_COMMAND}}
+
+      - name: Deploy
+        run: |
+          # Deployment script
+{{CI_DEPLOY_SCRIPT}}
+```
+
+---
+
+## Post-Deployment Checklist
+
+- [ ] Application is accessible at production URL
+- [ ] Health check endpoint returns 200
+- [ ] Database connection successful
+- [ ] Environment variables configured correctly
+- [ ] SSL certificate installed and valid
+- [ ] Logs are being collected
+- [ ] Monitoring alerts configured
+- [ ] Backup schedule verified
+- [ ] Performance metrics within acceptable range
+
+---
+
+## Troubleshooting
+
+### Application Won't Start
+
+1. Check logs: `{{LOG_COMMAND}}`
+2. Verify environment variables
+3. Confirm database connection
+4. Check port availability
+
+### Database Connection Fails
+
+1. Verify database credentials
+2. Check network connectivity
+3. Confirm database is running
+4. Review firewall rules
+
+### Performance Issues
+
+1. Check application metrics
+2. Review database query performance
+3. Analyze resource utilization (CPU, memory)
+4. Check for memory leaks
+
+---
+
+## Security Checklist
+
+- [ ] All secrets in environment variables (not in code)
+- [ ] HTTPS enabled
+- [ ] Security headers configured
+- [ ] Rate limiting enabled
+- [ ] Input validation implemented
+- [ ] SQL injection protection
+- [ ] XSS protection
+- [ ] CSRF protection
+- [ ] Dependency vulnerabilities checked
+
+---
+
+## Related Documentation
+
+- [Getting Started](./getting-started.md) - Local development setup
+- [API Development](./api-development.md) - API development guide
+- [Contributing](../CONTRIBUTING.md) - Code standards
+
+---
+
+*Last updated: {{GENERATION_DATE}}*

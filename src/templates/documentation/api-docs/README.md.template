@@ -1,0 +1,218 @@
+# {{PROJECT_NAME}} API Documentation
+
+Complete REST API reference for {{PROJECT_NAME}}.
+
+---
+
+## Overview
+
+{{PROJECT_NAME}} provides **{{ENDPOINT_COUNT}} REST API endpoints** across **{{RESOURCE_COUNT}} resources**.
+
+**Base URL:** `{{API_BASE_URL}}`
+
+**API Version:** {{API_VERSION}}
+
+---
+
+## Authentication
+
+{{AUTHENTICATION}}
+
+---
+
+## Request Format
+
+All requests should include:
+
+```
+Content-Type: application/json
+{{AUTH_HEADER}}
+```
+
+---
+
+## Response Format
+
+All responses are returned in JSON format:
+
+### Success Response
+
+```json
+{
+  "data": { /* Response data */ },
+  "status": "success",
+  "timestamp": "2026-01-15T12:00:00Z"
+}
+```
+
+### Error Response
+
+```json
+{
+  "error": "Error message",
+  "statusCode": 400,
+  "timestamp": "2026-01-15T12:00:00Z",
+  "path": "/api/endpoint"
+}
+```
+
+---
+
+## Status Codes
+
+| Code | Meaning | Description |
+|------|---------|-------------|
+| 200 | OK | Request succeeded |
+| 201 | Created | Resource created successfully |
+| 204 | No Content | Request succeeded, no content to return |
+| 400 | Bad Request | Invalid request parameters |
+| 401 | Unauthorized | Authentication required |
+| 403 | Forbidden | Insufficient permissions |
+| 404 | Not Found | Resource not found |
+| 409 | Conflict | Resource conflict (e.g., duplicate) |
+| 422 | Unprocessable Entity | Validation error |
+| 429 | Too Many Requests | Rate limit exceeded |
+| 500 | Internal Server Error | Server error |
+
+---
+
+## Rate Limiting
+
+{{RATE_LIMITING}}
+
+---
+
+## Pagination
+
+List endpoints support pagination using query parameters:
+
+```
+GET /api/resource?page=1&limit=20
+```
+
+**Parameters:**
+- `page` (integer, default: 1) - Page number
+- `limit` (integer, default: 20, max: 100) - Items per page
+
+**Response includes pagination metadata:**
+
+```json
+{
+  "data": [ /* items */ ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 150,
+    "totalPages": 8
+  }
+}
+```
+
+---
+
+## Filtering & Sorting
+
+{{FILTERING_SORTING}}
+
+---
+
+## API Resources
+
+{{RESOURCES}}
+
+---
+
+## Endpoints
+
+{{ENDPOINT_DETAILS}}
+
+---
+
+## Error Codes
+
+### Common Errors
+
+{{ERROR_CODES}}
+
+---
+
+## Code Examples
+
+### JavaScript (Fetch)
+
+```javascript
+const response = await fetch('{{API_BASE_URL}}/{{EXAMPLE_ENDPOINT}}', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    {{AUTH_HEADER_EXAMPLE}}
+  }
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+### cURL
+
+```bash
+curl -X GET '{{API_BASE_URL}}/{{EXAMPLE_ENDPOINT}}' \
+  -H 'Content-Type: application/json' \
+  {{CURL_AUTH_EXAMPLE}}
+```
+
+### Python (Requests)
+
+```python
+import requests
+
+response = requests.get(
+    '{{API_BASE_URL}}/{{EXAMPLE_ENDPOINT}}',
+    headers={
+        'Content-Type': 'application/json',
+        {{PYTHON_AUTH_EXAMPLE}}
+    }
+)
+
+data = response.json()
+print(data)
+```
+
+---
+
+## Webhooks
+
+{{WEBHOOKS}}
+
+---
+
+## Versioning
+
+{{API_VERSIONING}}
+
+---
+
+## Changelog
+
+{{CHANGELOG}}
+
+---
+
+## Related Documentation
+
+- [Getting Started](../guides/getting-started.md) - Setup and installation
+- [API Development Guide](../guides/api-development.md) - Creating new endpoints
+- [Deployment Guide](../guides/deployment.md) - Production deployment
+
+---
+
+## Support
+
+For API support:
+- **Documentation:** [Full documentation](../README.md)
+- **Issues:** Report bugs via GitHub issues
+- **Questions:** GitHub Discussions
+
+---
+
+*Last updated: {{GENERATION_DATE}}*

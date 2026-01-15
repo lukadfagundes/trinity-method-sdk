@@ -1,0 +1,375 @@
+# API Development Guide
+
+This guide covers best practices for developing REST API endpoints in {{PROJECT_NAME}}.
+
+---
+
+## Architecture Overview
+
+{{PROJECT_NAME}} follows a **{{ARCHITECTURE_PATTERN}}** architecture:
+
+- **Framework:** {{FRAMEWORK}} {{FRAMEWORK_VERSION}}
+- **Database:** {{DATABASE_TYPE}}
+- **ORM:** {{DATABASE_ORM}}
+- **Authentication:** {{AUTH_METHOD}}
+- **Validation:** {{VALIDATION_LIBRARY}}
+
+---
+
+## Project Structure
+
+```
+{{API_DIRECTORY}}/
+├── routes/              # API route definitions
+├── controllers/         # Request handlers
+├── models/             # Data models ({{DATABASE_ORM}})
+├── middleware/         # Custom middleware
+├── validators/         # Request validation schemas
+└── services/           # Business logic
+```
+
+---
+
+## Creating a New Endpoint
+
+### Step 1: Define the Route
+
+**File:** `{{ROUTES_DIRECTORY}}/{{EXAMPLE_RESOURCE}}.routes.ts`
+
+```typescript
+import express from 'express';
+import { {{EXAMPLE_CONTROLLER}} } from '../controllers/{{EXAMPLE_RESOURCE}}.controller';
+{{AUTH_IMPORT}}
+
+const router = express.Router();
+
+// GET /api/{{EXAMPLE_RESOURCE}}
+router.get('/', {{EXAMPLE_CONTROLLER}}.getAll);
+
+// GET /api/{{EXAMPLE_RESOURCE}}/:id
+router.get('/:id', {{EXAMPLE_CONTROLLER}}.getById);
+
+// POST /api/{{EXAMPLE_RESOURCE}}
+router.post('/', {{AUTH_MIDDLEWARE}}, {{EXAMPLE_CONTROLLER}}.create);
+
+// PUT /api/{{EXAMPLE_RESOURCE}}/:id
+router.put('/:id', {{AUTH_MIDDLEWARE}}, {{EXAMPLE_CONTROLLER}}.update);
+
+// DELETE /api/{{EXAMPLE_RESOURCE}}/:id
+router.delete('/:id', {{AUTH_MIDDLEWARE}}, {{EXAMPLE_CONTROLLER}}.delete);
+
+export default router;
+```
+
+### Step 2: Create the Controller
+
+**File:** `{{CONTROLLERS_DIRECTORY}}/{{EXAMPLE_RESOURCE}}.controller.ts`
+
+```typescript
+import { Request, Response } from 'express';
+import { {{EXAMPLE_SERVICE}} } from '../services/{{EXAMPLE_RESOURCE}}.service';
+
+export const {{EXAMPLE_CONTROLLER}} = {
+  async getAll(req: Request, res: Response) {
+    try {
+      const items = await {{EXAMPLE_SERVICE}}.findAll();
+      res.json(items);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async getById(req: Request, res: Response) {
+    try {
+      const item = await {{EXAMPLE_SERVICE}}.findById(req.params.id);
+      if (!item) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      res.json(item);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async create(req: Request, res: Response) {
+    try {
+      const item = await {{EXAMPLE_SERVICE}}.create(req.body);
+      res.status(201).json(item);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async update(req: Request, res: Response) {
+    try {
+      const item = await {{EXAMPLE_SERVICE}}.update(req.params.id, req.body);
+      if (!item) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      res.json(item);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async delete(req: Request, res: Response) {
+    try {
+      await {{EXAMPLE_SERVICE}}.delete(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+};
+```
+
+### Step 3: Implement the Service
+
+**File:** `{{SERVICES_DIRECTORY}}/{{EXAMPLE_RESOURCE}}.service.ts`
+
+```typescript
+import { {{ORM_CLIENT}} } from '../db';
+
+export const {{EXAMPLE_SERVICE}} = {
+  async findAll() {
+    return {{ORM_CLIENT}}.{{EXAMPLE_MODEL}}.findMany();
+  },
+
+  async findById(id: string) {
+    return {{ORM_CLIENT}}.{{EXAMPLE_MODEL}}.findUnique({ where: { id } });
+  },
+
+  async create(data: any) {
+    return {{ORM_CLIENT}}.{{EXAMPLE_MODEL}}.create({ data });
+  },
+
+  async update(id: string, data: any) {
+    return {{ORM_CLIENT}}.{{EXAMPLE_MODEL}}.update({ where: { id }, data });
+  },
+
+  async delete(id: string) {
+    return {{ORM_CLIENT}}.{{EXAMPLE_MODEL}}.delete({ where: { id } });
+  }
+};
+```
+
+### Step 4: Register the Route
+
+**File:** `{{MAIN_SERVER_FILE}}`
+
+```typescript
+import {{EXAMPLE_RESOURCE}}Routes from './routes/{{EXAMPLE_RESOURCE}}.routes';
+
+app.use('/api/{{EXAMPLE_RESOURCE}}', {{EXAMPLE_RESOURCE}}Routes);
+```
+
+---
+
+## Request Validation
+
+{{VALIDATION_SECTION}}
+
+---
+
+## Authentication & Authorization
+
+{{AUTHENTICATION_SECTION}}
+
+---
+
+## Error Handling
+
+### Standard Error Response Format
+
+```json
+{
+  "error": "Error message",
+  "statusCode": 400,
+  "timestamp": "2026-01-15T12:00:00Z",
+  "path": "/api/{{EXAMPLE_RESOURCE}}"
+}
+```
+
+### Error Handler Middleware
+
+```typescript
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  const statusCode = error.statusCode || 500;
+  res.status(statusCode).json({
+    error: error.message,
+    statusCode,
+    timestamp: new Date().toISOString(),
+    path: req.path
+  });
+});
+```
+
+---
+
+## Testing API Endpoints
+
+### Unit Tests
+
+**File:** `{{TEST_DIRECTORY}}/{{EXAMPLE_RESOURCE}}.test.ts`
+
+```typescript
+import { {{EXAMPLE_SERVICE}} } from '../services/{{EXAMPLE_RESOURCE}}.service';
+
+describe('{{EXAMPLE_SERVICE}}', () => {
+  it('should create a new item', async () => {
+    const data = { name: 'Test Item' };
+    const result = await {{EXAMPLE_SERVICE}}.create(data);
+    expect(result.name).toBe('Test Item');
+  });
+
+  it('should find item by id', async () => {
+    const item = await {{EXAMPLE_SERVICE}}.findById('123');
+    expect(item).toBeDefined();
+  });
+});
+```
+
+### Integration Tests
+
+```typescript
+import request from 'supertest';
+import app from '../app';
+
+describe('{{EXAMPLE_RESOURCE}} API', () => {
+  it('GET /api/{{EXAMPLE_RESOURCE}} should return all items', async () => {
+    const response = await request(app).get('/api/{{EXAMPLE_RESOURCE}}');
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+
+  it('POST /api/{{EXAMPLE_RESOURCE}} should create item', async () => {
+    const data = { name: 'New Item' };
+    const response = await request(app)
+      .post('/api/{{EXAMPLE_RESOURCE}}')
+      .send(data);
+    expect(response.status).toBe(201);
+    expect(response.body.name).toBe('New Item');
+  });
+});
+```
+
+---
+
+## Best Practices
+
+### 1. Use Async/Await
+
+Always use async/await for database operations and external API calls.
+
+### 2. Validate Input
+
+Use {{VALIDATION_LIBRARY}} to validate request data before processing.
+
+### 3. Handle Errors Properly
+
+Catch all errors and return appropriate HTTP status codes.
+
+### 4. Implement Authentication
+
+Protect sensitive endpoints with authentication middleware.
+
+### 5. Write Tests
+
+Aim for 80%+ test coverage on API endpoints.
+
+### 6. Document Endpoints
+
+Update API documentation when adding or modifying endpoints.
+
+---
+
+## Database Migrations
+
+{{DATABASE_MIGRATION_SECTION}}
+
+---
+
+## API Versioning
+
+{{API_VERSIONING_SECTION}}
+
+---
+
+## Performance Optimization
+
+### Database Query Optimization
+
+- Use indexes on frequently queried fields
+- Implement pagination for large datasets
+- Use eager loading to avoid N+1 queries
+- Cache frequently accessed data
+
+### Example: Pagination
+
+```typescript
+async findAll(page: number = 1, limit: number = 20) {
+  const skip = (page - 1) * limit;
+  return {{ORM_CLIENT}}.{{EXAMPLE_MODEL}}.findMany({
+    skip,
+    take: limit,
+    orderBy: { createdAt: 'desc' }
+  });
+}
+```
+
+---
+
+## Common Patterns
+
+### Pattern: Resource CRUD
+
+All resources follow the same CRUD pattern:
+- GET /api/{resource} - List all
+- GET /api/{resource}/:id - Get by ID
+- POST /api/{resource} - Create
+- PUT /api/{resource}/:id - Update
+- DELETE /api/{resource}/:id - Delete
+
+### Pattern: Nested Resources
+
+```typescript
+// GET /api/users/:userId/posts
+router.get('/users/:userId/posts', postsController.getByUserId);
+```
+
+### Pattern: Query Parameters
+
+```typescript
+// GET /api/{{EXAMPLE_RESOURCE}}?search=term&limit=10&page=2
+router.get('/', async (req: Request, res: Response) => {
+  const { search, limit = 20, page = 1 } = req.query;
+  // Implementation
+});
+```
+
+---
+
+## Debugging
+
+### Enable Debug Logging
+
+{{DEBUG_LOGGING_SECTION}}
+
+### API Testing Tools
+
+- **Postman:** GUI for testing API endpoints
+- **cURL:** Command-line API testing
+- **Thunder Client:** VS Code extension for API testing
+
+---
+
+## Related Documentation
+
+- [API Reference](../api/README.md) - Complete endpoint documentation
+- [Getting Started](./getting-started.md) - Project setup guide
+- [Deployment Guide](./deployment.md) - Production deployment
+- [Contributing Guidelines](../CONTRIBUTING.md) - Code standards
+
+---
+
+*Last updated: {{GENERATION_DATE}}*

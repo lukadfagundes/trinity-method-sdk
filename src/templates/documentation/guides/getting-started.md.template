@@ -1,0 +1,118 @@
+# Getting Started with {{PROJECT_NAME}}
+
+Welcome to {{PROJECT_NAME}}! This guide will help you get the project running on your local machine for development.
+
+---
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (version 14.x or higher)
+- **{{PACKAGE_MANAGER}}** ({{PACKAGE_MANAGER_VERSION}})
+- **{{DATABASE}}** (if applicable)
+- **Git** for version control
+
+---
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd {{PROJECT_NAME}}
+```
+
+### 2. Install Dependencies
+
+{{INSTALL_STEPS}}
+
+### 3. Environment Configuration
+
+{{ENV_SETUP_INSTRUCTIONS}}
+
+---
+
+## Running the Application
+
+### Development Mode
+
+Start the development server:
+
+```bash
+{{RUN_COMMAND}}
+```
+
+The application will be available at: **{{DEV_SERVER_URL}}**
+
+### Running Tests
+
+{{TEST_INSTRUCTIONS}}
+
+```bash
+{{TEST_COMMAND}}
+```
+
+---
+
+## Project Structure
+
+```
+{{PROJECT_NAME}}/
+├── {{SOURCE_DIRECTORY}}/          # Application source code
+├── {{TEST_DIRECTORY}}/            # Test files
+├── {{CONFIG_DIRECTORY}}/          # Configuration files
+└── {{DOCS_DIRECTORY}}/            # Documentation
+```
+
+---
+
+## Database Setup
+
+{{DATABASE_SETUP_INSTRUCTIONS}}
+
+---
+
+## Verification
+
+After completing the setup, verify everything works:
+
+1. **Application starts:** {{RUN_COMMAND}} runs without errors
+2. **Tests pass:** {{TEST_COMMAND}} shows all tests passing
+3. **Database connected:** {{DATABASE_VERIFICATION}}
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue:** Dependencies fail to install
+- **Solution:** Clear cache with `{{PACKAGE_MANAGER}} cache clean` and retry
+
+**Issue:** Database connection fails
+- **Solution:** Verify {{DATABASE}} is running and credentials in `.env` are correct
+
+**Issue:** Port already in use
+- **Solution:** Check if another process is using the port, or change port in `.env`
+
+---
+
+## Next Steps
+
+- Read the [API Documentation](../api/README.md) to understand available endpoints
+- Review [API Development Guide](./api-development.md) to learn how to add new features
+- Check [Contributing Guidelines](../CONTRIBUTING.md) for code standards
+
+---
+
+## Need Help?
+
+- **Documentation:** [Full documentation](../README.md)
+- **Issues:** Report bugs via the issue tracker
+- **Questions:** Contact the development team
+
+---
+
+*Last updated: {{GENERATION_DATE}}*

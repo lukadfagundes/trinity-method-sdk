@@ -1,0 +1,488 @@
+# Contributing to {{PROJECT_NAME}}
+
+Thank you for your interest in contributing to {{PROJECT_NAME}}! This guide will help you get started.
+
+---
+
+## Table of Contents
+
+- [Code of Conduct](#code-of-conduct)
+- [Getting Started](#getting-started)
+- [Development Workflow](#development-workflow)
+- [Code Standards](#code-standards)
+- [Pull Request Process](#pull-request-process)
+- [Testing Requirements](#testing-requirements)
+- [Documentation](#documentation)
+
+---
+
+## Code of Conduct
+
+We are committed to providing a welcoming and inclusive environment. Please:
+
+- Be respectful and considerate
+- Welcome newcomers and help them get started
+- Focus on constructive feedback
+- Report unacceptable behavior to the maintainers
+
+---
+
+## Getting Started
+
+### 1. Fork the Repository
+
+```bash
+# Fork on GitHub, then clone your fork
+git clone https://github.com/<your-username>/{{PROJECT_NAME}}.git
+cd {{PROJECT_NAME}}
+```
+
+### 2. Set Up Development Environment
+
+Follow the [Getting Started Guide](./getting-started.md) to set up your local development environment.
+
+### 3. Create a Branch
+
+```bash
+# Create a feature branch
+git checkout -b feature/your-feature-name
+
+# Or a bugfix branch
+git checkout -b fix/bug-description
+```
+
+**Branch Naming Convention:**
+- `feature/` - New features
+- `fix/` - Bug fixes
+- `docs/` - Documentation updates
+- `refactor/` - Code refactoring
+- `test/` - Test additions or updates
+
+---
+
+## Development Workflow
+
+### Git Workflow
+
+{{GIT_WORKFLOW}}
+
+### Making Changes
+
+1. **Write Code** following our [Code Standards](#code-standards)
+2. **Write Tests** for new functionality
+3. **Run Tests** to ensure nothing breaks
+4. **Update Documentation** if needed
+5. **Commit Changes** with clear messages
+
+---
+
+## Code Standards
+
+### General Guidelines
+
+- Write clear, self-documenting code
+- Follow existing code patterns
+- Keep functions small and focused
+- Use meaningful variable names
+- Comment complex logic
+
+### Code Style
+
+{{CODE_STYLE}}
+
+### Linting
+
+Run the linter before committing:
+
+```bash
+{{LINT_COMMAND}}
+```
+
+Fix auto-fixable issues:
+
+```bash
+{{LINT_FIX_COMMAND}}
+```
+
+### Formatting
+
+Code formatting is enforced using {{FORMATTER}}:
+
+```bash
+{{FORMAT_COMMAND}}
+```
+
+**Editor Integration:**
+- Install {{FORMATTER}} extension for your editor
+- Enable format-on-save
+
+---
+
+## Commit Guidelines
+
+### Commit Message Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, semicolons, etc.)
+- `refactor`: Code refactoring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+
+**Example:**
+```
+feat(api): add user profile endpoint
+
+Implement GET /api/users/:id/profile endpoint to retrieve
+user profile information including bio and avatar.
+
+Closes #123
+```
+
+### Commit Best Practices
+
+- Keep commits atomic (one logical change per commit)
+- Write clear, descriptive commit messages
+- Reference issues in commit messages (e.g., "Fixes #123")
+- Don't commit unrelated changes together
+
+---
+
+## Testing Requirements
+
+{{TEST_REQUIREMENTS}}
+
+### Running Tests
+
+```bash
+# Run all tests
+{{TEST_COMMAND}}
+
+# Run specific test file
+{{TEST_FILE_COMMAND}}
+
+# Run tests in watch mode
+{{TEST_WATCH_COMMAND}}
+
+# Generate coverage report
+{{TEST_COVERAGE_COMMAND}}
+```
+
+### Writing Tests
+
+**Unit Tests:**
+```typescript
+describe('{{EXAMPLE_FUNCTION}}', () => {
+  it('should {{EXPECTED_BEHAVIOR}}', () => {
+    const result = {{EXAMPLE_FUNCTION}}(input);
+    expect(result).toBe(expectedOutput);
+  });
+
+  it('should handle edge case', () => {
+    expect(() => {{EXAMPLE_FUNCTION}}(null)).toThrow();
+  });
+});
+```
+
+**Integration Tests:**
+```typescript
+describe('{{EXAMPLE_API_ENDPOINT}}', () => {
+  it('should return {{EXPECTED_RESPONSE}}', async () => {
+    const response = await request(app).get('/api/{{ENDPOINT}}');
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({{EXPECTED_SHAPE}});
+  });
+});
+```
+
+---
+
+## Pull Request Process
+
+### Before Submitting
+
+- [ ] All tests pass locally
+- [ ] Code follows project standards
+- [ ] Linter passes with no errors
+- [ ] Documentation updated (if needed)
+- [ ] Commit messages follow guidelines
+- [ ] Branch is up-to-date with main
+
+### Creating a Pull Request
+
+1. **Push your branch:**
+```bash
+git push origin feature/your-feature-name
+```
+
+2. **Create PR on GitHub:**
+- Go to the repository on GitHub
+- Click "New Pull Request"
+- Select your branch
+- Fill out the PR template
+
+### PR Title Format
+
+```
+<type>: <description>
+```
+
+**Example:** `feat: add user authentication system`
+
+### PR Description Template
+
+```markdown
+## Description
+Brief description of changes
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Testing
+How has this been tested?
+
+## Checklist
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] Linter passes
+- [ ] All tests pass
+
+## Related Issues
+Closes #123
+```
+
+### Review Process
+
+1. Maintainers will review your PR
+2. Address any requested changes
+3. Once approved, your PR will be merged
+4. Your contribution will be included in the next release
+
+### After Merge
+
+```bash
+# Switch back to main branch
+git checkout main
+
+# Pull latest changes
+git pull origin main
+
+# Delete feature branch
+git branch -d feature/your-feature-name
+```
+
+---
+
+## Code Review Guidelines
+
+### For Reviewers
+
+- Be respectful and constructive
+- Explain the "why" behind suggestions
+- Approve PRs that improve the codebase
+- Request changes for issues that must be fixed
+
+### For Contributors
+
+- Respond to feedback promptly
+- Ask questions if feedback is unclear
+- Don't take criticism personally
+- Update PR based on feedback
+
+---
+
+## Documentation
+
+### When to Update Documentation
+
+Update documentation when:
+- Adding new features
+- Changing API endpoints
+- Modifying configuration
+- Fixing bugs that affect usage
+
+### Documentation Locations
+
+- **README.md** - Project overview
+- **docs/guides/** - User guides
+- **docs/api/** - API reference
+- **Code comments** - Complex logic explanation
+
+### Documentation Standards
+
+- Write in clear, simple language
+- Include code examples
+- Keep documentation up-to-date
+- Use proper markdown formatting
+
+---
+
+## Issue Reporting
+
+### Bug Reports
+
+**Include:**
+- Clear description of the issue
+- Steps to reproduce
+- Expected behavior
+- Actual behavior
+- Environment details (OS, Node version, etc.)
+- Error messages and stack traces
+
+**Template:**
+```markdown
+## Bug Description
+[Clear description]
+
+## Steps to Reproduce
+1. Step one
+2. Step two
+3. Step three
+
+## Expected Behavior
+[What should happen]
+
+## Actual Behavior
+[What actually happens]
+
+## Environment
+- OS: [e.g., macOS 12.0]
+- Node: [e.g., 16.14.0]
+- {{PROJECT_NAME}} Version: [e.g., 1.2.3]
+
+## Additional Context
+[Screenshots, logs, etc.]
+```
+
+### Feature Requests
+
+**Include:**
+- Clear description of the feature
+- Use case and motivation
+- Proposed implementation (optional)
+- Alternatives considered
+
+---
+
+## Development Tips
+
+### Useful Commands
+
+```bash
+# Start development server
+{{DEV_COMMAND}}
+
+# Run tests
+{{TEST_COMMAND}}
+
+# Check linting
+{{LINT_COMMAND}}
+
+# Format code
+{{FORMAT_COMMAND}}
+
+# Build project
+{{BUILD_COMMAND}}
+
+# View logs
+{{LOG_COMMAND}}
+```
+
+### Debugging
+
+{{DEBUG_INSTRUCTIONS}}
+
+### Common Issues
+
+**Issue:** Tests fail locally but pass in CI
+- **Solution:** Ensure your environment matches CI (Node version, dependencies)
+
+**Issue:** Linter fails with "unknown rule"
+- **Solution:** Run `{{PACKAGE_MANAGER}} install` to update ESLint plugins
+
+**Issue:** Build fails with type errors
+- **Solution:** Run `{{PACKAGE_MANAGER}} install` and restart TypeScript server
+
+---
+
+## Project Structure
+
+Understanding the project structure helps you navigate the codebase:
+
+```
+{{PROJECT_NAME}}/
+├── {{SOURCE_DIRECTORY}}/
+│   ├── api/              # API routes and controllers
+│   ├── models/           # Data models
+│   ├── services/         # Business logic
+│   ├── middleware/       # Custom middleware
+│   └── utils/            # Utility functions
+├── {{TEST_DIRECTORY}}/
+│   ├── unit/             # Unit tests
+│   └── integration/      # Integration tests
+├── docs/                 # Documentation
+└── scripts/              # Build and utility scripts
+```
+
+---
+
+## Communication
+
+### Where to Ask Questions
+
+- **GitHub Discussions** - General questions and discussions
+- **GitHub Issues** - Bug reports and feature requests
+- **Pull Requests** - Code review and implementation discussions
+
+### Response Time
+
+- We aim to respond to issues within 48 hours
+- Pull requests are typically reviewed within 1 week
+- Complex PRs may take longer to review
+
+---
+
+## Recognition
+
+Contributors are recognized in:
+- **CONTRIBUTORS.md** - List of all contributors
+- **Release Notes** - Credit for contributions in each release
+- **GitHub Contributors** - Automatic GitHub recognition
+
+---
+
+## Additional Resources
+
+- [Getting Started Guide](./getting-started.md)
+- [API Development Guide](./api-development.md)
+- [API Documentation](../api/README.md)
+- [Deployment Guide](./deployment.md)
+
+---
+
+## Questions?
+
+If you have questions about contributing, please:
+1. Check existing issues and discussions
+2. Review this contributing guide
+3. Ask in GitHub Discussions
+4. Contact the maintainers
+
+---
+
+Thank you for contributing to {{PROJECT_NAME}}! 🎉
+
+*Last updated: {{GENERATION_DATE}}*

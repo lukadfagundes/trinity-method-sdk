@@ -1735,34 +1735,74 @@ for (const file of all_guide_files) {
 For EACH file marked "Required: YES" in Section B:
 
 ### Process:
-1. Read template file from path provided in SECTION B
-2. Extract ALL variable values from SECTION B (JUNO pre-fills these)
-3. Replace {{VARIABLES}} with actual values using global regex replacement
-4. Apply fallback detection if any {{PLACEHOLDERS}} remain
-5. Write final documentation to output path
-6. Validate no placeholders remain
+1. Read the template file (path provided in report)
+   - If template missing: Generate guide structure from scratch (WARN)
+2. Extract variable values from report (all values should be pre-filled by JUNO)
+   - If values missing: Detect from codebase directly (WARN, activate fallback)
+3. Replace {{VARIABLES}} with actual values
+4. Write the final documentation file to the output path
+5. Verify file was created successfully
 
-### Implementation:
-\`\`\`javascript
-// For each file in SECTION B marked "Required: YES":
-const template = Read(file_spec.template_path);
-let output = template;
+### Example:
 
-// Replace all variables from SECTION B
-for (const [variable, value] of Object.entries(file_spec.variables)) {
-  output = output.replace(new RegExp(`\\{\\{${variable}\\}\\}`, 'g'), value);
-}
-
-// Fallback: Detect missing values from codebase
-if (output.includes("{{")) {
-  output = applyFallbackDetection(output); // See Tier 2 error handling
-}
-
-Write(file_spec.output_path, output);
-LOG: \`✅ Created: \${file_spec.output_path}\`;
+**If guide 1 shows:**
+\`\`\`
+Guide 1: Getting Started
+- Required: YES
+- Template: trinity/templates/documentation/guides/getting-started.md.template
+- Variables:
+  - {{PROJECT_NAME}}: "dnd-tool"
+  - {{PACKAGE_MANAGER}}: "npm"
+  - {{RUN_COMMAND}}: "npm run dev"
+  - {{TESTING_FRAMEWORK}}: "Vitest"
+- Output: docs/guides/getting-started.md
 \`\`\`
 
-**Note:** Templates are comprehensive. JUNO SECTION B provides all values. Fallback activates automatically for missing data.
+**You must:**
+\`\`\`javascript
+// 1. Read template
+const template = Read("trinity/templates/documentation/guides/getting-started.md.template");
+
+// 2. Replace variables
+const guide = template
+  .replace(/\{\{PROJECT_NAME\}\}/g, "dnd-tool")
+  .replace(/\{\{PACKAGE_MANAGER\}\}/g, "npm")
+  .replace(/\{\{RUN_COMMAND\}\}/g, "npm run dev")
+  .replace(/\{\{TESTING_FRAMEWORK\}\}/g, "Vitest")
+  // ... replace all other variables
+
+// 3. Write output
+Write("docs/guides/getting-started.md", guide);
+
+// 4. Verify
+LOG: "✅ Created: docs/guides/getting-started.md";
+\`\`\`
+
+### Fallback Example (if JUNO report incomplete):
+
+**If testing framework is missing or incorrect:**
+\`\`\`javascript
+let testing_framework = "[Testing framework from JUNO report]";
+
+// If JUNO report has placeholder or missing value
+if (testing_framework.includes("[") || !testing_framework || testing_framework === "None") {
+  WARNING: "⚠️ FALLBACK: Testing framework not in JUNO report - detecting from package.json";
+
+  const pkg = JSON.parse(Read("package.json"));
+
+  if (pkg.devDependencies?.jest || pkg.dependencies?.jest) {
+    testing_framework = "Jest";
+  } else if (pkg.devDependencies?.vitest || pkg.dependencies?.vitest) {
+    testing_framework = "Vitest";
+  } else if (pkg.devDependencies?.mocha || pkg.dependencies?.mocha) {
+    testing_framework = "Mocha";
+  } else {
+    testing_framework = "No testing framework configured";
+  }
+
+  LOG: \`⚠️ FALLBACK: Detected testing framework: \${testing_framework}\`;
+}
+\`\`\`
 
 ## Step 3: Self-Validation (Rec 6)
 
@@ -1852,35 +1892,167 @@ for (const file of all_docs) {
   }
 }
 
-// Check 6: Endpoint Completeness (±3 tolerance)
-const juno_endpoint_count = parseInt(juno_report_content.match(/API Endpoints:\s*(\d+)/)?.[1] || 0);
-if (juno_endpoint_count > 0) {
-  const api_guide = created_guides.find(f => f.includes('api-development'));
-  if (api_guide) {
-    const documented_count = (Read(api_guide).match(/(GET|POST|PUT|DELETE|PATCH)/g) || []).length;
-    if (Math.abs(documented_count - juno_endpoint_count) > 3) {
-      validation_results.endpoint_completeness = false;
-      ERROR: \`❌ Endpoint mismatch: JUNO=\${juno_endpoint_count}, Docs=\${documented_count}\`;
+// Check 6: Endpoint Completeness (Rec 10)
+// Verify all endpoints from JUNO report are documented
+LOG: "";
+LOG: "Checking endpoint completeness against JUNO report...";
+
+validation_results.endpoint_completeness = true;
+const juno_report_content = Read("${audit_report_path}");
+
+// Extract endpoint count from JUNO report
+let juno_endpoint_count = 0;
+const endpoint_count_match = juno_report_content.match(/API Endpoints:\s*(\d+)/);
+if (endpoint_count_match) {
+  juno_endpoint_count = parseInt(endpoint_count_match[1]);
+  LOG: \`  JUNO reported endpoints: \${juno_endpoint_count}\`;
+}
+
+// Count documented endpoints in API development guide
+const api_guide = created_guides.find(f => f.includes('api-development'));
+if (api_guide && juno_endpoint_count > 0) {
+  const api_content = Read(api_guide);
+
+  // Use multiple patterns to detect endpoints (Rec 14 patterns)
+  const endpoint_patterns = [
+    /^\s*-\s+(GET|POST|PUT|DELETE|PATCH)\s+`([^`]+)`/gm,  // Markdown list with method and path in backticks
+    /(GET|POST|PUT|DELETE|PATCH)\s+\/[\w\/-]+/g,          // Direct method + path
+    /###\s+(GET|POST|PUT|DELETE|PATCH)\s+`([^`]+)`/g,     // Heading with method
+    /\*\*(GET|POST|PUT|DELETE|PATCH)\*\*\s+`([^`]+)`/g,   // Bold method with path
+    /`(GET|POST|PUT|DELETE|PATCH)\s+([^`]+)`/g            // Code-formatted endpoints
+  ];
+
+  const documented_endpoints = new Set();
+
+  for (const pattern of endpoint_patterns) {
+    const matches = api_content.matchAll(pattern);
+    for (const match of matches) {
+      // Extract method and path (different capture groups per pattern)
+      let endpoint_str;
+      if (match[2]) {
+        endpoint_str = \`\${match[1]} \${match[2]}\`;
+      } else {
+        endpoint_str = match[0];
+      }
+      documented_endpoints.add(endpoint_str);
     }
   }
+
+  const documented_count = documented_endpoints.size;
+  LOG: \`  Documented endpoints found: \${documented_count}\`;
+
+  // Check tolerance (±3 endpoints as per Rec 10)
+  const difference = Math.abs(documented_count - juno_endpoint_count);
+  const tolerance = 3;
+
+  if (difference > tolerance) {
+    validation_results.endpoint_completeness = false;
+    ERROR: \`❌ ENDPOINT COMPLETENESS FAILED: Difference exceeds tolerance\`;
+    ERROR: \`   JUNO reported: \${juno_endpoint_count} endpoints\`;
+    ERROR: \`   Documented: \${documented_count} endpoints\`;
+    ERROR: \`   Difference: \${difference} (tolerance: ±\${tolerance})\`;
+    ERROR: \`   Missing or extra endpoints detected\`;
+  } else {
+    LOG: \`  ✅ Endpoint completeness verified (difference: \${difference}, within ±\${tolerance} tolerance)\`;
+  }
+} else {
+  if (juno_endpoint_count > 0) {
+    WARNING: \`⚠️ Could not verify endpoint completeness: API development guide not found\`;
+  }
 }
 
-// Validation summary
+LOG: "";
+
+// Overall validation
 const all_passed = Object.values(validation_results).every(v => v === true);
 
-if (!all_passed) {
-  ERROR: "❌ APO-2 SELF-VALIDATION FAILED";
-  for (const [check, passed] of Object.entries(validation_results)) {
-    if (!passed) ERROR: \`   - \${check} failed\`;
-  }
-  ERROR: "Review JUNO report completeness and template paths";
-  return { status: "FAILED", agent: "APO-2", reason: "Validation failed", details: validation_results };
+LOG: "Self-Validation Results:";
+LOG: \`  Files created: \${validation_results.files_created ? "✅" : "❌"}\`;
+LOG: \`  Expected count: \${validation_results.expected_count_met ? "✅" : "❌"}\`;
+LOG: \`  No placeholders: \${validation_results.no_placeholders ? "✅" : "❌"}\`;
+LOG: \`  Content length: \${validation_results.min_content_length ? "✅" : "❌"}\`;
+LOG: \`  Complete content: \${validation_results.complete_content ? "✅" : "❌"}\`;
+LOG: \`  Endpoint completeness: \${validation_results.endpoint_completeness ? "✅" : "❌"}\`;
+LOG: \`  Links valid: \${validation_results.referenced_files_exist ? "✅" : "⚠️"}\`;
+LOG: "";
+
+if (!all_passed && !validation_results.referenced_files_exist) {
+  WARNING: "";
+  WARNING: "⚠️ Some internal links may be broken (will be caught in Phase 3 verification)";
+  WARNING: "";
 }
 
+if (!all_passed && (!validation_results.files_created || !validation_results.no_placeholders || !validation_results.expected_count_met || !validation_results.min_content_length || !validation_results.complete_content || !validation_results.endpoint_completeness)) {
+  ERROR: "";
+  ERROR: "❌ APO-2 SELF-VALIDATION FAILED";
+  ERROR: "";
+  ERROR: "Validation Failures:";
+
+  if (!validation_results.files_created) {
+    ERROR: "   - Expected files not created";
+  }
+  if (!validation_results.expected_count_met) {
+    ERROR: \`   - File count mismatch (expected: \${expected_count}, actual: \${all_docs.length})\`;
+  }
+  if (!validation_results.no_placeholders) {
+    ERROR: "   - Template placeholders remaining in output";
+    for (const file of all_docs) {
+      const content = Read(file);
+      const placeholders = content.match(/\{\{[^}]+\}\}/g);
+      if (placeholders) {
+        ERROR: \`     * \${file}: \${placeholders.join(', ')}\`;
+      }
+    }
+  }
+  if (!validation_results.min_content_length) {
+    ERROR: "   - Files with insufficient content detected";
+  }
+  if (!validation_results.complete_content) {
+    ERROR: "   - Stub content detected (coming soon, TODO, etc.)";
+  }
+  if (!validation_results.endpoint_completeness) {
+    ERROR: "   - Endpoint completeness failed: Documented endpoint count differs from JUNO report";
+    ERROR: "     Ensure all endpoints from JUNO report are documented";
+  }
+
+  ERROR: "";
+  ERROR: "ABORTING APO-2 EXECUTION";
+  ERROR: "Cannot proceed with invalid documentation.";
+  ERROR: "";
+  ERROR: "Root Cause Analysis:";
+  ERROR: "This failure indicates one of:";
+  ERROR: "  1. JUNO report was incomplete (missing data)";
+  ERROR: "  2. Template access failed (file not found)";
+  ERROR: "  3. Variable replacement logic failed";
+  ERROR: "  4. File write operation failed";
+  ERROR: "";
+  ERROR: "Recommended Action:";
+  ERROR: "  1. Review JUNO report completeness";
+  ERROR: "  2. Verify template paths exist";
+  ERROR: "  3. Check disk space and permissions";
+  ERROR: "";
+
+  // CRITICAL: Actually abort by returning error status
+  return {
+    status: "FAILED",
+    agent: "APO-2",
+    reason: "Self-validation failed",
+    details: validation_results,
+    files_created: 0
+  };
+}
+
+// Only reach this point if validation passed
+LOG: "";
 LOG: "✅ APO-2 SELF-VALIDATION PASSED";
+LOG: "";
+LOG: "APO-2 Completion Summary:";
+LOG: \`Guides created: \${created_guides.length}\`;
+LOG: \`API docs created: \${created_api_docs.length}\`;
 for (const file of all_docs) {
   LOG: \`  ✅ \${file}\`;
 }
+LOG: "";
 \`\`\`
 
 ## Critical Requirements
