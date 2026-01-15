@@ -396,6 +396,79 @@ Grade Scale:
 ### Step 1.1: Invoke JUNO for Codebase Audit
 
 ```javascript
+// ============================================================
+// PHASE 0: TEMPLATE VALIDATION (PRE-EXECUTION GATE)
+// WO-003: Pre-execution gate ensures all required templates exist
+// ============================================================
+
+LOG: "";
+LOG: "=== PHASE 0: TEMPLATE VALIDATION ===";
+LOG: "Verifying all required templates exist before execution...";
+LOG: "";
+
+const required_templates = [
+  // Mermaid diagrams (WO-1.8)
+  "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template",
+  "trinity/templates/documentation/mermaid-diagrams/database-er.md.template",
+  "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template",
+  "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template",
+  
+  // Guides (WO-002)
+  "trinity/templates/documentation/guides/getting-started.md.template",
+  "trinity/templates/documentation/guides/api-development.md.template",
+  "trinity/templates/documentation/guides/deployment.md.template",
+  "trinity/templates/documentation/guides/contributing.md.template",
+  
+  // API docs (WO-002)
+  "trinity/templates/documentation/api-docs/README.md.template",
+  
+  // Configuration (WO-003)
+  "trinity/templates/documentation/config/env-example-generator.md.template",
+  
+  // JUNO internal report (WO-1.8)
+  "trinity/templates/documentation/reports/juno-internal-report.md.template"
+];
+
+const missing_templates = [];
+
+for (const template_path of required_templates) {
+  // Check if template file exists
+  if (!exists(template_path)) {
+    missing_templates.push(template_path);
+    ERROR: \`❌ Missing required template: \${template_path}\`;
+  } else {
+    LOG: \`  ✅ \${template_path}\`;
+  }
+}
+
+if (missing_templates.length > 0) {
+  ERROR: "";
+  ERROR: "❌ CRITICAL ERROR: Required templates missing";
+  ERROR: \`Missing \${missing_templates.length} template file(s)\`;
+  ERROR: "";
+  ERROR: "This indicates 'trinity update' CLI was not run or templates failed to deploy.";
+  ERROR: "";
+  ERROR: "REQUIRED ACTIONS:";
+  ERROR: "  1. Run: trinity update";
+  ERROR: "  2. Verify templates exist in trinity/templates/documentation/";
+  ERROR: "  3. Re-run this command";
+  ERROR: "";
+  
+  // ABORT - Cannot proceed without templates
+  return {
+    status: "ABORTED",
+    reason: "Required templates missing",
+    missing_templates: missing_templates,
+    action_required: "Run 'trinity update' to deploy templates"
+  };
+}
+
+LOG: "";
+LOG: \`✅ Template validation PASSED: All \${required_templates.length} templates found\`;
+LOG: "";
+LOG: "=== PHASE 0 COMPLETE ===";
+LOG: "";
+
 LOG: "=== PHASE 1: JUNO DOCUMENTATION AUDIT ===";
 LOG: "";
 LOG: "Invoking JUNO (Quality Auditor) to analyze codebase...";
@@ -2065,223 +2138,78 @@ LOG: "";
 For EACH file marked "Required: YES" in Section C:
 
 ### Process for .env.example:
-1. Read the env generator template (if exists)
-2. Extract environment variable keys from JUNO report
-   - If keys missing: Search codebase for process.env usage (WARN, activate fallback)
-3. Apply rule-based generation logic from template
-4. Write .env.example file with sensible defaults
-5. Verify file was created
-
-### Process for README update (Rec 8):
-
-**CRITICAL: This implementation includes comprehensive link validation**
 
 \`\`\`javascript
-LOG: "Updating README.md with documentation links...";
+// 1. Read template from SECTION C
+const template_path = "trinity/templates/documentation/config/env-example-generator.md.template";
+const template = Read(template_path);
 
-// Step 1: Wait for filesystem stabilization (Rec 11)
-// APO-2 runs in parallel, files may not be immediately available
-LOG: "Waiting 500ms for filesystem stabilization...";
-await new Promise(resolve => setTimeout(resolve, 500));
+// 2. Extract variables from SECTION C
+const env_keys = file_spec.variables.ENV_KEYS; // From JUNO SECTION C
+const project_name = file_spec.variables.PROJECT_NAME;
+const port = file_spec.variables.PORT;
 
-// Step 2: Discover ACTUAL documentation files (Rec 11: File Existence Verification)
-LOG: "Discovering documentation files (actual filesystem check)...";
-
-const actual_doc_files = {
-  guides: Glob({pattern: "docs/guides/*.md"}),
-  api: Glob({pattern: "docs/api/*.md"}),
-  images: Glob({pattern: "docs/images/*.md"})
-};
-
-LOG: \`Discovered files: \${actual_doc_files.guides.length} guides, \${actual_doc_files.api.length} API docs, \${actual_doc_files.images.length} diagrams\`;
-
-// Step 3: Parse JUNO report for expected file count (quality check)
-const juno_report = Read("${audit_report_path}");
-const section_b = juno_report.match(/SECTION B:.*?(?=SECTION C:)/s);
-
-const expected_files = [];
-if (section_b) {
-  // Parse expected output paths from Section B
-  const output_matches = section_b[0].matchAll(/Output: (docs\/[^\s\n]+)/g);
-  for (const match of output_matches) {
-    expected_files.push(match[1]);
-  }
-}
-
-LOG: \`Expected documentation files from JUNO: \${expected_files.length}\`;
-
-// Rec 11: Compare expected vs found files
-const all_found_files = [...actual_doc_files.guides, ...actual_doc_files.api, ...actual_doc_files.images];
-const expected_count = expected_files.length;
-const found_count = all_found_files.length;
-
-if (found_count < expected_count) {
-  ERROR: "";
-  ERROR: \`❌ FILE AVAILABILITY CHECK FAILED\`;
-  ERROR: \`Expected \${expected_count} documentation files, but only found \${found_count}\`;
-  ERROR: "";
-  ERROR: "Missing files:";
-  for (const expected_file of expected_files) {
-    if (!all_found_files.includes(expected_file)) {
-      ERROR: \`  - \${expected_file}\`;
-    }
-  }
-  ERROR: "";
-  ERROR: "This indicates APO-2 may have failed or files are not being created.";
-  ERROR: "Cannot create README links to non-existent files.";
-  ERROR: "";
-  // Return failure object
-  return {
-    status: "FAILED",
-    agent: "APO-3",
-    reason: "README link validation failed - documentation files missing",
-    details: {
-      expected_count: expected_count,
-      found_count: found_count,
-      missing_files: expected_files.filter(f => !all_found_files.includes(f))
-    }
-  };
-}
-
-LOG: \`✅ File availability check passed: \${found_count}/\${expected_count} files exist\`;
-LOG: "";
-
-// Step 4: Extract titles from ACTUAL documentation files (only existing files)
-const doc_links = [];
-
-for (const file_path of all_found_files) {
-  // Extract actual H1 title from file
-  const content = Read(file_path);
-  const h1_match = content.match(/^#\s+(.+)$/m);
-
-  let title;
-  if (h1_match) {
-    title = h1_match[1];
-  } else {
-    // Fallback: Use filename as title
-    title = file_path.split('/').pop().replace('.md', '').replace(/-/g, ' ');
-    title = title.charAt(0).toUpperCase() + title.slice(1);
-  }
-
-  doc_links.push({
-    title: title,
-    path: file_path,
-    exists: true // All files in this list have been verified to exist
+// 3. Apply rule-based generation from template
+let env_example_content = "";
+for (const key of env_keys) {
+  const original_value = process.env[key] || "";
+  const example_value = applyEnvRules(key, original_value, {
+    project_name, 
+    port, 
+    discovered_endpoints: file_spec.variables.DISCOVERED_ENDPOINTS
   });
+  env_example_content += \`\${key}=\${example_value}\n\`;
 }
 
-// Step 3: Group links by category
-const grouped_links = {
-  "Getting Started": [],
-  "Development Guides": [],
-  "API Reference": [],
-  "Architecture": []
-};
-
-for (const link of doc_links) {
-  if (link.path.includes('getting-started')) {
-    grouped_links["Getting Started"].push(link);
-  } else if (link.path.includes('guides/')) {
-    grouped_links["Development Guides"].push(link);
-  } else if (link.path.includes('api/')) {
-    grouped_links["API Reference"].push(link);
-  } else if (link.path.includes('images/')) {
-    grouped_links["Architecture"].push(link);
-  }
-}
-
-// Step 4: Build Documentation section
-let doc_section = "\n## Documentation\n\n";
-doc_section += "Comprehensive documentation is available in the \`docs/\` directory:\n\n";
-
-for (const [category, links] of Object.entries(grouped_links)) {
-  if (links.length > 0) {
-    doc_section += \`### \${category}\n\n\`;
-    for (const link of links) {
-      // Use relative path from repo root
-      doc_section += \`- [\${link.title}](\${link.path})\n\`;
-    }
-    doc_section += "\n";
-  }
-}
-
-// Step 5: Read current README
-const readme_path = "README.md";
-let readme_content = Read(readme_path);
-
-// Step 6: Check if Documentation section exists
-if (readme_content.includes("## Documentation")) {
-  // Replace existing section
-  LOG: "Replacing existing Documentation section in README.md";
-  readme_content = readme_content.replace(
-    /## Documentation[\s\S]*?(?=\n## |$)/,
-    doc_section
-  );
-} else {
-  // Add new section (before "## License" if exists, otherwise at end)
-  LOG: "Adding new Documentation section to README.md";
-  if (readme_content.includes("## License")) {
-    readme_content = readme_content.replace(
-      /## License/,
-      doc_section + "## License"
-    );
-  } else {
-    readme_content += "\n" + doc_section;
-  }
-}
-
-// Step 7: Write updated README
-Write(readme_path, readme_content);
-
-LOG: \`✅ Updated README.md with \${doc_links.length} documentation links\`;
-
-// Step 8: Self-validate README links (Rec 11: Enhanced Verification)
-LOG: "";
-LOG: "Validating README documentation links...";
-
-const link_validation = {
-  total_links: doc_links.length,
-  valid_links: doc_links.length, // All links verified to exist before adding
-  broken_links: [] // Should be empty since we only add existing files
-};
-
-// Double-check: Verify each link points to an existing file
-for (const link of doc_links) {
-  if (!exists(link.path)) {
-    link_validation.valid_links--;
-    link_validation.broken_links.push({
-      title: link.title,
-      path: link.path
-    });
-  }
-}
-
-LOG: \`Link Validation: \${link_validation.valid_links}/\${link_validation.total_links} valid (100% required)\`;
-
-if (link_validation.broken_links.length > 0) {
-  ERROR: "";
-  ERROR: "❌ CRITICAL: Broken links detected in README after verification";
-  ERROR: "This should not happen - files were verified before link creation.";
-  ERROR: "";
-  for (const broken of link_validation.broken_links) {
-    ERROR: \`   - \${broken.title} (\${broken.path})\`;
-  }
-  ERROR: "";
-  // Return failure object
-  return {
-    status: "FAILED",
-    agent: "APO-3",
-    reason: "README contains broken links after verification",
-    details: {
-      broken_links: link_validation.broken_links
-    }
-  };
-}
-
-LOG: "✅ All README links verified to exist";
-LOG: "";
+// 4. Write output
+Write(".env.example", env_example_content);
+LOG: "✅ Created: .env.example";
 \`\`\`
 
+**Note:** Template contains all 11 rules. Apply in priority order (Rule 1 = highest). Fallback activates if keys missing from SECTION C.
+
+### Process for README update:
+
+\`\`\`javascript
+// 1. Wait for filesystem stabilization (APO-2 runs in parallel)
+await new Promise(resolve => setTimeout(resolve, 500));
+
+// 2. Discover documentation files
+const doc_files = [
+  ...Glob({pattern: "docs/guides/*.md"}),
+  ...Glob({pattern: "docs/api/*.md"}),
+  ...Glob({pattern: "docs/images/*.md"})
+];
+
+// 3. Validate file count matches JUNO expectations
+const juno_report = Read("${audit_report_path}");
+const expected_count = (juno_report.match(/Output: docs\//g) || []).length;
+if (doc_files.length < expected_count) {
+  ERROR: \`❌ File check failed: Expected \${expected_count}, found \${doc_files.length}\`;
+  return { status: "FAILED", agent: "APO-3", reason: "Documentation files missing" };
+}
+
+// 4. Build documentation section
+let doc_section = "\n## Documentation\n\n";
+for (const file_path of doc_files) {
+  const content = Read(file_path);
+  const title = content.match(/^#\s+(.+)$/m)?.[1] || path.basename(file_path, '.md');
+  doc_section += \`- [\${title}](\${file_path})\n\`;
+}
+
+// 5. Update README
+let readme = Read("README.md");
+if (readme.includes("## Documentation")) {
+  readme = readme.replace(/## Documentation[\s\S]*?(?=\n## |$)/, doc_section);
+} else {
+  readme += "\n" + doc_section;
+}
+Write("README.md", readme);
+
+LOG: \`✅ Updated README.md with \${doc_files.length} documentation links\`;
+\`\`\`
+
+**Note:** Waits 500ms for APO-2 file writes. Validates file count before adding links. No broken links possible (only existing files linked).
 ## Step 3: Self-Validation (Rec 6)
 
 After generating all files, you MUST verify:

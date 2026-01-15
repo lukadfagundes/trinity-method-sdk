@@ -341,13 +341,25 @@
 **Priority:** {{ENV_PRIORITY}}
 **Estimated Time:** {{ENV_TIME}}
 
-**Environment Variables ({{ENV_VAR_COUNT}}):**
+**Environment Variables Discovered ({{ENV_VAR_COUNT}}):**
+**Template Path:** `trinity/templates/documentation/config/env-example-generator.md.template`
+
+**Variables to Replace:**
+- `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
+- `{{PORT}}`: "{{PORT}}"
+- `{{FRAMEWORK}}`: "{{FRAMEWORK}}"
+- `{{DISCOVERED_ENDPOINTS}}`: {{DISCOVERED_ENDPOINTS_JSON}}
+- `{{ENV_KEYS}}`: {{ENV_KEYS_JSON}}
+- `{{GENERATION_DATE}}`: "{{GENERATION_DATE}}"
+
 
 {{ENV_VAR_LIST_DETAILED}}
 
 **Output File:** `.env.example`
 
-**Description:** Template environment file with all required and optional variables documented.
+**Description:** Template environment file with sensible example values generated using rule-based logic.
+
+**Rule-Based Generation:** APO-3 must apply rules from the template in priority order to each environment variable key.
 
 ---
 
