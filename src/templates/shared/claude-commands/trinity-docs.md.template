@@ -85,18 +85,13 @@ if (VALIDATE_TEMPLATES) {
   LOG: "Validating template files for correct variable syntax...";
   LOG: "";
 
+  // Template paths - See trinity/templates/documentation/configuration/documentation-structure.md
+  const template_base = "trinity/templates/documentation";
   const template_paths = [
-    "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
-    "trinity/templates/documentation/mermaid-diagrams/database-er.md",
-    "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
-    "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md",
-    "trinity/templates/documentation/guides/getting-started.md",
-    "trinity/templates/documentation/guides/api-development.md",
-    "trinity/templates/documentation/guides/deployment.md",
-    "trinity/templates/documentation/guides/contributing.md",
-    "trinity/templates/documentation/api/README.md",
-    "trinity/templates/documentation/config/env-example.md",
-    "trinity/templates/documentation/config/readme-update.md"
+    `${template_base}/mermaid-diagrams/*.md`,
+    `${template_base}/guides/*.md`,
+    `${template_base}/api/README.md`,
+    `${template_base}/config/*.md`
   ];
 
   const template_issues = [];
@@ -769,11 +764,10 @@ if (component_section) {
 LOG: `Documented components in report: ${documented_components.length}`;
 
 // Re-discover components from actual codebase
+// See trinity/templates/documentation/configuration/documentation-structure.md for full patterns
 const component_patterns = [
-  "client/**/*.{tsx,jsx}",
-  "src/**/*.{tsx,jsx}",
-  "client/**/*.vue",
-  "src/**/*.vue"
+  "client/**/*.{tsx,jsx,vue}",
+  "src/**/*.{tsx,jsx,vue}"
 ];
 
 let actual_component_files = [];
@@ -980,58 +974,14 @@ When JUNO report doesn't specify templates:
 - Read template structure to determine required variables
 - Extract variables from codebase analysis
 
-#### Step 4: Mark Fallback Usage
-
-Each APO logs when fallback is used:
-
-```javascript
-LOG: "⚠️ FALLBACK: [Variable name] not in JUNO report - detected from [source]";
-```
-
-### Quality Assurance with Fallback
-
-Even with fallback:
-- All files must be created (100% completion)
-- No {{PLACEHOLDERS}} in output (content quality check)
-- Internal links must be validated
-- Mermaid syntax must be valid
-
-Verification phase (Phase 3) enforces same quality standards regardless of fallback usage.
-
-### Fallback Success Criteria
-
-Fallback is successful if:
-- APO completes task using direct analysis
-- Generated documentation passes verification
-- Quality score ≥85 (Good grade)
-
-Fallback is unsuccessful if:
-- APO cannot extract required information from codebase
-- Generated documentation contains placeholders
-- Verification fails quality checks
-
-### Logging Standards
-
-**When entering fallback:**
-```
-⚠️ FALLBACK MODE ACTIVATED
-JUNO report incomplete - using direct codebase analysis
-Fallback reason: [Specific JUNO issue from global state]
-```
-
-**During fallback:**
-```
-⚠️ FALLBACK: {{DATABASE}} not in report - detected "PostgreSQL" from prisma/schema.prisma
-⚠️ FALLBACK: Component list empty - discovered 15 components via Glob
-```
-
-**After fallback:**
-```
-✅ FALLBACK SUCCESS: All required information extracted from codebase
-Files created: [count] (same as without fallback)
-```
-
-**Note:** Fallback is a **feature**, not a failure. It demonstrates APO resilience and ensures documentation generation succeeds even with incomplete JUNO reports.
+**See trinity/templates/documentation/processes/fallback-mechanism.md for:**
+- Framework detection fallback
+- Component discovery fallback
+- Database schema fallback
+- API endpoints fallback
+- Environment variables fallback
+- Quality gates for fallback usage
+- Logging standards
 
 ---
 
@@ -1239,34 +1189,8 @@ LOG: \`✅ All $\{juno_components.length} components verified in codebase\`;
 - [ ] All components verified in codebase (ZERO TOLERANCE)
 - [ ] Mermaid syntax valid
 
-**Validation Output:**
-\`\`\`javascript
-LOG: "=== APO-1 SELF-VALIDATION ===";
-LOG: "";
-LOG: \`Files created: $\{created_diagrams.length}/$\{expected_count}\`;
-
-for (const file of created_diagrams) {
-  const content = Read(file);
-
-  // Check 1: No placeholders
-  if (content.match(/\{\{[^}]+\}\}/g)) {
-    ERROR: \`❌ Placeholders found in $\{file}\`;
-  }
-
-  // Check 2: Valid Mermaid
-  if (!content.includes("\`\`\`mermaid")) {
-    ERROR: \`❌ No Mermaid block in $\{file}\`;
-  }
-
-  // Check 3: Minimum content
-  if (content.length < 100) {
-    ERROR: \`❌ Content too short: $\{file}\`;
-  }
-}
-
-LOG: "Status: COMPLETE ✅";
-LOG: "";
-\`\`\`
+**See validation template for implementation:**
+📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** (APO-1 validation code)
 
 ---
 
@@ -1429,37 +1353,8 @@ Write('docs/guides/getting-started.md', output);
 - [ ] Internal links valid
 - [ ] Framework-specific examples accurate
 
-**Validation Output:**
-\\\`\\\`\\\`javascript
-LOG: "=== APO-2 SELF-VALIDATION ===";
-LOG: "";
-LOG: \\\`Files created: \\\${created_guides.length}/\\\${expected_count}\\\`;
-
-for (const file of created_guides) {
-  const content = Read(file);
-
-  // Check 1: No placeholders
-  if (content.match(/{{[^}]+}}/g)) {
-    ERROR: \\\`❌ Placeholders found in \\\${file}\\\`;
-  }
-
-  // Check 2: Minimum content length
-  const line_count = content.split('\\\\n').length;
-  const min_lines = file.includes('getting-started') || file.includes('deployment') ? 50 : 30;
-  if (line_count < min_lines) {
-    WARNING: \\\`⚠️ \\\${file} too short: \\\${line_count} lines (minimum \\\${min_lines})\\\`;
-  }
-
-  // Check 3: Code examples present
-  const code_blocks = (content.match(/\\\`\\\`\\\`/g) || []).length / 2;
-  if (code_blocks < 2) {
-    WARNING: \\\`⚠️ \\\${file} has only \\\${code_blocks} code blocks (minimum 2)\\\`;
-  }
-}
-
-LOG: "Status: COMPLETE ✅";
-LOG: "";
-\\\`\\\`\\\`
+**See validation template for implementation:**
+📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** (APO-2 validation code)
 
 ---
 
@@ -1694,42 +1589,8 @@ Complete documentation is available in the [\\\`docs/\\\`](docs/) directory:
 - [ ] Documentation section added with links
 - [ ] Configuration section added with .env instructions
 
-**Validation Output:**
-\\\`\\\`\\\`javascript
-LOG: "=== APO-3 SELF-VALIDATION ===";
-LOG: "";
-
-// Check 1: .env.example created
-if (!exists('.env.example')) {
-  ERROR: "❌ .env.example not created";
-}
-
-// Check 2: Security validation
-const env_content = Read('.env.example');
-const dangerous_patterns = [
-  /sk_live_[a-zA-Z0-9]+/,
-  /AKIA[0-9A-Z]{16}/,
-  /AIza[0-9A-Za-z\\\\-_]{35}/
-];
-
-for (const pattern of dangerous_patterns) {
-  if (pattern.test(env_content)) {
-    ERROR: "❌ SECURITY VIOLATION - Real secrets in .env.example";
-    ABORT_COMMAND();
-  }
-}
-
-LOG: "✅ Security check passed";
-
-// Check 3: README.md updated
-const readme = Read('README.md');
-if (!readme.includes('## Documentation')) {
-  WARNING: "⚠️ README.md missing Documentation section";
-}
-
-LOG: "Status: COMPLETE ✅";
-LOG: "";
-\\\`\\\`\\\`
+**See validation template for implementation:**
+📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** (APO-3 validation code with security checks)
 
 ---
 
@@ -1816,42 +1677,25 @@ LOG: "";
 LOG: "Checking if all expected files were created...";
 LOG: "";
 
-// Check diagrams
+// See trinity/templates/documentation/configuration/documentation-structure.md for verification patterns
 const diagram_files = Glob({pattern: "docs/images/*.md"});
-const diagrams_ok = diagram_files.length === expected_diagrams;
-
-LOG: `Diagrams: ${diagram_files.length}/${expected_diagrams} ${diagrams_ok ? "✅" : "❌"}`;
-for (const file of diagram_files) {
-  LOG: `  ✅ ${file}`;
-}
-
-if (!diagrams_ok) {
-  ERROR: "";
-  ERROR: `❌ Diagram count mismatch: expected ${expected_diagrams}, got ${diagram_files.length}`;
-}
-
-// Check guides
 const guide_files = Glob({pattern: "docs/guides/*.md"});
-const guides_ok = guide_files.length === expected_guides;
-
-LOG: `Guides: ${guide_files.length}/${expected_guides} ${guides_ok ? "✅" : "❌"}`;
-for (const file of guide_files) {
-  LOG: `  ✅ ${file}`;
-}
-
-if (!guides_ok) {
-  ERROR: "";
-  ERROR: `❌ Guide count mismatch: expected ${expected_guides}, got ${guide_files.length}`;
-}
-
-// Check API docs
 const api_doc_files = Glob({pattern: "docs/api/*.md"});
+
+const diagrams_ok = diagram_files.length === expected_diagrams;
+const guides_ok = guide_files.length === expected_guides;
 const api_docs_ok = api_doc_files.length === expected_api_docs;
 
+LOG: `Diagrams: ${diagram_files.length}/${expected_diagrams} ${diagrams_ok ? "✅" : "❌"}`;
+diagram_files.forEach(f => LOG: `  ✅ ${f}`);
+if (!diagrams_ok) ERROR: `❌ Diagram count mismatch: expected ${expected_diagrams}, got ${diagram_files.length}`;
+
+LOG: `Guides: ${guide_files.length}/${expected_guides} ${guides_ok ? "✅" : "❌"}`;
+guide_files.forEach(f => LOG: `  ✅ ${f}`);
+if (!guides_ok) ERROR: `❌ Guide count mismatch: expected ${expected_guides}, got ${guide_files.length}`;
+
 LOG: `API Docs: ${api_doc_files.length}/${expected_api_docs} ${api_docs_ok ? "✅" : "❌"}`;
-for (const file of api_doc_files) {
-  LOG: `  ✅ ${file}`;
-}
+api_doc_files.forEach(f => LOG: `  ✅ ${f}`);
 
 if (!api_docs_ok) {
   ERROR: "";

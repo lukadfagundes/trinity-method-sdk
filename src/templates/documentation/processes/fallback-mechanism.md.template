@@ -1,0 +1,88 @@
+# APO Fallback Mechanisms
+
+When automated discovery fails, APO agents use these fallback procedures to generate documentation.
+
+## Framework Detection Fallback
+
+**If automated framework detection fails:**
+
+1. Check `package.json` for framework dependencies:
+   - Express.js: `"express"` in dependencies
+   - NestJS: `"@nestjs/core"` in dependencies
+   - Next.js: `"next"` in dependencies
+   - React: `"react"` in dependencies
+
+2. Check file patterns:
+   - Django: `manage.py`, `settings.py`
+   - Flask: `app.py`, `@app.route` decorators
+   - Rails: `Gemfile`, `config/routes.rb`
+
+3. Manual fallback: Create generic architecture diagram with placeholder note:
+   ```
+   NOTE: Framework could not be auto-detected.
+   Update this diagram after manual framework identification.
+   ```
+
+## Component Discovery Fallback
+
+**If component scanning finds no results:**
+
+1. Check common directory names: `src/`, `lib/`, `app/`, `server/`
+2. Search for file patterns: `*Controller.js`, `*Service.js`, `*Model.js`
+3. Fallback to directory-based documentation:
+   ```
+   Components organized by directory structure.
+   See subdirectory READMEs for details.
+   ```
+
+## Database Schema Fallback
+
+**If schema files not found:**
+
+1. Check for migration files: `migrations/`, `db/migrate/`
+2. Search for ORM model files: `models/`, `entities/`
+3. Fallback to placeholder ER diagram:
+   ```
+   Database schema not detected in standard locations.
+   Generate schema from migration files or ORM models manually.
+   ```
+
+## API Endpoints Fallback
+
+**If endpoint scanner finds no routes:**
+
+1. Search for route files: `routes/`, `controllers/`, `api/`
+2. Look for route decorators: `@Get`, `@Post`, `@app.route`
+3. Fallback to manual endpoint documentation:
+   ```
+   API endpoints not auto-detected.
+   Document endpoints in docs/api/ manually.
+   ```
+
+## Environment Variables Fallback
+
+**If `.env.example` not found:**
+
+1. Search for `.env` files (do NOT read secrets)
+2. Check for config files: `config/`, `settings.py`, `application.yml`
+3. Generate minimal `.env.example`:
+   ```
+   # Environment Configuration
+   NODE_ENV=development
+   PORT=3000
+
+   # Add environment variables as discovered
+   ```
+
+## Quality Gate: Fallback Detection
+
+APO agents must log when fallback mechanisms are used:
+
+```javascript
+if (fallback_used) {
+  LOG: "⚠️  FALLBACK USED: {fallback_type}";
+  LOG: "   Reason: {detection_failure_reason}";
+  LOG: "   Action: {fallback_action_taken}";
+  LOG: "   Manual review recommended for: {affected_documentation}";
+}
+```

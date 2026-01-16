@@ -1,0 +1,71 @@
+# Documentation Structure Configuration
+
+## Template Paths
+
+All documentation templates follow a consistent directory structure:
+
+### Core Templates
+- **Root README**: `src/templates/documentation/ROOT-README.md.template`
+- **Subdirectory README**: `src/templates/documentation/SUBDIRECTORY-README.md.template`
+
+### Mermaid Diagrams (`mermaid-diagrams/`)
+- `mvc-flow.md.template` - MVC architecture flow
+- `database-er.md.template` - Database entity relationships
+- `component-hierarchy.md.template` - Component dependency tree
+- `api-endpoint-map.md.template` - API endpoint organization
+
+### Guides (`guides/`)
+- `getting-started.md.template` - Initial setup and onboarding
+- `api-development.md.template` - API development patterns
+- `deployment.md.template` - Deployment procedures
+- `contributing.md.template` - Contribution guidelines
+
+### API Documentation (`api-docs/`)
+- `README.md.template` - API reference structure
+
+### Configuration (`config/`)
+- `env-example-generator.md.template` - Environment variable examples
+
+### Reports (`reports/`)
+- `juno-final-report.md.template` - Public documentation report
+- `juno-internal-report.md.template` - Internal audit report
+
+### Discovery (`discovery/`)
+- `framework-detection.md.template` - Framework identification patterns
+- `component-discovery.md.template` - Component scanning logic
+- `api-endpoint-scanner.md.template` - API endpoint detection
+- `env-variable-extraction.md.template` - Environment variable parsing
+
+### Validation (`validation/`)
+- `juno-quality-gates.md.template` - Quality gate criteria
+- `documentation-verification-rules.md.template` - Verification rules
+- `apo-self-validation.md.template` - APO self-check procedures
+
+### Processes (`processes/`)
+- `error-handling-protocol.md.template` - Error handling standards
+- `apo-workflow-common.md.template` - Common APO workflow steps
+- `apo-diagram-specific.md.template` - Diagram-specific workflow
+- `apo-guide-specific.md.template` - Guide-specific workflow
+- `apo-config-specific.md.template` - Configuration-specific workflow
+- `fallback-mechanism.md.template` - Fallback procedures
+
+## Component Discovery Patterns
+
+**Search patterns for framework components:**
+- Controllers: `**/*Controller.{js,ts,py,rb,go,java,cs,php}`
+- Models: `**/models/**/*.{js,ts,py,rb,go,java,cs,php}`
+- Services: `**/services/**/*.{js,ts,py,rb,go,java,cs,php}`
+- Routes: `**/routes/**/*.{js,ts,py,rb,go,java,cs,php}`
+
+## Verification Glob Patterns
+
+**Quality gate file checks:**
+```javascript
+const verification_globs = [
+  "docs/**/README.md",
+  "docs/diagrams/**/*.md",
+  "docs/guides/**/*.md",
+  "docs/api/**/*.md",
+  ".env.example"
+];
+```
