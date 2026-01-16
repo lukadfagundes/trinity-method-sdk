@@ -56,6 +56,9 @@ const route_file_patterns = [
 - router.delete('...')
 - app.get('...')
 - app.post('...')
+- router.route('...').get|post|put|patch|delete()
+- app.route('...').get|post|put|patch|delete()
+- router.all('...')
 ```
 
 **Example extraction:**

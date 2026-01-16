@@ -1076,7 +1076,7 @@ Follow the **5-Phase APO Workflow** defined in:
 1. **Phase 1:** Read JUNO Report (`global.trinity_docs_session.audit_report`)
 2. **Phase 2:** Extract Template Variables (from Section A)
 3. **Phase 3:** Process Templates (generate Mermaid diagrams)
-4. **Phase 4:** Write Files (to `docs/architecture/diagrams/`)
+4. **Phase 4:** Write Files (to `docs/architecture/`)
 5. **Phase 5:** Self-Validation (quality checks)
 
 ---
