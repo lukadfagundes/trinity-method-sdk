@@ -22,7 +22,7 @@ export async function updateAgents(spinner: Ora, stats: UpdateStats): Promise<vo
   spinner.start('Updating agents...');
 
   const sdkPath = await getSDKPath();
-  const agentsTemplatePath = path.join(sdkPath, 'dist/templates/agents');
+  const agentsTemplatePath = path.join(sdkPath, 'dist/templates/.claude/agents');
 
   for (const agentDir of AGENT_DIRS) {
     const sourcePath = path.join(agentsTemplatePath, agentDir);

@@ -60,7 +60,7 @@ export async function updateTemplates(spinner: Ora, stats: UpdateStats): Promise
   spinner.start('Updating templates...');
 
   const sdkPath = await getSDKPath();
-  const sdkTemplatesPath = path.join(sdkPath, 'dist/templates');
+  const sdkTemplatesPath = path.join(sdkPath, 'dist/templates/trinity/templates');
 
   for (const templateDir of TEMPLATE_DIRS) {
     const sourcePath = path.join(sdkTemplatesPath, templateDir);

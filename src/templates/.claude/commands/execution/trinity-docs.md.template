@@ -1202,10 +1202,10 @@ LOG: \`✅ All $\{juno_components.length} components verified in codebase\`;
 APO-1: Architecture Diagrams Complete
 
 Files Created:
-- docs/architecture/diagrams/mvc-flow.md (MVC flow diagram)
-- docs/architecture/diagrams/database-er.md (ER diagram with X entities)
-- docs/architecture/diagrams/api-endpoint-map.md (X endpoints)
-- docs/architecture/diagrams/component-hierarchy.md (X components)
+- docs/architecture/mvc-flow.md (MVC flow diagram)
+- docs/architecture/database-er.md (ER diagram with X entities)
+- docs/architecture/api-endpoint-map.md (X endpoints)
+- docs/architecture/component-hierarchy.md (X components)
 
 Total: [N] diagram files created
 

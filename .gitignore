@@ -45,10 +45,6 @@ pnpm-debug.log*
 # OS
 Thumbs.db
 
-# Exception: Don't ignore template source files
-!src/templates/trinity/
-!src/templates/.claude/
-
 # Trinity Method deployment files
 node_modules/
 settings.local.json
@@ -57,6 +53,8 @@ settings.local.json
 node_modules/
 .claude/
 trinity/
+!src/templates/trinity/
+!src/templates/.claude/
 *CLAUDE.md
 TRINITY.md
 

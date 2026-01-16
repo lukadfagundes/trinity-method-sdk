@@ -28,7 +28,7 @@ export async function updateKnowledgeBase(spinner: Ora, stats: UpdateStats): Pro
   spinner.start('Updating knowledge base...');
 
   const sdkPath = await getSDKPath();
-  const kbTemplatePath = path.join(sdkPath, 'dist/templates/knowledge-base');
+  const kbTemplatePath = path.join(sdkPath, 'dist/templates/trinity/knowledge-base');
 
   for (const templateFile of SDK_MANAGED_KB_FILES) {
     const sourcePath = path.join(kbTemplatePath, templateFile);

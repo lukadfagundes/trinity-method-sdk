@@ -52,7 +52,7 @@ export async function deployAgents(
 
   for (const { dir, agents } of agentDirs) {
     for (const agent of agents) {
-      const templatePath = path.join(templatesPath, 'agents', dir, `${agent}.template`);
+      const templatePath = path.join(templatesPath, '.claude/agents', dir, `${agent}.template`);
 
       if (await fs.pathExists(templatePath)) {
         const content = await fs.readFile(templatePath, 'utf8');

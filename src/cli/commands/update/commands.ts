@@ -21,38 +21,8 @@ const COMMAND_CATEGORIES = [
 ];
 
 /**
- * Determine command category based on filename
- * @param filename - Command file name
- * @returns Category name
- */
-function determineCommandCategory(filename: string): string {
-  if (filename.includes('start') || filename.includes('continue') || filename.includes('end')) {
-    return 'session';
-  } else if (
-    filename.includes('requirements') ||
-    filename.includes('design') ||
-    filename.includes('plan') ||
-    filename.includes('decompose')
-  ) {
-    return 'planning';
-  } else if (
-    filename.includes('orchestrate') ||
-    filename.includes('audit') ||
-    filename.includes('changelog') ||
-    filename.includes('docs') ||
-    filename.includes('readme')
-  ) {
-    return 'execution';
-  } else if (filename.includes('investigation') || filename.includes('investigate')) {
-    return 'investigation';
-  } else if (filename.includes('init')) {
-    return 'infrastructure';
-  }
-  return 'utility';
-}
-
-/**
  * Update slash command files from SDK to .claude/commands/
+ * Commands are now organized by category in source templates
  * @param spinner - ora spinner instance for status display
  * @param stats - update statistics to track progress
  */
@@ -60,31 +30,33 @@ export async function updateCommands(spinner: Ora, stats: UpdateStats): Promise<
   spinner.start('Updating slash commands...');
 
   const sdkPath = await getSDKPath();
-  const commandsTemplatePath = path.join(sdkPath, 'dist/templates/shared/claude-commands');
+  const commandsTemplatePath = path.join(sdkPath, 'dist/templates/.claude/commands');
 
   if (!(await fs.pathExists(commandsTemplatePath))) {
     spinner.warn('Commands template path not found, skipping');
     return;
   }
 
-  // Create command category directories
+  // Iterate through each category directory
   for (const category of COMMAND_CATEGORIES) {
+    const sourceCategoryPath = path.join(commandsTemplatePath, category);
     const targetCategoryPath = path.join('.claude/commands', category);
-    await fs.ensureDir(targetCategoryPath);
-  }
 
-  // Copy all command files
-  const commandFiles = await fs.readdir(commandsTemplatePath);
-  for (const file of commandFiles) {
-    if (file.endsWith('.md.template')) {
-      const sourcePath = path.join(commandsTemplatePath, file);
-      const category = determineCommandCategory(file);
-      // Remove .template extension for deployed file
-      const deployedFileName = file.replace('.template', '');
-      const targetPath = path.join('.claude/commands', category, deployedFileName);
+    if (await fs.pathExists(sourceCategoryPath)) {
+      await fs.ensureDir(targetCategoryPath);
+      const commandFiles = await fs.readdir(sourceCategoryPath);
 
-      await fs.copy(sourcePath, targetPath, { overwrite: true });
-      stats.commandsUpdated++;
+      for (const file of commandFiles) {
+        if (file.endsWith('.md.template')) {
+          const sourcePath = path.join(sourceCategoryPath, file);
+          // Remove .template extension for deployed file
+          const deployedFileName = file.replace('.template', '');
+          const targetPath = path.join(targetCategoryPath, deployedFileName);
+
+          await fs.copy(sourcePath, targetPath, { overwrite: true });
+          stats.commandsUpdated++;
+        }
+      }
     }
   }
 

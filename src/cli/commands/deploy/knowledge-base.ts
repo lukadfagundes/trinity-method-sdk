@@ -42,7 +42,7 @@ export async function deployKnowledgeBase(
   ];
 
   for (const template of kbTemplates) {
-    const templatePath = path.join(templatesPath, 'knowledge-base', `${template}.template`);
+    const templatePath = path.join(templatesPath, 'trinity/knowledge-base', `${template}.template`);
 
     if (await fs.pathExists(templatePath)) {
       const content = await fs.readFile(templatePath, 'utf8');

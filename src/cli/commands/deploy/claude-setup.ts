@@ -40,7 +40,7 @@ export async function deployClaudeSetup(
 
   const employeeDirectoryTemplate = path.join(
     templatesPath,
-    'claude',
+    '.claude',
     'EMPLOYEE-DIRECTORY.md.template'
   );
   if (await fs.pathExists(employeeDirectoryTemplate)) {
@@ -69,42 +69,34 @@ export async function deployClaudeSetup(
   await fs.ensureDir(`${commandsDir}/infrastructure`);
   await fs.ensureDir(`${commandsDir}/utility`);
 
-  // Command categorization map
-  const commandCategories: Record<string, string> = {
-    'trinity-start.md.template': 'session',
-    'trinity-continue.md.template': 'session',
-    'trinity-end.md.template': 'session',
-    'trinity-requirements.md.template': 'planning',
-    'trinity-design.md.template': 'planning',
-    'trinity-decompose.md.template': 'planning',
-    'trinity-plan.md.template': 'planning',
-    'trinity-orchestrate.md.template': 'execution',
-    'trinity-audit.md.template': 'execution',
-    'trinity-readme.md.template': 'execution',
-    'trinity-docs.md.template': 'execution',
-    'trinity-changelog.md.template': 'execution',
-    'trinity-create-investigation.md.template': 'investigation',
-    'trinity-plan-investigation.md.template': 'investigation',
-    'trinity-investigate-templates.md.template': 'investigation',
-    'trinity-init.md.template': 'infrastructure',
-    'trinity-agents.md.template': 'utility',
-    'trinity-verify.md.template': 'utility',
-    'trinity-workorder.md.template': 'utility',
-  };
+  // Commands are now organized by category in source templates
+  const commandsTemplatePath = path.join(templatesPath, '.claude/commands');
+  const categories = [
+    'session',
+    'planning',
+    'execution',
+    'investigation',
+    'infrastructure',
+    'utility',
+  ];
 
-  const commandsTemplatePath = path.join(templatesPath, 'shared/claude-commands');
-  const commandFiles = await fs.readdir(commandsTemplatePath);
+  for (const category of categories) {
+    const categoryPath = path.join(commandsTemplatePath, category);
 
-  for (const file of commandFiles) {
-    if (file.endsWith('.md.template') && commandCategories[file]) {
-      const sourcePath = path.join(commandsTemplatePath, file);
-      const category = commandCategories[file];
-      // Remove .template extension for deployed files
-      const deployedName = file.replace('.template', '');
-      const destPath = path.join(commandsDir, category, deployedName);
-      await fs.copy(sourcePath, destPath);
-      commandsDeployed++;
-      filesDeployed++;
+    if (await fs.pathExists(categoryPath)) {
+      const commandFiles = await fs.readdir(categoryPath);
+
+      for (const file of commandFiles) {
+        if (file.endsWith('.md.template')) {
+          const sourcePath = path.join(categoryPath, file);
+          // Remove .template extension for deployed files
+          const deployedName = file.replace('.template', '');
+          const destPath = path.join(commandsDir, category, deployedName);
+          await fs.copy(sourcePath, destPath);
+          commandsDeployed++;
+          filesDeployed++;
+        }
+      }
     }
   }
 

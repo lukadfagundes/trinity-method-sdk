@@ -38,7 +38,7 @@ export async function deployTemplates(
   await fs.ensureDir('trinity/templates/work-orders');
 
   for (const template of woTemplates) {
-    const templatePath = path.join(templatesPath, 'work-orders', template);
+    const templatePath = path.join(templatesPath, 'trinity/templates/work-orders', template);
 
     if (await fs.pathExists(templatePath)) {
       const content = await fs.readFile(templatePath, 'utf8');
@@ -68,7 +68,7 @@ export async function deployTemplates(
   await fs.ensureDir('trinity/templates/investigations');
 
   for (const template of investigationTemplates) {
-    const templatePath = path.join(templatesPath, 'investigations', template);
+    const templatePath = path.join(templatesPath, 'trinity/templates/investigations', template);
 
     if (await fs.pathExists(templatePath)) {
       const content = await fs.readFile(templatePath, 'utf8');
@@ -84,29 +84,42 @@ export async function deployTemplates(
 
   spinner.succeed(`Investigation templates deployed (${investigationTemplates.length} templates)`);
 
-  // Deploy documentation templates
+  // Deploy documentation templates (all 28 templates including subdirectories)
   spinner.start('Deploying documentation templates...');
 
-  const documentationTemplates = ['ROOT-README.md.template', 'SUBDIRECTORY-README.md.template'];
+  const docSourcePath = path.join(templatesPath, 'trinity/templates/documentation');
+  const docDestPath = 'trinity/templates/documentation';
 
-  await fs.ensureDir('trinity/templates/documentation');
+  await fs.ensureDir(docDestPath);
 
-  for (const template of documentationTemplates) {
-    const templatePath = path.join(templatesPath, 'documentation', template);
+  // Recursively copy all documentation templates, removing .template extension
+  async function copyDocTemplates(sourcePath: string, destPath: string): Promise<void> {
+    const items = await fs.readdir(sourcePath);
 
-    if (await fs.pathExists(templatePath)) {
-      const content = await fs.readFile(templatePath, 'utf8');
-      const processed = processTemplate(content, variables);
-      const deployedName = template.replace('.template', '');
+    for (const item of items) {
+      const sourceItemPath = path.join(sourcePath, item);
+      const stat = await fs.stat(sourceItemPath);
 
-      // Validate destination path for security
-      const destPath = validatePath(`trinity/templates/documentation/${deployedName}`);
-      await fs.writeFile(destPath, processed);
-      templatesDeployed++;
+      if (stat.isDirectory()) {
+        // Create subdirectory and recurse
+        const destSubDir = path.join(destPath, item);
+        await fs.ensureDir(destSubDir);
+        await copyDocTemplates(sourceItemPath, destSubDir);
+      } else if (item.endsWith('.md.template')) {
+        // Process template file and remove .template extension
+        const content = await fs.readFile(sourceItemPath, 'utf8');
+        const processed = processTemplate(content, variables);
+        const deployedName = item.replace('.template', '');
+        const destFilePath = validatePath(path.join(destPath, deployedName));
+        await fs.writeFile(destFilePath, processed);
+        templatesDeployed++;
+      }
     }
   }
 
-  spinner.succeed(`Documentation templates deployed (${documentationTemplates.length} templates)`);
+  await copyDocTemplates(docSourcePath, docDestPath);
+
+  spinner.succeed(`Documentation templates deployed (${templatesDeployed - 11} templates)`);
 
   return templatesDeployed;
 }

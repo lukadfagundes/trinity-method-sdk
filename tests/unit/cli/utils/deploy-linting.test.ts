@@ -23,46 +23,46 @@ describe('deploy-linting', () => {
 
     // Create mock template files
     templatesPath = path.join(testDir, 'templates');
-    await fs.ensureDir(path.join(templatesPath, 'linting', 'nodejs'));
-    await fs.ensureDir(path.join(templatesPath, 'linting', 'python'));
-    await fs.ensureDir(path.join(templatesPath, 'linting', 'flutter'));
-    await fs.ensureDir(path.join(templatesPath, 'linting', 'rust'));
+    await fs.ensureDir(path.join(templatesPath, 'root', 'linting', 'nodejs'));
+    await fs.ensureDir(path.join(templatesPath, 'root', 'linting', 'python'));
+    await fs.ensureDir(path.join(templatesPath, 'root', 'linting', 'flutter'));
+    await fs.ensureDir(path.join(templatesPath, 'root', 'linting', 'rust'));
 
     // Create template files
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'nodejs', '.eslintrc-commonjs.json.template'),
+      path.join(templatesPath, 'root', 'linting', 'nodejs', '.eslintrc-commonjs.json.template'),
       '{"env": {"node": true}, "project": "{{PROJECT_NAME}}"}'
     );
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'nodejs', '.eslintrc-typescript.json.template'),
+      path.join(templatesPath, 'root', 'linting', 'nodejs', '.eslintrc-typescript.json.template'),
       '{"extends": ["plugin:@typescript-eslint/recommended"], "project": "{{PROJECT_NAME}}"}'
     );
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'nodejs', '.prettierrc.json.template'),
+      path.join(templatesPath, 'root', 'linting', 'nodejs', '.prettierrc.json.template'),
       '{"semi": true, "project": "{{PROJECT_NAME}}"}'
     );
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'nodejs', '.pre-commit-config.yaml.template'),
+      path.join(templatesPath, 'root', 'linting', 'nodejs', '.pre-commit-config.yaml.template'),
       'repos:\n  - repo: local\n    hooks:\n      - id: test'
     );
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'python', 'pyproject.toml.template'),
+      path.join(templatesPath, 'root', 'linting', 'python', 'pyproject.toml.template'),
       '[tool.black]\nline-length = 88'
     );
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'python', '.flake8.template'),
+      path.join(templatesPath, 'root', 'linting', 'python', '.flake8.template'),
       '[flake8]\nmax-line-length = 88'
     );
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'flutter', 'analysis_options.yaml.template'),
+      path.join(templatesPath, 'root', 'linting', 'flutter', 'analysis_options.yaml.template'),
       'analyzer:\n  strong-mode: true'
     );
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'rust', 'clippy.toml.template'),
+      path.join(templatesPath, 'root', 'linting', 'rust', 'clippy.toml.template'),
       'msrv = "1.70.0"'
     );
     await fs.writeFile(
-      path.join(templatesPath, 'linting', 'rust', 'rustfmt.toml.template'),
+      path.join(templatesPath, 'root', 'linting', 'rust', 'rustfmt.toml.template'),
       'max_width = 100'
     );
   });

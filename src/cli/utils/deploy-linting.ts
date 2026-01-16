@@ -11,7 +11,7 @@ export async function deployLintingTool(
   variables: Record<string, string | number>
 ): Promise<void> {
   const frameworkDir = getFrameworkDirectory(stack.framework);
-  const templateDir = path.join(templatesPath, 'linting', frameworkDir);
+  const templateDir = path.join(templatesPath, 'root/linting', frameworkDir);
 
   switch (tool.id) {
     case 'eslint':
