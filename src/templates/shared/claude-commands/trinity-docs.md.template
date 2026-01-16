@@ -91,7 +91,7 @@ if (VALIDATE_TEMPLATES) {
     `${template_base}/mermaid-diagrams/*.md`,
     `${template_base}/guides/*.md`,
     `${template_base}/api/README.md`,
-    `${template_base}/config/*.md`
+    `${template_base}/configuration/*.md`
   ];
 
   const template_issues = [];
@@ -407,19 +407,19 @@ const required_templates = [
   "trinity/templates/documentation/mermaid-diagrams/database-er.md",
   "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md",
   "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
-  
+
   // Guides (WO-002) - deployed without .template suffix
   "trinity/templates/documentation/guides/getting-started.md",
   "trinity/templates/documentation/guides/api-development.md",
   "trinity/templates/documentation/guides/deployment.md",
   "trinity/templates/documentation/guides/contributing.md",
-  
+
   // API docs (WO-002) - deployed without .template suffix
   "trinity/templates/documentation/api-docs/README.md",
-  
+
   // Configuration (WO-003) - deployed without .template suffix
-  "trinity/templates/documentation/config/env-example-generator.md",
-  
+  "trinity/templates/documentation/configuration/env-example-generator.md",
+
   // JUNO internal report (WO-1.8) - deployed without .template suffix
   "trinity/templates/documentation/reports/juno-internal-report.md"
 ];
@@ -448,7 +448,7 @@ if (missing_templates.length > 0) {
   ERROR: "  2. Verify templates exist in trinity/templates/documentation/";
   ERROR: "  3. Re-run this command";
   ERROR: "";
-  
+
   // ABORT - Cannot proceed without templates
   return {
     status: "ABORTED",
