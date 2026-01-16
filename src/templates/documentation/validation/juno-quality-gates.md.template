@@ -1,0 +1,286 @@
+# JUNO Quality Gates
+**Category:** Validation
+**Purpose:** Define quality gate criteria for JUNO audit report validation
+**Used By:** JUNO (Phase 1), Phase 3 Verification
+**Last Updated:** 2026-01-15
+
+---
+
+## Overview
+
+This template defines the quality gates JUNO uses to validate documentation audit reports before APO execution begins.
+
+---
+
+## Quality Gate Levels
+
+### CRITICAL (Abort Execution)
+- **Trigger:** Missing required sections
+- **Action:** Abort command, report failure to user
+- **Examples:**
+  - JUNO report file doesn't exist
+  - Report is empty or <100 bytes
+  - Required template variables completely missing
+
+### HIGH (Set Incomplete Flag)
+- **Trigger:** Incomplete but present sections
+- **Action:** Set `global.trinity_docs_session.juno_incomplete = true`, activate APO fallback
+- **Examples:**
+  - Section A/B/C present but contains placeholders
+  - Variable values are empty strings
+  - Component list or endpoint list is empty
+
+### MEDIUM (Warning Only)
+- **Trigger:** Minor quality issues
+- **Action:** Log warning, continue with APO execution
+- **Examples:**
+  - Optional fields missing
+  - Formatting inconsistencies
+  - Timestamps missing
+
+### LOW (Informational)
+- **Trigger:** Suggestions for improvement
+- **Action:** Log info message only
+- **Examples:**
+  - Additional frameworks detected
+  - Large component counts (>50)
+  - Missing optional metadata
+
+---
+
+## Quality Gate Checks
+
+### Gate 1: Report Existence
+
+**Check:** JUNO report file exists in session state
+```javascript
+if (!global.trinity_docs_session.audit_report) {
+  ERROR: "CRITICAL - JUNO audit report missing";
+  ABORT_COMMAND();
+}
+```
+
+**Pass Criteria:** Report object exists in global state
+
+---
+
+### Gate 2: Report Size Validation
+
+**Check:** Report has minimum required content
+```javascript
+const report_json = JSON.stringify(global.trinity_docs_session.audit_report);
+if (report_json.length < 500) {
+  ERROR: "CRITICAL - JUNO report too small, likely incomplete";
+  ABORT_COMMAND();
+}
+```
+
+**Pass Criteria:** Report JSON representation ≥500 characters
+
+---
+
+### Gate 3: Section Completeness
+
+**Check:** All three sections (A, B, C) present
+
+**Required Sections:**
+- **Section A:** Architecture & Visual Documentation
+- **Section B:** API Documentation & Development Guides
+- **Section C:** Configuration & Setup Documentation
+
+```javascript
+if (!report.section_a || !report.section_b || !report.section_c) {
+  ERROR: "CRITICAL - Missing required sections";
+  ABORT_COMMAND();
+}
+```
+
+**Pass Criteria:** All 3 sections exist as objects
+
+---
+
+### Gate 4: Template Variable Validation
+
+**Check:** Required template variables are populated
+
+**Critical Variables (Section A):**
+- `{{PROJECT_NAME}}` - Must not be empty
+- `{{ARCHITECTURE_TYPE}}` - Must not be "Unknown"
+- `{{DATABASE}}` or `{{DATABASE_SCHEMA}}` - At least one must exist
+
+**Critical Variables (Section B):**
+- `{{API_ENDPOINTS}}` or `{{FRAMEWORK}}` - At least one must exist
+- `{{DEPLOYMENT_INSTRUCTIONS}}` - Should be present
+
+**Critical Variables (Section C):**
+- `{{ENV_VARIABLES}}` - Can be empty but must exist as field
+
+```javascript
+// Example validation logic
+const missing_critical = [];
+if (!report.variables.PROJECT_NAME) missing_critical.push('PROJECT_NAME');
+if (!report.variables.ARCHITECTURE_TYPE) missing_critical.push('ARCHITECTURE_TYPE');
+
+if (missing_critical.length > 0) {
+  WARNING: `HIGH - Critical variables missing: ${missing_critical.join(', ')}`;
+  global.trinity_docs_session.juno_incomplete = true;
+  global.trinity_docs_session.juno_issues.push({
+    severity: 'HIGH',
+    variables: missing_critical
+  });
+}
+```
+
+**Pass Criteria (CRITICAL):** PROJECT_NAME exists
+**Pass Criteria (HIGH):** At least 70% of expected variables populated
+
+---
+
+### Gate 5: Placeholder Detection
+
+**Check:** Report doesn't contain placeholder values
+
+**Forbidden Placeholders:**
+- `"[TODO]"`
+- `"[PLACEHOLDER]"`
+- `"Unknown"`
+- `"N/A"` (in critical fields)
+- Empty strings for required fields
+
+```javascript
+const report_str = JSON.stringify(report);
+const placeholders = [
+  /\[TODO\]/gi,
+  /\[PLACEHOLDER\]/gi,
+  /{{[A-Z_]+}}/g  // Unreplaced template variables
+];
+
+placeholders.forEach(pattern => {
+  if (pattern.test(report_str)) {
+    WARNING: `HIGH - Placeholder detected in JUNO report: ${pattern}`;
+    global.trinity_docs_session.juno_incomplete = true;
+  }
+});
+```
+
+**Pass Criteria:** Zero placeholders in critical sections
+
+---
+
+### Gate 6: Component Verification
+
+**Check:** All listed components exist in codebase
+
+```javascript
+// For each component in report.section_a.components
+for (const component of report.section_a.components) {
+  const files = Glob(component.glob_pattern);
+  if (files.length === 0) {
+    ERROR: `CRITICAL - Component ${component.name} not found in codebase`;
+    ABORT_COMMAND();
+  }
+}
+```
+
+**Pass Criteria:** 100% of listed components verified via Glob
+**Note:** This is ZERO TOLERANCE - fake components cause abort
+
+---
+
+## Quality Score Calculation
+
+### Score Formula
+
+```javascript
+let score = 100;
+
+// Deductions
+if (juno_incomplete) score -= 15;
+if (placeholders_found > 0) score -= (placeholders_found * 5);
+if (missing_variables > 3) score -= ((missing_variables - 3) * 3);
+if (section_quality < 70) score -= (70 - section_quality);
+
+// Minimum score
+score = Math.max(score, 0);
+```
+
+### Score Thresholds
+
+- **100:** Perfect - All gates passed, zero issues
+- **95-99:** Excellent - Minor warnings only
+- **85-94:** Good - APO fallback will handle gaps
+- **70-84:** Acceptable - Significant fallback usage expected
+- **<70:** Poor - Consider manual JUNO report review
+
+---
+
+## Validation Output Format
+
+### On Success (Score ≥85)
+
+```
+✅ JUNO Quality Gates: PASSED
+- Report existence: ✅
+- Section completeness: ✅
+- Template variables: ✅ (42/45 populated)
+- Placeholder detection: ✅ (0 found)
+- Component verification: ✅ (15/15 verified)
+
+Quality Score: 97/100 (Excellent)
+Proceeding to APO execution...
+```
+
+### On Incomplete (Score 70-84)
+
+```
+⚠️ JUNO Quality Gates: INCOMPLETE
+- Report existence: ✅
+- Section completeness: ✅
+- Template variables: ⚠️ (38/45 populated)
+- Placeholder detection: ⚠️ (2 placeholders found)
+- Component verification: ✅
+
+Quality Score: 82/100 (Good)
+Status: juno_incomplete = true
+APO agents will use fallback mechanisms for missing data.
+```
+
+### On Failure (Score <70 or CRITICAL error)
+
+```
+❌ JUNO Quality Gates: FAILED
+- Report existence: ❌ (Report missing)
+
+Quality Score: 0/100
+ABORTING COMMAND - Fix JUNO audit issues and retry.
+```
+
+---
+
+## Error Handling
+
+**CRITICAL Errors (Abort):**
+- Report doesn't exist
+- Report size <500 bytes
+- Missing all 3 sections
+- Zero components verified (when components expected)
+
+**HIGH Errors (Fallback):**
+- >30% variables missing
+- >5 placeholders found
+- Section quality <50%
+
+**MEDIUM Warnings (Continue):**
+- <30% variables missing
+- 1-5 placeholders in non-critical sections
+- Formatting inconsistencies
+
+**LOW Info (Log only):**
+- Optional fields missing
+- Extra frameworks detected
+- Large data counts
+
+---
+
+*Trinity Method v2.0 - Validation Template*
+*WO-004: Validation Rules & APO Workflow Templates*

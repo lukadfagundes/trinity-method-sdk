@@ -1,0 +1,320 @@
+# Environment Variable Extraction Patterns
+**Category:** Discovery
+**Purpose:** Extract environment variables from .env files and process.env usage
+**Used By:** JUNO (Phase 1), APO-3 (Config Files)
+**Last Updated:** 2026-01-15
+
+---
+
+## Overview
+
+This template provides patterns for discovering environment variables used in a codebase through .env file analysis and process.env usage scanning.
+
+---
+
+## Environment Variable Sources
+
+### 1. .env Files
+
+**Common .env file locations:**
+```javascript
+const env_files = [
+  ".env",
+  ".env.example",
+  ".env.template",
+  ".env.local",
+  ".env.development",
+  ".env.production",
+  ".env.test"
+];
+```
+
+**Priority order:**
+1. `.env.example` or `.env.template` (recommended source - no secrets)
+2. `.env` (actual config - may contain secrets, use carefully)
+3. `.env.development`, `.env.production` (environment-specific)
+
+---
+
+### 2. Code Usage (process.env)
+
+**Grep pattern for environment variable usage:**
+```javascript
+// Search for: process.env.VARIABLE_NAME
+const env_usage_pattern = /process\.env\.([A-Z_][A-Z0-9_]*)/g;
+```
+
+**Example extraction:**
+```javascript
+// From code:
+const dbUrl = process.env.DATABASE_URL;
+const port = process.env.PORT || 3000;
+
+// Extract:
+["DATABASE_URL", "PORT"]
+```
+
+---
+
+## Extraction Logic
+
+### Step 1: Read .env.example (Preferred)
+
+```javascript
+// Priority: Use .env.example to avoid exposing secrets
+const env_content = Read(".env.example");
+
+// Parse format: KEY=value
+const lines = env_content.split('\n');
+const variables = lines
+  .filter(line => line && !line.startsWith('#')) // Skip comments
+  .map(line => line.split('=')[0].trim());
+```
+
+### Step 2: Fallback to Code Scanning
+
+```javascript
+// If .env.example doesn't exist, grep codebase
+const env_usage = Grep({
+  pattern: "process\\.env\\.",
+  output_mode: "content"
+});
+
+// Extract variable names from matches
+const variable_names = [...new Set(
+  env_usage.match(/process\.env\.([A-Z_][A-Z0-9_]*)/g)
+    .map(match => match.replace('process.env.', ''))
+)];
+```
+
+### Step 3: Combine and Deduplicate
+
+```javascript
+// Merge variables from both sources
+const all_variables = [...new Set([
+  ...env_file_variables,
+  ...code_usage_variables
+])];
+```
+
+---
+
+## Variable Categorization
+
+### By Purpose (Common Conventions)
+
+```javascript
+const categories = {
+  database: ['DATABASE_URL', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'],
+  api_keys: ['API_KEY', 'SECRET_KEY', 'JWT_SECRET', 'STRIPE_KEY'],
+  server: ['PORT', 'HOST', 'NODE_ENV'],
+  external_services: ['SMTP_HOST', 'REDIS_URL', 'S3_BUCKET'],
+  features: ['ENABLE_ANALYTICS', 'DEBUG_MODE']
+};
+```
+
+**Auto-categorization by prefix:**
+```javascript
+if (var_name.startsWith('DB_')) category = 'database';
+else if (var_name.includes('API_KEY')) category = 'api_keys';
+else if (var_name.includes('SECRET')) category = 'api_keys';
+else if (var_name === 'PORT' || var_name === 'HOST') category = 'server';
+```
+
+---
+
+## Template Variable Mapping
+
+**Variables to populate:**
+- `{{ENV_VAR_COUNT}}` → Total number of environment variables
+- `{{ENV_VAR_LIST}}` → List of variable names
+- `{{ENV_VAR_CATEGORIES}}` → Categorized variable groups
+- `{{HAS_ENV_FILE}}` → Boolean (true if .env.example exists)
+
+---
+
+## .env.example Generation (APO-3)
+
+### Format for .env.example
+
+```bash
+# Database Configuration
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+DB_HOST=localhost
+DB_PORT=5432
+
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# API Keys (DO NOT commit actual keys)
+API_KEY=your_api_key_here
+JWT_SECRET=your_jwt_secret_here
+
+# External Services
+REDIS_URL=redis://localhost:6379
+SMTP_HOST=smtp.example.com
+```
+
+### Value Placeholders
+
+**For sensitive values:**
+```bash
+JWT_SECRET=your_secret_here_change_in_production
+API_KEY=get_from_service_provider
+STRIPE_SECRET_KEY=sk_test_...
+```
+
+**For standard values:**
+```bash
+PORT=3000
+NODE_ENV=development
+LOG_LEVEL=info
+```
+
+---
+
+## Verification Requirements
+
+### For JUNO Report
+
+**Must provide:**
+1. Environment variable count
+2. List of all variable names (without values)
+3. Source (from .env.example vs code scanning)
+
+**Example output:**
+```
+Environment Variables (12 total):
+
+Database:
+- DATABASE_URL
+- DB_HOST
+- DB_PORT
+
+Server:
+- PORT
+- NODE_ENV
+- HOST
+
+API Keys:
+- JWT_SECRET
+- API_KEY
+```
+
+### For APO-3 (.env.example Generation)
+
+**Must provide:**
+1. All variable names discovered
+2. Categorized grouping (with comments)
+3. Appropriate placeholder values
+4. Documentation comments for each category
+
+---
+
+## Security Considerations
+
+### NEVER Include in Reports
+
+**DO NOT extract or display:**
+- Actual secret values from .env
+- API keys
+- Passwords
+- JWT secrets
+- Database credentials
+
+**ONLY extract:**
+- Variable names (keys)
+- Variable structure
+- Expected format (from .env.example)
+
+### Safe Sources
+
+**Preferred (Safe):**
+- `.env.example` (no secrets, safe to read)
+- `.env.template` (no secrets, safe to read)
+- Code scanning for `process.env.VAR_NAME` (no values, just keys)
+
+**Avoid (May contain secrets):**
+- `.env` (may contain real secrets)
+- `.env.local` (may contain real secrets)
+- `.env.production` (likely contains real secrets)
+
+---
+
+## Fallback Detection
+
+If no .env file found and no process.env usage detected:
+
+1. **Check package.json scripts:**
+   - Look for environment variables in npm scripts: `"start": "PORT=3000 node server.js"`
+2. **Check common config files:**
+   - `config/default.js`, `config/development.js`
+   - May reference environment variables
+3. **Log warning:** "ℹ️ No environment variables detected - project may use hardcoded config"
+
+---
+
+## Examples
+
+### Example 1: Express + PostgreSQL App
+
+```bash
+# .env.example content:
+DATABASE_URL=postgresql://localhost:5432/myapp
+PORT=3000
+NODE_ENV=development
+JWT_SECRET=change_me_in_production
+
+# Extracted variables:
+ENV_VAR_COUNT = 4
+ENV_VAR_LIST = ["DATABASE_URL", "PORT", "NODE_ENV", "JWT_SECRET"]
+HAS_ENV_FILE = true
+```
+
+### Example 2: Code Scanning Fallback
+
+```javascript
+// No .env.example, but code contains:
+const dbUrl = process.env.DATABASE_URL;
+const apiKey = process.env.API_KEY;
+const port = process.env.PORT || 3000;
+
+// Extracted from code:
+ENV_VAR_COUNT = 3
+ENV_VAR_LIST = ["DATABASE_URL", "API_KEY", "PORT"]
+HAS_ENV_FILE = false
+ENV_VAR_SOURCE = "code_scanning"
+```
+
+---
+
+## Error Handling
+
+**No .env file and no process.env usage:**
+- Log: "ℹ️ No environment variables detected - may use hardcoded configuration"
+- Set `ENV_VAR_COUNT = 0`
+- Continue processing (not critical)
+
+**.env file malformed:**
+- Log: "⚠️ .env file exists but could not be parsed - using code scanning fallback"
+- Fall back to code scanning method
+
+**Too many variables (>30):**
+- Log: "ℹ️ Large number of environment variables detected: [count]"
+- Provide categorized summary in report
+
+---
+
+## Best Practices
+
+1. **Always prefer .env.example over .env** - Avoid exposing secrets
+2. **Validate variable names** - Should follow UPPER_SNAKE_CASE convention
+3. **Group by purpose** - Makes .env.example more maintainable
+4. **Document each variable** - Add comments explaining purpose
+5. **Provide safe placeholder values** - Help developers understand expected format
+
+---
+
+*Trinity Method v2.0 - Discovery Template*
+*WO-004: Template Infrastructure & Discovery Recipes*

@@ -1,0 +1,170 @@
+# Error Handling Protocol
+**Category:** Processes
+**Purpose:** 3-tier error handling system for trinity-docs command
+**Used By:** JUNO, APO-1, APO-2, APO-3, Phase 3 Verification
+**Last Updated:** 2026-01-15
+
+---
+
+## 3-Tier Error System
+
+### Tier 1: ABORT (Critical Errors)
+**Action:** Stop command execution immediately, report failure
+**Use when:** System cannot proceed, data corruption risk, user intervention required
+
+**Examples:**
+- JUNO report completely missing
+- No package.json found (cannot detect framework)
+- Component verification failed (fake component names detected)
+- Template files missing (cannot read required templates)
+- Write permission denied (cannot create documentation files)
+
+**Log Format:**
+```
+❌ CRITICAL ERROR - ABORTING COMMAND
+Agent: [AGENT_NAME]
+Task: [TASK_NAME]
+Error: [ERROR_DESCRIPTION]
+Recommendation: [HOW_TO_FIX]
+```
+
+### Tier 2: WARN (Recoverable Issues)
+**Action:** Log warning, activate fallback, continue execution
+**Use when:** Data incomplete but work can continue, fallback mechanisms available
+
+**Examples:**
+- JUNO report incomplete (some variables missing)
+- Optional template variables not found
+- Framework detection partial (backend found, frontend unknown)
+- Some environment variables missing
+- API endpoints partially discovered
+
+**Log Format:**
+```
+⚠️ WARNING - Using fallback mechanism
+Agent: [AGENT_NAME]
+Issue: [ISSUE_DESCRIPTION]
+Fallback: [FALLBACK_ACTION_TAKEN]
+Impact: [WHAT_WILL_BE_DIFFERENT]
+```
+
+### Tier 3: LOG (Informational)
+**Action:** Log message only, continue normally
+**Use when:** Normal process updates, optional data, FYI messages
+
+**Examples:**
+- Process milestones ("Reading JUNO report...")
+- File creation confirmations ("Created mvc-flow.md")
+- Discovery counts ("Found 15 components")
+- Optional fields missing (non-critical)
+- Performance metrics ("Execution time: 18s")
+
+**Log Format:**
+```
+ℹ️ INFO - [MESSAGE]
+Agent: [AGENT_NAME]
+Details: [ADDITIONAL_INFO]
+```
+
+---
+
+## Error Handling by Agent
+
+### JUNO Errors
+
+**Tier 1 (ABORT):**
+- Cannot read package.json
+- Cannot write audit report to global state
+- All discovery methods failed (no data found)
+
+**Tier 2 (WARN):**
+- Some discovery methods returned no data
+- Optional metadata missing
+- Framework detection uncertain
+
+**Tier 3 (LOG):**
+- Discovery progress updates
+- Variable extraction counts
+- Report generation milestones
+
+### APO-1 Errors
+
+**Tier 1 (ABORT):**
+- Cannot read JUNO report from global state
+- Component verification failed (fake components)
+- Cannot write diagram files (permission denied)
+
+**Tier 2 (WARN):**
+- Database schema not found (skip database-er.md)
+- No API endpoints discovered (skip api-endpoint-map.md)
+- Mermaid syntax warning (diagram created but may have issues)
+
+**Tier 3 (LOG):**
+- Diagram generation progress
+- File creation confirmations
+- Fallback usage notifications
+
+### APO-2 Errors
+
+**Tier 1 (ABORT):**
+- Cannot read JUNO report from global state
+- Cannot read guide templates from trinity/templates/documentation/
+- Cannot write guide files (permission denied)
+
+**Tier 2 (WARN):**
+- Framework-specific examples unavailable (use generic examples)
+- Test framework unknown (use generic test instructions)
+- Deployment steps uncertain (use common deployment pattern)
+
+**Tier 3 (LOG):**
+- Guide generation progress
+- File creation confirmations
+- Template variable substitutions
+
+### APO-3 Errors
+
+**Tier 1 (ABORT):**
+- Cannot read JUNO report from global state
+- Cannot write .env.example or README.md (permission denied)
+- Security violation detected (real secrets in .env.example)
+
+**Tier 2 (WARN):**
+- No environment variables discovered (.env.example will be minimal)
+- README.md doesn't exist (create new README with warning)
+- Environment variable detection uncertain
+
+**Tier 3 (LOG):**
+- Configuration file generation progress
+- Environment variable counts
+- README update confirmations
+
+---
+
+## Fallback Activation
+
+**When Tier 2 WARN occurs, activate fallback:**
+
+```javascript
+if (juno_incomplete || data_missing) {
+  LOG: "⚠️ FALLBACK MODE ACTIVATED";
+  LOG: `Reason: ${fallback_reason}`;
+
+  // Use discovery templates directly
+  // See trinity/templates/discovery/ for patterns
+
+  // Mark fallback usage
+  fallback_used = true;
+}
+```
+
+**After fallback completes:**
+```javascript
+if (fallback_used && task_complete) {
+  LOG: "✅ FALLBACK SUCCESS - Task completed using direct analysis";
+}
+```
+
+---
+
+*Trinity Method v2.0 - Process Template*
+*WO-004: Validation Rules & APO Workflow Templates*

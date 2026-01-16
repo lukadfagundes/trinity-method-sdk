@@ -1,0 +1,209 @@
+# Framework Detection Patterns
+**Category:** Discovery
+**Purpose:** Detect backend frameworks, frontend frameworks, databases, ORMs, and testing frameworks from package.json
+**Used By:** JUNO (Phase 1), APO-1, APO-2, APO-3 (Fallback Mode)
+**Last Updated:** 2026-01-15
+
+---
+
+## Overview
+
+This template provides patterns for detecting technologies used in a codebase by analyzing `package.json` dependencies.
+
+---
+
+## How to Use
+
+1. Read and parse the project's `package.json` file
+2. Check both `dependencies` and `devDependencies` for framework matches
+3. Identify frameworks by package name patterns
+4. Store detected frameworks for template variable substitution
+
+---
+
+## Framework Detection Logic
+
+### Package Analysis Pattern
+
+```javascript
+const pkg_json = Read("package.json");
+const pkg = JSON.parse(pkg_json);
+
+// Combine all dependencies
+const all_deps = {
+  ...pkg.dependencies,
+  ...pkg.devDependencies
+};
+
+// Detect frameworks by package name
+```
+
+---
+
+## Detection Categories
+
+### 1. Backend Frameworks
+
+**Patterns to detect:**
+- `express` → Express.js
+- `fastify` → Fastify
+- `koa` → Koa
+- `hapi` → Hapi
+- `@nestjs/core` or `@nestjs/common` → NestJS
+- `next` → Next.js (full-stack)
+
+**Example:**
+```javascript
+if (all_deps['express']) backend_framework = 'Express.js';
+if (all_deps['@nestjs/core']) backend_framework = 'NestJS';
+```
+
+---
+
+### 2. Frontend Frameworks
+
+**Patterns to detect:**
+- `react` → React
+- `vue` → Vue.js
+- `@angular/core` → Angular
+- `svelte` → Svelte
+- `solid-js` → SolidJS
+- `preact` → Preact
+
+**Example:**
+```javascript
+if (all_deps['react']) frontend_framework = 'React';
+if (all_deps['vue']) frontend_framework = 'Vue.js';
+```
+
+---
+
+### 3. Database & ORM
+
+**Patterns to detect:**
+- `prisma` or `@prisma/client` → Prisma
+- `typeorm` → TypeORM
+- `sequelize` → Sequelize
+- `mongoose` → Mongoose (MongoDB)
+- `knex` → Knex.js
+- `pg` → PostgreSQL (direct driver)
+- `mysql` or `mysql2` → MySQL (direct driver)
+- `mongodb` → MongoDB (direct driver)
+
+**Example:**
+```javascript
+if (all_deps['@prisma/client']) orm = 'Prisma';
+if (all_deps['typeorm']) orm = 'TypeORM';
+if (all_deps['pg']) database = 'PostgreSQL';
+```
+
+---
+
+### 4. Testing Frameworks
+
+**Patterns to detect:**
+- `jest` → Jest
+- `vitest` → Vitest
+- `mocha` → Mocha
+- `jasmine` → Jasmine
+- `cypress` → Cypress (E2E)
+- `playwright` or `@playwright/test` → Playwright (E2E)
+- `@testing-library/react` → React Testing Library
+
+**Example:**
+```javascript
+if (all_deps['jest']) test_framework = 'Jest';
+if (all_deps['vitest']) test_framework = 'Vitest';
+if (all_deps['cypress']) e2e_framework = 'Cypress';
+```
+
+---
+
+## Fallback Detection
+
+If `package.json` is missing or cannot be parsed:
+1. **Backend:** Search for `server.js`, `app.js`, `index.ts` in `src/`, `server/` directories
+2. **Frontend:** Check for `index.html`, `App.tsx`, `App.vue` in `src/`, `client/` directories
+3. **Database:** Look for `prisma/schema.prisma`, TypeORM entity files with `@Entity` decorator
+4. **Testing:** Check for `jest.config.js`, `vitest.config.ts`, `cypress.config.js`
+
+---
+
+## Template Variable Mapping
+
+**Variables to populate:**
+- `{{BACKEND_FRAMEWORK}}` → Backend framework name (e.g., "Express.js", "NestJS")
+- `{{FRONTEND_FRAMEWORK}}` → Frontend framework name (e.g., "React", "Vue.js")
+- `{{DATABASE}}` → Database system (e.g., "PostgreSQL", "MongoDB")
+- `{{ORM}}` → ORM/Query builder (e.g., "Prisma", "TypeORM")
+- `{{TEST_FRAMEWORK}}` → Testing framework (e.g., "Jest", "Vitest")
+- `{{E2E_FRAMEWORK}}` → E2E testing framework (e.g., "Cypress", "Playwright")
+
+---
+
+## Error Handling
+
+**If no frameworks detected:**
+- Log warning: "⚠️ FALLBACK: No frameworks detected in package.json - manual detection required"
+- Use fallback detection methods (file system scanning)
+- If still unsuccessful, mark as "Unknown" but continue processing
+
+**If multiple frameworks detected (uncommon but possible):**
+- Select primary framework (most commonly used)
+- Log info: "ℹ️ Multiple frameworks detected: [list] - using [primary]"
+
+---
+
+## Examples
+
+### Example 1: Express + React + Prisma Stack
+
+```javascript
+// package.json dependencies:
+{
+  "express": "^4.18.2",
+  "react": "^18.2.0",
+  "@prisma/client": "^5.0.0",
+  "jest": "^29.5.0"
+}
+
+// Detection result:
+BACKEND_FRAMEWORK = "Express.js"
+FRONTEND_FRAMEWORK = "React"
+ORM = "Prisma"
+TEST_FRAMEWORK = "Jest"
+```
+
+### Example 2: NestJS + Angular + TypeORM Stack
+
+```javascript
+// package.json dependencies:
+{
+  "@nestjs/core": "^10.0.0",
+  "@angular/core": "^16.0.0",
+  "typeorm": "^0.3.17",
+  "pg": "^8.11.0",
+  "jest": "^29.5.0"
+}
+
+// Detection result:
+BACKEND_FRAMEWORK = "NestJS"
+FRONTEND_FRAMEWORK = "Angular"
+ORM = "TypeORM"
+DATABASE = "PostgreSQL"
+TEST_FRAMEWORK = "Jest"
+```
+
+---
+
+## Best Practices
+
+1. **Always check both `dependencies` and `devDependencies`** - Testing frameworks are often in `devDependencies`
+2. **Use specific package names** - Don't use fuzzy matching to avoid false positives
+3. **Log all detections** - Help debugging if detection fails
+4. **Graceful degradation** - If detection fails, continue with "Unknown" rather than aborting
+
+---
+
+*Trinity Method v2.0 - Discovery Template*
+*WO-004: Template Infrastructure & Discovery Recipes*

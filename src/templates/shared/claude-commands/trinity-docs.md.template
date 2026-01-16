@@ -528,65 +528,17 @@ You are JUNO, the Quality Auditor. Your task is to audit this codebase and gener
 
 ## Discovery Logic
 
-Use the following patterns to discover codebase information:
+**Use discovery templates for codebase analysis:**
 
-### 1. Framework and Technology Detection
+- **Framework Detection:** See `trinity/templates/documentation/discovery/framework-detection.md` for package.json analysis patterns
+- **Component Discovery:** See `trinity/templates/documentation/discovery/component-discovery.md` for React/Vue/Angular/Svelte component patterns (CRITICAL: Zero tolerance for fake components)
+- **API Endpoints:** See `trinity/templates/documentation/discovery/api-endpoint-scanner.md` for Express/Fastify/NestJS/Koa route patterns
+- **Environment Variables:** See `trinity/templates/documentation/discovery/env-variable-extraction.md` for .env and process.env usage patterns
 
-**Package Analysis:**
-\`\`\`javascript
-const pkg_json = Read("package.json");
-const pkg = JSON.parse(pkg_json);
-
-// Detect frameworks, database, ORM, testing from dependencies
-// Backend: express, fastify, koa, hapi, nestjs
-// Frontend: react, vue, angular, svelte, solid
-// Database/ORM: prisma, typeorm, sequelize, mongoose, knex
-// Testing: jest, vitest, mocha, jasmine, cypress, playwright
-\`\`\`
-
-### 2. Component Discovery (CRITICAL - ZERO TOLERANCE)
-
-**RULE:** Every component name MUST exist in codebase (verified with Glob)
-
-\`\`\`javascript
-// Find React/Vue components
-const component_patterns = ["client/**/*.{tsx,jsx}", "src/**/*.{tsx,jsx}", "**/*.vue"];
-const all_component_files = [/* use Glob for each pattern */];
-
-// Filter out tests, configs, entry points
-const actual_components = all_component_files.filter(f =>
-  !f.includes('.test.') && !f.includes('.spec.') && !f.includes('.config.')
-);
-
-// Extract names and paths for template variables
-// List ALL components with paths in report for APO-1 verification
-\`\`\`
-
-### 3. Database Schema Analysis
-
-\`\`\`javascript
-// Prisma: Parse prisma/schema.prisma for models and relationships
-// TypeORM: Find @Entity decorator files
-// Mongoose: Find schema definitions
-// Extract: model names, relationships (foreign keys), counts
-\`\`\`
-
-### 4. API Endpoint Discovery
-
-\`\`\`javascript
-// Find route files in: server/routes/, src/routes/, api/, server/api/
-// Parse for HTTP methods: router.get(), app.post(), etc.
-// Extract: method, path, file location
-// Group by resource for SECTION B template variable
-\`\`\`
-
-### 5. Environment Variables
-
-\`\`\`javascript
-// Check for .env file
-// Grep codebase for process.env.VARIABLE_NAME patterns
-// Extract all unique environment variable names for SECTION C
-\`\`\`
+**Database Schema Analysis:**
+- Prisma: Parse `prisma/schema.prisma` for models and relationships
+- TypeORM: Find `@Entity` decorator files
+- Mongoose: Find schema definitions
 
 ---
 
@@ -1006,24 +958,22 @@ if (global.trinity_docs_session.juno_incomplete) {
 
 #### Step 2: Direct Codebase Analysis
 
+**Use discovery templates for fallback analysis:**
+
 **APO-1 (Diagrams):**
-- If diagram variables missing: Parse database schema files directly
-- If component list empty: Use Glob to find component files
-- If API endpoint list empty: Search route files directly
-- Generate Mermaid syntax from raw data
+- If diagram variables missing: Use `trinity/templates/documentation/discovery/api-endpoint-scanner.md` and `trinity/templates/documentation/discovery/component-discovery.md` patterns
+- If database schema empty: Parse database schema files directly (Prisma, TypeORM, Mongoose)
+- Generate Mermaid syntax from discovered data
 
 **APO-2 (Guides & Docs):**
-- If framework not specified: Read package.json dependencies
-- If test command missing: Check package.json scripts
-- If environment variables missing: Read .env file or grep for process.env
+- If framework not specified: Use `trinity/templates/documentation/discovery/framework-detection.md` for package.json analysis
+- If environment variables missing: Use `trinity/templates/documentation/discovery/env-variable-extraction.md` for .env and process.env patterns
 - Fill template variables from direct detection
 
 **APO-3 (Config Files):**
-- If .env keys missing: Search codebase for process.env.KEY patterns
+- If .env keys missing: Use `trinity/templates/documentation/discovery/env-variable-extraction.md` for process.env.KEY patterns
 - If README links undefined: Build links from expected file locations
 - Validate all file references before writing
-
-#### Step 3: Access Templates Directly
 
 When JUNO report doesn't specify templates:
 - Use default template paths: `trinity/templates/documentation/`
@@ -1160,409 +1110,180 @@ if (TIER_2_ERROR) {
 }
 \`\`\`
 
-## Step 1: Read JUNO's Audit Report
+## APO-1: Architecture Diagrams & Visual Documentation
 
-Read the audit report at: **${audit_report_path}**
+**Your Mission:** Generate Mermaid architecture diagrams using templates and JUNO's audit report.
 
-Find **SECTION A: ARCHITECTURE & DIAGRAMS**
+**Agent Designation:** APO-1 (Section A)
 
-This section contains your complete checklist of diagrams to create.
+---
 
-**Check for Fallback Mode:**
+## Workflow Overview
+
+Follow the **5-Phase APO Workflow** defined in:
+📄 **[trinity/templates/documentation/processes/apo-workflow-common.md](trinity/templates/documentation/processes/apo-workflow-common.md)**
+
+1. **Phase 1:** Read JUNO Report (`global.trinity_docs_session.audit_report`)
+2. **Phase 2:** Extract Template Variables (from Section A)
+3. **Phase 3:** Process Templates (generate Mermaid diagrams)
+4. **Phase 4:** Write Files (to `docs/architecture/diagrams/`)
+5. **Phase 5:** Self-Validation (quality checks)
+
+---
+
+## Error Handling
+
+**Use 3-Tier Error System** defined in:
+📄 **[trinity/templates/documentation/processes/error-handling-protocol.md](trinity/templates/documentation/processes/error-handling-protocol.md)**
+
+- **Tier 1 (ABORT):** JUNO report missing, component verification failed, write permission denied
+- **Tier 2 (WARN):** JUNO incomplete, database schema missing, API endpoints not found
+- **Tier 3 (LOG):** Progress updates, file creation confirmations
+
+---
+
+## APO-1 Specific Tasks
+
+**See detailed instructions in:**
+📄 **[trinity/templates/documentation/processes/apo-diagram-specific.md](trinity/templates/documentation/processes/apo-diagram-specific.md)**
+
+### Diagrams to Generate:
+
+1. **MVC Flow Diagram** (`mvc-flow.md`) - Request → Controller → Model → View flow
+2. **Database ER Diagram** (`database-er.md`) - Entity-relationship diagram with models
+3. **API Endpoint Map** (`api-endpoint-map.md`) - API endpoint organization
+4. **Component Hierarchy** (`component-hierarchy.md`) - Frontend component structure
+
+### Mermaid Diagram Types:
+
+- **MVC Flow:** `graph TD` (flowchart top-down)
+- **Database ER:** `erDiagram` (entity-relationship)
+- **API Map:** `graph LR` (flowchart left-right)
+- **Components:** `graph TD` (flowchart top-down)
+
+---
+
+## Fallback Mechanisms
+
+**If JUNO report incomplete** (`global.trinity_docs_session.juno_incomplete === true`):
+
+**Use discovery templates for direct codebase analysis:**
+- 📄 **Framework Detection:** [trinity/templates/documentation/discovery/framework-detection.md](trinity/templates/documentation/discovery/framework-detection.md)
+- 📄 **Component Discovery:** [trinity/templates/documentation/discovery/component-discovery.md](trinity/templates/documentation/discovery/component-discovery.md)
+- 📄 **API Endpoint Scanner:** [trinity/templates/documentation/discovery/api-endpoint-scanner.md](trinity/templates/documentation/discovery/api-endpoint-scanner.md)
+
+**Example Fallback:**
 \`\`\`javascript
 if (global.trinity_docs_session.juno_incomplete) {
-  LOG: "";
   LOG: "⚠️ FALLBACK MODE ACTIVATED";
-  LOG: "JUNO report incomplete - will use direct codebase analysis for missing data";
-  LOG: "";
+  LOG: "JUNO report incomplete - using direct codebase analysis";
+
+  // Use discovery templates to extract missing data
+  // See trinity/templates/documentation/processes/apo-diagram-specific.md for patterns
 }
 \`\`\`
 
-**Rec 12: Template Existence Verification**
+---
+
+## Critical: Component Verification (ZERO TOLERANCE)
+
+**All component names MUST exist in codebase** - verified via Glob:
+
 \`\`\`javascript
-LOG: "";
-LOG: "Verifying template accessibility...";
+// Extract component names from JUNO report
+const component_section = juno_report.match(/\*\*CRITICAL FOR APO-1 - Use ONLY the components listed below:\*\*(.*?)(?=\n\n\*\*|$)/s);
 
-const template_paths = {
-  mvc_flow: "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
-  database_er: "trinity/templates/documentation/mermaid-diagrams/database-er.md",
-  component_hierarchy: "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
-  api_endpoint_map: "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md"
-};
+// Verify EACH component exists in codebase
+for (const component of juno_components) {
+  const possible_paths = [
+    \`**/$\{component}.tsx\`,
+    \`**/$\{component}.jsx\`,
+    \`**/$\{component}/index.tsx\`
+  ];
 
-const template_status = {};
-let templates_found = 0;
-let templates_missing = 0;
-
-for (const [name, path] of Object.entries(template_paths)) {
-  if (exists(path)) {
-    template_status[name] = "FOUND";
-    templates_found++;
-    LOG: \`  ✅ Template available: \${name} (\${path})\`;
-  } else {
-    template_status[name] = "MISSING";
-    templates_missing++;
-    WARNING: \`  ⚠️ Template missing: \${name} (\${path}) - will generate from scratch\`;
-  }
-}
-
-LOG: "";
-LOG: \`Template Availability: \${templates_found} found, \${templates_missing} missing\`;
-
-if (templates_missing > 0) {
-  WARNING: "";
-  WARNING: \`⚠️ \${templates_missing} template(s) missing - activating generation fallback\`;
-  WARNING: "This is NOT a failure - Mermaid diagrams will be generated from scratch";
-  WARNING: "";
-}
-
-LOG: "";
-\`\`\`
-
-**Rec 13: Context Size Monitoring**
-\`\`\`javascript
-LOG: "Monitoring context size...";
-
-const juno_report_content = Read("${audit_report_path}");
-const juno_full_size = juno_report_content.length;
-
-// Find Section A boundaries
-const section_a_start = juno_report_content.indexOf("## SECTION A:");
-const section_b_start = juno_report_content.indexOf("## SECTION B:");
-
-let section_a_size = 0;
-if (section_a_start !== -1 && section_b_start !== -1) {
-  section_a_size = section_b_start - section_a_start;
-} else if (section_a_start !== -1) {
-  section_a_size = juno_report_content.length - section_a_start;
-}
-
-LOG: \`  Full JUNO report: \${(juno_full_size / 1024).toFixed(2)} KB (\${juno_full_size} chars)\`;
-LOG: \`  Section A (my section): \${(section_a_size / 1024).toFixed(2)} KB (\${section_a_size} chars)\`;
-LOG: \`  Context overhead: This prompt + report section = ~\${((section_a_size + 15000) / 1024).toFixed(2)} KB\`;
-
-if (section_a_size > 50000) {
-  WARNING: "";
-  WARNING: \`⚠️ Large context detected: Section A is \${(section_a_size / 1024).toFixed(2)} KB\`;
-  WARNING: "Consider JUNO optimization if this causes performance issues";
-  WARNING: "";
-}
-
-LOG: "";
-\`\`\`
-
-## Step 2: Generate Each Required Diagram
-
-For EACH diagram marked "Required: YES" in Section A:
-
-### Process:
-1. Read the template file (path provided in report)
-   - If template missing: Generate Mermaid syntax from scratch (WARN)
-2. Extract variable values from report (all values should be pre-filled by JUNO)
-   - If values missing: Detect from codebase directly (WARN, activate fallback)
-3. Replace {{VARIABLES}} with actual values
-4. Write the final diagram file to the output path
-5. Verify file was created successfully
-
-### Example:
-
-**If diagram 1 shows:**
-\`\`\`
-Diagram 1: MVC Flow Diagram
-- Required: YES
-- Template: trinity/templates/documentation/mermaid-diagrams/mvc-flow.md
-- Variables:
-  - {{DATABASE}}: "SQLite"
-  - {{FRAMEWORK}}: "Express"
-- Output: docs/images/architecture-mvc-flow.md
-\`\`\`
-
-**You must:**
-\`\`\`javascript
-// 1. Read template
-const template = Read("trinity/templates/documentation/mermaid-diagrams/mvc-flow.md");
-
-// 2. Replace variables
-const diagram = template
-  .replace(/\{\{DATABASE\}\}/g, "SQLite")
-  .replace(/\{\{FRAMEWORK\}\}/g, "Express");
-
-// 3. Write output
-Write("docs/images/architecture-mvc-flow.md", diagram);
-
-// 4. Verify
-LOG: "✅ Created: docs/images/architecture-mvc-flow.md";
-\`\`\`
-
-### Fallback Example (if JUNO report incomplete):
-
-**If database type is missing:**
-\`\`\`javascript
-let database_type = "[Database type from JUNO report]";
-
-// If JUNO report has placeholder or missing value
-if (database_type.includes("[") || !database_type) {
-  WARNING: "⚠️ FALLBACK: Database type not in JUNO report - detecting from codebase";
-
-  // Check for Prisma
-  if (exists("prisma/schema.prisma")) {
-    const schema = Read("prisma/schema.prisma");
-    if (schema.includes('provider = "postgresql"')) {
-      database_type = "PostgreSQL";
-    } else if (schema.includes('provider = "sqlite"')) {
-      database_type = "SQLite";
-    } else if (schema.includes('provider = "mysql"')) {
-      database_type = "MySQL";
+  let found = false;
+  for (const pattern of possible_paths) {
+    if (Glob(pattern).length > 0) {
+      found = true;
+      break;
     }
   }
-  // Check package.json for MongoDB
-  else if (pkg.dependencies?.mongoose) {
-    database_type = "MongoDB";
-  }
 
-  LOG: \`⚠️ FALLBACK: Detected database type: \${database_type}\`;
+  if (!found) {
+    ERROR: \`❌ CRITICAL - Component $\{component} not found in codebase\`;
+    ERROR: "ZERO TOLERANCE error - fake component names detected";
+    ABORT_COMMAND();
+  }
 }
+
+LOG: \`✅ All $\{juno_components.length} components verified in codebase\`;
 \`\`\`
 
-## Step 3: Self-Validation (Rec 6)
+**See full verification logic in:**
+📄 **[trinity/templates/documentation/processes/apo-diagram-specific.md](trinity/templates/documentation/processes/apo-diagram-specific.md)** (lines 277-315)
 
-After generating all diagrams, you MUST verify:
+---
 
+## Self-Validation
+
+**Run comprehensive self-validation** after generating diagrams:
+
+📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** - APO-1 Checklist
+
+**Key Checks:**
+- [ ] All expected diagrams created (2-4 files depending on project type)
+- [ ] File ≥10 lines minimum
+- [ ] Contains `\`\`\`mermaid` code block
+- [ ] Valid Mermaid diagram type (graph/erDiagram)
+- [ ] Zero placeholders (`{{VARIABLE}}`, `[TODO]`)
+- [ ] All components verified in codebase (ZERO TOLERANCE)
+- [ ] Mermaid syntax valid
+
+**Validation Output:**
 \`\`\`javascript
-LOG: "";
 LOG: "=== APO-1 SELF-VALIDATION ===";
 LOG: "";
+LOG: \`Files created: $\{created_diagrams.length}/$\{expected_count}\`;
 
-const created_diagrams = Glob({pattern: "docs/images/*.md"});
-
-// Validation checks
-const validation_results = {
-  files_created: created_diagrams.length > 0,
-  expected_count_met: true, // Check against JUNO report count
-  no_placeholders: true,
-  mermaid_valid: true,
-  min_content_length: true,
-  component_accuracy: true // Rec 9: Verify components match JUNO list
-};
-
-// Check 1: All expected diagrams created
-const juno_report = Read("${audit_report_path}");
-const section_a = juno_report.match(/SECTION A:.*?(?=SECTION B:)/s);
-if (section_a) {
-  const expected_count = (section_a[0].match(/Required: YES/g) || []).length;
-  validation_results.expected_count_met = created_diagrams.length === expected_count;
-
-  if (!validation_results.expected_count_met) {
-    ERROR: \`❌ Expected \${expected_count} diagrams, created \${created_diagrams.length}\`;
-  }
-}
-
-// Check 2: No {{PLACEHOLDERS}} in any diagram
 for (const file of created_diagrams) {
   const content = Read(file);
-  const placeholders = content.match(/\{\{[^}]+\}\}/g);
 
-  if (placeholders) {
-    validation_results.no_placeholders = false;
-    ERROR: \`❌ Placeholders remaining in \${file}: \${placeholders.join(", ")}\`;
+  // Check 1: No placeholders
+  if (content.match(/\{\{[^}]+\}\}/g)) {
+    ERROR: \`❌ Placeholders found in $\{file}\`;
   }
 
-  // Check 3: Valid Mermaid syntax
+  // Check 2: Valid Mermaid
   if (!content.includes("\`\`\`mermaid")) {
-    validation_results.mermaid_valid = false;
-    ERROR: \`❌ No Mermaid code block in \${file}\`;
+    ERROR: \`❌ No Mermaid block in $\{file}\`;
   }
 
-  // Check 4: Substantial content
+  // Check 3: Minimum content
   if (content.length < 100) {
-    validation_results.min_content_length = false;
-    ERROR: \`❌ Content too short in \${file} (\${content.length} chars)\`;
+    ERROR: \`❌ Content too short: $\{file}\`;
   }
 }
 
-// Check 5: Component Accuracy (Rec 9)
-// Verify diagram components match JUNO's authoritative list
-LOG: "";
-LOG: "Checking component accuracy against JUNO report...";
-
-validation_results.component_accuracy = true;
-const juno_report_content = Read("${audit_report_path}");
-
-// Extract component list from JUNO report
-const component_section = juno_report_content.match(/\*\*CRITICAL FOR APO-1 - Use ONLY the components listed below:\*\*(.*?)(?=\n\n\*\*|$)/s);
-if (component_section) {
-  const juno_components = [];
-  const component_lines = component_section[1].match(/- `([^`]+)`/g);
-  if (component_lines) {
-    for (const line of component_lines) {
-      const match = line.match(/- `([^`]+)`/);
-      if (match) {
-        juno_components.push(match[1]);
-      }
-    }
-  }
-
-  LOG: \`  JUNO authoritative components: \${juno_components.length}\`;
-
-  // Extract components from generated diagrams
-  const diagram_components = new Set();
-  for (const file of created_diagrams) {
-    const content = Read(file);
-    const mermaid_block = content.match(/\`\`\`mermaid(.*?)\`\`\`/s);
-    if (mermaid_block) {
-      // Extract node names from Mermaid syntax (various formats)
-      const nodes = mermaid_block[1].match(/\b([A-Z][a-zA-Z0-9]*)\b(?=[\s\[({]|$)/g);
-      if (nodes) {
-        for (const node of nodes) {
-          // Filter out Mermaid keywords
-          if (!['graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 'erDiagram', 'LR', 'TD', 'TB', 'RL', 'BT'].includes(node)) {
-            diagram_components.add(node);
-          }
-        }
-      }
-    }
-  }
-
-  LOG: \`  Components found in diagrams: \${diagram_components.size}\`;
-
-  // Check for invented components (in diagram but not in JUNO list)
-  const invented_components = [];
-  for (const component of diagram_components) {
-    if (!juno_components.includes(component)) {
-      invented_components.push(component);
-    }
-  }
-
-  if (invented_components.length > 0) {
-    validation_results.component_accuracy = false;
-    ERROR: \`❌ INVENTED COMPONENTS DETECTED: \${invented_components.join(', ')}\`;
-    ERROR: \`   These components are in diagrams but NOT in JUNO's authoritative list\`;
-    ERROR: \`   ZERO TOLERANCE: All diagram components MUST come from JUNO report\`;
-  } else {
-    LOG: \`  ✅ Component accuracy verified: All diagram components from JUNO list\`;
-  }
-
-  // Also check for missing components (in JUNO but not in diagram)
-  const missing_components = [];
-  for (const component of juno_components) {
-    if (!diagram_components.has(component)) {
-      missing_components.push(component);
-    }
-  }
-
-  if (missing_components.length > 0) {
-    WARNING: \`⚠️ Missing components (in JUNO but not in diagrams): \${missing_components.join(', ')}\`;
-    WARNING: \`   This may indicate incomplete diagram coverage\`;
-  }
-}
-
-LOG: "";
-
-// Overall validation
-const all_passed = Object.values(validation_results).every(v => v === true);
-
-LOG: "Self-Validation Results:";
-LOG: \`  Files created: \${validation_results.files_created ? "✅" : "❌"}\`;
-LOG: \`  Expected count: \${validation_results.expected_count_met ? "✅" : "❌"}\`;
-LOG: \`  No placeholders: \${validation_results.no_placeholders ? "✅" : "❌"}\`;
-LOG: \`  Mermaid valid: \${validation_results.mermaid_valid ? "✅" : "❌"}\`;
-LOG: \`  Content length: \${validation_results.min_content_length ? "✅" : "❌"}\`;
-LOG: \`  Component accuracy: \${validation_results.component_accuracy ? "✅" : "❌"}\`;
-LOG: "";
-
-if (!all_passed) {
-  ERROR: "";
-  ERROR: "❌ APO-1 SELF-VALIDATION FAILED";
-  ERROR: "";
-  ERROR: "Validation Failures:";
-
-  if (!validation_results.files_created) {
-    ERROR: "   - Expected files not created";
-  }
-  if (!validation_results.expected_count_met) {
-    ERROR: \`   - File count mismatch (expected: \${expected_count}, actual: \${actual_count})\`;
-  }
-  if (!validation_results.no_placeholders) {
-    ERROR: "   - Template placeholders remaining in output";
-    for (const issue of placeholder_issues) {
-      ERROR: \`     * \${issue.file}: \${issue.placeholders.join(', ')}\`;
-    }
-  }
-  if (!validation_results.mermaid_valid) {
-    ERROR: "   - Invalid Mermaid syntax detected";
-  }
-  if (!validation_results.min_content_length) {
-    ERROR: "   - Files with insufficient content detected";
-  }
-  if (!validation_results.component_accuracy) {
-    ERROR: "   - Component accuracy failed: Invented components detected in diagrams";
-    ERROR: "     Components in diagrams MUST match JUNO's authoritative list";
-  }
-
-  ERROR: "";
-  ERROR: "ABORTING APO-1 EXECUTION";
-  ERROR: "Cannot proceed with invalid documentation.";
-  ERROR: "";
-  ERROR: "Root Cause Analysis:";
-  ERROR: "This failure indicates one of:";
-  ERROR: "  1. JUNO report was incomplete (missing data)";
-  ERROR: "  2. Template access failed (file not found)";
-  ERROR: "  3. Variable replacement logic failed";
-  ERROR: "  4. File write operation failed";
-  ERROR: "";
-  ERROR: "Recommended Action:";
-  ERROR: "  1. Review JUNO report completeness";
-  ERROR: "  2. Verify template paths exist";
-  ERROR: "  3. Check disk space and permissions";
-  ERROR: "";
-
-  // CRITICAL: Actually abort by returning error status
-  return {
-    status: "FAILED",
-    agent: "APO-1",
-    reason: "Self-validation failed",
-    details: validation_results,
-    files_created: 0
-  };
-}
-
-// Only reach this point if validation passed
-LOG: "";
-LOG: "✅ APO-1 SELF-VALIDATION PASSED";
-LOG: "";
-LOG: "APO-1 Completion Summary:";
-LOG: \`Diagrams created: \${created_diagrams.length}\`;
-for (const file of created_diagrams) {
-  LOG: \`  ✅ \${file}\`;
-}
+LOG: "Status: COMPLETE ✅";
 LOG: "";
 \`\`\`
 
-## Critical Requirements
+---
 
-- ✅ **Read JUNO's report** - All information should be pre-filled
-- ✅ **Activate fallback** if information missing (don't ABORT)
-- ✅ **Create EVERY diagram** marked "Required: YES"
-- ✅ **Use templates** when available - generate from scratch if missing
-- ✅ **Replace ALL variables** - No {{PLACEHOLDERS}} in output
-- ✅ **Write to correct paths** - Use output paths from report
-- ✅ **Self-validate** - Run validation checks before returning
-- ✅ **Handle errors** per tier system (ABORT/WARN/LOG)
+## Completion Summary
 
-## Completion
-
-Return a summary of what you created:
+**Return summary in this format:**
 
 \`\`\`
 APO-1: Architecture Diagrams Complete
 
 Files Created:
-- docs/images/architecture-mvc-flow.md (MVC flow diagram)
-- docs/images/database-schema.md (ER diagram with 8 entities)
-- docs/images/api-endpoint-flow.md (30 endpoints)
-- docs/images/component-hierarchy.md (11 components)
+- docs/architecture/diagrams/mvc-flow.md (MVC flow diagram)
+- docs/architecture/diagrams/database-er.md (ER diagram with X entities)
+- docs/architecture/diagrams/api-endpoint-map.md (X endpoints)
+- docs/architecture/diagrams/component-hierarchy.md (X components)
 
-Total: 4 diagram files created
+Total: [N] diagram files created
 
 Self-Validation: ✅ PASSED
 
@@ -1572,997 +1293,468 @@ Status: Section A complete
 \`\`\`
   `
 });
-
+</invoke>
 // APO Instance 2: API Documentation & Guides
 Task({
   subagent_type: "APO",
   description: "Generate API docs and guides",
-  prompt: `
-# APO-2: API Documentation & Guide Generation
+  prompt: \`
+# APO-2: API Documentation & Development Guides
 
 **Your Mission:** Generate API documentation and developer guides using templates and JUNO's audit report.
 
-## Error Handling Protocol (Rec 5)
-
-**Tier 1: ABORT Conditions (Stop immediately, return error)**
-
-ABORT if:
-- ❌ Cannot read codebase (permission denied, files missing at system level)
-- ❌ Cannot write output files (permission denied, disk full, directory creation fails)
-- ❌ Critical templates completely missing AND cannot generate from scratch
-
-**Tier 2: WARN and CONTINUE (Report issue, activate fallback)**
-
-WARN if:
-- ⚠️ JUNO section B incomplete/missing (use direct codebase analysis - see Phase 1.5)
-- ⚠️ Some variable values missing (infer from codebase: package.json, route files, .env)
-- ⚠️ Template file missing but can generate guide from scratch
-- ⚠️ Testing framework not specified (detect from package.json)
-
-**Tier 3: LOG INFO (Normal process updates)**
-
-LOG if:
-- ℹ️ Reading templates
-- ℹ️ Creating guide files
-- ℹ️ Replacing variables
-- ℹ️ Writing output files
-
-**Error Response Format:**
-
-\`\`\`javascript
-if (TIER_1_ERROR) {
-  ERROR: "";
-  ERROR: "❌ APO-2 CRITICAL ERROR: [Error description]";
-  ERROR: "Cannot proceed with documentation generation.";
-  ERROR: "";
-  return "APO-2 ABORTED: [Reason]";
-}
-
-if (TIER_2_ERROR) {
-  WARNING: "";
-  WARNING: "⚠️ APO-2 WARNING: [Issue description]";
-  WARNING: "Activating fallback mechanism...";
-  WARNING: "";
-  // Continue with fallback
-}
-\`\`\`
-
-## Step 1: Read JUNO's Audit Report
-
-Read the audit report at: **${audit_report_path}**
-
-Find **SECTION B: API DOCUMENTATION & GUIDES**
-
-This section contains your complete checklist of documentation to create.
-
-**Check for Fallback Mode:**
-\`\`\`javascript
-if (global.trinity_docs_session.juno_incomplete) {
-  LOG: "";
-  LOG: "⚠️ FALLBACK MODE ACTIVATED";
-  LOG: "JUNO report incomplete - will use direct codebase analysis for missing data";
-  LOG: "";
-}
-\`\`\`
-
-**Rec 12: Template Existence Verification**
-\`\`\`javascript
-LOG: "";
-LOG: "Verifying template accessibility...";
-
-const template_paths = {
-  getting_started: "trinity/templates/documentation/guides/getting-started.md",
-  api_development: "trinity/templates/documentation/guides/api-development.md",
-  deployment: "trinity/templates/documentation/guides/deployment.md",
-  contributing: "trinity/templates/documentation/guides/contributing.md",
-  api_readme: "trinity/templates/documentation/api-docs/README.md"
-};
-
-const template_status = {};
-let templates_found = 0;
-let templates_missing = 0;
-
-for (const [name, path] of Object.entries(template_paths)) {
-  if (exists(path)) {
-    template_status[name] = "FOUND";
-    templates_found++;
-    LOG: \`  ✅ Template available: \${name} (\${path})\`;
-  } else {
-    template_status[name] = "MISSING";
-    templates_missing++;
-    WARNING: \`  ⚠️ Template missing: \${name} (\${path}) - will generate from scratch\`;
-  }
-}
-
-LOG: "";
-LOG: \`Template Availability: \${templates_found} found, \${templates_missing} missing\`;
-
-if (templates_missing > 0) {
-  WARNING: "";
-  WARNING: \`⚠️ \${templates_missing} template(s) missing - activating generation fallback\`;
-  WARNING: "This is NOT a failure - documentation will be generated from scratch";
-  WARNING: "";
-}
-
-LOG: "";
-\`\`\`
-
-**Rec 13: Context Size Monitoring**
-\`\`\`javascript
-LOG: "Monitoring context size...";
-
-const juno_report_content = Read("${audit_report_path}");
-const juno_full_size = juno_report_content.length;
-
-// Find Section B boundaries
-const section_b_start = juno_report_content.indexOf("## SECTION B:");
-const section_c_start = juno_report_content.indexOf("## SECTION C:");
-
-let section_b_size = 0;
-if (section_b_start !== -1 && section_c_start !== -1) {
-  section_b_size = section_c_start - section_b_start;
-} else if (section_b_start !== -1) {
-  section_b_size = juno_report_content.length - section_b_start;
-}
-
-LOG: \`  Full JUNO report: \${(juno_full_size / 1024).toFixed(2)} KB (\${juno_full_size} chars)\`;
-LOG: \`  Section B (my section): \${(section_b_size / 1024).toFixed(2)} KB (\${section_b_size} chars)\`;
-LOG: \`  Context overhead: This prompt + report section = ~\${((section_b_size + 15000) / 1024).toFixed(2)} KB\`;
-
-if (section_b_size > 50000) {
-  WARNING: "";
-  WARNING: \`⚠️ Large context detected: Section B is \${(section_b_size / 1024).toFixed(2)} KB\`;
-  WARNING: "Consider JUNO optimization if this causes performance issues";
-  WARNING: "";
-}
-
-LOG: "";
-\`\`\`
-
-## CRITICAL REQUIREMENT: Complete Content Only (Rec 7)
-
-**ZERO TOLERANCE FOR PLACEHOLDER CONTENT**
-
-The following are **STRICTLY PROHIBITED** in all core documentation:
-- "Coming Soon" sections or messages
-- "TODO" or "TBD" placeholders
-- "Will be added later" references
-- Empty sections with no content
-- Links to guides that don't exist
-- "See [future guide]" references
-- "To be documented" notes
-- Stub content or outlines without substance
-
-**Core Documentation Files (MUST BE COMPLETE):**
-1. docs/guides/getting-started.md
-2. docs/api/development-guide.md
-3. docs/guides/deployment.md
-4. docs/guides/contributing.md
-
-**Allowed References to Future Work:**
-You MAY include a final section titled "Future Enhancements" or "Roadmap" that mentions planned features, but:
-1. This section must be AFTER all core content
-2. Must be clearly labeled as "future" or "planned"
-3. Must not use "coming soon" language
-4. Must not be a substitute for core documentation
-
-**Acceptable Example:**
-\`\`\`markdown
-## Future Enhancements
-
-The following enhancements are planned for future releases:
-- Advanced monitoring with Prometheus integration
-- Horizontal scaling guide for containerized deployments
-- Security hardening checklist for production environments
-
-These are aspirational features and not required for current deployment.
-\`\`\`
-
-**Unacceptable Examples:**
-\`\`\`markdown
-### Monitoring (Coming Soon)
-[Will be added in future update]
-
-### Security
-See the security guide (coming soon) for details.
-
-## Deployment
-TODO: Add deployment steps
-\`\`\`
-
-**Self-Validation Check:**
-Before completing, scan ALL generated files for prohibited content:
-\`\`\`javascript
-const prohibited_patterns = [
-  /coming soon/gi,
-  /to be added/gi,
-  /will be added/gi,
-  /\[TODO\]/gi,
-  /\[TBD\]/gi,
-  /to be documented/gi,
-  /see .* \(coming soon\)/gi
-];
-
-for (const file of all_guide_files) {
-  const content = Read(file);
-  for (const pattern of prohibited_patterns) {
-    if (pattern.test(content)) {
-      ERROR: \`❌ Prohibited stub content in \${file}: \${content.match(pattern)[0]}\`;
-      validation_results.complete_content = false;
-    }
-  }
-}
-\`\`\`
-
-**If stub content is detected, you MUST:**
-1. Remove the stub section entirely, OR
-2. Replace it with actual, complete content using available information, OR
-3. Move it to a "Future Enhancements" section at the end
-
-**DO NOT return completion with stub content remaining.**
+**Agent Designation:** APO-2 (Section B)
 
 ---
 
-## Step 2: Generate Each Required File
+## Workflow Overview
 
-For EACH file marked "Required: YES" in Section B:
+Follow the **5-Phase APO Workflow** defined in:
+📄 **[trinity/templates/documentation/processes/apo-workflow-common.md](trinity/templates/documentation/processes/apo-workflow-common.md)**
 
-### Process:
-1. Read template file from path provided in SECTION B
-2. Extract ALL variable values from SECTION B (JUNO pre-fills these)
-3. Replace {{VARIABLES}} with actual values using global regex replacement
-4. Apply fallback detection if any {{PLACEHOLDERS}} remain
-5. Write final documentation to output path
-6. Validate no placeholders remain
+1. **Phase 1:** Read JUNO Report (\`global.trinity_docs_session.audit_report\`)
+2. **Phase 2:** Extract Template Variables (from Section B)
+3. **Phase 3:** Process Templates (generate guides and API docs)
+4. **Phase 4:** Write Files (to \`docs/guides/\` and \`docs/api/\`)
+5. **Phase 5:** Self-Validation (quality checks)
 
-### Implementation:
-\`\`\`javascript
-// For each file in SECTION B marked "Required: YES":
-const template = Read(file_spec.template_path);
-let output = template;
+---
 
-// Replace all variables from SECTION B
-for (const [variable, value] of Object.entries(file_spec.variables)) {
-  output = output.replace(new RegExp(`\\{\\{${variable}\\}\\}`, 'g'), value);
+## Error Handling
+
+**Use 3-Tier Error System** defined in:
+📄 **[trinity/templates/documentation/processes/error-handling-protocol.md](trinity/templates/documentation/processes/error-handling-protocol.md)**
+
+- **Tier 1 (ABORT):** JUNO report missing, cannot read templates, write permission denied
+- **Tier 2 (WARN):** JUNO incomplete, test framework unknown, deployment platform uncertain
+- **Tier 3 (LOG):** Progress updates, guide creation confirmations
+
+---
+
+## APO-2 Specific Tasks
+
+**See detailed instructions in:**
+📄 **[trinity/templates/documentation/processes/apo-guide-specific.md](trinity/templates/documentation/processes/apo-guide-specific.md)**
+
+### Guides to Generate:
+
+1. **getting-started.md** (REQUIRED, ≥50 lines) - Installation, configuration, running
+2. **api-development.md** (if API exists) - API development guide with examples
+3. **deployment.md** (REQUIRED, ≥50 lines) - Deployment instructions
+4. **contributing.md** (REQUIRED, ≥30 lines) - Contribution guidelines
+5. **docs/api/README.md** (if API exists) - Complete API reference documentation
+
+### Template Variables:
+
+- \`{{PROJECT_NAME}}\` - From package.json
+- \`{{FRAMEWORK}}\` - Express, NestJS, etc.
+- \`{{TEST_FRAMEWORK}}\` - Jest, Vitest, Mocha
+- \`{{TEST_COMMAND}}\` - \`npm test\` or equivalent
+- \`{{BUILD_COMMAND}}\` - \`npm run build\` or equivalent
+- \`{{START_COMMAND}}\` - \`npm start\` or equivalent
+- \`{{DEPLOYMENT_PLATFORM}}\` - Vercel, AWS, Docker, etc.
+
+---
+
+## Fallback Mechanisms
+
+**If JUNO report incomplete** (\`global.trinity_docs_session.juno_incomplete === true\`):
+
+**Use discovery templates for direct analysis:**
+- 📄 **Framework Detection:** [trinity/templates/documentation/discovery/framework-detection.md](trinity/templates/documentation/discovery/framework-detection.md)
+- 📄 **API Endpoint Scanner:** [trinity/templates/documentation/discovery/api-endpoint-scanner.md](trinity/templates/documentation/discovery/api-endpoint-scanner.md)
+
+**Example Fallback:**
+\\\`\\\`\\\`javascript
+if (global.trinity_docs_session.juno_incomplete) {
+  LOG: "⚠️ FALLBACK MODE ACTIVATED";
+
+  // Detect test framework from package.json
+  const pkg = JSON.parse(Read('package.json'));
+  const test_framework = pkg.devDependencies?.jest ? "Jest" :
+                         pkg.devDependencies?.vitest ? "Vitest" :
+                         pkg.devDependencies?.mocha ? "Mocha" : "Unknown";
+
+  LOG: \\\`⚠️ FALLBACK: Detected test framework: \\\${test_framework}\\\`;
+}
+\\\`\\\`\\\`
+
+**See full fallback patterns in:**
+📄 **[trinity/templates/documentation/processes/apo-guide-specific.md](trinity/templates/documentation/processes/apo-guide-specific.md)** (lines 150-237)
+
+---
+
+## Template Processing
+
+**Read templates from:** \`trinity/templates/documentation/guides/\`
+
+**Process each template:**
+1. Read template content
+2. Replace all \`{{VARIABLES}}\` with values from JUNO report
+3. Check for unreplaced placeholders (quality issue)
+4. Write to output path
+
+**Example:**
+\\\`\\\`\\\`javascript
+const template = Read('trinity/templates/documentation/guides/getting-started.md');
+
+let output = template
+  .replace(/{{PROJECT_NAME}}/g, variables.PROJECT_NAME)
+  .replace(/{{FRAMEWORK}}/g, variables.FRAMEWORK)
+  .replace(/{{TEST_COMMAND}}/g, variables.TEST_COMMAND);
+
+// Check for unreplaced variables
+const unreplaced = output.match(/{{[A-Z_]+}}/g);
+if (unreplaced) {
+  WARNING: \\\`⚠️ Unreplaced variables in output: \\\${unreplaced.join(', ')}\\\`;
 }
 
-// Fallback: Detect missing values from codebase
-if (output.includes("{{")) {
-  output = applyFallbackDetection(output); // See Tier 2 error handling
-}
+Write('docs/guides/getting-started.md', output);
+\\\`\\\`\\\`
 
-Write(file_spec.output_path, output);
-LOG: \`✅ Created: \${file_spec.output_path}\`;
-\`\`\`
+---
 
-**Note:** Templates are comprehensive. JUNO SECTION B provides all values. Fallback activates automatically for missing data.
+## Self-Validation
 
-## Step 3: Self-Validation (Rec 6)
+**Run comprehensive self-validation** after generating guides:
 
-After generating all documentation, you MUST verify:
+📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** - APO-2 Checklist
 
-\`\`\`javascript
-LOG: "";
+**Key Checks:**
+- [ ] All expected guides created (4-5 files depending on project type)
+- [ ] File ≥50 lines minimum (getting-started, deployment)
+- [ ] File ≥30 lines minimum (contributing)
+- [ ] Contains ≥2 code blocks per guide
+- [ ] Zero placeholders (\`{{VARIABLE}}\`, \`[TODO]\`)
+- [ ] Internal links valid
+- [ ] Framework-specific examples accurate
+
+**Validation Output:**
+\\\`\\\`\\\`javascript
 LOG: "=== APO-2 SELF-VALIDATION ===";
 LOG: "";
+LOG: \\\`Files created: \\\${created_guides.length}/\\\${expected_count}\\\`;
 
-const created_guides = Glob({pattern: "docs/guides/*.md"});
-const created_api_docs = Glob({pattern: "docs/api/*.md"});
-const all_docs = [...created_guides, ...created_api_docs];
-
-// Validation checks
-const validation_results = {
-  files_created: all_docs.length > 0,
-  expected_count_met: true,
-  no_placeholders: true,
-  min_content_length: true,
-  referenced_files_exist: true,
-  complete_content: true,
-  endpoint_completeness: true // Rec 10: Verify all endpoints documented
-};
-
-// Check 1: All expected files created
-const juno_report = Read("${audit_report_path}");
-const section_b = juno_report.match(/SECTION B:.*?(?=SECTION C:)/s);
-if (section_b) {
-  const expected_count = (section_b[0].match(/Required: YES/g) || []).length;
-  validation_results.expected_count_met = all_docs.length === expected_count;
-
-  if (!validation_results.expected_count_met) {
-    ERROR: \`❌ Expected \${expected_count} files, created \${all_docs.length}\`;
-  }
-}
-
-// Check 2: No {{PLACEHOLDERS}} in any file
-for (const file of all_docs) {
+for (const file of created_guides) {
   const content = Read(file);
-  const placeholders = content.match(/\{\{[^}]+\}\}/g);
 
-  if (placeholders) {
-    validation_results.no_placeholders = false;
-    ERROR: \`❌ Placeholders remaining in \${file}: \${placeholders.join(", ")}\`;
+  // Check 1: No placeholders
+  if (content.match(/{{[^}]+}}/g)) {
+    ERROR: \\\`❌ Placeholders found in \\\${file}\\\`;
   }
 
-  // Check 3: Substantial content
-  if (content.length < 200) {
-    validation_results.min_content_length = false;
-    ERROR: \`❌ Content too short in \${file} (\${content.length} chars)\`;
+  // Check 2: Minimum content length
+  const line_count = content.split('\\\\n').length;
+  const min_lines = file.includes('getting-started') || file.includes('deployment') ? 50 : 30;
+  if (line_count < min_lines) {
+    WARNING: \\\`⚠️ \\\${file} too short: \\\${line_count} lines (minimum \\\${min_lines})\\\`;
   }
 
-  // Check 4: Internal links valid (basic check for file:// or docs/ paths)
-  const doc_links = content.match(/\[([^\]]+)\]\(docs\/[^)]+\)/g);
-  if (doc_links) {
-    for (const link of doc_links) {
-      const link_path = link.match(/\(docs\/([^)]+)\)/)[1];
-      const full_path = "docs/" + link_path;
-
-      if (!exists(full_path)) {
-        validation_results.referenced_files_exist = false;
-        WARNING: \`⚠️ Link target doesn't exist: \${full_path} (referenced in \${file})\`;
-      }
-    }
-  }
-
-  // Check 5: No stub content (Rec 7)
-  const prohibited_patterns = [
-    /coming soon/gi,
-    /to be added/gi,
-    /will be added/gi,
-    /\[TODO\]/gi,
-    /\[TBD\]/gi,
-    /to be documented/gi,
-    /see .* \(coming soon\)/gi
-  ];
-
-  for (const pattern of prohibited_patterns) {
-    if (pattern.test(content)) {
-      const matches = content.match(pattern);
-      if (matches) {
-        validation_results.complete_content = false;
-        ERROR: \`❌ Prohibited stub content in \${file}: \${matches[0]}\`;
-      }
-    }
+  // Check 3: Code examples present
+  const code_blocks = (content.match(/\\\`\\\`\\\`/g) || []).length / 2;
+  if (code_blocks < 2) {
+    WARNING: \\\`⚠️ \\\${file} has only \\\${code_blocks} code blocks (minimum 2)\\\`;
   }
 }
 
-// Check 6: Endpoint Completeness (±3 tolerance)
-const juno_endpoint_count = parseInt(juno_report_content.match(/API Endpoints:\s*(\d+)/)?.[1] || 0);
-if (juno_endpoint_count > 0) {
-  const api_guide = created_guides.find(f => f.includes('api-development'));
-  if (api_guide) {
-    const documented_count = (Read(api_guide).match(/(GET|POST|PUT|DELETE|PATCH)/g) || []).length;
-    if (Math.abs(documented_count - juno_endpoint_count) > 3) {
-      validation_results.endpoint_completeness = false;
-      ERROR: \`❌ Endpoint mismatch: JUNO=\${juno_endpoint_count}, Docs=\${documented_count}\`;
-    }
-  }
-}
+LOG: "Status: COMPLETE ✅";
+LOG: "";
+\\\`\\\`\\\`
 
-// Validation summary
-const all_passed = Object.values(validation_results).every(v => v === true);
+---
 
-if (!all_passed) {
-  ERROR: "❌ APO-2 SELF-VALIDATION FAILED";
-  for (const [check, passed] of Object.entries(validation_results)) {
-    if (!passed) ERROR: \`   - \${check} failed\`;
-  }
-  ERROR: "Review JUNO report completeness and template paths";
-  return { status: "FAILED", agent: "APO-2", reason: "Validation failed", details: validation_results };
-}
+## Completion Summary
 
-LOG: "✅ APO-2 SELF-VALIDATION PASSED";
-for (const file of all_docs) {
-  LOG: \`  ✅ \${file}\`;
-}
-\`\`\`
+**Return summary in this format:**
 
-## Critical Requirements
-
-- ✅ **Read JUNO's report** - All information should be pre-filled
-- ✅ **Activate fallback** if information missing (don't ABORT)
-- ✅ **Create EVERY file** marked "Required: YES"
-- ✅ **Use templates** when available - generate from scratch if missing
-- ✅ **Replace ALL variables** - No {{PLACEHOLDERS}} in output
-- ✅ **Write to correct paths** - Use output paths from report
-- ✅ **Self-validate** - Run validation checks before returning
-- ✅ **Handle errors** per tier system (ABORT/WARN/LOG)
-
-## Completion
-
-Return a summary of what you created:
-
-\`\`\`
+\\\`\\\`\\\`
 APO-2: API Documentation & Guides Complete
 
 Files Created:
-- docs/api/README.md (30 endpoints documented)
-- docs/guides/getting-started.md (quick start guide)
-- docs/guides/api-development.md (API development guide)
-- docs/guides/deployment.md (deployment instructions)
-- docs/guides/contributing.md (contribution guidelines)
+- docs/guides/getting-started.md (62 lines, 3 code blocks)
+- docs/guides/api-development.md (78 lines, 5 code blocks)
+- docs/guides/deployment.md (54 lines, 4 code blocks)
+- docs/guides/contributing.md (32 lines)
+- docs/api/README.md (91 lines, 8 endpoints documented)
 
-Total: 5 documentation files created
+Total: [N] guide files created
 
 Self-Validation: ✅ PASSED
 
 Fallback Usage: [Yes/No] ([Description if used])
 
 Status: Section B complete
-\`\`\`
-  `
+\\\`\\\`\\\`
+  \`
 });
 
 // APO Instance 3: Configuration Files
 Task({
   subagent_type: "APO",
-  description: "Generate configuration files",
-  prompt: `
-# APO-3: Configuration File Generation
+  description: "Generate config files",
+  prompt: \`
+# APO-3: Configuration Files & Setup Documentation
 
-**Your Mission:** Generate configuration and setup files using templates and JUNO's audit report.
+**Your Mission:** Generate .env.example and update README.md using templates and JUNO's audit report.
 
-## Error Handling Protocol (Rec 5)
+**Agent Designation:** APO-3 (Section C)
 
-**Tier 1: ABORT Conditions (Stop immediately, return error)**
+---
 
-ABORT if:
-- ❌ Cannot read codebase (permission denied, files missing at system level)
-- ❌ Cannot write output files (permission denied, disk full)
-- ❌ Cannot read existing README.md for updating
+## Workflow Overview
 
-**Tier 2: WARN and CONTINUE (Report issue, activate fallback)**
+Follow the **5-Phase APO Workflow** defined in:
+📄 **[trinity/templates/documentation/processes/apo-workflow-common.md](trinity/templates/documentation/processes/apo-workflow-common.md)**
 
-WARN if:
-- ⚠️ JUNO section C incomplete/missing (use direct codebase analysis - see Phase 1.5)
-- ⚠️ Environment variable keys missing (search codebase for process.env usage)
-- ⚠️ .env file doesn't exist (still create .env.example with discovered keys)
-- ⚠️ Documentation files don't exist yet (will be created by APO-2 in parallel)
+1. **Phase 1:** Read JUNO Report (\`global.trinity_docs_session.audit_report\`)
+2. **Phase 2:** Extract Template Variables (from Section C)
+3. **Phase 3:** Process Templates (generate .env.example and README updates)
+4. **Phase 4:** Write Files (to project root)
+5. **Phase 5:** Self-Validation (quality and security checks)
 
-**Tier 3: LOG INFO (Normal process updates)**
+---
 
-LOG if:
-- ℹ️ Reading .env file
-- ℹ️ Creating .env.example
-- ℹ️ Updating README.md
-- ℹ️ Validating documentation links
+## Error Handling
 
-**Error Response Format:**
+**Use 3-Tier Error System** defined in:
+📄 **[trinity/templates/documentation/processes/error-handling-protocol.md](trinity/templates/documentation/processes/error-handling-protocol.md)**
 
-\`\`\`javascript
-if (TIER_1_ERROR) {
-  ERROR: "";
-  ERROR: "❌ APO-3 CRITICAL ERROR: [Error description]";
-  ERROR: "Cannot proceed with configuration file generation.";
-  ERROR: "";
-  return "APO-3 ABORTED: [Reason]";
-}
+- **Tier 1 (ABORT):** JUNO report missing, write permission denied, **SECURITY VIOLATION** (real secrets detected)
+- **Tier 2 (WARN):** No environment variables discovered, README.md doesn't exist
+- **Tier 3 (LOG):** Progress updates, file creation confirmations
 
-if (TIER_2_ERROR) {
-  WARNING: "";
-  WARNING: "⚠️ APO-3 WARNING: [Issue description]";
-  WARNING: "Activating fallback mechanism...";
-  WARNING: "";
-  // Continue with fallback
-}
-\`\`\`
+---
 
-## Step 1: Read JUNO's Audit Report
+## APO-3 Specific Tasks
 
-Read the audit report at: **${audit_report_path}**
+**See detailed instructions in:**
+📄 **[trinity/templates/documentation/processes/apo-config-specific.md](trinity/templates/documentation/processes/apo-config-specific.md)**
 
-Find **SECTION C: CONFIGURATION & SETUP**
+### Files to Generate:
 
-This section contains your complete checklist of configuration files to create.
+1. **.env.example** (REQUIRED, ≥5 variables) - Environment variable template with **SAFE PLACEHOLDERS ONLY**
+2. **README.md** (REQUIRED, append/update) - Add Documentation, Configuration, Quick Start sections
 
-**Check for Fallback Mode:**
-\`\`\`javascript
-if (global.trinity_docs_session.juno_incomplete) {
-  LOG: "";
-  LOG: "⚠️ FALLBACK MODE ACTIVATED";
-  LOG: "JUNO report incomplete - will use direct codebase analysis for missing data";
-  LOG: "";
-}
-\`\`\`
+### Template Variables:
 
-**Rec 12: Template Existence Verification**
-\`\`\`javascript
-LOG: "";
-LOG: "Verifying template accessibility...";
+- \`{{ENV_VARIABLES}}\` - List of environment variables from codebase
+- \`{{PORT}}\` - Default port number
+- \`{{DATABASE_URL}}\` - Database connection string pattern
+- \`{{PROJECT_NAME}}\` - From package.json
+- \`{{DESCRIPTION}}\` - Project description
 
-const template_paths = {
-  env_example: "trinity/templates/documentation/config/env-example.md",
-  readme_update: "trinity/templates/documentation/config/readme-update.md"
-};
+---
 
-const template_status = {};
-let templates_found = 0;
-let templates_missing = 0;
+## CRITICAL: Security Requirements
 
-for (const [name, path] of Object.entries(template_paths)) {
-  if (exists(path)) {
-    template_status[name] = "FOUND";
-    templates_found++;
-    LOG: \`  ✅ Template available: \${name} (\${path})\`;
-  } else {
-    template_status[name] = "MISSING";
-    templates_missing++;
-    WARNING: \`  ⚠️ Template missing: \${name} (\${path}) - will generate from scratch\`;
+**NEVER include real secrets in .env.example:**
+
+❌ **Forbidden:**
+- Real API keys, passwords, JWT secrets, database credentials
+- Production values, live keys, actual tokens
+
+✅ **Required:**
+- Safe placeholders: \`your_api_key_here\`, \`your_jwt_secret_here\`, \`change_in_production\`
+- Example values: \`example@email.com\`, \`http://localhost:3000\`, \`5432\`
+
+**Security Validation:**
+\\\`\\\`\\\`javascript
+const dangerous_patterns = [
+  /sk_live_[a-zA-Z0-9]+/,  // Stripe live keys
+  /AKIA[0-9A-Z]{16}/,      // AWS access keys
+  /AIza[0-9A-Za-z\\\\-_]{35}/,  // Google API keys
+  /[0-9a-f]{32}/,          // MD5 hashes (potential secrets)
+];
+
+const env_content = Read('.env.example');
+for (const pattern of dangerous_patterns) {
+  if (pattern.test(env_content)) {
+    ERROR: "❌ SECURITY VIOLATION - Real secrets detected in .env.example";
+    ERROR: "This is a CRITICAL error - must use safe placeholders only";
+    ABORT_COMMAND();
   }
 }
 
-LOG: "";
-LOG: \`Template Availability: \${templates_found} found, \${templates_missing} missing\`;
+LOG: "✅ Security check passed: No real secrets in .env.example";
+\\\`\\\`\\\`
 
-if (templates_missing > 0) {
-  WARNING: "";
-  WARNING: \`⚠️ \${templates_missing} template(s) missing - activating generation fallback\`;
-  WARNING: "This is NOT a failure - configuration files will be generated from scratch";
-  WARNING: "";
+**See full security validation in:**
+📄 **[trinity/templates/documentation/processes/apo-config-specific.md](trinity/templates/documentation/processes/apo-config-specific.md)** (lines 61-78)
+
+---
+
+## Fallback Mechanisms
+
+**If JUNO report incomplete** (\`global.trinity_docs_session.juno_incomplete === true\`):
+
+**Use discovery template for direct analysis:**
+- 📄 **Env Variable Extraction:** [trinity/templates/documentation/discovery/env-variable-extraction.md](trinity/templates/documentation/discovery/env-variable-extraction.md)
+
+**Example Fallback:**
+\\\`\\\`\\\`javascript
+if (global.trinity_docs_session.juno_incomplete) {
+  LOG: "⚠️ FALLBACK MODE ACTIVATED";
+
+  // Extract env variables from codebase
+  const env_files = ['.env', '.env.local', '.env.example'];
+  const discovered_vars = [];
+
+  for (const file of env_files) {
+    if (exists(file)) {
+      const content = Read(file);
+      const lines = content.split('\\\\n');
+      for (const line of lines) {
+        if (line.match(/^[A-Z_]+=/) {
+          const var_name = line.split('=')[0];
+          discovered_vars.push(var_name);
+        }
+      }
+    }
+  }
+
+  // Also search for process.env usage
+  const code_files = Glob('src/**/*.{ts,js}');
+  for (const file of code_files) {
+    const content = Read(file);
+    const matches = content.match(/process\\\\.env\\\\.([A-Z_]+)/g);
+    if (matches) {
+      for (const match of matches) {
+        const var_name = match.replace('process.env.', '');
+        if (!discovered_vars.includes(var_name)) {
+          discovered_vars.push(var_name);
+        }
+      }
+    }
+  }
+
+  LOG: \\\`⚠️ FALLBACK: Discovered \\\${discovered_vars.length} environment variables\\\`;
 }
+\\\`\\\`\\\`
 
-LOG: "";
-\`\`\`
+---
 
-**Rec 13: Context Size Monitoring**
-\`\`\`javascript
-LOG: "Monitoring context size...";
+## README.md Updates
 
-const juno_report_content = Read("${audit_report_path}");
-const juno_full_size = juno_report_content.length;
+**IMPORTANT: Do NOT overwrite README.md - only append/update sections**
 
-// Find Section C boundaries
-const section_c_start = juno_report_content.indexOf("## SECTION C:");
-const section_end = juno_report_content.length;
+**Sections to Add:**
+- \`## Documentation\` - Links to docs/guides/
+- \`## Configuration\` - Instructions for .env setup
+- \`## Quick Start\` - Fast getting started steps
 
-let section_c_size = 0;
-if (section_c_start !== -1) {
-  section_c_size = section_end - section_c_start;
-}
+**Example:**
+\\\`\\\`\\\`javascript
+const readme_exists = exists('README.md');
 
-LOG: \`  Full JUNO report: \${(juno_full_size / 1024).toFixed(2)} KB (\${juno_full_size} chars)\`;
-LOG: \`  Section C (my section): \${(section_c_size / 1024).toFixed(2)} KB (\${section_c_size} chars)\`;
-LOG: \`  Context overhead: This prompt + report section = ~\${((section_c_size + 12000) / 1024).toFixed(2)} KB\`;
+if (readme_exists) {
+  const existing_readme = Read('README.md');
 
-if (section_c_size > 50000) {
-  WARNING: "";
-  WARNING: \`⚠️ Large context detected: Section C is \${(section_c_size / 1024).toFixed(2)} KB\`;
-  WARNING: "Consider JUNO optimization if this causes performance issues";
-  WARNING: "";
-}
+  // Check if sections already exist
+  if (!existing_readme.includes('## Documentation')) {
+    const documentation_section = \\\`
+## Documentation
 
-LOG: "";
-\`\`\`
+Complete documentation is available in the [\\\`docs/\\\`](docs/) directory:
 
-## Step 2: Generate Each Required File
+- [Getting Started Guide](docs/guides/getting-started.md)
+- [API Development](docs/guides/api-development.md)
+- [Deployment Guide](docs/guides/deployment.md)
+- [Contributing Guidelines](docs/guides/contributing.md)
 
-For EACH file marked "Required: YES" in Section C:
+\\\`;
 
-### Process for .env.example:
+    // Append sections to README
+    const updated_readme = existing_readme + '\\\\n' + documentation_section;
+    Write('README.md', updated_readme);
 
-\`\`\`javascript
-// 1. Read template from SECTION C
-const template_path = "trinity/templates/documentation/config/env-example-generator.md";
-const template = Read(template_path);
-
-// 2. Extract variables from SECTION C
-const env_keys = file_spec.variables.ENV_KEYS; // From JUNO SECTION C
-const project_name = file_spec.variables.PROJECT_NAME;
-const port = file_spec.variables.PORT;
-
-// 3. Apply rule-based generation from template
-let env_example_content = "";
-for (const key of env_keys) {
-  const original_value = process.env[key] || "";
-  const example_value = applyEnvRules(key, original_value, {
-    project_name, 
-    port, 
-    discovered_endpoints: file_spec.variables.DISCOVERED_ENDPOINTS
-  });
-  env_example_content += \`\${key}=\${example_value}\n\`;
-}
-
-// 4. Write output
-Write(".env.example", env_example_content);
-LOG: "✅ Created: .env.example";
-\`\`\`
-
-**Note:** Template contains all 11 rules. Apply in priority order (Rule 1 = highest). Fallback activates if keys missing from SECTION C.
-
-### Process for README update:
-
-\`\`\`javascript
-// 1. Wait for filesystem stabilization (APO-2 runs in parallel)
-await new Promise(resolve => setTimeout(resolve, 500));
-
-// 2. Discover documentation files
-const doc_files = [
-  ...Glob({pattern: "docs/guides/*.md"}),
-  ...Glob({pattern: "docs/api/*.md"}),
-  ...Glob({pattern: "docs/images/*.md"})
-];
-
-// 3. Validate file count matches JUNO expectations
-const juno_report = Read("${audit_report_path}");
-const expected_count = (juno_report.match(/Output: docs\//g) || []).length;
-if (doc_files.length < expected_count) {
-  ERROR: \`❌ File check failed: Expected \${expected_count}, found \${doc_files.length}\`;
-  return { status: "FAILED", agent: "APO-3", reason: "Documentation files missing" };
-}
-
-// 4. Build documentation section
-let doc_section = "\n## Documentation\n\n";
-for (const file_path of doc_files) {
-  const content = Read(file_path);
-  const title = content.match(/^#\s+(.+)$/m)?.[1] || path.basename(file_path, '.md');
-  doc_section += \`- [\${title}](\${file_path})\n\`;
-}
-
-// 5. Update README
-let readme = Read("README.md");
-if (readme.includes("## Documentation")) {
-  readme = readme.replace(/## Documentation[\s\S]*?(?=\n## |$)/, doc_section);
+    LOG: "✅ Updated README.md with documentation links";
+  } else {
+    LOG: "ℹ️ README.md already contains documentation section - skipping";
+  }
 } else {
-  readme += "\n" + doc_section;
+  WARNING: "⚠️ README.md doesn't exist - creating new README";
+  // Create minimal README with all sections
 }
-Write("README.md", readme);
+\\\`\\\`\\\`
 
-LOG: \`✅ Updated README.md with \${doc_files.length} documentation links\`;
-\`\`\`
+---
 
-**Note:** Waits 500ms for APO-2 file writes. Validates file count before adding links. No broken links possible (only existing files linked).
-## Step 3: Self-Validation (Rec 6)
+## Self-Validation
 
-After generating all files, you MUST verify:
+**Run comprehensive self-validation** after generating config files:
 
-\`\`\`javascript
-LOG: "";
+📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** - APO-3 Checklist
+
+**Key Checks:**
+- [ ] .env.example created with ≥5 variables (or all discovered)
+- [ ] Variables grouped by purpose (# comment headers)
+- [ ] All values are safe placeholders (no real secrets)
+- [ ] **SECURITY VALIDATED:** Zero real API keys, passwords, tokens
+- [ ] README.md updated (not overwritten)
+- [ ] Documentation section added with links
+- [ ] Configuration section added with .env instructions
+
+**Validation Output:**
+\\\`\\\`\\\`javascript
 LOG: "=== APO-3 SELF-VALIDATION ===";
 LOG: "";
 
-// Validation checks
-const validation_results = {
-  env_example_created: false,
-  readme_updated: false,
-  no_placeholders: true,
-  min_content_length: true,
-  readme_links_valid: true
-};
-
 // Check 1: .env.example created
-const env_example_paths = [".env.example", "server/.env.example"];
-for (const path of env_example_paths) {
-  if (exists(path)) {
-    validation_results.env_example_created = true;
+if (!exists('.env.example')) {
+  ERROR: "❌ .env.example not created";
+}
 
-    const env_content = Read(path);
+// Check 2: Security validation
+const env_content = Read('.env.example');
+const dangerous_patterns = [
+  /sk_live_[a-zA-Z0-9]+/,
+  /AKIA[0-9A-Z]{16}/,
+  /AIza[0-9A-Za-z\\\\-_]{35}/
+];
 
-    // Check for placeholders
-    if (env_content.includes("{{") || env_content.includes("[YOUR_")) {
-      validation_results.no_placeholders = false;
-      ERROR: \`❌ Placeholders remaining in \${path}\`;
-    }
-
-    // Check for substantial content
-    if (env_content.length < 50) {
-      validation_results.min_content_length = false;
-      ERROR: \`❌ .env.example too short (\${env_content.length} chars)\`;
-    }
+for (const pattern of dangerous_patterns) {
+  if (pattern.test(env_content)) {
+    ERROR: "❌ SECURITY VIOLATION - Real secrets in .env.example";
+    ABORT_COMMAND();
   }
 }
 
-// Check 2: README.md updated with Documentation section
-const readme = Read("README.md");
-validation_results.readme_updated = readme.includes("## Documentation");
+LOG: "✅ Security check passed";
 
-if (!validation_results.readme_updated) {
-  ERROR: "❌ README.md does not contain Documentation section";
+// Check 3: README.md updated
+const readme = Read('README.md');
+if (!readme.includes('## Documentation')) {
+  WARNING: "⚠️ README.md missing Documentation section";
 }
 
-// Check 3: README links valid (all referenced files should exist or be expected)
-const readme_links = readme.matchAll(/\[([^\]]+)\]\(docs\/([^)]+)\)/g);
-let broken_count = 0;
-
-for (const link of readme_links) {
-  const link_path = "docs/" + link[2];
-  const link_text = link[1];
-
-  // File should exist OR be in expected files list from JUNO
-  const juno_report = Read("${audit_report_path}");
-  const is_expected = juno_report.includes(link_path);
-
-  if (!exists(link_path) && !is_expected) {
-    broken_count++;
-    WARNING: \`⚠️ README link target uncertain: \${link_text} -> \${link_path}\`;
-  }
-}
-
-validation_results.readme_links_valid = broken_count === 0;
-
-// Overall validation
-const all_passed = Object.values(validation_results).every(v => v === true);
-
-LOG: "Self-Validation Results:";
-LOG: \`  .env.example created: \${validation_results.env_example_created ? "✅" : "❌"}\`;
-LOG: \`  README.md updated: \${validation_results.readme_updated ? "✅" : "❌"}\`;
-LOG: \`  No placeholders: \${validation_results.no_placeholders ? "✅" : "❌"}\`;
-LOG: \`  Content length: \${validation_results.min_content_length ? "✅" : "❌"}\`;
-LOG: \`  README links: \${validation_results.readme_links_valid ? "✅" : "⚠️"}\`;
+LOG: "Status: COMPLETE ✅";
 LOG: "";
+\\\`\\\`\\\`
 
-if (!all_passed && (!validation_results.env_example_created || !validation_results.readme_updated || !validation_results.no_placeholders || !validation_results.min_content_length)) {
-  ERROR: "";
-  ERROR: "❌ APO-3 SELF-VALIDATION FAILED";
-  ERROR: "";
-  ERROR: "Validation Failures:";
+---
 
-  if (!validation_results.env_example_created) {
-    ERROR: "   - .env.example file not created";
-  }
-  if (!validation_results.readme_updated) {
-    ERROR: "   - README.md not updated";
-  }
-  if (!validation_results.no_placeholders) {
-    ERROR: "   - Template placeholders remaining in output";
-  }
-  if (!validation_results.min_content_length) {
-    ERROR: "   - Files with insufficient content detected";
-  }
+## Completion Summary
 
-  ERROR: "";
-  ERROR: "ABORTING APO-3 EXECUTION";
-  ERROR: "Cannot proceed with invalid documentation.";
-  ERROR: "";
-  ERROR: "Root Cause Analysis:";
-  ERROR: "This failure indicates one of:";
-  ERROR: "  1. JUNO report was incomplete (missing data)";
-  ERROR: "  2. Template access failed (file not found)";
-  ERROR: "  3. Variable replacement logic failed";
-  ERROR: "  4. File write operation failed";
-  ERROR: "";
-  ERROR: "Recommended Action:";
-  ERROR: "  1. Review JUNO report completeness";
-  ERROR: "  2. Verify template paths exist";
-  ERROR: "  3. Check disk space and permissions";
-  ERROR: "";
+**Return summary in this format:**
 
-  // CRITICAL: Actually abort by returning error status
-  return {
-    status: "FAILED",
-    agent: "APO-3",
-    reason: "Self-validation failed",
-    details: validation_results,
-    files_created: 0
-  };
-}
-
-// Only reach this point if validation passed
-LOG: "";
-LOG: "✅ APO-3 SELF-VALIDATION PASSED";
-LOG: "";
-
-if (!validation_results.readme_links_valid) {
-  WARNING: "";
-  WARNING: "⚠️ Some README links may be broken (will be verified in Phase 3)";
-  WARNING: "";
-}
-\`\`\`
-
-## Critical Requirements
-
-- ✅ **Read JUNO's report** - All information should be pre-filled
-- ✅ **Activate fallback** if information missing (don't ABORT)
-- ✅ **Create EVERY file** marked "Required: YES"
-- ✅ **Use templates** when available - follow rule-based generation
-- ✅ **No empty values** - All .env keys must have sensible defaults
-- ✅ **Write to correct paths** - Use output paths from report
-- ✅ **Validate README links** - Ensure linked files exist or will exist
-- ✅ **Self-validate** - Run validation checks before returning
-- ✅ **Handle errors** per tier system (ABORT/WARN/LOG)
-
-## Completion
-
-Return a summary of what you created:
-
-\`\`\`
+\\\`\\\`\\\`
 APO-3: Configuration Files Complete
 
 Files Created/Updated:
-- .env.example (15 keys with sensible defaults)
-- README.md (added Documentation section with [N] links)
+- .env.example (12 variables, grouped by purpose)
+- README.md (updated with Documentation, Configuration sections)
 
-Total: 2 files created/updated
+Total: 2 files
 
 Self-Validation: ✅ PASSED
-
-README Link Validation: [N] links validated, [N] expected from APO-2
+Security Check: ✅ PASSED (zero real secrets)
 
 Fallback Usage: [Yes/No] ([Description if used])
 
 Status: Section C complete
-\`\`\`
-  `
+\\\`\\\`\\\`
+  \`
 });
-
-LOG: "";
-LOG: "⏳ Waiting for all 3 APO instances to complete...";
-LOG: "";
-```
-
-### Step 2.2: Capture APO Results
-
-```javascript
-// After all 3 APO instances complete, capture their responses
-const apo1_response = [APO-1's returned message];
-const apo2_response = [APO-2's returned message];
-const apo3_response = [APO-3's returned message];
-
-// Track performance
-global.trinity_docs_session.performance_metrics.apo_end = Date.now();
-
-global.trinity_docs_session.apo_results = {
-  diagrams: apo1_response,
-  docs: apo2_response,
-  config: apo3_response
-};
-
-// Rec 20: Graceful Degradation Mode
-// Optional flag to allow partial success (default: false - strict mode)
-const ALLOW_PARTIAL_SUCCESS = false; // Set to true to continue despite APO failures
-
-LOG: "";
-LOG: "=== APO FAILURE HANDLING MODE ===";
-LOG: \`Mode: \${ALLOW_PARTIAL_SUCCESS ? "GRACEFUL DEGRADATION (partial success allowed)" : "STRICT (all APOs must succeed)"}\`;
-LOG: "";
-
-// Check for failure status (Rec 6: Enforce APO Self-Validation Abort)
-function apo_failed(response) {
-  return typeof response === 'object' && response.status === 'FAILED';
-}
-
-const failures = {
-  apo1: apo_failed(apo1_response),
-  apo2: apo_failed(apo2_response),
-  apo3: apo_failed(apo3_response)
-};
-
-const failure_count = Object.values(failures).filter(f => f).length;
-
-if (failure_count > 0 && !ALLOW_PARTIAL_SUCCESS) {
-  // STRICT MODE: Any failure causes ABORT
-  LOG: "Strict mode enabled - any APO failure causes ABORT";
-  LOG: "";
-}
-
-if (failures.apo1 && !ALLOW_PARTIAL_SUCCESS) {
-  ERROR: "";
-  ERROR: "❌ APO-1 FAILED - Documentation generation aborted";
-  ERROR: \`Reason: \${apo1_response.reason}\`;
-  ERROR: \`Details: \${JSON.stringify(apo1_response.details, null, 2)}\`;
-  ERROR: "";
-  ABORT_COMMAND();
-}
-
-if (failures.apo2 && !ALLOW_PARTIAL_SUCCESS) {
-  ERROR: "";
-  ERROR: "❌ APO-2 FAILED - Documentation generation aborted";
-  ERROR: \`Reason: \${apo2_response.reason}\`;
-  ERROR: \`Details: \${JSON.stringify(apo2_response.details, null, 2)}\`;
-  ERROR: "";
-  ABORT_COMMAND();
-}
-
-if (failures.apo3 && !ALLOW_PARTIAL_SUCCESS) {
-  ERROR: "";
-  ERROR: "❌ APO-3 FAILED - Documentation generation aborted";
-  ERROR: \`Reason: \${apo3_response.reason}\`;
-  ERROR: \`Details: \${JSON.stringify(apo3_response.details, null, 2)}\`;
-  ERROR: "";
-  ABORT_COMMAND();
-}
-
-// Handle graceful degradation mode (Rec 20)
-if (ALLOW_PARTIAL_SUCCESS && failure_count > 0) {
-  WARNING: "";
-  WARNING: "╔════════════════════════════════════════════════════════════╗";
-  WARNING: "║  ⚠️ GRACEFUL DEGRADATION MODE ACTIVE                    ║";
-  WARNING: "╚════════════════════════════════════════════════════════════╝";
-  WARNING: "";
-  WARNING: \`\${failure_count} APO(s) failed but partial success mode is enabled\`;
-  WARNING: "Continuing with available documentation...";
-  WARNING: "";
-
-  if (failures.apo1) {
-    WARNING: "  ❌ APO-1 (Diagrams) FAILED";
-    WARNING: \`     Reason: \${apo1_response.reason}\`;
-  }
-  if (failures.apo2) {
-    WARNING: "  ❌ APO-2 (Guides) FAILED";
-    WARNING: \`     Reason: \${apo2_response.reason}\`;
-  }
-  if (failures.apo3) {
-    WARNING: "  ❌ APO-3 (Config) FAILED";
-    WARNING: \`     Reason: \${apo3_response.reason}\`;
-  }
-
-  WARNING: "";
-  WARNING: "IMPACT:";
-  WARNING: "  - Quality score will reflect incomplete deliverables";
-  WARNING: "  - Verification will show missing sections";
-  WARNING: "  - Manual completion may be required for failed sections";
-  WARNING: "";
-  WARNING: "Continuing to verification phase with partial results...";
-  WARNING: "";
-}
-
-// All APOs succeeded (or graceful degradation active) - continue to verification
-if (failure_count === 0) {
-  LOG: "✅ All 3 APO instances completed successfully";
-} else {
-  LOG: \`⚠️ Partial success: \${3 - failure_count}/3 APO instances succeeded\`;
-}
-LOG: "";
-LOG: "✅ All 3 APO instances completed successfully";
-LOG: "";
-if (!failures.apo1) LOG: "APO-1: Architecture diagrams generated";
-if (!failures.apo2) LOG: "APO-2: API documentation and guides generated";
-if (!failures.apo3) LOG: "APO-3: Configuration files generated";
-LOG: "";
-
-// Rec 8: APO Coordination Mechanism - Synchronization Barrier
-LOG: "=== SYNCHRONIZATION BARRIER ===";
-LOG: "";
-LOG: "Ensuring all APO-generated files are available before verification...";
-LOG: "";
-
-// Wait for filesystem stabilization (parallel execution may have race conditions)
-await new Promise(resolve => setTimeout(resolve, 500));
-
-// Verify file availability
-const expected_files = {
-  diagrams: Glob({pattern: "docs/images/*.md"}),
-  guides: Glob({pattern: "docs/guides/*.md"}),
-  api_docs: Glob({pattern: "docs/api/*.md"}),
-  config: Glob({pattern: "**/.env.example"})
-};
-
-const file_counts = {
-  diagrams: expected_files.diagrams.length,
-  guides: expected_files.guides.length,
-  api_docs: expected_files.api_docs.length,
-  config: expected_files.config.length
-};
-
-LOG: `File Availability Check:`;
-LOG: `  - Diagrams: ${file_counts.diagrams} files`;
-LOG: `  - Guides: ${file_counts.guides} files`;
-LOG: `  - API Docs: ${file_counts.api_docs} files`;
-LOG: `  - Config: ${file_counts.config} files`;
-LOG: `  - Total: ${file_counts.diagrams + file_counts.guides + file_counts.api_docs + file_counts.config} files`;
-LOG: "";
-
-// Check if any files are missing (basic sanity check)
-const total_files = file_counts.diagrams + file_counts.guides + file_counts.api_docs + file_counts.config;
-
-if (total_files === 0) {
-  ERROR: "";
-  ERROR: "❌ SYNCHRONIZATION BARRIER FAILED";
-  ERROR: "No documentation files detected after APO execution.";
-  ERROR: "This indicates APOs may have failed silently or files are not being created.";
-  ERROR: "";
-  ERROR: "File counts detected:";
-  ERROR: `  - Diagrams: ${file_counts.diagrams}`;
-  ERROR: `  - Guides: ${file_counts.guides}`;
-  ERROR: `  - API Docs: ${file_counts.api_docs}`;
-  ERROR: `  - Config: ${file_counts.config}`;
-  ERROR: "";
-  ABORT_COMMAND();
-}
-
-LOG: "✅ Synchronization barrier passed - files are available";
-LOG: "";
-```
-
----
 
 ## Phase 3: Enhanced Verification (Rec 7)
 

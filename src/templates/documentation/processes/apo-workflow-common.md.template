@@ -1,0 +1,591 @@
+# APO Workflow Common Patterns
+**Category:** Processes
+**Purpose:** Shared workflow phases for all APO agents
+**Used By:** APO-1, APO-2, APO-3
+**Last Updated:** 2026-01-15
+
+---
+
+## Overview
+
+This template defines the common workflow phases that all APO agents follow when generating documentation. Each APO agent executes these phases in sequence with agent-specific customizations.
+
+---
+
+## APO Agent Overview
+
+**APO-1:** Architecture Diagrams & Visual Documentation (Section A)
+**APO-2:** API Documentation & Development Guides (Section B)
+**APO-3:** Configuration Files & Setup Documentation (Section C)
+
+**Common Pattern:** All APOs follow the same 5-phase workflow with agent-specific implementations.
+
+---
+
+## Phase 1: Read JUNO Report
+
+### Purpose
+Read the JUNO audit report from global session state to extract template variables and checklist items for documentation generation.
+
+### Implementation
+
+```javascript
+// Access global session state
+const session = global.trinity_docs_session;
+const report = session.audit_report;
+
+// Check if report exists (CRITICAL)
+if (!report) {
+  ERROR: "❌ CRITICAL - JUNO audit report missing from global state";
+  // See trinity/templates/processes/error-handling-protocol.md
+  ABORT_COMMAND();
+}
+
+// Extract agent-specific section
+const agent_letter = 'a'; // or 'b' for APO-2, 'c' for APO-3
+const section = report[`section_${agent_letter}`];
+
+if (!section) {
+  ERROR: `❌ CRITICAL - Section ${agent_letter.toUpperCase()} missing from JUNO report`;
+  ABORT_COMMAND();
+}
+
+// Check for incomplete report flag
+const juno_incomplete = session.juno_incomplete || false;
+const juno_issues = session.juno_issues || [];
+
+if (juno_incomplete) {
+  LOG: "";
+  LOG: "⚠️ FALLBACK MODE ACTIVATED";
+  LOG: `JUNO report incomplete - using direct codebase analysis`;
+  LOG: `Issues detected: ${juno_issues.length}`;
+  LOG: "";
+
+  // Fallback mechanisms will be used in Phase 2
+}
+```
+
+### Success Criteria
+
+- [x] Global session state exists
+- [x] JUNO audit report present
+- [x] Agent-specific section exists
+- [x] Incomplete flag checked
+
+### Error Handling
+
+**Tier 1 (ABORT):**
+- Global session state doesn't exist
+- JUNO report completely missing
+- Agent section completely missing
+
+**Tier 2 (WARN):**
+- JUNO report marked incomplete (activate fallback)
+- Some expected fields missing
+
+---
+
+## Phase 2: Extract Template Variables
+
+### Purpose
+Extract all template variables from JUNO report section for use in documentation file generation.
+
+### Implementation
+
+```javascript
+// Extract template variables from section
+const variables = section.template_variables || {};
+
+// Log variable extraction
+LOG: `Extracted ${Object.keys(variables).length} template variables from JUNO report`;
+
+// Check for critical variables
+const critical_vars = ['PROJECT_NAME', 'FRAMEWORK', 'DATABASE'];
+const missing_critical = critical_vars.filter(v => !variables[v] || variables[v] === '');
+
+if (missing_critical.length > 0) {
+  WARNING: `⚠️ Missing critical variables: ${missing_critical.join(', ')}`;
+
+  // Activate fallback if not already active
+  if (!juno_incomplete) {
+    LOG: "⚠️ FALLBACK MODE ACTIVATED - Critical variables missing";
+    juno_incomplete = true;
+  }
+}
+
+// Extract checklist items
+const checklist = section.checklist || [];
+LOG: `Section ${agent_letter.toUpperCase()} checklist: ${checklist.length} items`;
+
+// If fallback mode, use discovery templates
+if (juno_incomplete) {
+  LOG: "Using discovery templates for missing variables:";
+
+  // See trinity/templates/discovery/ for specific patterns
+  // - framework-detection.md
+  // - component-discovery.md
+  // - api-endpoint-scanner.md
+  // - env-variable-extraction.md
+
+  // Extract variables directly from codebase
+  // (Agent-specific implementation in Phase 3)
+}
+```
+
+### Template Variable Categories
+
+**Common Variables (All Agents):**
+- `{{PROJECT_NAME}}` - Project name from package.json
+- `{{FRAMEWORK}}` - Primary framework (Express, NestJS, React, etc.)
+- `{{DESCRIPTION}}` - Project description
+
+**APO-1 Specific Variables:**
+- `{{ARCHITECTURE_TYPE}}` - MVC, Microservices, Monolithic, etc.
+- `{{DATABASE}}` - Database system (PostgreSQL, MongoDB, etc.)
+- `{{DATABASE_SCHEMA}}` - List of models/tables
+- `{{COMPONENTS}}` - Frontend components list
+- `{{API_ENDPOINTS}}` - API endpoint list
+
+**APO-2 Specific Variables:**
+- `{{TEST_FRAMEWORK}}` - Jest, Vitest, Mocha, etc.
+- `{{TEST_COMMAND}}` - Command to run tests
+- `{{BUILD_COMMAND}}` - Command to build project
+- `{{START_COMMAND}}` - Command to start server
+- `{{DEPLOYMENT_PLATFORM}}` - Vercel, AWS, Docker, etc.
+
+**APO-3 Specific Variables:**
+- `{{ENV_VARIABLES}}` - List of environment variables
+- `{{PORT}}` - Default port number
+- `{{DATABASE_URL}}` - Database connection string pattern
+
+### Success Criteria
+
+- [x] Template variables extracted
+- [x] Critical variables present or fallback activated
+- [x] Checklist items extracted
+
+### Error Handling
+
+**Tier 2 (WARN):**
+- Critical variables missing (activate fallback)
+- Template variables object empty
+- Checklist empty but section present
+
+**Tier 3 (LOG):**
+- Optional variables missing
+- Variable counts logged
+
+---
+
+## Phase 3: Process Templates
+
+### Purpose
+Read documentation templates, substitute variables, and generate file content.
+
+### Implementation
+
+```javascript
+// Template directory structure
+const template_base = 'trinity/templates/documentation/';
+const section_dirs = {
+  'a': 'architecture/',
+  'b': 'guides/',
+  'c': 'configuration/'
+};
+
+const template_dir = template_base + section_dirs[agent_letter];
+
+// Get list of templates to process from checklist
+const templates_to_process = checklist.map(item => ({
+  template: item.template_file,
+  output: item.output_file,
+  required: item.required
+}));
+
+LOG: `Processing ${templates_to_process.length} templates from ${template_dir}`;
+
+// Process each template
+for (const item of templates_to_process) {
+  const template_path = template_dir + item.template;
+
+  // Check if template exists
+  if (!file_exists(template_path)) {
+    if (item.required) {
+      ERROR: `⚠️ WARNING - Required template missing: ${template_path}`;
+      // Activate fallback for this file
+      continue;
+    } else {
+      LOG: `ℹ️ Optional template missing: ${template_path} - skipping`;
+      continue;
+    }
+  }
+
+  // Read template content
+  const template_content = Read(template_path);
+
+  // Substitute all template variables
+  let output_content = template_content;
+  for (const [var_name, var_value] of Object.entries(variables)) {
+    const pattern = new RegExp(`{{${var_name}}}`, 'g');
+    output_content = output_content.replace(pattern, var_value);
+  }
+
+  // Check for unreplaced variables (quality issue)
+  const unreplaced = output_content.match(/{{[A-Z_]+}}/g);
+  if (unreplaced) {
+    WARNING: `⚠️ Unreplaced variables in ${item.output}: ${unreplaced.join(', ')}`;
+    // Continue but note for Phase 3 verification
+  }
+
+  // Store generated content for Phase 4 (write)
+  generated_files.push({
+    path: item.output,
+    content: output_content,
+    size: output_content.length
+  });
+
+  LOG: `✅ Processed ${item.template} → ${item.output} (${output_content.length} bytes)`;
+}
+```
+
+### Fallback Processing
+
+**If juno_incomplete or template missing:**
+
+```javascript
+// Use agent-specific fallback logic
+// APO-1: Generate diagrams from direct codebase analysis
+// APO-2: Generate guides with generic examples
+// APO-3: Generate config files from discovered variables
+
+// See agent-specific templates:
+// - apo-diagram-specific.md (APO-1)
+// - apo-guide-specific.md (APO-2)
+// - apo-config-specific.md (APO-3)
+
+if (juno_incomplete || template_missing) {
+  LOG: `⚠️ FALLBACK: Generating ${item.output} from direct analysis`;
+
+  // Generate content without template
+  const fallback_content = generate_fallback_content(item, variables);
+
+  generated_files.push({
+    path: item.output,
+    content: fallback_content,
+    size: fallback_content.length,
+    fallback_used: true
+  });
+
+  LOG: `✅ FALLBACK SUCCESS: ${item.output} generated (${fallback_content.length} bytes)`;
+}
+```
+
+### Success Criteria
+
+- [x] All required templates processed
+- [x] Template variables substituted
+- [x] Content generated for all checklist items
+- [x] Fallback used for missing data
+
+### Error Handling
+
+**Tier 1 (ABORT):**
+- Cannot read template directory
+- All templates missing
+
+**Tier 2 (WARN):**
+- Individual templates missing (use fallback)
+- Unreplaced variables found
+- Template syntax errors
+
+**Tier 3 (LOG):**
+- Template processing progress
+- Variable substitution counts
+- Fallback usage notifications
+
+---
+
+## Phase 4: Write Files
+
+### Purpose
+Write all generated documentation files to correct directories in the codebase.
+
+### Implementation
+
+```javascript
+// Ensure output directories exist
+const output_dirs = {
+  'a': ['docs/architecture/diagrams/'],
+  'b': ['docs/guides/', 'docs/api/'],
+  'c': ['./'] // Root for .env.example and README.md
+};
+
+// Create directories if they don't exist
+for (const dir of output_dirs[agent_letter]) {
+  if (!directory_exists(dir)) {
+    LOG: `Creating directory: ${dir}`;
+    create_directory(dir);
+  }
+}
+
+// Write each generated file
+let files_written = 0;
+let bytes_written = 0;
+
+for (const file of generated_files) {
+  try {
+    // Write file content
+    Write(file.path, file.content);
+
+    // Verify file written successfully
+    if (file_exists(file.path)) {
+      files_written++;
+      bytes_written += file.size;
+
+      LOG: `✅ Created ${file.path} (${file.size} bytes)`;
+
+      if (file.fallback_used) {
+        LOG: `   └─ Generated using fallback mechanism`;
+      }
+    } else {
+      ERROR: `❌ CRITICAL - Failed to write ${file.path}`;
+      ABORT_COMMAND();
+    }
+  } catch (error) {
+    ERROR: `❌ CRITICAL - Write error for ${file.path}: ${error.message}`;
+    ABORT_COMMAND();
+  }
+}
+
+// Summary
+LOG: "";
+LOG: `=== FILE CREATION SUMMARY ===`;
+LOG: `Files written: ${files_written}`;
+LOG: `Total bytes: ${bytes_written}`;
+LOG: `Fallback used: ${generated_files.filter(f => f.fallback_used).length} files`;
+LOG: "";
+```
+
+### File Path Conventions
+
+**APO-1 (Architecture Diagrams):**
+- `docs/architecture/diagrams/*.md`
+- Mermaid diagrams with descriptive names
+
+**APO-2 (Guides):**
+- `docs/guides/*.md`
+- `docs/api/README.md`
+- Structured documentation
+
+**APO-3 (Configuration):**
+- `.env.example` (root)
+- `README.md` (root, append/update)
+
+### Success Criteria
+
+- [x] All directories created
+- [x] All files written successfully
+- [x] Files verified to exist
+- [x] Summary logged
+
+### Error Handling
+
+**Tier 1 (ABORT):**
+- Permission denied (cannot write files)
+- Disk full (cannot write files)
+- Invalid path (cannot create directories)
+
+**Tier 3 (LOG):**
+- File creation confirmations
+- Directory creation notices
+- Byte counts and summaries
+
+---
+
+## Phase 5: Self-Validation
+
+### Purpose
+Validate generated documentation files meet quality standards before Phase 3 verification.
+
+### Implementation
+
+```javascript
+// Self-validation checklist
+// See trinity/templates/validation/apo-self-validation.md for full checklist
+
+LOG: "";
+LOG: `=== APO-${agent_letter.toUpperCase()} SELF-VALIDATION ===`;
+LOG: "";
+
+// Check 1: File count
+const expected_files = checklist.length;
+const actual_files = generated_files.length;
+
+if (actual_files === expected_files) {
+  LOG: `✅ File count: ${actual_files}/${expected_files}`;
+} else {
+  WARNING: `⚠️ File count mismatch: ${actual_files}/${expected_files}`;
+}
+
+// Check 2: Minimum content length
+let content_issues = 0;
+for (const file of generated_files) {
+  const line_count = file.content.split('\n').length;
+  const min_lines = file.path.includes('/diagrams/') ? 10 : 50;
+
+  if (line_count < min_lines) {
+    WARNING: `⚠️ ${file.path} too short: ${line_count} lines (minimum ${min_lines})`;
+    content_issues++;
+  }
+}
+
+if (content_issues === 0) {
+  LOG: `✅ Content length: All files meet minimum requirements`;
+} else {
+  LOG: `⚠️ Content length: ${content_issues} files below minimum`;
+}
+
+// Check 3: Placeholder detection
+let placeholder_count = 0;
+const placeholder_patterns = [/{{[A-Z_]+}}/g, /\[TODO\]/gi, /\[PLACEHOLDER\]/gi];
+
+for (const file of generated_files) {
+  for (const pattern of placeholder_patterns) {
+    const matches = file.content.match(pattern);
+    if (matches) {
+      placeholder_count += matches.length;
+      WARNING: `⚠️ Placeholders in ${file.path}: ${matches.join(', ')}`;
+    }
+  }
+}
+
+if (placeholder_count === 0) {
+  LOG: `✅ Placeholders: None found`;
+} else {
+  WARNING: `⚠️ Placeholders: ${placeholder_count} found (will affect quality score)`;
+}
+
+// Check 4: Agent-specific validation
+// See trinity/templates/validation/apo-self-validation.md
+// - APO-1: Mermaid syntax, component verification
+// - APO-2: Code examples, internal links
+// - APO-3: Security check (no real secrets)
+
+// Store results in global state
+global.trinity_docs_session.apo_results[`apo_${agent_letter}`] = {
+  files_created: actual_files,
+  expected_files: expected_files,
+  content_issues: content_issues,
+  placeholder_count: placeholder_count,
+  fallback_used: generated_files.filter(f => f.fallback_used).length > 0,
+  timestamp: new Date().toISOString()
+};
+
+LOG: "";
+LOG: `Status: ${content_issues === 0 && placeholder_count === 0 ? 'COMPLETE ✅' : 'COMPLETE WITH WARNINGS ⚠️'}`;
+LOG: "";
+```
+
+### Success Criteria
+
+- [x] All expected files created
+- [x] Files meet minimum content length
+- [x] Zero placeholders (or logged warnings)
+- [x] Agent-specific checks passed
+- [x] Results stored in global state
+
+### Error Handling
+
+**Tier 2 (WARN):**
+- Files below minimum length
+- Placeholders found
+- Agent-specific validation issues
+
+**Tier 3 (LOG):**
+- Validation progress
+- Check results
+- Summary status
+
+---
+
+## Common Patterns
+
+### Logging Standards
+
+**Start of phase:**
+```
+LOG: "";
+LOG: `=== PHASE ${phase_number}: ${PHASE_NAME} ===`;
+LOG: "";
+```
+
+**End of phase:**
+```
+LOG: "";
+LOG: `Phase ${phase_number} complete.`;
+LOG: "";
+```
+
+**Error format:**
+```
+ERROR: `❌ CRITICAL - ${error_description}`;
+ERROR: `Agent: APO-${agent_letter.toUpperCase()}`;
+ERROR: `Recommendation: ${how_to_fix}`;
+```
+
+**Warning format:**
+```
+WARNING: `⚠️ ${warning_description}`;
+WARNING: `Impact: ${what_will_be_different}`;
+```
+
+### Global State Management
+
+**Write to global state:**
+```javascript
+global.trinity_docs_session.apo_results[`apo_${agent_letter}`] = {
+  // Results object
+};
+```
+
+**Read from global state:**
+```javascript
+const session = global.trinity_docs_session;
+const report = session.audit_report;
+const juno_incomplete = session.juno_incomplete;
+```
+
+---
+
+## Timing and Performance
+
+### Performance Tracking
+
+```javascript
+// Start timer
+const phase_start = Date.now();
+
+// ... phase execution ...
+
+// End timer
+const phase_end = Date.now();
+const phase_duration = (phase_end - phase_start) / 1000;
+
+LOG: `Phase completed in ${phase_duration.toFixed(2)}s`;
+```
+
+### Expected Performance
+
+- **Phase 1 (Read JUNO):** <1 second
+- **Phase 2 (Extract Variables):** <1 second
+- **Phase 3 (Process Templates):** 2-5 seconds (depends on template count)
+- **Phase 4 (Write Files):** 1-3 seconds (depends on file count)
+- **Phase 5 (Self-Validation):** 1-2 seconds
+
+**Total APO Execution:** 5-12 seconds per agent
+**All 3 APOs (Parallel):** 5-12 seconds total (not 15-36 seconds)
+
+---
+
+*Trinity Method v2.0 - Process Template*
+*WO-004: Validation Rules & APO Workflow Templates*

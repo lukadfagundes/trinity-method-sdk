@@ -1,0 +1,258 @@
+# Component Discovery Patterns
+**Category:** Discovery
+**Purpose:** Discover React, Vue, Angular, and Svelte components with glob patterns
+**Used By:** JUNO (Phase 1), APO-1 (Diagrams), APO-2 (Guides)
+**Last Updated:** 2026-01-15
+
+---
+
+## Overview
+
+This template provides glob patterns and filtering logic to discover UI components across different frontend frameworks.
+
+---
+
+## Critical Rule: Zero Tolerance for Fake Components
+
+**RULE:** Every component name MUST exist in the codebase (verified with Glob).
+- No placeholder component names
+- No example/demo component names unless they actually exist
+- All components must be verifiable via file path
+
+---
+
+## Component Discovery Patterns
+
+### React Components (.tsx, .jsx)
+
+```javascript
+const react_patterns = [
+  "client/**/*.{tsx,jsx}",
+  "src/**/*.{tsx,jsx}",
+  "components/**/*.{tsx,jsx}",
+  "app/**/*.{tsx,jsx}",
+  "pages/**/*.{tsx,jsx}"
+];
+```
+
+### Vue Components (.vue)
+
+```javascript
+const vue_patterns = [
+  "src/**/*.vue",
+  "components/**/*.vue",
+  "views/**/*.vue",
+  "pages/**/*.vue"
+];
+```
+
+### Angular Components (.ts with @Component)
+
+```javascript
+const angular_patterns = [
+  "src/**/*.component.ts",
+  "app/**/*.component.ts"
+];
+```
+
+### Svelte Components (.svelte)
+
+```javascript
+const svelte_patterns = [
+  "src/**/*.svelte",
+  "components/**/*.svelte",
+  "routes/**/*.svelte"
+];
+```
+
+---
+
+## Filtering Logic
+
+### Exclusion Patterns
+
+**Always exclude:**
+- Test files: `*.test.{tsx,jsx,ts,vue,svelte}`, `*.spec.{tsx,jsx,ts,vue,svelte}`
+- Config files: `*.config.{ts,js}`
+- Entry points: `main.{ts,tsx,js,jsx}`, `index.{ts,tsx,js,jsx}` (unless clearly a component)
+- Build artifacts: `dist/`, `build/`, `.next/`, `node_modules/`
+
+**Example filter:**
+```javascript
+const actual_components = all_component_files.filter(f =>
+  !f.includes('.test.') &&
+  !f.includes('.spec.') &&
+  !f.includes('.config.') &&
+  !f.includes('node_modules') &&
+  !f.includes('dist/') &&
+  !f.includes('build/')
+);
+```
+
+---
+
+## Component Name Extraction
+
+### From File Path
+
+```javascript
+// Input: "src/components/UserProfile.tsx"
+// Output: "UserProfile"
+
+const extractComponentName = (filepath) => {
+  const filename = filepath.split('/').pop(); // "UserProfile.tsx"
+  return filename.split('.')[0]; // "UserProfile"
+};
+```
+
+### Handling Index Files
+
+```javascript
+// Input: "src/components/UserProfile/index.tsx"
+// Output: "UserProfile" (use parent directory name)
+
+if (filename === 'index.tsx' || filename === 'index.jsx') {
+  const parts = filepath.split('/');
+  return parts[parts.length - 2]; // Parent directory name
+}
+```
+
+---
+
+## Component Categorization
+
+### By Type (React Example)
+
+```javascript
+// Detect component type from imports or patterns
+if (content.includes('useState') || content.includes('useEffect')) {
+  type = 'Functional Component (Hooks)';
+} else if (content.includes('class') && content.includes('extends React.Component')) {
+  type = 'Class Component';
+}
+```
+
+### By Location
+
+```javascript
+// Group by directory structure
+if (filepath.includes('pages/')) category = 'Page Component';
+else if (filepath.includes('components/')) category = 'Reusable Component';
+else if (filepath.includes('layouts/')) category = 'Layout Component';
+```
+
+---
+
+## Template Variable Mapping
+
+**Variables to populate:**
+- `{{COMPONENT_COUNT}}` → Total number of components found
+- `{{COMPONENT_LIST}}` → Comma-separated list of component names
+- `{{COMPONENT_PATHS}}` → Full paths for verification (APO-1 uses this)
+- `{{COMPONENT_FRAMEWORK}}` → React/Vue/Angular/Svelte
+
+---
+
+## Verification Requirements
+
+### For APO-1 (Diagrams)
+
+**Must provide:**
+1. Component name
+2. Full file path (for Glob verification)
+3. Component type (if detectable)
+
+**Example output for JUNO report:**
+```
+Components (15 total):
+- UserProfile (src/components/UserProfile.tsx)
+- LoginForm (src/components/auth/LoginForm.tsx)
+- Dashboard (src/pages/Dashboard.tsx)
+...
+```
+
+### For APO-2 (Guides)
+
+**Must provide:**
+1. Component count
+2. Example component names (2-3 most important)
+3. Component directory structure
+
+---
+
+## Fallback Detection
+
+If no components found with primary patterns:
+
+1. **Broaden search:** Try `**/*.{tsx,jsx,vue,svelte}` (all directories)
+2. **Check alternative locations:** `lib/`, `views/`, `containers/`
+3. **Search for JSX/TSX syntax:** Grep for `return (<` or `<div>` in TypeScript/JavaScript files
+4. **Log warning:** "⚠️ No components found with standard patterns - using broad search"
+
+---
+
+## Examples
+
+### Example 1: React App
+
+```javascript
+// Glob patterns:
+["src/**/*.{tsx,jsx}"]
+
+// Found files:
+[
+  "src/components/UserProfile.tsx",
+  "src/components/LoginForm.tsx",
+  "src/components/UserProfile.test.tsx", // EXCLUDE (test file)
+  "src/pages/Dashboard.tsx",
+  "src/App.tsx"
+]
+
+// Filtered components:
+[
+  "UserProfile (src/components/UserProfile.tsx)",
+  "LoginForm (src/components/LoginForm.tsx)",
+  "Dashboard (src/pages/Dashboard.tsx)",
+  "App (src/App.tsx)"
+]
+
+// Template variables:
+COMPONENT_COUNT = 4
+COMPONENT_LIST = "UserProfile, LoginForm, Dashboard, App"
+```
+
+### Example 2: Vue App
+
+```javascript
+// Glob patterns:
+["src/**/*.vue"]
+
+// Found files:
+[
+  "src/components/HelloWorld.vue",
+  "src/views/Home.vue",
+  "src/views/About.vue"
+]
+
+// Template variables:
+COMPONENT_COUNT = 3
+COMPONENT_FRAMEWORK = "Vue.js"
+```
+
+---
+
+## Error Handling
+
+**No components found:**
+- Log: "⚠️ WARNING: No components discovered - may be backend-only project"
+- Set `COMPONENT_COUNT = 0`
+- Continue processing (not a critical error)
+
+**Too many components (>100):**
+- Log: "ℹ️ Large component count detected: [count] - listing top 20 in report"
+- Provide full list to APO-1 but summarize in JUNO report
+
+---
+
+*Trinity Method v2.0 - Discovery Template*
+*WO-004: Template Infrastructure & Discovery Recipes*

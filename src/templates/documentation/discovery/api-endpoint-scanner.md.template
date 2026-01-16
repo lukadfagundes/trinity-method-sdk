@@ -1,0 +1,343 @@
+# API Endpoint Scanner Patterns
+**Category:** Discovery
+**Purpose:** Discover API routes and endpoints for Express, Fastify, NestJS, and Koa
+**Used By:** JUNO (Phase 1), APO-1 (API Diagrams), APO-2 (API Docs)
+**Last Updated:** 2026-01-15
+
+---
+
+## Overview
+
+This template provides patterns for discovering API endpoints across popular Node.js backend frameworks.
+
+---
+
+## Route File Discovery
+
+### Common Route Locations
+
+```javascript
+const route_directories = [
+  "server/routes/",
+  "src/routes/",
+  "api/",
+  "server/api/",
+  "src/api/",
+  "app/routes/",
+  "routes/"
+];
+```
+
+### Route File Patterns
+
+```javascript
+const route_file_patterns = [
+  "**/*.routes.{ts,js}",
+  "**/*.route.{ts,js}",
+  "**/*.controller.{ts,js}",
+  "**/routes/**/*.{ts,js}",
+  "**/api/**/*.{ts,js}"
+];
+```
+
+---
+
+## Framework-Specific Patterns
+
+### Express.js
+
+**HTTP Method Patterns:**
+```javascript
+// Grep patterns for Express routes:
+- router.get('...')
+- router.post('...')
+- router.put('...')
+- router.patch('...')
+- router.delete('...')
+- app.get('...')
+- app.post('...')
+```
+
+**Example extraction:**
+```javascript
+// From: router.get('/users/:id', userController.getUser);
+// Extract:
+{
+  method: 'GET',
+  path: '/users/:id',
+  file: 'server/routes/users.js'
+}
+```
+
+### Fastify
+
+**HTTP Method Patterns:**
+```javascript
+// Grep patterns for Fastify routes:
+- fastify.get('...')
+- fastify.post('...')
+- fastify.put('...')
+- fastify.patch('...')
+- fastify.delete('...')
+- app.get('...')
+- server.route({ method: 'GET', url: '...' })
+```
+
+### NestJS
+
+**Controller Decorator Patterns:**
+```javascript
+// Grep patterns for NestJS:
+- @Controller('...')
+- @Get('...')
+- @Post('...')
+- @Put('...')
+- @Patch('...')
+- @Delete('...')
+```
+
+**Example extraction:**
+```javascript
+// From:
+// @Controller('users')
+// class UserController {
+//   @Get(':id')
+//   getUser() {}
+// }
+//
+// Extract:
+{
+  method: 'GET',
+  path: '/users/:id',
+  file: 'src/users/users.controller.ts'
+}
+```
+
+### Koa
+
+**HTTP Method Patterns:**
+```javascript
+// Grep patterns for Koa routes:
+- router.get('...')
+- router.post('...')
+- router.put('...')
+- router.patch('...')
+- router.delete('...')
+```
+
+---
+
+## Endpoint Extraction Logic
+
+### Step 1: Find Route Files
+
+```javascript
+// Use Glob to find all route files
+const route_files = Glob(route_file_patterns);
+```
+
+### Step 2: Parse Each File for HTTP Methods
+
+```javascript
+// Use Grep to find HTTP method declarations
+const methods = ['get', 'post', 'put', 'patch', 'delete'];
+const endpoint_patterns = methods.map(m => `router\\.${m}\\(`);
+```
+
+### Step 3: Extract Path and Method
+
+```javascript
+// Example line: router.get('/users/:id', userController.getUser);
+// Parse with regex:
+const match = line.match(/router\.(get|post|put|patch|delete)\(['"](.+?)['"]/);
+if (match) {
+  const method = match[1].toUpperCase(); // "GET"
+  const path = match[2]; // "/users/:id"
+}
+```
+
+### Step 4: Group by Resource
+
+```javascript
+// Group endpoints by base resource:
+// /users, /users/:id, /users/:id/posts → "users" resource
+const resource = path.split('/')[1]; // First path segment
+```
+
+---
+
+## Template Variable Mapping
+
+**Variables to populate:**
+- `{{API_ENDPOINT_COUNT}}` → Total number of endpoints found
+- `{{API_RESOURCES}}` → Unique resource names (e.g., "users, posts, auth")
+- `{{API_ENDPOINTS}}` → List of [METHOD /path] pairs
+- `{{API_BASE_URL}}` → Base URL if detectable (e.g., "/api/v1")
+
+---
+
+## Endpoint Categorization
+
+### By HTTP Method
+
+```javascript
+const by_method = {
+  GET: [],    // Read operations
+  POST: [],   // Create operations
+  PUT: [],    // Update (full) operations
+  PATCH: [],  // Update (partial) operations
+  DELETE: []  // Delete operations
+};
+```
+
+### By Resource
+
+```javascript
+const by_resource = {
+  users: ['GET /users', 'POST /users', 'GET /users/:id'],
+  posts: ['GET /posts', 'POST /posts', 'DELETE /posts/:id'],
+  auth: ['POST /auth/login', 'POST /auth/logout']
+};
+```
+
+---
+
+## Verification Requirements
+
+### For APO-1 (API Endpoint Map Diagram)
+
+**Must provide:**
+1. HTTP method (GET/POST/PUT/PATCH/DELETE)
+2. Full endpoint path
+3. Resource grouping
+4. File location (for verification)
+
+**Example output for JUNO report:**
+```
+API Endpoints (12 total):
+
+Users Resource:
+- GET /users (list users)
+- POST /users (create user)
+- GET /users/:id (get user)
+- PUT /users/:id (update user)
+- DELETE /users/:id (delete user)
+
+Auth Resource:
+- POST /auth/login
+- POST /auth/logout
+- POST /auth/refresh
+```
+
+### For APO-2 (API Documentation)
+
+**Must provide:**
+1. Endpoint count
+2. Resource list
+3. Example endpoints for documentation
+
+---
+
+## Fallback Detection
+
+If no endpoints found with primary patterns:
+
+1. **Search for common route keywords:**
+   - Grep for: `app.use`, `router.use`, `@Controller`
+2. **Check server entry points:**
+   - Look for: `server.js`, `app.js`, `main.ts`, `index.ts`
+3. **Parse server configuration:**
+   - Find route mounting: `app.use('/api', apiRouter)`
+4. **Log warning:** "⚠️ No API endpoints found with standard patterns - may be frontend-only project"
+
+---
+
+## Base URL Detection
+
+### Common Patterns
+
+```javascript
+// Detect base URL from route mounting:
+// app.use('/api/v1', routes) → base = "/api/v1"
+// app.use('/api', routes) → base = "/api"
+
+const base_url_pattern = /app\.use\(['"](\/api[^'"]*)['"]/;
+```
+
+### Prefix Application
+
+```javascript
+// If base URL detected, prepend to all endpoints:
+const full_path = `${base_url}${endpoint_path}`;
+// Example: "/api/v1" + "/users" = "/api/v1/users"
+```
+
+---
+
+## Examples
+
+### Example 1: Express REST API
+
+```javascript
+// Route file: server/routes/users.js
+router.get('/users', userController.list);
+router.post('/users', userController.create);
+router.get('/users/:id', userController.get);
+router.put('/users/:id', userController.update);
+router.delete('/users/:id', userController.delete);
+
+// Extracted endpoints:
+API_ENDPOINT_COUNT = 5
+API_RESOURCES = "users"
+API_ENDPOINTS = [
+  "GET /users",
+  "POST /users",
+  "GET /users/:id",
+  "PUT /users/:id",
+  "DELETE /users/:id"
+]
+```
+
+### Example 2: NestJS API
+
+```javascript
+// Controller: src/users/users.controller.ts
+@Controller('users')
+export class UsersController {
+  @Get()
+  findAll() {}
+
+  @Get(':id')
+  findOne() {}
+
+  @Post()
+  create() {}
+}
+
+// Extracted endpoints:
+API_ENDPOINT_COUNT = 3
+API_RESOURCES = "users"
+API_BASE_URL = "/users"
+```
+
+---
+
+## Error Handling
+
+**No endpoints found:**
+- Log: "ℹ️ No API endpoints discovered - may be frontend-only project or static site"
+- Set `API_ENDPOINT_COUNT = 0`
+- Continue processing (not critical for frontend projects)
+
+**Too many endpoints (>50):**
+- Log: "ℹ️ Large API surface detected: [count] endpoints"
+- Provide full list to APO-1, summarize by resource in JUNO report
+
+**Malformed route syntax:**
+- Log: "⚠️ Could not parse route in [file]:[line] - skipping"
+- Continue with other endpoints
+
+---
+
+*Trinity Method v2.0 - Discovery Template*
+*WO-004: Template Infrastructure & Discovery Recipes*

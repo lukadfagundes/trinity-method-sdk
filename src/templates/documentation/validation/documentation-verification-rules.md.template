@@ -1,0 +1,383 @@
+# Documentation Verification Rules
+**Category:** Validation
+**Purpose:** Define Phase 3 verification rules for documentation quality assessment
+**Used By:** Phase 3 Verification
+**Last Updated:** 2026-01-15
+
+---
+
+## Overview
+
+This template defines the 4-tier verification system used in Phase 3 to validate generated documentation quality and assign quality scores (0-100).
+
+---
+
+## Verification Tier System
+
+### Tier 1: File Completion (30 points)
+**Purpose:** Verify all required files were created
+**Pass Criteria:** 100% of expected files exist
+
+### Tier 2: Content Quality (30 points)
+**Purpose:** Verify files have substantial content (not empty/minimal)
+**Pass Criteria:** All files meet minimum content thresholds
+
+### Tier 3: Content Accuracy (30 points)
+**Purpose:** Verify content accuracy (no placeholders, valid links)
+**Pass Criteria:** Zero placeholders, all internal links valid
+
+### Tier 4: Excellence Bonus (10 points)
+**Purpose:** Reward exceptional quality
+**Pass Criteria:** Mermaid diagrams valid, comprehensive coverage
+
+---
+
+## Tier 1: File Completion Rules (30 points)
+
+### Expected Files by Section
+
+**Section A (Architecture & Visual):**
+1. `docs/architecture/diagrams/mvc-flow.md` (if MVC framework)
+2. `docs/architecture/diagrams/database-er.md` (if database exists)
+3. `docs/architecture/diagrams/api-endpoint-map.md` (if API endpoints exist)
+4. `docs/architecture/diagrams/component-hierarchy.md` (if frontend components exist)
+
+**Section B (API Documentation & Guides):**
+5. `docs/guides/getting-started.md` (required)
+6. `docs/guides/api-development.md` (if API exists)
+7. `docs/guides/deployment.md` (required)
+8. `docs/guides/contributing.md` (required)
+9. `docs/api/README.md` (if API exists)
+
+**Section C (Configuration & Setup):**
+10. `.env.example` (required)
+11. `README.md` updates (verify modifications)
+
+### Verification Logic
+
+```javascript
+const expected_files = [
+  'docs/architecture/diagrams/mvc-flow.md',
+  'docs/architecture/diagrams/database-er.md',
+  'docs/architecture/diagrams/api-endpoint-map.md',
+  'docs/architecture/diagrams/component-hierarchy.md',
+  'docs/guides/getting-started.md',
+  'docs/guides/api-development.md',
+  'docs/guides/deployment.md',
+  'docs/guides/contributing.md',
+  'docs/api/README.md',
+  '.env.example',
+  'README.md'
+];
+
+let files_created = 0;
+for (const file of expected_files) {
+  if (file_exists(file)) files_created++;
+}
+
+const tier1_score = (files_created / expected_files.length) * 30;
+```
+
+### Conditional Files
+
+Some files are optional based on project type:
+- **MVC Flow:** Only required if Express/NestJS/Fastify detected
+- **Database ER:** Only required if Prisma/TypeORM/Mongoose detected
+- **API Endpoint Map:** Only required if API endpoints discovered
+- **Component Hierarchy:** Only required if React/Vue/Angular components exist
+- **API Development Guide:** Only required if API exists
+- **API README:** Only required if API exists
+
+**Scoring Adjustment:**
+```javascript
+// If no database, remove database-er.md from expected count
+if (!has_database) expected_files = expected_files.filter(f => !f.includes('database-er'));
+```
+
+---
+
+## Tier 2: Content Quality Rules (30 points)
+
+### Minimum Content Thresholds
+
+**Diagrams (Mermaid):**
+- Minimum 10 lines of content
+- Must contain `\`\`\`mermaid` code block
+- Must have diagram title and description
+
+**Guides:**
+- Minimum 50 lines of content
+- Must have ## headings (structured content)
+- Must contain code examples (at least 1 code block)
+
+**Configuration Files:**
+- `.env.example`: Minimum 5 environment variables
+- `README.md`: Must have new sections added (verify diff)
+
+### Verification Logic
+
+```javascript
+for (const file of created_files) {
+  const content = read_file(file);
+  const line_count = content.split('\n').length;
+
+  if (file.includes('/diagrams/')) {
+    // Diagram file
+    if (line_count < 10) {
+      deduct_points(3, `${file} too short (${line_count} lines < 10 minimum)`);
+    }
+    if (!content.includes('```mermaid')) {
+      deduct_points(5, `${file} missing Mermaid diagram`);
+    }
+  } else if (file.includes('/guides/')) {
+    // Guide file
+    if (line_count < 50) {
+      deduct_points(3, `${file} too short (${line_count} lines < 50 minimum)`);
+    }
+    if (!content.match(/##\s/)) {
+      deduct_points(2, `${file} missing structure (no ## headings)`);
+    }
+    if (!content.includes('```')) {
+      deduct_points(2, `${file} missing code examples`);
+    }
+  }
+}
+```
+
+### Content Quality Score
+
+```javascript
+let tier2_score = 30;
+tier2_score -= total_deductions;
+tier2_score = Math.max(tier2_score, 0);
+```
+
+---
+
+## Tier 3: Content Accuracy Rules (30 points)
+
+### Rule 1: Zero Placeholders (20 points)
+
+**Forbidden Content:**
+- `{{VARIABLE_NAME}}` - Unreplaced template variables
+- `[TODO]` - Incomplete sections
+- `[PLACEHOLDER]` - Temporary content
+- `Lorem ipsum` - Demo text
+- `FIXME` - Known issues
+
+**Detection:**
+```javascript
+const forbidden_patterns = [
+  /{{[A-Z_]+}}/g,
+  /\[TODO\]/gi,
+  /\[PLACEHOLDER\]/gi,
+  /lorem ipsum/gi,
+  /FIXME/gi
+];
+
+let placeholder_count = 0;
+for (const file of created_files) {
+  const content = read_file(file);
+  for (const pattern of forbidden_patterns) {
+    const matches = content.match(pattern);
+    if (matches) placeholder_count += matches.length;
+  }
+}
+
+const placeholder_penalty = Math.min(placeholder_count * 2, 20);
+tier3_score -= placeholder_penalty;
+```
+
+**Penalty:** -2 points per placeholder (max -20 points)
+
+### Rule 2: Valid Internal Links (10 points)
+
+**Check:** All internal links resolve to existing files
+
+```javascript
+// Find all Markdown links: [text](path)
+const link_pattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+let broken_links = 0;
+for (const file of created_files) {
+  const content = read_file(file);
+  const links = [...content.matchAll(link_pattern)];
+
+  for (const link of links) {
+    const href = link[2];
+    if (!href.startsWith('http')) {
+      // Internal link - verify file exists
+      if (!file_exists(resolve_path(file, href))) {
+        broken_links++;
+        LOG(`⚠️ Broken link in ${file}: ${href}`);
+      }
+    }
+  }
+}
+
+const link_penalty = Math.min(broken_links * 2, 10);
+tier3_score -= link_penalty;
+```
+
+**Penalty:** -2 points per broken link (max -10 points)
+
+---
+
+## Tier 4: Excellence Bonus (10 points)
+
+### Bonus 1: Valid Mermaid Syntax (+3 points)
+
+**Check:** All Mermaid diagrams are syntactically valid
+
+```javascript
+for (const diagram_file of diagram_files) {
+  const content = read_file(diagram_file);
+  const mermaid_blocks = extract_code_blocks(content, 'mermaid');
+
+  for (const block of mermaid_blocks) {
+    if (is_valid_mermaid(block)) {
+      bonus_points += 0.5;
+    } else {
+      LOG(`⚠️ Invalid Mermaid syntax in ${diagram_file}`);
+    }
+  }
+}
+
+bonus_points = Math.min(bonus_points, 3);
+```
+
+### Bonus 2: Comprehensive API Coverage (+3 points)
+
+**Check:** API documentation covers all discovered endpoints
+
+```javascript
+const discovered_endpoints = get_endpoint_count_from_juno();
+const documented_endpoints = count_endpoints_in_api_docs();
+
+const coverage_ratio = documented_endpoints / discovered_endpoints;
+if (coverage_ratio >= 0.9) bonus_points += 3;      // ≥90% coverage
+else if (coverage_ratio >= 0.75) bonus_points += 2; // ≥75% coverage
+else if (coverage_ratio >= 0.5) bonus_points += 1;  // ≥50% coverage
+```
+
+### Bonus 3: Complete Environment Variables (+2 points)
+
+**Check:** `.env.example` documents all discovered variables
+
+```javascript
+const discovered_vars = get_env_vars_from_juno();
+const documented_vars = parse_env_example('.env.example');
+
+const var_coverage = documented_vars.length / discovered_vars.length;
+if (var_coverage >= 1.0) bonus_points += 2; // 100% coverage
+else if (var_coverage >= 0.8) bonus_points += 1; // ≥80% coverage
+```
+
+### Bonus 4: Rich Code Examples (+2 points)
+
+**Check:** Guides contain diverse, realistic code examples
+
+```javascript
+for (const guide_file of guide_files) {
+  const content = read_file(guide_file);
+  const code_blocks = extract_code_blocks(content);
+
+  if (code_blocks.length >= 3) bonus_points += 0.5;
+  if (code_blocks.some(b => b.length > 100)) bonus_points += 0.5; // Substantial examples
+}
+
+bonus_points = Math.min(bonus_points, 2);
+```
+
+---
+
+## Quality Score Calculation
+
+### Final Score Formula
+
+```javascript
+let quality_score = 0;
+
+// Tier 1: File Completion (0-30 points)
+quality_score += tier1_score;
+
+// Tier 2: Content Quality (0-30 points)
+quality_score += tier2_score;
+
+// Tier 3: Content Accuracy (0-30 points)
+quality_score += tier3_score;
+
+// Tier 4: Excellence Bonus (0-10 points)
+quality_score += tier4_bonus;
+
+// Clamp to 0-100 range
+quality_score = Math.max(0, Math.min(100, quality_score));
+```
+
+### Quality Grades
+
+- **100:** Perfect - All files, zero issues, excellent quality
+- **95-99:** Excellent - Minor deductions only
+- **90-94:** Very Good - High quality with few issues
+- **85-89:** Good - Acceptable quality, some improvements possible
+- **80-84:** Acceptable - Meets basic standards
+- **70-79:** Fair - Significant issues, manual review recommended
+- **<70:** Poor - Does not meet quality standards
+
+---
+
+## Verification Output Format
+
+### Detailed Report
+
+```
+=== PHASE 3: DOCUMENTATION VERIFICATION ===
+
+Tier 1: File Completion
+✅ Expected files: 11/11 created (100%)
+Score: 30/30 points
+
+Tier 2: Content Quality
+✅ Diagram files: 4/4 meet minimum length
+✅ Guide files: 5/5 have proper structure
+⚠️ Code examples: 4/5 guides have examples (-2 points)
+Score: 28/30 points
+
+Tier 3: Content Accuracy
+✅ Placeholders: 0 found
+✅ Internal links: 23/23 valid
+Score: 30/30 points
+
+Tier 4: Excellence Bonus
+✅ Mermaid syntax: All diagrams valid (+3 points)
+✅ API coverage: 15/15 endpoints documented (+3 points)
+✅ Environment variables: 12/12 documented (+2 points)
+⚠️ Code examples: Average quality (+1 point)
+Score: 9/10 points
+
+=== FINAL QUALITY SCORE: 97/100 (Excellent) ===
+```
+
+### Pass/Fail Determination
+
+**Command Success Criteria:**
+- Quality score ≥70 (Acceptable or better)
+- Tier 1 score ≥20/30 (≥67% files created)
+- Zero CRITICAL placeholders ({{VARIABLE}} in titles/headers)
+
+**If score <70:**
+```
+❌ VERIFICATION FAILED
+Quality score: 68/100 (Fair)
+Issues:
+- 2 files missing (Tier 1: -6 points)
+- 3 placeholders found (Tier 3: -6 points)
+- 5 broken links (Tier 3: -10 points)
+
+Recommendation: Review APO outputs and re-generate documentation.
+```
+
+---
+
+*Trinity Method v2.0 - Validation Template*
+*WO-004: Validation Rules & APO Workflow Templates*
