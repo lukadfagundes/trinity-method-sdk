@@ -1,8 +1,12 @@
----
-description: Create Trinity Method work orders interactively
----
-
 # Trinity Work Orders
+
+**Command:** `/utility:trinity-workorder`
+**Purpose:** Create Trinity Method work orders interactively
+**Architecture:** MON wizard → Template selection → Work order creation
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
+---
 
 ## What Are Work Orders?
 

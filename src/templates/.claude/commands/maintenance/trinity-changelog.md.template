@@ -1,6 +1,10 @@
 # Trinity CHANGELOG Management
 
-**Purpose:** Launch APO (Documentation Specialist) to maintain CHANGELOG.md in Keep-a-Changelog format.
+**Command:** `/execution:trinity-changelog`
+**Purpose:** Launch APO (Documentation Specialist) to maintain CHANGELOG.md in Keep-a-Changelog format
+**Architecture:** APO 3-phase process (Discovery → Update → Report)
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 **Use Case:** Ensure CHANGELOG.md exists, follows Keep-a-Changelog format, and documents project changes.
 

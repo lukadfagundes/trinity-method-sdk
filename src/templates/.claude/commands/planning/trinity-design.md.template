@@ -1,8 +1,10 @@
----
-description: Create technical design using ROR (Design Architect)
----
-
 # Trinity Technical Design - ROR
+
+**Command:** `/planning:trinity-design`
+**Purpose:** Create technical design using ROR (Design Architect)
+**Architecture:** ROR design doc creation → ADR generation → Architecture definition
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 **Agent:** ROR (Design Architect)
 **Role:** Technical design, ADRs, and Design Doc creation

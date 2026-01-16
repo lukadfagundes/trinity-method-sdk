@@ -1,10 +1,10 @@
----
-description: Primary command for executing tasks with AJ MAESTRO orchestration
----
-
 # Trinity Orchestration
 
-**Purpose:** Primary command for executing tasks during development sessions. AJ MAESTRO coordinates the 19-agent team to complete work, with automatic JUNO verification.
+**Command:** `/execution:trinity-orchestrate`
+**Purpose:** Primary command for executing tasks during development sessions with AJ MAESTRO orchestration
+**Architecture:** ALY (CTO) → MON → ROR → TRA → EUS → KIL cycles → BAS gates → JUNO verification
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 **Use throughout your session:** This command is used repeatedly as you work through tasks.
 

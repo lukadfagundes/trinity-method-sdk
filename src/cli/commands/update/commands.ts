@@ -17,6 +17,7 @@ const COMMAND_CATEGORIES = [
   'execution',
   'investigation',
   'infrastructure',
+  'maintenance',
   'utility',
 ];
 

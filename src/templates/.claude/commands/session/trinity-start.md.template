@@ -1,5 +1,11 @@
----
-description: Guide through your first Trinity workflow
+# Trinity Start
+
+**Command:** `/session:trinity-start`
+**Purpose:** Guide through your first Trinity workflow
+**Architecture:** ALY workflow selection → Context setup → First task planning
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
 ---
 
 Guide the user through starting their first Trinity Method workflow.

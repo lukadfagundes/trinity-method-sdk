@@ -67,6 +67,7 @@ export async function deployClaudeSetup(
   await fs.ensureDir(`${commandsDir}/execution`);
   await fs.ensureDir(`${commandsDir}/investigation`);
   await fs.ensureDir(`${commandsDir}/infrastructure`);
+  await fs.ensureDir(`${commandsDir}/maintenance`);
   await fs.ensureDir(`${commandsDir}/utility`);
 
   // Commands are now organized by category in source templates
@@ -77,6 +78,7 @@ export async function deployClaudeSetup(
     'execution',
     'investigation',
     'infrastructure',
+    'maintenance',
     'utility',
   ];
 

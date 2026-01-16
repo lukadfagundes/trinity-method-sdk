@@ -1,10 +1,14 @@
----
-description: Guide to Trinity investigation templates for structured problem-solving
----
-
 # Trinity Investigation Templates
 
-**Purpose:** Guide users through selecting and using investigation templates for structured, comprehensive problem-solving.
+**Command:** `/investigation:trinity-investigate-templates`
+**Purpose:** Guide to Trinity investigation templates for structured problem-solving
+**Architecture:** Documentation reference (no execution)
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
+---
+
+Guide users through selecting and using investigation templates for structured, comprehensive problem-solving.
 
 ## Overview
 

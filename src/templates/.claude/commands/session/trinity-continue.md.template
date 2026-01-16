@@ -1,5 +1,11 @@
----
-description: Resume work after interruption (ALY reviews state)
+# Trinity Continue
+
+**Command:** `/session:trinity-continue`
+**Purpose:** Resume work after interruption (ALY reviews state)
+**Architecture:** ALY session state review → Context restoration → Work resumption
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
 ---
 
 Resume Trinity Method workflow after interruption.

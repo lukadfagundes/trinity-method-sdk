@@ -9,11 +9,106 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Trinity-docs command - Complete architectural overhaul** - Transformed from single-agent to multi-agent orchestration
+  - **New Architecture:** JUNO audit → 3 parallel APO instances → Verification
+  - **JUNO Agent Integration:** Read-only codebase audit creates documentation checklist before generation
+  - **Parallel APO Execution:** APO-1 (diagrams), APO-2 (guides/API), APO-3 (config) run concurrently
+  - **Performance:** 3x faster execution via parallel agent orchestration
+  - **Context Efficiency:** Each agent receives focused instructions (<100 lines) vs single 2,577-line spec
+
+- **Trinity-docs command - External template system** - Created 28 reusable documentation templates
+  - **Template Directory:** `trinity/templates/documentation/` with 8 categories
+  - **Mermaid Diagrams (4 templates):** MVC flow, database ER, API endpoint map, component hierarchy
+  - **Guides (4 templates):** Getting started, API development, deployment, contributing
+  - **API Documentation (1 template):** API README with endpoint structure
+  - **Configuration (2 templates):** Documentation structure, env-example generator
+  - **Discovery (4 templates):** Framework detection, component discovery, API endpoint scanner, env variable extraction
+  - **Validation (3 templates):** APO self-validation checklists for all 3 agents
+  - **Processes (6 templates):** APO workflows (common, diagram-specific, guide-specific, config-specific), error handling, fallback mechanisms
+  - **Reports (2 templates):** JUNO internal report, ROOT-README for template organization
+  - **Template Variables:** All templates use `{{UPPERCASE_UNDERSCORE}}` syntax for dynamic content replacement
+
+- **Trinity-docs command - Template validation phase** - Optional Phase 0.2 validates template syntax
+  - Validates `{{VARIABLE}}` syntax (must be UPPERCASE_UNDERSCORE)
+  - Detects nested variables (not supported)
+  - Checks balanced braces
+  - Non-blocking warnings for template issues
+
+- **Trinity-docs command - Retry mechanism** - Phase 0.25 handles transient failures
+  - Retries operations up to 3 times with 500ms delay
+  - Handles filesystem delays and race conditions
+  - Graceful degradation for non-critical operations
+
+- **Trinity-docs command - JUNO documentation audit** - Phase 1 performs comprehensive codebase analysis
+  - **Framework Detection:** Analyzes package.json for Express, NestJS, React, Next.js, Django, Flask, FastAPI
+  - **Component Discovery:** Scans for React/Vue/Angular/Svelte components with zero-tolerance for fake components
+  - **API Endpoint Scanning:** Detects Express/Fastify/NestJS/Koa routes with enhanced patterns
+  - **Database Detection:** PostgreSQL, MySQL, MongoDB, SQLite, Redis via dependency analysis
+  - **Environment Variables:** Extracts from .env and process.env usage patterns
+  - **Checklist Report:** Generates `trinity/templates/documentation/reports/juno-internal-report.md` with all discovered metadata
+
+- **Trinity-docs command - Fallback mechanism** - Handles missing JUNO data gracefully
+  - Uses discovery templates when JUNO variables missing
+  - Framework detection fallback via package.json analysis
+  - Component discovery fallback for frontend frameworks
+  - API endpoint scanner fallback for backend frameworks
+  - Environment variable extraction fallback
+  - Default template paths when discovery fails
+
+- **Trinity-docs command - APO self-validation** - Each APO validates its own work before completion
+  - APO-1 validates: 4 diagram files created, correct paths, no placeholders, proper Mermaid syntax
+  - APO-2 validates: Guide completeness, API documentation accuracy, no fake examples
+  - APO-3 validates: Config files exist, no hardcoded secrets, proper .env.example format
+  - Security checks for APO-3: No API keys, passwords, tokens, or sensitive data in generated files
+
+- **Trinity-docs command - Enhanced verification phase** - Phase 4 performs comprehensive quality checks
+  - Verifies all JUNO checklist items completed
+  - Validates file existence and content quality
+  - Checks for placeholders and fake data
+  - Ensures proper Mermaid syntax in diagrams
+  - Validates security (no secrets in config files)
+  - Generates final completion report with pass/fail status
+
 ### Changed
+
+- **Trinity-docs command - File relocation** - Moved from `src/templates/shared/claude-commands/` to `src/templates/.claude/commands/execution/`
+  - Aligns with new command categorization structure
+  - Distinguishes execution commands from utility/session/planning commands
+
+- **Trinity-docs command - Diagram output path** - Changed from `docs/architecture/diagrams/` to `docs/architecture/`
+  - Simplified directory structure
+  - All architecture files (diagrams, overview, ADRs) now in single directory
+  - Updated all references throughout command specification (lines 1079, 1205-1208)
+
+- **Trinity-docs command - API endpoint scanner enhancement** - Added 3 missing route detection patterns
+  - Added `router.route('...').get|post|put|patch|delete()` pattern
+  - Added `app.route('...').get|post|put|patch|delete()` pattern
+  - Added `router.all('...')` wildcard route pattern
+  - Fixes endpoint count variance (33 vs 34 detected endpoints)
+
+- **Trinity-docs command - Configuration directory consolidation** - Merged `config/` into `configuration/`
+  - Moved `env-example-generator.md.template` from `config/` to `configuration/`
+  - Removed duplicate directory structure
+  - Now single `configuration/` directory with 2 templates
+
+- **Trinity-docs command - Version update** - Updated to v2.0.9
+  - Reflects architectural overhaul and template externalization
+  - Command now references 28 external templates vs inline logic
 
 ### Deprecated
 
 ### Removed
+
+- **Trinity-docs command - Inline documentation logic** - Removed 808+ lines of inline instructions (WO-004)
+  - Phase 1 codebase analysis logic → `trinity/templates/documentation/discovery/` templates
+  - Phase 2 content seeding → `trinity/templates/documentation/guides/` templates
+  - Diagram generation → `trinity/templates/documentation/mermaid-diagrams/` templates
+  - Validation logic → `trinity/templates/documentation/validation/` templates
+
+- **Trinity-docs command - Single-agent architecture** - Replaced with multi-agent orchestration
+  - Old: Single APO reads 2,577-line spec and performs all work
+  - New: JUNO audit + 3 parallel APO instances with focused instructions
+  - Reduces context fatigue and improves reliability
 
 ### Fixed
 

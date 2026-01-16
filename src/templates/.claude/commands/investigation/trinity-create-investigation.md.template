@@ -1,5 +1,11 @@
----
-description: Launch the Investigation Wizard to create structured investigations
+# Trinity Create Investigation
+
+**Command:** `/investigation:trinity-create-investigation`
+**Purpose:** Launch the Investigation Wizard to create structured investigations
+**Architecture:** INO wizard → Template selection → File creation
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
 ---
 
 Launch the Trinity Method Investigation Wizard to create a structured investigation interactively.

@@ -1,8 +1,10 @@
----
-description: Analyze requirements using MON (Requirements Analyst)
----
-
 # Trinity Requirements Analysis - MON
+
+**Command:** `/planning:trinity-requirements`
+**Purpose:** Analyze requirements using MON (Requirements Analyst)
+**Architecture:** MON requirements analysis → Scale determination → Acceptance criteria definition
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 **Agent:** MON (Requirements Analyst)
 **Role:** Scale determination, acceptance criteria, and requirements documentation

@@ -1,5 +1,11 @@
----
-description: Display Trinity agent directory and information
+# Trinity Agents
+
+**Command:** `/utility:trinity-agents`
+**Purpose:** Display Trinity agent directory and information
+**Architecture:** Reference documentation (no execution)
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
 ---
 
 Display the Trinity Method Agent Directory with all 19 specialized agents.

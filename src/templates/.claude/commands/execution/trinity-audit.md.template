@@ -1,14 +1,14 @@
----
-description: Launch comprehensive, deterministic codebase audit with JUNO
----
-
 # Trinity Audit
 
-**Purpose:** Launch JUNO to perform systematic, framework-agnostic codebase audit.
+**Command:** `/execution:trinity-audit`
+**Purpose:** Launch JUNO to perform systematic, framework-agnostic codebase audit
+**Architecture:** JUNO automated analysis → Baseline comparison → Report generation
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 **Primary Use Case:** Comprehensive quality assessment of any codebase (JavaScript, Python, Rust, Go, etc.)
 
-**IMPORTANT:** When the user invokes `/trinity-audit`, proceed immediately with systematic analysis. The audit is deterministic and reproducible.
+**IMPORTANT:** When the user invokes `/execution:trinity-audit`, proceed immediately with systematic analysis. The audit is deterministic and reproducible.
 
 ---
 

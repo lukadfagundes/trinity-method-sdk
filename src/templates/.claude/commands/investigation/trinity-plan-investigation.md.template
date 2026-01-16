@@ -1,5 +1,11 @@
----
-description: Generate AI-powered investigation plans with visualizations
+# Trinity Plan Investigation
+
+**Command:** `/investigation:trinity-plan-investigation`
+**Purpose:** Generate AI-powered investigation plans with visualizations
+**Architecture:** INO analysis → Plan generation → Mermaid visualization
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
 ---
 
 Generate a comprehensive AI-powered investigation plan using the Trinity Method.

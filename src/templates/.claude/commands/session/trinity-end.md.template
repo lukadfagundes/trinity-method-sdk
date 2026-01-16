@@ -1,5 +1,11 @@
----
-description: End session and archive work to trinity/archive/
+# Trinity End
+
+**Command:** `/session:trinity-end`
+**Purpose:** End session and archive work to trinity/archive/
+**Architecture:** ALY session summary → Work archival → Documentation update
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
 ---
 
 End current Trinity Method session and prepare for commit.

@@ -104,7 +104,7 @@ describe('Deploy Command - Integration Tests', () => {
       }
     });
 
-    it('should create all 6 slash command categories', async () => {
+    it('should create all 7 slash command categories', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       const commandDirs = [
@@ -113,6 +113,7 @@ describe('Deploy Command - Integration Tests', () => {
         '.claude/commands/execution',
         '.claude/commands/investigation',
         '.claude/commands/infrastructure',
+        '.claude/commands/maintenance',
         '.claude/commands/utility',
       ];
 
@@ -186,12 +187,14 @@ describe('Deploy Command - Integration Tests', () => {
       expect(await fs.pathExists('.claude/commands/planning/trinity-plan.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/planning/trinity-decompose.md')).toBe(true);
 
-      // Execution commands (5)
+      // Execution commands (2)
       expect(await fs.pathExists('.claude/commands/execution/trinity-orchestrate.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/execution/trinity-audit.md')).toBe(true);
-      expect(await fs.pathExists('.claude/commands/execution/trinity-readme.md')).toBe(true);
-      expect(await fs.pathExists('.claude/commands/execution/trinity-docs.md')).toBe(true);
-      expect(await fs.pathExists('.claude/commands/execution/trinity-changelog.md')).toBe(true);
+
+      // Maintenance commands (3)
+      expect(await fs.pathExists('.claude/commands/maintenance/trinity-readme.md')).toBe(true);
+      expect(await fs.pathExists('.claude/commands/maintenance/trinity-docs.md')).toBe(true);
+      expect(await fs.pathExists('.claude/commands/maintenance/trinity-changelog.md')).toBe(true);
 
       // Investigation commands (3)
       expect(

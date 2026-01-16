@@ -1,8 +1,10 @@
----
-description: Decompose work into atomic tasks using EUS (Task Decomposer)
----
-
 # Trinity Task Decomposition - EUS
+
+**Command:** `/planning:trinity-decompose`
+**Purpose:** Decompose work into atomic tasks using EUS (Task Decomposer)
+**Architecture:** EUS task breakdown → Atomic task validation → TDD cycle planning
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 **Agent:** EUS (Task Decomposer)
 **Role:** Break work into atomic tasks following "1 task = 1 commit" rule

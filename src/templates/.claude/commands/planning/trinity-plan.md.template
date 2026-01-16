@@ -1,8 +1,10 @@
----
-description: Create implementation plan using TRA (Work Planner)
----
-
 # Trinity Work Planning - TRA
+
+**Command:** `/planning:trinity-plan`
+**Purpose:** Create implementation plan using TRA (Work Planner)
+**Architecture:** TRA implementation sequencing → BAS quality gates → Timeline estimation
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
 
 **Agent:** TRA (Work Planner)
 **Role:** Implementation sequencing, BAS quality gates, and timeline estimation

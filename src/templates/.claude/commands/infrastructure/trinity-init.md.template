@@ -1,13 +1,20 @@
+# Trinity Initialization
+
+**Command:** `/infrastructure:trinity-init`
+**Purpose:** Complete Trinity Method integration with comprehensive setup and quality validation
+**Architecture:** TAN structure validation → ZEN knowledge base → INO context → EIN CI/CD → JUNO audit
+**Trinity Version:** 2.0.9
+**Last Updated:** 2026-01-12
+
 ---
-description: Complete Trinity integration with TAN → ZEN → INO → EIN → JUNO workflow
----
+
 # Quick Start - TL;DR
 
 **Install Trinity in 3 steps**:
 
-1. **Run Init**: `/trinity-init`
+1. **Run Init**: `/infrastructure:trinity-init`
 2. **Wait**: ~30 seconds (deploys 19 agents + knowledge base)
-3. **Verify**: `/trinity-verify` (confirm 100% deployment)
+3. **Verify**: `/utility:trinity-verify` (confirm 100% deployment)
 
 **What You Get**:
 - 19 specialized agents in `.claude/agents/`
@@ -16,13 +23,7 @@ description: Complete Trinity integration with TAN → ZEN → INO → EIN → J
 - Work order system in `trinity/work-orders/`
 - Documentation templates in `trinity/templates/documentation/`
 
-**Next Steps**: Run `/trinity-start` to begin your first workflow
-
----
-
-# Trinity Initialization
-
-**Purpose:** Complete Trinity Method integration with comprehensive setup and quality validation.
+**Next Steps**: Run `/session:trinity-start` to begin your first workflow
 
 ## Overview
 
