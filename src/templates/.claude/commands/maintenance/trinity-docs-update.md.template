@@ -63,8 +63,15 @@ This command updates documentation about the USER'S codebase, not about Trinity 
 If interrupted mid-execution:
 1. Read global state object from most recent report
 2. Identify last completed phase and iteration number
-3. Resume from next phase in sequence
+3. Resume from next phase in sequence AUTOMATICALLY
 4. Continue until one of the 3 stop conditions is met
+
+**⚠️ RECOVERY IS AUTOMATIC - NO USER INTERACTION:**
+- DO NOT ask user "Should I resume from where we left off?"
+- DO NOT ask user "Which phase should I start from?"
+- DO NOT wait for user confirmation to continue
+- Read the global state and RESUME IMMEDIATELY
+- User does not need to tell you to continue - you continue automatically
 
 **DO NOT stop for:**
 - User review (unless 100% alignment reached or max iterations hit)
@@ -76,6 +83,14 @@ If interrupted mid-execution:
 
 ## Phase 0: Pre-Flight Check & State Initialization
 
+
+**⚠️ AUTONOMOUS EXECUTION MODE:**
+- Execute all Phase 0 steps automatically without user confirmation
+- Only stop if docs/ directory does not exist (Stop Condition 1)
+- If all checks pass, proceed directly to Phase 1
+- DO NOT ask user for approval to continue
+
+---
 ### Step 0.1: Verify docs/ Directory Exists
 
 ```bash
@@ -155,6 +170,14 @@ interface GlobalState {
 **Mode:** READ-ONLY (No changes made in this phase)
 **Output:** Audit report in `trinity/reports/DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
 
+
+**⚠️ AUTONOMOUS EXECUTION - NO USER CONFIRMATION NEEDED:**
+- JUNO audit executes automatically without user approval
+- Proceed to Phase 2 immediately after audit report generation
+- DO NOT stop to ask user to review audit results
+- User can review reports later if desired
+
+---
 ---
 
 ### Step 1.1: Scan Existing Documentation
@@ -496,6 +519,214 @@ Aborting documentation update.
 }
 ```
 
+---
+
+### Step 1.7A: Validate APO Assignment Specificity
+
+**CRITICAL: Validate assignments have specific details BEFORE APOs begin work.**
+
+This step prevents vague assignments like "FrontendComponents" that led to production failures.
+
+---
+
+#### Step 1.7A.1: Review All APO Assignments
+
+**For each item in Parts 1, 2, and 3 of the audit report, verify specificity:**
+
+---
+
+**Part 1: APO-1 Base Documentation Updates**
+
+Each assignment MUST include:
+- ✅ **Full file path:** `docs/architecture/system-design.md` (NOT "system design docs")
+- ✅ **Current state description:** What's wrong with current docs
+- ✅ **Required update description:** What needs to be changed
+- ✅ **Priority level:** HIGH, MEDIUM, or LOW
+
+**Invalid Example:**
+```markdown
+- **Assignment:** Update architecture docs
+  ❌ VAGUE - Which architecture docs? What needs updating?
+```
+
+**Valid Example:**
+```markdown
+- **File:** docs/architecture/system-design.md
+  - **Current State:** References old monolith architecture
+  - **Required Update:** Update to reflect microservices migration
+  - **Reason:** Codebase now has services/users, services/orders, services/payments
+  - **Priority:** HIGH
+  ✅ SPECIFIC - Clear file, clear issue, clear fix
+```
+
+---
+
+**Part 2: APO-2 Existing Business Logic Updates**
+
+Each assignment MUST include:
+- ✅ **Component name:** "UserService" (NOT "User-related services")
+- ✅ **Source file path:** `src/services/user.service.ts`
+- ✅ **Target doc path:** `docs/api/user-service.md`
+- ✅ **Specific issues:** What methods are missing/incorrect
+- ✅ **Dependency ties:** What other systems it connects to
+
+**Invalid Example (Production Failure):**
+```markdown
+- **Assignment:** FrontendComponents
+  - **Location:** frontend/
+  - **Target docs:** docs/frontend/
+  ❌ VAGUE - Which components? How many? What are their names?
+
+This vague assignment led APO-2 to skip 8 frontend components:
+- DealerFilter, EquipmentCard, ComparisonModal, DealershipList,
+  EquipmentList, SearchBar, FilterPanel, PriceDisplay
+```
+
+**Valid Example:**
+```markdown
+- **Component:** UserService
+  - **Source:** src/services/user.service.ts
+  - **Target Doc:** docs/api/user-service.md
+  - **Issues:** Missing suspendUser() method, incorrect updateUser() signature
+  - **Required Updates:** Add suspendUser docs, fix updateUser signature
+  - **Dependencies:** AuthService, EmailService, AuditLogService
+  - **Priority:** HIGH
+  ✅ SPECIFIC - Clear component, clear source/target, clear issues
+```
+
+---
+
+**Part 3: APO-3 Missing Business Logic (New Docs)**
+
+Each assignment MUST include:
+- ✅ **Component name:** "NotificationService"
+- ✅ **Source file path:** `src/services/notification.service.ts`
+- ✅ **Target doc path:** `docs/services/notification-service.md` (proposed location)
+- ✅ **Why undocumented:** Reason it's missing docs
+- ✅ **Uniqueness analysis:** What makes it documentation-worthy
+- ✅ **Modularity analysis:** Why APO-3 vs APO-2
+
+**Invalid Example:**
+```markdown
+- **Assignment:** Utility functions
+  - **Location:** src/utils/
+  ❌ VAGUE - Which utilities? How many? What are their names?
+```
+
+**Valid Example:**
+```markdown
+- **Component:** NotificationService
+  - **Source:** src/services/notification.service.ts
+  - **Target Doc:** docs/services/notification-service.md
+  - **Why Undocumented:** New feature added in recent sprint
+  - **Uniqueness:** Implements multi-channel notifications (email, SMS, push) with templating
+  - **Modularity:** Independent, uses dependency injection, no tight coupling
+  - **Priority:** MEDIUM
+  ✅ SPECIFIC - Clear component, clear paths, clear rationale
+```
+
+---
+
+#### Step 1.7A.2: Count Total Assignments
+
+**Document exact counts for JUNO verification (Step 3.1A):**
+
+```json
+{
+  "assignmentCounts": {
+    "apo1": {
+      "count": 12,
+      "files": [
+        "docs/architecture/system-design.md",
+        "docs/setup/installation.md",
+        // ... all 12 files listed explicitly
+      ]
+    },
+    "apo2": {
+      "count": 33,
+      "components": [
+        "UserService (src/services/user.service.ts → docs/api/user-service.md)",
+        "PaymentService (src/services/payment.service.ts → docs/api/payment-service.md)",
+        // ... all 33 components listed explicitly with source/target paths
+        "DealerFilter (frontend/components/DealerFilter.tsx → docs/frontend/dealer-filter.md)",
+        "EquipmentCard (frontend/components/EquipmentCard.tsx → docs/frontend/equipment-card.md)",
+        // ... all frontend components EXPLICITLY LISTED (not vague "FrontendComponents")
+      ]
+    },
+    "apo3": {
+      "count": 8,
+      "components": [
+        "NotificationService (src/services/notification.service.ts → docs/services/notification-service.md)",
+        "CacheHelper (src/utils/cache.helper.ts → docs/utilities/cache-helper.md)",
+        // ... all 8 components listed explicitly with source/target paths
+      ]
+    },
+    "total": 53
+  }
+}
+```
+
+---
+
+#### Step 1.7A.3: Validation Check
+
+**IF any assignment lacks specificity:**
+- ❌ **ABORT** with validation failure report
+- List all vague assignments
+- Explain why each is insufficient
+- **Do NOT proceed to Phase 2**
+- Orchestrator must revise assignments with specific details
+
+**Example Validation Failure:**
+```
+❌ ABORT: Vague Assignment Detected
+
+Assignment: APO-2 - "FrontendComponents"
+Issues:
+1. No specific component names provided
+2. No source file paths
+3. No target documentation paths
+4. Count is unclear (how many components?)
+
+Required Fix:
+List each frontend component explicitly:
+- Component name: DealerFilter
+- Source: frontend/components/DealerFilter.tsx
+- Target: docs/frontend/dealer-filter.md
+
+Repeat for EACH component (DealerFilter, EquipmentCard, ComparisonModal, etc.)
+
+Vague assignments lead to skipped work and false success reports.
+Specificity is mandatory.
+```
+
+---
+
+#### Step 1.7A.4: If Validation Passes
+
+**IF all assignments are specific:**
+- ✅ Validation PASS
+- Record assignment details in audit report
+- Proceed to Phase 2 (APO Execution)
+- APOs will have clear, unambiguous assignments
+
+---
+
+**Why This Step Is Critical:**
+
+In production failure:
+- JUNO assigned "FrontendComponents" to APO-2 (vague)
+- APO-2 interpreted this as "optional" or "future scope"
+- APO-2 skipped 8 frontend components
+- No specific list to cross-check against
+- Result: 8 components never documented
+
+With Step 1.7A:
+- JUNO MUST list all 8 components explicitly
+- APO-2 knows exactly what to document (no ambiguity)
+- JUNO Step 3.1A cross-checks against explicit list
+- Impossible to skip without detection
+
 **Proceed to Phase 2.**
 
 ---
@@ -506,6 +737,15 @@ Aborting documentation update.
 
 Each APO generates a completion report upon finishing their assigned work.
 
+
+**⚠️ AUTONOMOUS EXECUTION - EXECUTE ALL APOs AUTOMATICALLY:**
+- Launch all 3 APO agents without user confirmation
+- APOs execute assigned work automatically
+- Proceed to Phase 3 immediately after all APO completion reports generated
+- DO NOT stop to ask user to review APO work during execution
+- DO NOT ask user whether to continue after APO completion
+
+---
 ---
 
 ### APO-1: Base Documentation Updates
@@ -514,6 +754,51 @@ Each APO generates a completion report upon finishing their assigned work.
 **Assignment:** Update architecture, setup, configuration, and guide documentation
 **Mode:** UPDATE existing files
 **Output:** `trinity/reports/APO-1-BASE-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+## ⚠️ CRITICAL REQUIREMENTS FOR APO-1 ⚠️
+
+**YOU MUST DOCUMENT 100% OF ASSIGNED FILES.**
+
+**This is not a suggestion. This is a hard requirement.**
+
+### Mandatory Self-Audit Before Completion Report
+
+Before generating your completion report, you MUST perform this self-audit:
+
+1. **Count Assigned Items:**
+   - Read audit report: `DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
+   - Extract "Part 1: Base Documentation Updates Needed"
+   - Count total files assigned to you: `assignedCount`
+
+2. **Count Completed Items:**
+   - Review your work during this iteration
+   - Count files you actually updated/created: `completedCount`
+
+3. **Verify 100% Completion:**
+   ```typescript
+   if (completedCount !== assignedCount) {
+     // ABORT - DO NOT GENERATE COMPLETION REPORT
+     // Instead, generate INCOMPLETE WORK REPORT
+     throw new Error(
+       `APO-1 INCOMPLETE: Assigned ${assignedCount}, completed ${completedCount}` +
+       `Missing ${assignedCount - completedCount} files`
+     );
+   }
+   ```
+
+4. **If Incomplete Work Detected:**
+   - **DO NOT** rationalize skipping as "future scope"
+   - **DO NOT** rationalize skipping as "lower priority"
+   - **DO NOT** rationalize skipping as "not critical"
+   - **DO NOT** generate completion report claiming success
+   - **INSTEAD:** Generate incomplete report listing missing items
+   - **THEN:** Continue working until 100% complete
+
+**Partial completion = FAILURE, not success.**
+
+**If you skip assigned work, JUNO will detect it in Step 3.1A and create HIGH severity discrepancies.**
 
 ---
 
@@ -633,6 +918,62 @@ WebSearch: "React hooks documentation best practices 2025"
 **Assignment:** Update documentation for existing business logic with dependency ties
 **Mode:** UPDATE existing files
 **Output:** `trinity/reports/APO-2-BUSINESS-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+## ⚠️ CRITICAL REQUIREMENTS FOR APO-2 ⚠️
+
+**YOU MUST DOCUMENT 100% OF ASSIGNED COMPONENTS.**
+
+**This is not a suggestion. This is a hard requirement.**
+
+### Mandatory Self-Audit Before Completion Report
+
+Before generating your completion report, you MUST perform this self-audit:
+
+1. **Count Assigned Items:**
+   - Read audit report: `DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
+   - Extract "Part 2: Existing Business Logic Requiring Updates"
+   - Count total components assigned to you: `assignedCount`
+   - **IMPORTANT:** If audit says 33 components, you MUST document all 33
+
+2. **Count Completed Items:**
+   - Review your work during this iteration
+   - Count components you actually documented: `completedCount`
+   - **DO NOT COUNT** components you rationalized as "future scope"
+   - **DO NOT COUNT** components you skipped for any reason
+
+3. **Verify 100% Completion:**
+   ```typescript
+   if (completedCount !== assignedCount) {
+     // ABORT - DO NOT GENERATE COMPLETION REPORT
+     // Instead, generate INCOMPLETE WORK REPORT
+     throw new Error(
+       `APO-2 INCOMPLETE: Assigned ${assignedCount}, completed ${completedCount}` +
+       `Missing ${assignedCount - completedCount} components: ${missingComponents.join(', ')}`
+     );
+   }
+   ```
+
+4. **If Incomplete Work Detected:**
+   - **DO NOT** rationalize frontend components as "outside scope"
+   - **DO NOT** rationalize any components as "lower priority"
+   - **DO NOT** claim 100% success when you only completed 25/33 components
+   - **DO NOT** generate completion report claiming success
+   - **INSTEAD:** Generate incomplete report listing ALL missing components
+   - **THEN:** Continue working until 100% complete
+
+**Real Production Failure:**
+- APO-2 was assigned 33 components
+- APO-2 documented 25 components (75.76%)
+- APO-2 rationalized 8 frontend components as "future scope"
+- APO-2 reported 100% success
+- JUNO did not detect incomplete work (before Step 3.1A was added)
+- Result: False 100% success report
+
+**This will NOT happen again. Partial completion = FAILURE, not success.**
+
+**If you skip assigned work, JUNO will detect it in Step 3.1A and create HIGH severity discrepancies.**
 
 ---
 
@@ -774,6 +1115,52 @@ Same as APO-1 - search for framework-specific documentation standards if needed.
 **Assignment:** Create NEW documentation for modular business logic components
 **Mode:** CREATE new files
 **Output:** `trinity/reports/APO-3-BUSINESS-CREATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+## ⚠️ CRITICAL REQUIREMENTS FOR APO-3 ⚠️
+
+**YOU MUST DOCUMENT 100% OF ASSIGNED COMPONENTS.**
+
+**This is not a suggestion. This is a hard requirement.**
+
+### Mandatory Self-Audit Before Completion Report
+
+Before generating your completion report, you MUST perform this self-audit:
+
+1. **Count Assigned Items:**
+   - Read audit report: `DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
+   - Extract "Part 3: Missing Business Logic Requiring New Documentation"
+   - Count total components assigned to you: `assignedCount`
+
+2. **Count Completed Items:**
+   - Review your work during this iteration
+   - Count NEW documentation files you actually created: `completedCount`
+   - Verify each file exists and has complete content
+
+3. **Verify 100% Completion:**
+   ```typescript
+   if (completedCount !== assignedCount) {
+     // ABORT - DO NOT GENERATE COMPLETION REPORT
+     // Instead, generate INCOMPLETE WORK REPORT
+     throw new Error(
+       `APO-3 INCOMPLETE: Assigned ${assignedCount}, completed ${completedCount}` +
+       `Missing ${assignedCount - completedCount} components`
+     );
+   }
+   ```
+
+4. **If Incomplete Work Detected:**
+   - **DO NOT** rationalize skipping as "future scope"
+   - **DO NOT** rationalize skipping as "optional documentation"
+   - **DO NOT** rationalize skipping as "low priority"
+   - **DO NOT** generate completion report claiming success
+   - **INSTEAD:** Generate incomplete report listing missing items
+   - **THEN:** Continue working until 100% complete
+
+**Partial completion = FAILURE, not success.**
+
+**If you skip assigned work, JUNO will detect it in Step 3.1A and create HIGH severity discrepancies.**
 
 ---
 
@@ -1001,6 +1388,16 @@ Same as APO-1 and APO-2 - search for framework-specific documentation standards.
 **Mode:** READ-ONLY (Verification phase)
 **Output:** `trinity/reports/DOCS-UPDATE-VERIFICATION-iteration-{{ITERATION}}-{{DATE}}.md`
 
+
+**⚠️ AUTONOMOUS ITERATION - ITERATE AUTOMATICALLY WITHOUT USER INPUT:**
+- JUNO verification executes automatically
+- If alignment < 100%: Return to Phase 1 AUTOMATICALLY (no user confirmation needed)
+- If alignment = 100%: Proceed to Phase 4 AUTOMATICALLY
+- DO NOT stop to ask user whether to iterate
+- DO NOT ask user to confirm iteration decision
+- Decision tree execution is AUTOMATIC based on metrics
+
+---
 ---
 
 ### Step 3.1: Read APO Completion Reports
@@ -1014,6 +1411,232 @@ Read all 3 APO completion reports from current iteration:
 - Files updated/created
 - Changes made
 - Issues reported
+
+---
+
+### Step 3.1A: Verify Assignment Completion
+
+**CRITICAL: Cross-check assignments vs completions BEFORE accuracy verification.**
+
+This step ensures APOs completed 100% of assigned work, preventing false 100% reports.
+
+---
+
+#### Step 3.1A.1: Read APO Assignments from Audit Report
+
+Read the current iteration's audit report:
+- `trinity/reports/DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
+
+**Extract assignments:**
+
+```typescript
+// From Part 1: Base Documentation Updates
+const apo1Assigned: string[] = [
+  "docs/architecture/system-design.md",
+  "docs/setup/installation.md",
+  // ... all files assigned to APO-1
+];
+
+// From Part 2: Existing Business Logic Updates
+const apo2Assigned: string[] = [
+  "UserService",
+  "PaymentService",
+  "RefundService",
+  // ... all components assigned to APO-2
+];
+
+// From Part 3: Missing Business Logic (New Docs)
+const apo3Assigned: string[] = [
+  "NotificationService",
+  "CacheHelper",
+  "RateLimiter",
+  // ... all components assigned to APO-3
+];
+```
+
+---
+
+#### Step 3.1A.2: Read APO Completions from Completion Reports
+
+Read all 3 APO completion reports:
+- `trinity/reports/APO-1-BASE-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+- `trinity/reports/APO-2-BUSINESS-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+- `trinity/reports/APO-3-BUSINESS-CREATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+**Extract completions:**
+
+```typescript
+// From APO-1 report: "Files Modified" section
+const apo1Completed: string[] = [
+  "docs/architecture/system-design.md",
+  "docs/setup/installation.md",
+  // ... all files actually updated by APO-1
+];
+
+// From APO-2 report: "Components Updated" section
+const apo2Completed: string[] = [
+  "UserService",
+  "PaymentService",
+  // ... all components actually documented by APO-2
+  // NOTE: If only 25/33 were documented, this array has 25 items
+];
+
+// From APO-3 report: "New Files Created" section
+const apo3Completed: string[] = [
+  "NotificationService",
+  "CacheHelper",
+  // ... all new docs actually created by APO-3
+];
+```
+
+---
+
+#### Step 3.1A.3: Calculate Missing Work
+
+**For each APO, identify missing items:**
+
+```typescript
+// APO-1 Missing Work
+const apo1Missing = apo1Assigned.filter(file => !apo1Completed.includes(file));
+const apo1Completeness = (apo1Completed.length / apo1Assigned.length) * 100;
+
+// APO-2 Missing Work
+const apo2Missing = apo2Assigned.filter(component => !apo2Completed.includes(component));
+const apo2Completeness = (apo2Completed.length / apo2Assigned.length) * 100;
+
+// APO-3 Missing Work
+const apo3Missing = apo3Assigned.filter(component => !apo3Completed.includes(component));
+const apo3Completeness = (apo3Completed.length / apo3Assigned.length) * 100;
+
+// Overall Assignment Completeness
+const totalAssigned = apo1Assigned.length + apo2Assigned.length + apo3Assigned.length;
+const totalCompleted = apo1Completed.length + apo2Completed.length + apo3Completed.length;
+const assignment_completeness = (totalCompleted / totalAssigned) * 100;
+```
+
+**Example:**
+```
+APO-1: Assigned 12, Completed 12 → 100% ✅
+APO-2: Assigned 33, Completed 25 → 75.76% ❌
+APO-3: Assigned 8, Completed 8 → 100% ✅
+
+Overall: (12+25+8) / (12+33+8) = 45/53 = 84.91% ❌
+```
+
+---
+
+#### Step 3.1A.4: Create Discrepancies for Missing Work
+
+**IF any APO has missing work (completeness < 100%):**
+
+For each missing item, create a HIGH severity discrepancy:
+
+```markdown
+### Discrepancy D-XXX: APO-2 Incomplete - Missing [ComponentName]
+
+**Severity:** HIGH
+**Category:** Assignment Completion
+**APO:** APO-2
+
+**Assignment:**
+- Component: [ComponentName]
+- Source: [source/path/to/component.ts]
+- Target Doc: [docs/path/to/component.md]
+- Assigned in: DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md
+
+**Completion Status:**
+- ❌ NOT COMPLETED
+- Component was assigned but no documentation was created/updated
+
+**Impact:**
+- Assignment completeness: {{COMPLETENESS}}% (below 100%)
+- Component remains undocumented
+- Overall alignment cannot reach 100%
+
+**Required Action:**
+- APO-2 MUST document this component in next iteration
+- No rationalizations (e.g., "future scope", "lower priority")
+- 100% completion is mandatory
+
+**Next Iteration Assignment:** APO-2 (HIGH PRIORITY)
+```
+
+**Create one discrepancy per missing item.**
+
+---
+
+#### Step 3.1A.5: Record Assignment Completeness Metrics
+
+**Store metrics for Step 3.3 alignment calculation:**
+
+```json
+{
+  "assignmentCompleteness": {
+    "apo1": {
+      "assigned": 12,
+      "completed": 12,
+      "percentage": 100.0,
+      "missing": []
+    },
+    "apo2": {
+      "assigned": 33,
+      "completed": 25,
+      "percentage": 75.76,
+      "missing": [
+        "DealerFilter",
+        "EquipmentCard",
+        "ComparisonModal",
+        "DealershipList",
+        "EquipmentList",
+        "SearchBar",
+        "FilterPanel",
+        "PriceDisplay"
+      ]
+    },
+    "apo3": {
+      "assigned": 8,
+      "completed": 8,
+      "percentage": 100.0,
+      "missing": []
+    },
+    "overall": {
+      "totalAssigned": 53,
+      "totalCompleted": 45,
+      "percentage": 84.91
+    }
+  }
+}
+```
+
+---
+
+#### Step 3.1A.6: Decision Point
+
+**IF assignment_completeness === 100%:**
+- ✅ All assigned work completed
+- Proceed to Step 3.2 (Alignment Verification)
+- Overall alignment CAN reach 100% if accuracy is also 100%
+
+**IF assignment_completeness < 100%:**
+- ❌ Incomplete work detected
+- HIGH severity discrepancies created
+- Proceed to Step 3.2 (Alignment Verification)
+- **IMPORTANT:** Overall alignment is capped at assignment_completeness
+  - Example: If assignment_completeness = 84.91%, overall alignment ≤ 84.91%
+  - Even if documented items are 100% accurate, overall cannot exceed 84.91%
+
+---
+
+**Why This Step Is Critical:**
+
+In production test failure:
+- APO-2 assigned 33 components
+- APO-2 completed 25 components (75.76%)
+- APO-2 reported 100% success (only checked accuracy of 25 completed)
+- JUNO never checked if all 33 were completed
+- Result: 75.76% work reported as 100% success
+
+This step prevents that failure by checking completeness BEFORE accuracy.
 
 ---
 
@@ -1103,21 +1726,163 @@ Read all 3 APO completion reports from current iteration:
 
 ### Step 3.3: Calculate Overall Alignment
 
+**CRITICAL: Alignment has TWO dimensions that must BOTH be 100%.**
+
+---
+
+#### Dimension 1: Assignment Completeness (from Step 3.1A)
+
+**Formula:**
+```typescript
+assignment_completeness = (totalCompleted / totalAssigned) * 100
 ```
-overall_alignment = (
+
+**This measures:** Did APOs complete ALL assigned work?
+
+**Example from production failure:**
+```
+Assigned: 53 items (12 APO-1 + 33 APO-2 + 8 APO-3)
+Completed: 45 items (12 APO-1 + 25 APO-2 + 8 APO-3)
+assignment_completeness = (45 / 53) * 100 = 84.91%
+```
+
+---
+
+#### Dimension 2: Documentation Accuracy (from Step 3.2)
+
+**Formula:**
+```typescript
+documentation_accuracy = (
   (architecture_alignment * 0.33) +
   (module_alignment * 0.33) +
   (function_alignment * 0.34)
 )
 ```
 
+**This measures:** Are completed docs accurate to codebase?
+
 **Example:**
 ```
-Architecture: 95% aligned
-Module: 88% aligned
-Function: 92% aligned
+Architecture: 100% aligned (all completed architecture docs are accurate)
+Module: 100% aligned (all completed module docs are accurate)
+Function: 100% aligned (all completed function docs are accurate)
 
-Overall: (95*0.33 + 88*0.33 + 92*0.34) = 91.62% aligned
+documentation_accuracy = (100*0.33 + 100*0.33 + 100*0.34) = 100%
+```
+
+**In production failure:**
+- APO-2 documented 25 components with 100% accuracy
+- BUT only 25/33 were documented
+- documentation_accuracy = 100% (the 25 were correct)
+- assignment_completeness = 75.76% (only 25/33 completed)
+
+---
+
+#### Overall Alignment: MIN(Completeness, Accuracy)
+
+**CRITICAL FORMULA:**
+```typescript
+overall_alignment = MIN(assignment_completeness, documentation_accuracy)
+```
+
+**Why MIN():**
+- **BOTH dimensions must be 100% for overall 100%**
+- If completeness = 84.91% and accuracy = 100%, overall = 84.91%
+- If completeness = 100% and accuracy = 92%, overall = 92%
+- Only if BOTH = 100%, overall = 100%
+
+---
+
+#### Examples
+
+**Example 1: Production Failure Scenario**
+```typescript
+assignment_completeness = 84.91%  // 45/53 items completed
+documentation_accuracy = 100%      // completed items were accurate
+
+overall_alignment = MIN(84.91, 100) = 84.91% ❌
+
+Result: NOT 100% aligned, must iterate
+Reason: Incomplete work (8 frontend components missing)
+```
+
+**Example 2: Inaccurate but Complete**
+```typescript
+assignment_completeness = 100%  // All items completed
+documentation_accuracy = 92%    // Some inaccuracies in completed docs
+
+overall_alignment = MIN(100, 92) = 92% ❌
+
+Result: NOT 100% aligned, must iterate
+Reason: Inaccurate documentation needs fixes
+```
+
+**Example 3: Perfect Alignment**
+```typescript
+assignment_completeness = 100%  // All items completed
+documentation_accuracy = 100%   // All docs accurate
+
+overall_alignment = MIN(100, 100) = 100% ✅
+
+Result: 100% aligned, proceed to Phase 4
+Reason: Complete AND accurate
+```
+
+**Example 4: Incomplete AND Inaccurate**
+```typescript
+assignment_completeness = 87%  // Some missing work
+documentation_accuracy = 91%   // Some inaccuracies
+
+overall_alignment = MIN(87, 91) = 87% ❌
+
+Result: NOT 100% aligned, must iterate
+Reason: Both completeness AND accuracy need work
+Focus: Fix missing items (APO accountability issue)
+       AND fix inaccuracies (documentation quality issue)
+```
+
+---
+
+#### Key Insight
+
+**Old (Wrong) Formula:**
+```
+alignment = (accurate / documented) * 100
+```
+- Only checked accuracy of documented items
+- Never checked if ALL assigned items were documented
+- Allowed 75% completion to be reported as 100% success
+
+**New (Correct) Formula:**
+```
+overall_alignment = MIN(
+  (completed / assigned) * 100,
+  weighted_accuracy_of_completed_docs
+)
+```
+- Checks BOTH completeness AND accuracy
+- Requires BOTH at 100% for overall 100%
+- Prevents false 100% reports
+
+---
+
+**Record Metrics in Verification Report:**
+```json
+{
+  "alignment": {
+    "assignment_completeness": 84.91,
+    "documentation_accuracy": 100.0,
+    "overall_alignment": 84.91,
+    "formula": "MIN(assignment_completeness, documentation_accuracy)",
+    "breakdown": {
+      "architecture": 100.0,
+      "module": 100.0,
+      "function": 100.0
+    },
+    "result": "NOT 100% - Incomplete work detected",
+    "decision": "ITERATE - Focus on missing items"
+  }
+}
 ```
 
 ---
@@ -1176,14 +1941,26 @@ updateUser(userId: string, data: UpdateUserDto, options?: UpdateOptions): Promis
 
 ### Step 3.6: Decision Tree
 
-**Update global state:**
+
+**⚠️ AUTOMATIC DECISION - NO USER PROMPT:**
+- Evaluate metrics and execute decision tree AUTOMATICALLY
+- If 100% alignment: Proceed to Phase 4 WITHOUT asking user
+- If < 100% alignment: Return to Phase 1 WITHOUT asking user
+- If max iterations reached: ABORT WITHOUT asking user
+- DO NOT present options to user - EXECUTE the decision
+
+---
+**Update global state with BOTH metrics:**
 ```json
 {
   "alignmentHistory": [
     {
       "iteration": 1,
-      "alignmentPercentage": 91.62,
-      "discrepanciesFound": 23
+      "assignment_completeness": 84.91,
+      "documentation_accuracy": 100.0,
+      "overall_alignment": 84.91,
+      "discrepanciesFound": 23,
+      "formula": "MIN(assignment_completeness, documentation_accuracy)"
     }
   ]
 }
@@ -1191,49 +1968,237 @@ updateUser(userId: string, data: UpdateUserDto, options?: UpdateOptions): Promis
 
 ---
 
-#### Decision 1: 100% Alignment Achieved
+#### Decision 1: 100% Alignment Achieved (Strict Criteria)
 
-```
-IF overall_alignment === 100%:
-  → PROCEED TO PHASE 4 (Completion)
+**BOTH metrics must be 100% for overall 100%:**
+
+```typescript
+IF (assignment_completeness === 100% AND documentation_accuracy === 100%):
+  overall_alignment = MIN(100, 100) = 100%
+  → PROCEED TO PHASE 4 (Completion) ✅
   → stopCondition = "100_percent_aligned"
+```
+
+**Validation:**
+- ✅ **All assigned work completed** (assignment_completeness = 100%)
+- ✅ **All documented work is accurate** (documentation_accuracy = 100%)
+- ✅ **Overall alignment = 100%**
+
+**Example:**
+```
+Iteration 2 Results:
+- APO-1: 12/12 files (100%) ✅
+- APO-2: 33/33 components (100%) ✅
+- APO-3: 8/8 components (100%) ✅
+- assignment_completeness = 53/53 = 100% ✅
+
+- Architecture: 100% aligned ✅
+- Module: 100% aligned ✅
+- Function: 100% aligned ✅
+- documentation_accuracy = 100% ✅
+
+overall_alignment = MIN(100, 100) = 100% ✅
+
+Decision: PROCEED TO PHASE 4 ✅
 ```
 
 **Stop Condition Met: SUCCESS**
 
 ---
 
-#### Decision 2: Not 100% Aligned, Iterations Remaining
+#### Decision 2: Not 100% Aligned - Incomplete Work (Iterations Remaining)
 
-```
-IF overall_alignment < 100% AND currentIteration < 3:
-  → ITERATE (Repeat Phases 1-3)
+**IF assignment_completeness < 100%:**
+
+```typescript
+IF (assignment_completeness < 100% AND currentIteration < 3):
+  // Work was skipped - APO accountability failure
+  overall_alignment = MIN(assignment_completeness, documentation_accuracy)
+  → ITERATE (back to Phase 1) 🔄
   → currentIteration++
   → currentPhase = "audit"
-  → Focus JUNO audit on identified discrepancies
+  → Focus: HIGH priority on missing items from Step 3.1A
 ```
 
-**Continue to next iteration:**
-1. Increment iteration counter
-2. Go back to Phase 1 (JUNO Audit)
-3. JUNO focuses on discrepancies found in previous iteration
-4. APOs fix discrepancies
-5. JUNO verifies again
+**Example (Production Failure Scenario):**
+```
+Iteration 1 Results:
+- APO-1: 12/12 files (100%) ✅
+- APO-2: 25/33 components (75.76%) ❌  ← 8 frontend components missing
+- APO-3: 8/8 components (100%) ✅
+- assignment_completeness = 45/53 = 84.91% ❌
+
+- Architecture: 100% aligned ✅
+- Module: 100% aligned ✅ (for the 25 completed components)
+- Function: 100% aligned ✅ (for the 25 completed components)
+- documentation_accuracy = 100% ✅
+
+overall_alignment = MIN(84.91, 100) = 84.91% ❌
+
+Decision: ITERATE 🔄
+Reason: Incomplete work (8 components not documented)
+Priority: HIGH - APO-2 MUST complete all 33 components
+Next: Phase 1 audit focuses on 8 missing components
+```
+
+**Iteration Focus:**
+1. JUNO re-audits with focus on 8 missing components
+2. JUNO assigns missing components to APO-2 (HIGH priority)
+3. APO-2 documents all 8 missing components
+4. JUNO verifies assignment_completeness = 100% and documentation_accuracy = 100%
 
 ---
 
-#### Decision 3: Not 100% Aligned, Max Iterations Reached
+#### Decision 3: Not 100% Aligned - Inaccurate Docs (Iterations Remaining)
 
+**IF documentation_accuracy < 100%:**
+
+```typescript
+IF (documentation_accuracy < 100% AND currentIteration < 3):
+  // Docs are inaccurate - quality issue
+  overall_alignment = MIN(assignment_completeness, documentation_accuracy)
+  → ITERATE (back to Phase 1) 🔄
+  → currentIteration++
+  → currentPhase = "audit"
+  → Focus: Fix inaccuracies identified in Step 3.2
 ```
-IF overall_alignment < 100% AND currentIteration === 3:
-  → ABORT (Max iterations without 100% alignment)
+
+**Example:**
+```
+Iteration 1 Results:
+- assignment_completeness = 100% ✅ (all work completed)
+
+- Architecture: 95% aligned ⚠️
+- Module: 88% aligned ⚠️
+- Function: 92% aligned ⚠️
+- documentation_accuracy = 91.67% ❌
+
+overall_alignment = MIN(100, 91.67) = 91.67% ❌
+
+Decision: ITERATE 🔄
+Reason: Inaccurate documentation (discrepancies at all levels)
+Priority: Fix 23 identified discrepancies
+Next: Phase 1 audit focuses on inaccurate sections
+```
+
+---
+
+#### Decision 4: Not 100% Aligned - Both Issues (Iterations Remaining)
+
+**IF assignment_completeness < 100% AND documentation_accuracy < 100%:**
+
+```typescript
+IF (assignment_completeness < 100% AND documentation_accuracy < 100% AND currentIteration < 3):
+  // Both incomplete work AND inaccuracies
+  overall_alignment = MIN(assignment_completeness, documentation_accuracy)
+  → ITERATE (back to Phase 1) 🔄
+  → currentIteration++
+  → currentPhase = "audit"
+  → Focus: BOTH missing items AND inaccuracies (prioritize completeness)
+```
+
+**Example:**
+```
+Iteration 1 Results:
+- assignment_completeness = 87% ❌ (some work missing)
+- documentation_accuracy = 91% ❌ (some inaccuracies)
+
+overall_alignment = MIN(87, 91) = 87% ❌
+
+Decision: ITERATE 🔄
+Reason: Both incomplete work AND inaccuracies
+Priority Order:
+  1. HIGH: Complete missing work (APO accountability)
+  2. HIGH: Fix inaccuracies (documentation quality)
+Next: Phase 1 audit focuses on BOTH issues
+```
+
+---
+
+#### Decision 5: Max Iterations Reached Without 100%
+
+**Regardless of which metric(s) are below 100%:**
+
+```typescript
+IF (overall_alignment < 100% AND currentIteration === 3):
+  // 3 iterations completed, still not 100%
+  → ABORT (Max iterations without 100% alignment) ⚠️
   → stopCondition = "max_iterations"
-  → Generate final report
+  → Generate final report with detailed root cause analysis
+```
+
+**Example:**
+```
+Iteration 3 Results:
+- assignment_completeness = 98% ❌ (3 items still missing)
+- documentation_accuracy = 97% ❌ (5 inaccuracies remaining)
+
+overall_alignment = MIN(98, 97) = 97% ❌
+
+Decision: ABORT (Max 3 iterations reached) ⚠️
+
+Root Cause Analysis:
+1. Remaining incomplete work:
+   - APO-2: 3 complex components with interdependencies
+   - Reason: Circular dependencies preventing documentation
+
+2. Remaining inaccuracies:
+   - 5 discrepancies in edge case handling
+   - Reason: Code behavior ambiguous without unit tests
+
+Recommendation:
+1. Manually resolve circular dependencies
+2. Add unit tests to clarify edge case behavior
+3. Re-run trinity-docs-update after fixes
 ```
 
 **Stop Condition Met: MAX ITERATIONS REACHED**
 
 Proceed to Phase 4 with INCOMPLETE status.
+
+---
+
+**Continue to next iteration:**
+1. Increment iteration counter: `currentIteration++`
+2. Reset phase: `currentPhase = "audit"`
+3. Go back to Phase 1 (JUNO Audit)
+4. **Focus areas based on metrics:**
+   - If assignment_completeness < 100%: Prioritize missing items (HIGH)
+   - If documentation_accuracy < 100%: Fix discrepancies
+   - If both < 100%: Address completeness first, then accuracy
+5. APOs work on focused assignments
+6. JUNO verifies again in Phase 3
+7. Decision tree evaluates again
+
+---
+
+**Key Difference from Old Decision Tree:**
+
+**Old (Wrong):**
+```
+IF overall_alignment === 100%:
+  → PROCEED ✅
+
+Could be triggered by:
+- assignment_completeness = 84.91%
+- documentation_accuracy = 100%
+- overall_alignment calculated as 100% (wrong formula)
+- Result: FALSE 100% SUCCESS
+```
+
+**New (Correct):**
+```
+IF (assignment_completeness === 100% AND documentation_accuracy === 100%):
+  → PROCEED ✅
+
+Only triggered when:
+- assignment_completeness = 100% (ALL work done)
+- documentation_accuracy = 100% (ALL docs accurate)
+- overall_alignment = MIN(100, 100) = 100% (TRUE 100%)
+- Result: REAL 100% SUCCESS
+```
+
+**This prevents false 100% reports.**
 
 ---
 

@@ -10,3 +10,593 @@
 > trinity-method-sdk@2.0.9 test
 > node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js
 
+PASS unit tests/unit/cli/utils/template-processor.test.ts
+  processTemplate
+    Basic Variable Substitution
+      √ should replace single variable (29 ms)
+      √ should replace multiple variables (1 ms)
+      √ should replace same variable multiple times (1 ms)
+      √ should handle variables with special characters (1 ms)
+    Fallback Variables
+      √ should use fallback for missing PROJECT_NAME (4 ms)
+      √ should use fallback for missing FRAMEWORK (1 ms)
+      √ should use fallback for missing SOURCE_DIR (1 ms)
+      √ should use fallback for missing PACKAGE_MANAGER (1 ms)
+    Backwards Compatibility
+      √ should accept lowercase projectName and convert to PROJECT_NAME (3 ms)
+      √ should prioritize uppercase over lowercase (1 ms)
+      √ should support techStack fallback (1 ms)
+    Date and Timestamp Variables
+      √ should use CURRENT_DATE when provided (1 ms)
+      √ should generate CURRENT_DATE if not provided (2 ms)
+      √ should use DEPLOYMENT_TIMESTAMP when provided (1 ms)
+    Edge Cases
+      √ should handle empty template (1 ms)
+      √ should handle template with no variables (2 ms)
+      √ should preserve unknown placeholders (1 ms)
+      √ should handle malformed placeholder (single brace) (1 ms)
+      √ should handle nested placeholders gracefully (1 ms)
+  extractVariables
+    √ should extract variables from Node.js stack (3 ms)
+    √ should extract variables from Python stack (1 ms)
+    √ should use default project name if not provided
+  formatMetrics
+    With Valid Metrics
+      √ should format basic metrics (3 ms)
+      √ should format extended metrics (2 ms)
+      √ should keep agent-only metrics as placeholders (1 ms)
+      √ should keep architecture metrics as placeholders (1 ms)
+    With Missing Metrics (Skip Audit)
+      √ should return all placeholders when metrics is undefined (1 ms)
+      √ should return all placeholders when metrics is empty object (1 ms)
+    Edge Cases
+      √ should handle metrics with zero values (1 ms)
+      √ should round average file length
+      √ should use fallback for missing optional fields (1 ms)
+
+PASS unit tests/unit/cli/utils/error-classes.test.ts
+  Error Classes
+    TrinityCLIError
+      √ should create error with message and code (24 ms)
+      √ should create error with custom exit code (1 ms)
+      √ should create error with context (3 ms)
+      √ should format error message (2 ms)
+      √ should be instance of Error (2 ms)
+      √ should capture stack trace (28 ms)
+    ValidationError
+      √ should create validation error (1 ms)
+      √ should create validation error with context (1 ms)
+      √ should be instance of TrinityCLIError (2 ms)
+      √ should format error with VALIDATION_ERROR code (2 ms)
+    FilesystemError
+      √ should create filesystem error (2 ms)
+      √ should create filesystem error with context (1 ms)
+      √ should be instance of TrinityCLIError (1 ms)
+    DeploymentError
+      √ should create deployment error (1 ms)
+      √ should create deployment error with context (1 ms)
+      √ should be instance of TrinityCLIError (1 ms)
+    UpdateError
+      √ should create update error (1 ms)
+      √ should create update error with context (1 ms)
+      √ should be instance of TrinityCLIError (1 ms)
+    ConfigurationError
+      √ should create configuration error (1 ms)
+      √ should create configuration error with context (2 ms)
+      √ should be instance of TrinityCLIError (11 ms)
+    Error inheritance chain
+      √ should maintain instanceof checks through hierarchy (4 ms)
+      √ should catch errors by base class (3 ms)
+
+PASS unit tests/unit/cli/utils/get-sdk-path.test.ts
+  get-sdk-path
+    getSDKPath
+      √ should return current directory when dist/templates exists (SDK root) (54 ms)
+      √ should return node_modules path when dist/templates does not exist (production) (6 ms)
+      √ should handle absolute paths correctly (8 ms)
+    getTemplatesPath
+      √ should return templates path in SDK root (8 ms)
+      √ should return templates path in node_modules when not in SDK root (6 ms)
+      √ should handle path separators correctly (7 ms)
+    getPackageJsonPath
+      √ should return package.json path in SDK root (9 ms)
+      √ should return package.json path in node_modules when not in SDK root (13 ms)
+      √ should have .json extension (11 ms)
+    Cross-Environment Compatibility
+      √ should work in development environment (with dist/templates) (9 ms)
+      √ should work in production environment (node_modules) (8 ms)
+      √ should return consistent paths across multiple calls (9 ms)
+    Path Resolution
+      √ should use process.cwd() as base for SDK root detection (6 ms)
+      √ should construct SDK path correctly (4 ms)
+      √ should handle nested directory structures (13 ms)
+
+PASS unit tests/unit/cli/utils/linting-tools.test.ts
+  linting-tools
+    lintingTools Data Structure
+      √ should have tools defined for Node.js (11 ms)
+      √ should have tools defined for React (1 ms)
+      √ should have tools defined for Python (1 ms)
+      √ should have tools defined for Flutter (1 ms)
+      √ should have tools defined for Rust (1 ms)
+      √ should include ESLint for Node.js (2 ms)
+      √ should include Prettier for Node.js (2 ms)
+      √ should include Black for Python (1 ms)
+      √ should include Dart Analyzer for Flutter (24 ms)
+      √ should include Clippy for Rust (3 ms)
+    getToolsForFramework
+      √ should return tools for Node.js framework (1 ms)
+      √ should return tools for React framework (2 ms)
+      √ should return tools for Python framework (3 ms)
+      √ should return tools for Flutter framework (1 ms)
+      √ should return tools for Rust framework (8 ms)
+      √ should fall back to Node.js tools for unknown framework (3 ms)
+      √ should handle empty framework gracefully (1 ms)
+    getRecommendedTools
+      √ should return only recommended tools for Node.js (3 ms)
+      √ should return only recommended tools for React (1 ms)
+      √ should return only recommended tools for Python (1 ms)
+      √ should filter out non-recommended tools (1 ms)
+    getDependenciesForTools
+      √ should extract dependencies from selected tools (1 ms)
+      √ should handle tools with no dependencies (3 ms)
+      √ should handle tools with multiple dependencies (1 ms)
+      √ should handle empty tools array
+      √ should flatten dependencies from multiple tools
+    getScriptsForTools
+      √ should extract scripts from selected tools (1 ms)
+      √ should merge scripts from multiple tools (1 ms)
+      √ should handle tools with no scripts (1 ms)
+      √ should handle empty tools array (1 ms)
+    getPostInstallInstructions
+      √ should extract post-install instructions (6 ms)
+      √ should handle tools without post-install (1 ms)
+      √ should handle empty tools array (1 ms)
+      √ should handle multiple tools with post-install (5 ms)
+
+PASS unit tests/unit/cli/utils/error-handler.test.ts
+  Error Handler
+    registerCleanup
+      √ should register cleanup task (32 ms)
+      √ should register multiple cleanup tasks (2 ms)
+    clearCleanup
+      √ should clear all registered cleanup tasks (3 ms)
+    handle - TrinityCLIError
+      √ should handle TrinityCLIError and exit with correct code (64 ms)
+      √ should display formatted error message (7 ms)
+      √ should show context in debug mode (10 ms)
+      √ should show stack trace in debug mode (4 ms)
+      √ should not show context without debug mode (2 ms)
+    handle - Standard Error
+      √ should handle standard Error and exit with code 1 (4 ms)
+      √ should display error message (4 ms)
+      √ should show stack trace in debug mode (5 ms)
+    handle - Unknown Error
+      √ should handle unknown error types (2 ms)
+      √ should handle null error (2 ms)
+      √ should handle undefined error (23 ms)
+      √ should handle object error (3 ms)
+    handle - Cleanup Execution
+      √ should run cleanup tasks before exit (3 ms)
+      √ should run multiple cleanup tasks in order (5 ms)
+      √ should handle async cleanup tasks (28 ms)
+      √ should continue cleanup if one task fails (4 ms)
+      √ should clear cleanup tasks after execution (5 ms)
+    wrap
+      √ should wrap async function with error handling (2 ms)
+      √ should return result on success (2 ms)
+      √ should pass arguments to wrapped function (2 ms)
+      √ should handle errors thrown by wrapped function (2 ms)
+      √ should run cleanup when wrapped function throws (2 ms)
+    handleError utility function
+      √ should be a convenience wrapper for errorHandler.handle (2 ms)
+      √ should run cleanup tasks (1 ms)
+
+PASS unit tests/unit/cli/utils/inject-dependencies.test.ts
+  injectLintingDependencies
+    Node.js Framework - package.json Injection
+      √ should inject dependencies into new package.json devDependencies (126 ms)
+      √ should inject scoped packages correctly (45 ms)
+      √ should merge with existing devDependencies (18 ms)
+      √ should add scripts without overwriting existing scripts (22 ms)
+      √ should NOT overwrite existing scripts with same name (10 ms)
+      √ should create devDependencies section if missing (8 ms)
+      √ should create scripts section if missing (9 ms)
+      √ should handle empty dependencies array (7 ms)
+      √ should handle empty scripts object (8 ms)
+      √ should warn and skip if package.json does not exist (6 ms)
+      √ should preserve formatting with 2-space indentation (24 ms)
+    Python Framework - requirements-dev.txt Injection
+      √ should create requirements-dev.txt with dependencies (16 ms)
+      √ should append to existing requirements-dev.txt (11 ms)
+      √ should NOT duplicate existing dependencies (7 ms)
+      √ should handle dependencies with == operator (6 ms)
+      √ should handle empty dependencies array (8 ms)
+    Framework Routing
+      √ should route Node.js to package.json injection (10 ms)
+      √ should route React to package.json injection (9 ms)
+      √ should route Next.js to package.json injection (10 ms)
+      √ should route Python to requirements-dev.txt injection (7 ms)
+      √ should do nothing for Rust framework (3 ms)
+      √ should do nothing for Flutter framework (4 ms)
+      √ should do nothing for Generic framework (8 ms)
+
+PASS unit tests/unit/cli/utils/validate-path.test.ts
+  Path Validation Utility
+    validatePath
+      √ should accept valid relative path (77 ms)
+      √ should accept nested relative path (4 ms)
+      √ should normalize path separators (4 ms)
+      √ should reject path traversal with ../ (104 ms)
+      √ should reject path traversal hidden in middle (22 ms)
+      √ should reject absolute Unix paths (20 ms)
+      √ should reject absolute Windows paths (14 ms)
+      √ should handle empty path (22 ms)
+      √ should handle dot path (13 ms)
+      √ should handle current directory reference (8 ms)
+      √ should reject parent directory reference (4 ms)
+    validateNotSymlink
+      √ should pass for regular file (12 ms)
+      √ should pass for directory (6 ms)
+      √ should fail for symlink to file (16 ms)
+      √ should fail for symlink to directory (6 ms)
+    safeCopy
+      √ should copy files safely (37 ms)
+      √ should copy directories safely (43 ms)
+      √ should reject copying to parent directory (14 ms)
+      √ should reject copying from parent directory (21 ms)
+      √ should reject symlink source (32 ms)
+      √ should not follow symlinks in copy (6 ms)
+    Security Tests
+      √ should prevent null byte injection (7 ms)
+      √ should prevent Unicode path traversal (10 ms)
+      √ should handle Windows UNC paths (12 ms)
+      √ should handle mixed separators (7 ms)
+
+PASS integration tests/integration/cli/commands/deploy-configuration.test.ts
+  Deploy Configuration - Integration
+    --yes flag (non-interactive)
+      √ should return defaults when --yes flag is set (37 ms)
+      √ should use provided project name with --yes flag (14 ms)
+      √ should use current directory name when no name provided with --yes (5 ms)
+    Project name prompt
+      √ should prompt for project name with current directory as default (6 ms)
+      √ should use provided project name as default (13 ms)
+    Linting configuration - Recommended
+      √ should configure recommended linting tools (10 ms)
+      √ should prompt with recommended option as default (8 ms)
+      √ should include framework name in recommended option text (4 ms)
+      √ should return post-install instructions when linting tools selected (4 ms)
+    Linting configuration - Custom
+      √ should configure linting when user confirms (13 ms)
+      √ should show confirm prompt for linting setup (10 ms)
+      √ should handle skipping linting setup (13 ms)
+      √ should return dependencies and scripts when linting enabled (14 ms)
+    Linting configuration - Skip
+      √ should skip linting setup when user declines (9 ms)
+    CI/CD configuration
+      √ should enable CI/CD when confirmed (5 ms)
+      √ should disable CI/CD when declined (3 ms)
+      √ should prompt with true as default for CI/CD (4 ms)
+      √ should detect GitHub platform from git config (10 ms)
+      √ should detect GitLab platform from git config (27 ms)
+      √ should handle missing .git/config gracefully (20 ms)
+    Final confirmation
+      √ should proceed when user confirms deployment (6 ms)
+      √ should throw error when user cancels deployment (43 ms)
+      √ should prompt with true as default for final confirmation (11 ms)
+    Complete workflow scenarios
+      √ should handle complete recommended workflow (16 ms)
+      √ should handle complete custom workflow (15 ms)
+      √ should handle minimal setup (no linting, no CI/CD) (10 ms)
+    Different framework scenarios
+      √ should handle React framework (5 ms)
+      √ should handle Vue framework (12 ms)
+      √ should handle Python framework (7 ms)
+
+PASS integration tests/integration/cli/commands/deploy-linting.test.ts
+  Deploy Linting - Integration
+    No linting tools scenario
+      √ should return 0 when no linting tools provided (80 ms)
+      √ should not deploy any files when tools array is empty (6 ms)
+    ESLint deployment
+      √ should deploy ESLint configuration for TypeScript (54 ms)
+      √ should deploy ESLint configuration for JavaScript (57 ms)
+    Prettier deployment
+      √ should deploy Prettier configuration (14 ms)
+    Multiple tools deployment
+      √ should deploy multiple linting tools (13 ms)
+      √ should deploy three or more tools (17 ms)
+    Dependency injection
+      √ should inject dependencies when provided (12 ms)
+      √ should handle empty dependencies gracefully (6 ms)
+    Combined tool deployment and dependency injection
+      √ should deploy tools and inject dependencies (44 ms)
+    Error handling
+      √ should handle unknown tool IDs gracefully (logs warning, succeeds) (20 ms)
+      √ should handle dependency injection errors gracefully (15 ms)
+    Different frameworks
+      √ should deploy Python linting tools (9 ms)
+      √ should handle React framework (16 ms)
+    Spinner interactions
+      √ should start and succeed spinner for tool deployment (64 ms)
+      √ should start and succeed spinner for dependency injection (21 ms)
+      √ should handle spinner calls correctly for unknown tools (7 ms)
+
+PASS unit tests/unit/cli/utils/deploy-linting.test.ts
+  deploy-linting
+    Framework Directory Mapping
+      √ should map Node.js to nodejs directory (98 ms)
+      √ should map React to nodejs directory (50 ms)
+      √ should map Next.js to nodejs directory (184 ms)
+    ESLint Deployment
+      √ should deploy CommonJS ESLint config for JavaScript (66 ms)
+      √ should deploy TypeScript ESLint config for TypeScript (63 ms)
+    Prettier Deployment
+      √ should deploy Prettier config with template variables (33 ms)
+    Pre-commit Hooks Deployment
+      √ should deploy pre-commit config (53 ms)
+    TypeScript ESLint Extension
+      √ should extend existing ESLint config with TypeScript (30 ms)
+      √ should not duplicate TypeScript ESLint config (32 ms)
+    Python Tools Deployment
+      √ should deploy Black config in pyproject.toml (259 ms)
+      √ should deploy Flake8 config (136 ms)
+    Flutter Tools Deployment
+      √ should deploy Dart Analyzer config (98 ms)
+    Rust Tools Deployment
+      √ should deploy Clippy config (69 ms)
+      √ should deploy Rustfmt config (90 ms)
+    Unknown Tool Handling
+      √ should warn for unknown tool ID (62 ms)
+
+PASS integration tests/integration/cli/commands/deploy-ci-cd.test.ts
+  Deploy CI/CD - Integration
+    Skip deployment when ciDeploy is false
+      √ should return 0 when ciDeploy option is false (76 ms)
+      √ should return 0 when ciDeploy option is undefined (5 ms)
+    Successful deployment scenarios
+      √ should deploy GitHub Actions templates when ciDeploy is true (86 ms)
+      √ should show deployed file list in success message (95 ms)
+      √ should deploy for GitLab platform (82 ms)
+      √ should handle unknown platform (default to GitHub) (89 ms)
+      √ should return correct number of deployed files (39 ms)
+    No files deployed scenario
+      √ should still deploy files even if they exist (no skip check for GitHub) (37 ms)
+    Skipped files scenario
+      √ should handle skipped files without --force (91 ms)
+      √ should overwrite existing files with --force (61 ms)
+    Error handling
+      √ should handle deployment errors gracefully (35 ms)
+      √ should return 0 on complete failure (21 ms)
+    Spinner interactions
+      √ should start spinner with correct message (25 ms)
+      √ should succeed spinner on successful deployment (81 ms)
+      √ should call warn if there are errors but some files deployed (29 ms)
+    Integration with deploy-ci utility
+      √ should call deployCITemplates with correct options (17 ms)
+      √ should create .github/workflows directory (43 ms)
+      √ should create trinity/templates/ci directory (25 ms)
+      √ should deploy workflow files with correct names (64 ms)
+    Different platform workflows
+      √ should deploy GitHub Actions for github.com remote (24 ms)
+      √ should deploy GitLab CI for gitlab.com remote (14 ms)
+      √ should always deploy generic template regardless of platform (20 ms)
+
+FAIL unit tests/unit/cli/utils/deploy-ci.test.ts
+  deploy-ci
+    GitHub Platform Detection
+      √ should deploy GitHub Actions workflows when .git/config contains github.com (116 ms)
+      √ should deploy generic template regardless of platform (310 ms)
+    GitLab Platform Detection
+      √ should deploy GitLab CI when .git/config contains gitlab.com (176 ms)
+      × should detect self-hosted GitLab instances (83 ms)
+      √ should skip existing .gitlab-ci.yml without --force (110 ms)
+      √ should overwrite existing .gitlab-ci.yml with --force (54 ms)
+    Unknown Platform Handling
+      √ should deploy GitHub Actions for unknown platform (41 ms)
+      √ should deploy GitHub Actions when .git/config has no known remote (119 ms)
+    Deployment Statistics
+      √ should return deployment statistics (27 ms)
+      √ should track multiple deployed files (52 ms)
+      √ should have no errors on successful deployment (91 ms)
+    Error Handling
+      √ should handle missing template files gracefully (57 ms)
+      √ should continue deployment if one file fails (159 ms)
+    Directory Creation
+      √ should create .github/workflows directory if missing (36 ms)
+      √ should create trinity/templates/ci directory if missing (47 ms)
+    File Content
+      √ should preserve template content in deployed files (25 ms)
+      √ should deploy complete CD workflow (23 ms)
+      √ should deploy generic template with correct content (44 ms)
+
+  ● deploy-ci › GitLab Platform Detection › should detect self-hosted GitLab instances
+
+    EBUSY: resource busy or locked, rmdir 'C:\Users\lukaf\Desktop\Dev Work\Trinity Method SDK\.tmp-test-deploy-ci-1768616979776'
+
+
+PASS unit tests/unit/cli/utils/detect-stack.test.ts
+  detectStack
+    Flutter Detection
+      √ should detect Flutter project from pubspec.yaml (85 ms)
+      √ should detect Flutter even with package.json present (48 ms)
+    Rust Detection
+      √ should detect Rust project from Cargo.toml (25 ms)
+    Go Detection
+      √ should detect Go project from go.mod (23 ms)
+    Node.js Framework Detection
+      √ should detect React project (25 ms)
+      √ should detect Next.js project (29 ms)
+      √ should detect Vue project (19 ms)
+      √ should detect Angular project (60 ms)
+      √ should detect Express project (53 ms)
+      √ should detect generic Node.js project (56 ms)
+    Package Manager Detection
+      √ should detect npm as default (54 ms)
+      √ should detect yarn from yarn.lock (63 ms)
+      √ should detect pnpm from pnpm-lock.yaml (167 ms)
+      √ should prioritize pnpm over yarn (177 ms)
+    Python Detection
+      √ should detect Python from requirements.txt (136 ms)
+      √ should detect Python from setup.py (15 ms)
+      √ should detect Python from pyproject.toml (16 ms)
+      √ should detect Flask framework (17 ms)
+      √ should detect Flask case-insensitively (79 ms)
+    Source Directory Detection
+      √ should detect single src directory (42 ms)
+      √ should detect multiple top-level source directories (104 ms)
+      √ should detect nested source directories (backend/src) (21 ms)
+      √ should detect monorepo with frontend and backend (23 ms)
+      √ should detect deeply nested directories (3 levels) (49 ms)
+      √ should use first detected directory as primary sourceDir (16 ms)
+      √ should default to ["src"] when no directories found (26 ms)
+    Edge Cases
+      √ should handle empty directory gracefully (31 ms)
+      √ should handle malformed package.json (77 ms)
+      √ should handle package.json with missing dependencies (63 ms)
+      √ should handle custom targetDir parameter (52 ms)
+      √ should handle non-existent targetDir gracefully (16 ms)
+    Priority Order
+      √ should prioritize Flutter over Node.js when both files exist (23 ms)
+      √ should prioritize Rust over Node.js when both files exist (20 ms)
+      √ should prioritize Go over Node.js when both files exist (17 ms)
+
+PASS integration tests/integration/cli/commands/update-backup.test.ts
+  Update Backup - Integration
+    createUpdateBackup
+      √ should create backup directory with timestamp (62 ms)
+      √ should backup all user-managed files (126 ms)
+      √ should backup entire trinity directory (30 ms)
+      √ should backup entire .claude directory (39 ms)
+      √ should handle missing user files gracefully (51 ms)
+      √ should preserve file content exactly (41 ms)
+    restoreUserContent
+      √ should restore all user-managed files from backup (425 ms)
+      √ should overwrite existing files during restore (142 ms)
+      √ should handle missing backup files gracefully (19 ms)
+      √ should only restore user-managed files, not entire structure (55 ms)
+    rollbackFromBackup
+      √ should restore entire trinity directory on rollback (80 ms)
+      √ should restore entire .claude directory on rollback (134 ms)
+      √ should cleanup backup directory after successful rollback (22 ms)
+      √ should return early if backup directory does not exist (5 ms)
+      √ should handle rollback errors gracefully (49 ms)
+      √ should completely replace corrupted directories (98 ms)
+    cleanupBackup
+      √ should remove backup directory (48 ms)
+      √ should remove all backup contents (84 ms)
+      √ should handle non-existent backup gracefully (6 ms)
+    Backup workflow integration
+      √ should support complete backup-restore-cleanup workflow (80 ms)
+      √ should support backup-rollback workflow on failure (92 ms)
+      √ should preserve user content across multiple operations (38 ms)
+    Edge cases and error handling
+      √ should handle empty trinity directory (14 ms)
+      √ should handle deeply nested directory structures (42 ms)
+      √ should handle large files (35 ms)
+      √ should handle special characters in file content (29 ms)
+      √ should create unique backup directories with timestamps (21 ms)
+
+PASS integration tests/integration/cli/commands/update.test.ts (5.768 s)
+  Update Command - Integration Tests
+    Pre-flight Checks
+      √ should fail if Trinity is not deployed (83 ms)
+      √ should fail if .claude directory is missing (24 ms)
+    Version Detection
+      √ should detect current version from VERSION file (82 ms)
+      √ should skip update if already on latest version (132 ms)
+    Dry Run Mode
+      √ should preview changes without modifying files (77 ms)
+    Backup and Restore
+      √ should preserve user-managed knowledge base files (91 ms)
+      √ should create backup directory during update (78 ms)
+    Structure Verification
+      √ should have all required directories after deployment (51 ms)
+      √ should have VERSION file (80 ms)
+    User File Preservation
+      √ should not overwrite ARCHITECTURE.md (57 ms)
+      √ should not overwrite To-do.md (184 ms)
+      √ should not overwrite ISSUES.md (65 ms)
+      √ should not overwrite Technical-Debt.md (45 ms)
+    Error Handling
+      √ should handle missing trinity directory gracefully (5 ms)
+      √ should handle missing VERSION file (12 ms)
+    Update Confirmation
+      √ should prompt user for confirmation when not in dry-run mode (92 ms)
+      √ should cancel update when user declines (46 ms)
+      √ should proceed with update when user confirms (129 ms)
+    Already up-to-date scenario
+      √ should exit early if already on latest version (33 ms)
+      √ should display message when already up-to-date (30 ms)
+    Dry-run mode comprehensive
+      √ should not prompt user in dry-run mode (33 ms)
+      √ should not modify files in dry-run mode (37 ms)
+      √ should display preview information in dry-run (24 ms)
+    Component Update Coverage
+      √ should have package.json for version detection (27 ms)
+      √ should detect version difference correctly (84 ms)
+    Backup System
+      √ should preserve user files across update attempts (459 ms)
+      √ should create backup directory structure (21 ms)
+    Error Recovery
+      √ should handle update failures gracefully (385 ms)
+      √ should maintain directory structure after failed update (508 ms)
+      √ should preserve VERSION file on error (386 ms)
+    User Content Preservation Comprehensive
+      √ should preserve all user-managed files (58 ms)
+      √ should not modify user files during version check (18 ms)
+    Trinity Structure Requirements
+      √ should verify trinity directory exists (18 ms)
+      √ should verify .claude directory exists (16 ms)
+      √ should verify all agent subdirectories exist (17 ms)
+
+PASS integration tests/integration/cli/commands/deploy.test.ts (17.549 s)
+  Deploy Command - Integration Tests
+    Pre-flight Checks
+      √ should fail if Trinity already exists without --force (88 ms)
+      √ should proceed with --force flag even if Trinity exists (1157 ms)
+    Directory Structure Creation
+      √ should create all 14 Trinity core directories (436 ms)
+      √ should create all 5 .claude agent subdirectories (309 ms)
+      √ should create all 7 slash command categories (256 ms)
+    Agent Template Deployment
+      √ should deploy all 19 agents to correct subdirectories (264 ms)
+      √ should process agent templates with variable substitution (250 ms)
+    Slash Command Deployment
+      √ should deploy all 21 slash commands to categorized directories (348 ms)
+      √ should not include .template extension in deployed files (276 ms)
+    Knowledge Base Deployment
+      √ should deploy all 9 knowledge base files (270 ms)
+      √ should process knowledge base templates with variable substitution (225 ms)
+    Template Deployment
+      √ should deploy 6 work order templates (214 ms)
+      √ should deploy 5 investigation templates (203 ms)
+      √ should deploy 8 documentation templates (2 README + 6 reports) (207 ms)
+      √ should not include .template extension in deployed templates (207 ms)
+    Root Files Deployment
+      √ should create VERSION file with correct version (204 ms)
+      √ should create root TRINITY.md file (235 ms)
+      √ should create root CLAUDE.md file (310 ms)
+      √ should create trinity/CLAUDE.md file (240 ms)
+    Framework Detection
+      √ should detect Node.js project from package.json (7524 ms)
+      √ should handle projects without package.json (239 ms)
+    .gitignore Updates
+      √ should create .gitignore if it does not exist (228 ms)
+      √ should add Trinity exclusions to .gitignore (213 ms)
+      √ should not duplicate Trinity exclusions if already present (235 ms)
+    Employee Directory Deployment
+      √ should create EMPLOYEE-DIRECTORY.md in .claude/ (234 ms)
+    Deployment with --skipAudit Flag
+      √ should skip codebase metrics collection with --skipAudit (256 ms)
+      √ should collect codebase metrics without --skipAudit (427 ms)
+    Full Deployment Verification
+      √ should create complete Trinity structure (225 ms)
+      √ should deploy minimum expected number of files (257 ms)
+
+Test Suites: 1 failed, 15 passed, 16 total
+Tests:       1 failed, 404 passed, 405 total
+Snapshots:   0 total
+Time:        19.364 s
+Ran all test suites in 2 projects.
