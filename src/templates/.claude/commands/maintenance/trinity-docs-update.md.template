@@ -2,8 +2,1759 @@
 
 **Command:** `/maintenance:trinity-docs-update`
 **Purpose:** Update existing documentation to reflect codebase changes
-**Architecture:** TBD
+**Architecture:** JUNO Audit → 3 Parallel APOs → JUNO Verification Loop (max 3 iterations until 100% alignment)
 **Trinity Version:** 2.0.9
-**Last Updated:**  2026-01-12
+**Last Updated:** 2026-01-16
 
 ---
+
+## Overview
+
+This command updates existing documentation to achieve 100% alignment with codebase reality through an iterative verification loop system.
+
+**Key Difference from `/maintenance:trinity-docs`:**
+- `trinity-docs`: Generate NEW documentation from scratch
+- `trinity-docs-update`: UPDATE EXISTING documentation to reflect changes
+
+**How It Works:**
+1. JUNO audits existing `docs/` AND codebase (ALL levels: architecture, module, function)
+2. JUNO reports 3 categories of work needed
+3. Up to 3 parallel APOs execute updates/creations
+4. JUNO verifies 100% alignment
+5. If not 100%, repeat steps 1-4 (max 3 iterations)
+6. JUNO final report, move all reports to `trinity/sessions/`
+
+---
+
+## Critical Rules
+
+### Rule 1: No Self-Serving Trinity Documentation
+
+**NEVER document Trinity Method itself in this command's output.**
+
+This command updates documentation about the USER'S codebase, not about Trinity Method.
+
+**Examples of FORBIDDEN content:**
+- Trinity Method agent descriptions
+- Trinity Method workflow explanations
+- Trinity Method work orders
+- Trinity Method investigation processes
+- Any content from `trinity/` directory
+
+**If you find Trinity content in docs/:**
+- IGNORE it (do not update or verify Trinity Method documentation)
+- Focus only on repository-specific business logic and architecture
+
+---
+
+### Rule 2: Continuous Execution Protocol
+
+**Stop ONLY for these 3 conditions:**
+1. `docs/` directory does not exist → ABORT with instruction to run `/maintenance:trinity-docs` first
+2. 3 iterations completed without achieving 100% alignment → ABORT with detailed report
+3. 100% alignment achieved → SUCCESS, generate final report
+
+**Continue execution regardless of:**
+- Time constraints
+- Token constraints
+- Context window approaching limit
+
+**Context Recovery Protocol:**
+If interrupted mid-execution:
+1. Read global state object from most recent report
+2. Identify last completed phase and iteration number
+3. Resume from next phase in sequence
+4. Continue until one of the 3 stop conditions is met
+
+**DO NOT stop for:**
+- User review (unless 100% alignment reached or max iterations hit)
+- Approval gates during iterations
+- Manual confirmation
+- Any reason other than the 3 stop conditions
+
+---
+
+## Phase 0: Pre-Flight Check & State Initialization
+
+### Step 0.1: Verify docs/ Directory Exists
+
+```bash
+if [ ! -d "docs/" ]; then
+  echo "❌ ABORT: docs/ directory not found"
+  echo ""
+  echo "This command updates EXISTING documentation."
+  echo "To generate NEW documentation, run:"
+  echo "  /maintenance:trinity-docs"
+  exit 1
+fi
+```
+
+**If docs/ does not exist:**
+- **STOP IMMEDIATELY**
+- Report to user that `/maintenance:trinity-docs` must be run first
+- **DO NOT PROCEED** with any further steps
+
+---
+
+### Step 0.2: Initialize Global State Object
+
+Create a global state tracking object for context recovery:
+
+```typescript
+interface GlobalState {
+  command: "trinity-docs-update";
+  startTime: string; // ISO timestamp
+  currentIteration: number; // 1, 2, or 3
+  maxIterations: 3;
+  currentPhase: "audit" | "apo_execution" | "verification" | "complete" | "aborted";
+
+  alignmentHistory: {
+    iteration: number;
+    alignmentPercentage: number;
+    discrepanciesFound: number;
+  }[];
+
+  apoAssignments: {
+    iteration: number;
+    apo1Files: string[];
+    apo2Components: string[];
+    apo3Components: string[];
+  }[];
+
+  reportsGenerated: string[];
+
+  stopCondition: null | "docs_missing" | "max_iterations" | "100_percent_aligned";
+}
+```
+
+**Initialize state:**
+```json
+{
+  "command": "trinity-docs-update",
+  "startTime": "{{CURRENT_TIMESTAMP}}",
+  "currentIteration": 1,
+  "maxIterations": 3,
+  "currentPhase": "audit",
+  "alignmentHistory": [],
+  "apoAssignments": [],
+  "reportsGenerated": [],
+  "stopCondition": null
+}
+```
+
+**State Persistence:**
+- Embed state snapshot in every report generated
+- If interrupted, read state from most recent report's state snapshot
+- Use state to resume from correct phase and iteration
+
+---
+
+## Phase 1: JUNO Comprehensive Audit
+
+**Agent:** JUNO (Quality Auditor)
+**Mode:** READ-ONLY (No changes made in this phase)
+**Output:** Audit report in `trinity/reports/DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+### Step 1.1: Scan Existing Documentation
+
+**Scan `docs/` directory recursively:**
+
+```bash
+find docs/ -type f -name "*.md" | sort
+```
+
+**Catalog all documentation files:**
+- Architecture documentation (e.g., `docs/architecture/`, `docs/system-design/`)
+- API documentation (e.g., `docs/api/`, `docs/endpoints/`)
+- Guides and tutorials (e.g., `docs/guides/`, `docs/tutorials/`)
+- Configuration documentation (e.g., `docs/configuration/`, `docs/setup/`)
+- Component documentation (e.g., `docs/components/`, `docs/modules/`)
+
+**For each file, analyze:**
+- **Content type:** Architecture, API, guide, tutorial, reference, configuration
+- **Accuracy:** Does content match codebase reality?
+- **Completeness:** Are there gaps or missing information?
+- **Staleness:** Does it reference outdated code, APIs, or structures?
+
+---
+
+### Step 1.2: Scan Codebase for Business Logic
+
+**ALL-LEVEL GRANULARITY REQUIRED:**
+- **Architecture Level:** System design, project structure, major components
+- **Module Level:** Services, controllers, models, utilities, middleware
+- **Function Level:** Individual functions, methods, APIs, endpoints
+
+**Business Logic Detection Patterns:**
+
+**Directory Patterns (varies by framework):**
+```
+Common patterns across frameworks:
+- controllers/, routes/, handlers/     (Request handling)
+- services/, business/, domain/        (Business logic)
+- models/, entities/, schemas/         (Data models)
+- repositories/, data-access/, dao/    (Data layer)
+- middleware/, interceptors/, guards/  (Request processing)
+- utils/, helpers/, lib/               (Utilities)
+- config/, configuration/              (Configuration)
+```
+
+**File Naming Patterns:**
+```
+*Controller.ts, *Controller.js
+*Service.ts, *Service.js
+*Repository.ts, *Repository.js
+*Model.ts, *Model.js
+*Helper.ts, *Helper.js
+*Util.ts, *Util.js
+*Middleware.ts, *Middleware.js
+*Handler.ts, *Handler.js
+*Provider.ts, *Provider.js
+```
+
+**Code Structure Markers:**
+```typescript
+// Classes (business logic)
+export class UserService { ... }
+export class PaymentProcessor { ... }
+
+// Interfaces (data contracts)
+export interface User { ... }
+export interface PaymentRequest { ... }
+
+// Enums (business constants)
+export enum OrderStatus { ... }
+export enum PaymentMethod { ... }
+
+// Custom functions (business rules)
+export function calculateTax(...) { ... }
+export function validateOrder(...) { ... }
+```
+
+**Framework-Specific Patterns:**
+
+**Express.js:**
+```javascript
+// Route handlers
+app.get('/api/users', (req, res) => { ... })
+router.post('/orders', orderController.create)
+
+// Middleware
+app.use(authMiddleware)
+```
+
+**NestJS:**
+```typescript
+@Controller('users')
+@Injectable()
+@Module({ ... })
+```
+
+**React/Next.js:**
+```typescript
+// Components
+export function UserDashboard() { ... }
+
+// Hooks
+export function useAuth() { ... }
+
+// API routes (Next.js)
+export default function handler(req, res) { ... }
+```
+
+**Django:**
+```python
+# Views
+class UserViewSet(viewsets.ModelViewSet):
+    ...
+
+# Models
+class User(models.Model):
+    ...
+```
+
+**Ruby on Rails:**
+```ruby
+# Controllers
+class UsersController < ApplicationController
+  ...
+end
+
+# Models
+class User < ApplicationRecord
+  ...
+end
+```
+
+**What Makes Code "Business Logic":**
+- **Unique to this repository:** Not generic framework boilerplate
+- **Implements business rules:** Tax calculation, order validation, payment processing
+- **Defines data models:** User schema, Order structure, Product catalog
+- **Handles domain logic:** Authentication flow, authorization rules, workflow state machines
+
+**Exclude:**
+- Generic framework setup (config/webpack.config.js, etc.)
+- Node modules and dependencies
+- Build artifacts and dist/
+- Test fixtures and mocks (unless they define API contracts)
+
+---
+
+### Step 1.3: Cross-Reference Documentation with Codebase
+
+**For each documentation file, verify:**
+
+**Architecture-Level Verification:**
+- Does architecture diagram match actual directory structure?
+- Are major components documented correctly?
+- Are system boundaries accurate?
+- Are data flows correct?
+
+**Module-Level Verification:**
+- Does API documentation match actual API routes/endpoints?
+- Are service responsibilities accurately described?
+- Are controller actions documented correctly?
+- Are model schemas up-to-date?
+
+**Function-Level Verification:**
+- Do function signatures match documentation?
+- Are parameters documented correctly?
+- Are return types accurate?
+- Are error cases covered?
+- Are edge cases documented?
+
+**Example Cross-Reference:**
+```typescript
+// CODE: src/services/payment.service.ts
+export class PaymentService {
+  async processPayment(
+    orderId: string,
+    amount: number,
+    method: PaymentMethod
+  ): Promise<PaymentResult> {
+    // Implementation
+  }
+}
+
+// DOCS: docs/api/payment.md
+Should document:
+✅ Function name: processPayment
+✅ Parameters: orderId (string), amount (number), method (PaymentMethod)
+✅ Return type: Promise<PaymentResult>
+✅ Behavior: Processes payment for given order
+✅ Error cases: InvalidAmount, PaymentDeclined, NetworkError
+
+If docs say processPayment takes (userId, amount) → DISCREPANCY (wrong parameter)
+If docs don't mention error cases → INCOMPLETENESS (missing info)
+If docs reference deprecated processCreditCard method → STALENESS (outdated)
+```
+
+---
+
+### Step 1.4: Generate 3-Part Audit Report
+
+**Use template:** `trinity/templates/documentation/reports/docs-update-audit.md`
+
+**Part 1: Base Documentation Updates Needed**
+
+List all documentation files requiring updates:
+- **File:** `docs/architecture/system-design.md`
+  - **Current State:** References old monolith architecture
+  - **Required Update:** Update to reflect microservices migration
+  - **Reason:** Codebase now has services/users, services/orders, services/payments
+  - **Priority:** HIGH
+
+**Part 2: Existing Business Logic Requiring Updates**
+
+List all business logic components with existing docs that need updates:
+- **Component:** UserService (`src/services/user.service.ts`)
+  - **Current Documentation:** `docs/api/user-service.md`
+  - **Issues:** Missing new `suspendUser()` method, incorrect parameter for `updateUser()`
+  - **Required Updates:** Add suspendUser docs, fix updateUser signature
+  - **Dependency Analysis:**
+    - Tied systems: AuthService, EmailService, AuditLogService
+    - Routing: APO-2 (update existing docs - tightly coupled)
+  - **Priority:** HIGH
+
+**Part 3: Missing Business Logic Requiring New Documentation**
+
+List all business logic components without documentation:
+- **Component:** NotificationService (`src/services/notification.service.ts`)
+  - **Why Undocumented:** New feature added in recent sprint
+  - **Uniqueness:** Implements multi-channel notifications (email, SMS, push) with templating
+  - **Modularity Analysis:**
+    - Independent: Can be used standalone
+    - No tight coupling: Uses dependency injection
+    - Routing: APO-3 (create new docs - modular component)
+  - **Priority:** MEDIUM
+
+---
+
+### Step 1.5: APO Work Assignment
+
+**Assign work to 3 parallel APOs:**
+
+**APO-1: Base Documentation Updates**
+- Architecture docs
+- Setup/configuration docs
+- Guides and tutorials
+- General repository documentation
+
+**APO-2: Update Existing Business Logic Documentation**
+- Components with DIRECT TIES to other systems
+- Decision logic: "Is this component directly tied to X system?"
+  - YES → APO-2 updates existing documentation
+  - NO → Check if modular (APO-3)
+
+**Example (APO-2):**
+```
+Q: Is RefundService directly tied to PaymentService?
+A: YES - refunds can only happen after payments
+→ APO-2 updates existing docs/api/refund-service.md
+
+Q: Is AuthMiddleware directly tied to UserService?
+A: YES - authentication requires user validation
+→ APO-2 updates existing docs/middleware/auth.md
+```
+
+**APO-3: Create New Business Logic Documentation**
+- Components that are MODULAR and INDEPENDENT
+- Decision logic: "Is this component modular and reusable?"
+  - YES → APO-3 creates new documentation
+  - NO → Check if tied (APO-2)
+
+**Example (APO-3):**
+```
+Q: Is CacheHelper modular?
+A: YES - can be used independently, no tight coupling
+→ APO-3 creates new docs/utilities/cache-helper.md
+
+Q: Is RateLimiter modular?
+A: YES - middleware that works independently
+→ APO-3 creates new docs/middleware/rate-limiter.md
+```
+
+---
+
+### Step 1.6: Zero-Tolerance Policy Check
+
+**ABORT immediately if any of these are found:**
+
+1. **Fake Components in Documentation**
+   - Documentation references components that don't exist in codebase
+   - Action: ABORT with list of fake components
+
+2. **Security Violations in Documentation**
+   - Documentation exposes secrets, API keys, passwords
+   - Documentation contains insecure code examples
+   - Action: ABORT with security violation details
+
+3. **Stub Content in Documentation**
+   - Documentation has "TODO", "Coming soon", "To be implemented"
+   - Placeholder sections without real content
+   - Action: ABORT with list of stub sections
+
+**If any zero-tolerance violation found:**
+```
+❌ ABORT: Zero-Tolerance Policy Violation
+
+Violation Type: Fake Components
+Details:
+- docs/api/blockchain-service.md documents BlockchainService
+- BlockchainService does not exist in codebase
+- Located at: docs/api/blockchain-service.md:15-45
+
+Action Required:
+1. Remove fake documentation or
+2. Implement the component
+3. Re-run trinity-docs-update
+
+Aborting documentation update.
+```
+
+---
+
+### Step 1.7: Save Audit Report
+
+**Generate report:**
+- File: `trinity/reports/DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
+- Template: `trinity/templates/documentation/reports/docs-update-audit.md`
+
+**Update global state:**
+```json
+{
+  "currentPhase": "apo_execution",
+  "apoAssignments": [{
+    "iteration": 1,
+    "apo1Files": ["docs/architecture/system-design.md", ...],
+    "apo2Components": ["UserService", "PaymentService", ...],
+    "apo3Components": ["NotificationService", "CacheHelper", ...]
+  }],
+  "reportsGenerated": ["DOCS-UPDATE-AUDIT-iteration-1-2026-01-16.md"]
+}
+```
+
+**Proceed to Phase 2.**
+
+---
+
+## Phase 2: Parallel APO Execution
+
+**3 APO agents execute in parallel** (if possible in implementation)
+
+Each APO generates a completion report upon finishing their assigned work.
+
+---
+
+### APO-1: Base Documentation Updates
+
+**Agent:** APO-1 (Documentation Specialist)
+**Assignment:** Update architecture, setup, configuration, and guide documentation
+**Mode:** UPDATE existing files
+**Output:** `trinity/reports/APO-1-BASE-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+#### APO-1 Step 1: Read Assignment from JUNO Audit
+
+Read the audit report's "Part 1: Base Documentation Updates Needed" section.
+
+Extract list of files assigned to APO-1:
+- File paths
+- Current state descriptions
+- Required updates
+- Priorities
+
+---
+
+#### APO-1 Step 2: Update Each Assigned File
+
+**For each file in assignment:**
+
+1. **Read current documentation**
+   - Use Read tool to read entire file
+   - Understand current structure and content
+
+2. **Read referenced codebase sections**
+   - If docs reference `src/config/database.ts`, read that file
+   - If docs reference architecture, scan relevant directories
+   - Verify claims against actual code
+
+3. **Identify specific changes needed**
+   - What is inaccurate?
+   - What is missing?
+   - What is outdated?
+
+4. **Apply updates using Edit tool**
+   - Fix inaccuracies
+   - Add missing information
+   - Update outdated references
+   - Preserve correct manual edits (validate truth, keep if accurate)
+
+5. **Verify changes**
+   - Re-read updated file
+   - Cross-reference with codebase
+   - Ensure accuracy
+
+---
+
+#### APO-1 Step 3: Validate Against Codebase
+
+**For every claim in updated documentation, verify:**
+
+```typescript
+Documentation claims: "The API uses JWT tokens with 24-hour expiration"
+
+Verification:
+1. Search codebase for JWT configuration
+2. Find: src/config/auth.ts
+3. Read: JWT_EXPIRATION = '24h' ✅
+4. Validation: ACCURATE
+```
+
+**If documentation claim cannot be verified:**
+- Mark as UNVERIFIED in completion report
+- Flag for review
+
+---
+
+#### APO-1 Step 4: Web Search for Framework Standards (if applicable)
+
+**If updating framework-specific documentation:**
+
+Use WebSearch tool to find official standards:
+
+**Example: NestJS project**
+```
+WebSearch: "NestJS official documentation structure 2025"
+→ Find official NestJS docs standards
+→ Apply consistent formatting
+→ Use official terminology
+```
+
+**Example: React project**
+```
+WebSearch: "React hooks documentation best practices 2025"
+→ Find React docs conventions
+→ Apply consistent example patterns
+```
+
+**Frameworks to search for:**
+- Express, NestJS, Fastify (Node.js)
+- React, Vue, Angular, Svelte (Frontend)
+- Django, Flask, FastAPI (Python)
+- Ruby on Rails (Ruby)
+- Spring Boot (Java)
+- Laravel (PHP)
+
+---
+
+#### APO-1 Step 5: Generate Completion Report
+
+**Use template:** `trinity/templates/documentation/reports/apo-base-update-completion.md`
+
+**Report includes:**
+- All files updated
+- Changes made (before/after)
+- Codebase cross-references validated
+- Issues encountered
+- Quality metrics
+- Files modified list
+
+**Save to:** `trinity/reports/APO-1-BASE-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+### APO-2: Update Existing Business Logic Documentation
+
+**Agent:** APO-2 (Documentation Specialist)
+**Assignment:** Update documentation for existing business logic with dependency ties
+**Mode:** UPDATE existing files
+**Output:** `trinity/reports/APO-2-BUSINESS-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+#### APO-2 Step 1: Read Assignment from JUNO Audit
+
+Read the audit report's "Part 2: Existing Business Logic Requiring Updates" section.
+
+Extract list of components assigned to APO-2:
+- Component names and locations
+- Current documentation files
+- Required updates
+- Dependency ties (why APO-2 vs APO-3)
+- Priorities
+
+---
+
+#### APO-2 Step 2: Dependency Analysis
+
+**For each assigned component, understand its ties:**
+
+**Example: RefundService**
+```
+Component: RefundService (src/services/refund.service.ts)
+Documentation: docs/api/refund-service.md
+
+Dependency Analysis:
+1. Read RefundService code
+2. Identify imports:
+   - import { PaymentService } from './payment.service'
+   - import { OrderService } from './order.service'
+   - import { EmailService } from '../notifications/email.service'
+
+3. Identify method calls:
+   - paymentService.getPaymentById(paymentId)
+   - orderService.updateOrderStatus(orderId, 'refunded')
+   - emailService.sendRefundConfirmation(userId, amount)
+
+4. Conclusion: RefundService is DIRECTLY TIED to:
+   - PaymentService (can't refund without payment)
+   - OrderService (must update order status)
+   - EmailService (must notify user)
+
+5. Routing Decision: APO-2 (update existing docs)
+   - Rationale: Tightly coupled system, update existing unified documentation
+```
+
+---
+
+#### APO-2 Step 3: Update Each Assigned Component's Documentation
+
+**For each component:**
+
+1. **Read current documentation**
+   - Use Read tool on docs file (e.g., `docs/api/refund-service.md`)
+
+2. **Read component source code**
+   - Use Read tool on source file (e.g., `src/services/refund.service.ts`)
+   - Understand all public methods
+   - Note all dependencies
+   - Identify business rules
+
+3. **Identify discrepancies**
+   - Missing methods in docs
+   - Incorrect signatures
+   - Outdated behavior descriptions
+   - Missing error cases
+   - Missing dependencies
+
+4. **Apply updates**
+   - Add missing methods
+   - Fix incorrect signatures
+   - Update behavior descriptions
+   - Document error cases
+   - Document dependencies and ties
+
+5. **Update cross-references**
+   - If RefundService docs updated, check if PaymentService docs need cross-reference update
+   - Add links between related component documentation
+
+---
+
+#### APO-2 Step 4: Validate Against Codebase
+
+**Function-level validation:**
+
+```typescript
+// CODE: src/services/refund.service.ts
+class RefundService {
+  async processRefund(
+    paymentId: string,
+    amount: number,
+    reason: RefundReason
+  ): Promise<RefundResult> {
+    // Implementation
+  }
+}
+
+// DOCUMENTATION SHOULD HAVE:
+✅ Method name: processRefund
+✅ Parameters: paymentId (string), amount (number), reason (RefundReason enum)
+✅ Return type: Promise<RefundResult>
+✅ Behavior: Processes refund for given payment
+✅ Dependencies: Requires PaymentService.getPaymentById()
+✅ Error cases: PaymentNotFound, RefundAmountExceedsPayment, PaymentAlreadyRefunded
+✅ Business rules: Refunds can only be issued within 30 days of payment
+```
+
+**If documentation is missing any of these, UPDATE IT.**
+
+---
+
+#### APO-2 Step 5: Web Search for Framework Standards
+
+Same as APO-1 - search for framework-specific documentation standards if needed.
+
+---
+
+#### APO-2 Step 6: Generate Completion Report
+
+**Use template:** `trinity/templates/documentation/reports/apo-business-update-completion.md`
+
+**Report includes:**
+- All components updated
+- Documentation files modified
+- Changes made (before/after)
+- Dependency ties validated
+- Codebase cross-references
+- Routing decisions explained
+- Issues encountered
+- Quality metrics
+
+**Save to:** `trinity/reports/APO-2-BUSINESS-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+### APO-3: Create New Business Logic Documentation
+
+**Agent:** APO-3 (Documentation Specialist)
+**Assignment:** Create NEW documentation for modular business logic components
+**Mode:** CREATE new files
+**Output:** `trinity/reports/APO-3-BUSINESS-CREATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+#### APO-3 Step 1: Read Assignment from JUNO Audit
+
+Read the audit report's "Part 3: Missing Business Logic Requiring New Documentation" section.
+
+Extract list of components assigned to APO-3:
+- Component names and locations
+- Why undocumented
+- Uniqueness to repository
+- Modularity analysis (why APO-3 vs APO-2)
+- Priorities
+
+---
+
+#### APO-3 Step 2: Modularity Analysis
+
+**For each assigned component, validate modularity:**
+
+**Example: CacheHelper**
+```
+Component: CacheHelper (src/utils/cache.helper.ts)
+No existing documentation
+
+Modularity Analysis:
+1. Read CacheHelper code
+2. Check for tight coupling:
+   - Uses dependency injection? YES (Redis client injected)
+   - Hardcoded dependencies? NO
+   - Can work standalone? YES
+
+3. Check reusability:
+   - Generic interface? YES (set, get, delete, clear)
+   - Business-specific logic? NO (pure caching utility)
+   - Testable in isolation? YES
+
+4. Conclusion: CacheHelper is MODULAR
+   - Loosely coupled
+   - Single responsibility (caching)
+   - Reusable across different contexts
+
+5. Routing Decision: APO-3 (create new docs)
+   - Rationale: Independent module, deserves standalone documentation
+```
+
+---
+
+#### APO-3 Step 3: Create Documentation for Each Component
+
+**For each component, create NEW documentation file:**
+
+**Determine documentation location:**
+```
+Component: CacheHelper (src/utils/cache.helper.ts)
+Documentation: docs/utilities/cache-helper.md
+
+Component: RateLimiter (src/middleware/rate-limiter.ts)
+Documentation: docs/middleware/rate-limiter.md
+
+Component: ValidationPipe (src/pipes/validation.pipe.ts)
+Documentation: docs/pipes/validation-pipe.md
+```
+
+**Documentation structure (use existing docs/ structure as reference):**
+
+```markdown
+# [Component Name]
+
+## Overview
+Brief description of what this component does.
+
+## Purpose
+Why this component exists. What problem does it solve?
+
+## Usage
+
+### Installation/Setup
+How to integrate this component.
+
+### Basic Example
+```typescript
+// Code example showing basic usage
+```
+
+### Advanced Example
+```typescript
+// Code example showing advanced usage
+```
+
+## API Reference
+
+### Methods
+
+#### method1(param1, param2)
+Description of method.
+
+**Parameters:**
+- `param1` (type): Description
+- `param2` (type): Description
+
+**Returns:** `ReturnType` - Description
+
+**Throws:**
+- `ErrorType1`: When X happens
+- `ErrorType2`: When Y happens
+
+**Example:**
+```typescript
+// Usage example
+```
+
+### Properties
+
+#### property1
+Description of property.
+
+**Type:** `PropertyType`
+**Default:** `defaultValue`
+
+## Configuration
+Any configuration options.
+
+## Error Handling
+Common errors and how to handle them.
+
+## Testing
+How to test code that uses this component.
+
+## Related Components
+Links to related documentation.
+```
+
+---
+
+#### APO-3 Step 4: Validate Documentation Against Code
+
+**For each component documented:**
+
+1. **Read source code completely**
+   - Use Read tool on component file
+   - Verify every public method is documented
+   - Verify every public property is documented
+
+2. **Test code examples**
+   - If possible, validate that code examples are syntactically correct
+   - Verify that examples match actual API
+
+3. **Cross-reference dependencies**
+   - If component imports other modules, mention them
+   - Link to related documentation if it exists
+
+---
+
+#### APO-3 Step 5: Integration with Existing Documentation
+
+**Update existing documentation to reference new docs:**
+
+1. **Update index/table of contents**
+   - If docs have a README or index, add new documentation to list
+   - Example: Update `docs/README.md` to include link to new `docs/utilities/cache-helper.md`
+
+2. **Update related documentation**
+   - If creating docs for CacheHelper, and UserService uses CacheHelper, add cross-reference in UserService docs
+   - Example: Add to `docs/api/user-service.md`:
+     ```markdown
+     ## Caching
+     This service uses [CacheHelper](../utilities/cache-helper.md) for caching user data.
+     ```
+
+3. **Update architecture docs if needed**
+   - If new component adds to architecture, update architecture diagrams/docs
+
+---
+
+#### APO-3 Step 6: Web Search for Framework Standards
+
+Same as APO-1 and APO-2 - search for framework-specific documentation standards.
+
+---
+
+#### APO-3 Step 7: Generate Completion Report
+
+**Use template:** `trinity/templates/documentation/reports/apo-business-create-completion.md`
+
+**Report includes:**
+- All components documented
+- New files created
+- Documentation structure used
+- Modularity analysis for each component
+- Routing decisions explained
+- Code examples included
+- Integration with existing docs
+- Issues encountered
+- Quality metrics
+
+**Save to:** `trinity/reports/APO-3-BUSINESS-CREATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+### Phase 2 Completion
+
+**All 3 APOs complete their work and generate completion reports.**
+
+**Update global state:**
+```json
+{
+  "currentPhase": "verification",
+  "reportsGenerated": [
+    "DOCS-UPDATE-AUDIT-iteration-1-2026-01-16.md",
+    "APO-1-BASE-UPDATE-COMPLETE-iteration-1-2026-01-16.md",
+    "APO-2-BUSINESS-UPDATE-COMPLETE-iteration-1-2026-01-16.md",
+    "APO-3-BUSINESS-CREATE-COMPLETE-iteration-1-2026-01-16.md"
+  ]
+}
+```
+
+**Proceed to Phase 3.**
+
+---
+
+## Phase 3: JUNO Verification Loop
+
+**Agent:** JUNO (Quality Auditor)
+**Mode:** READ-ONLY (Verification phase)
+**Output:** `trinity/reports/DOCS-UPDATE-VERIFICATION-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+### Step 3.1: Read APO Completion Reports
+
+Read all 3 APO completion reports from current iteration:
+- APO-1-BASE-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md
+- APO-2-BUSINESS-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md
+- APO-3-BUSINESS-CREATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md
+
+**Extract:**
+- Files updated/created
+- Changes made
+- Issues reported
+
+---
+
+### Step 3.2: Comprehensive Alignment Verification
+
+**Verify 100% alignment at ALL levels:**
+
+---
+
+#### Architecture-Level Alignment
+
+**For each architecture documentation file:**
+
+1. **Read documentation**
+   - Example: `docs/architecture/system-design.md`
+
+2. **Verify against codebase**
+   - Does directory structure match architecture diagram?
+   - Are major components described accurately?
+   - Are system boundaries correct?
+   - Are data flows accurate?
+
+3. **Calculate alignment**
+   - Count total claims in architecture docs
+   - Count verified claims
+   - Calculate: (verified / total) * 100 = architecture_alignment%
+
+---
+
+#### Module-Level Alignment
+
+**For each module documentation file (services, controllers, models, etc.):**
+
+1. **Read documentation**
+   - Example: `docs/api/user-service.md`
+
+2. **Read source code**
+   - Example: `src/services/user.service.ts`
+
+3. **Verify every documented method**
+   - Method name matches?
+   - Parameters match?
+   - Return type matches?
+   - Behavior description accurate?
+
+4. **Identify missing methods**
+   - Are there public methods in code not documented?
+   - Count as discrepancy
+
+5. **Identify fake methods**
+   - Are there methods documented that don't exist in code?
+   - Count as discrepancy
+
+6. **Calculate alignment**
+   - Count total methods in code
+   - Count correctly documented methods
+   - Calculate: (correct / total) * 100 = module_alignment%
+
+---
+
+#### Function-Level Alignment
+
+**For each function/method documented:**
+
+1. **Read function documentation**
+   - Parameters documented?
+   - Return type documented?
+   - Behavior explained?
+   - Error cases covered?
+
+2. **Read function source code**
+   - Extract actual signature
+   - Identify actual behavior
+   - List actual error cases
+
+3. **Compare**
+   - Signature matches? ✅ or ❌
+   - Behavior matches? ✅ or ❌
+   - Error cases documented? ✅ or ❌
+
+4. **Calculate alignment**
+   - Count total functions
+   - Count correctly documented functions
+   - Calculate: (correct / total) * 100 = function_alignment%
+
+---
+
+### Step 3.3: Calculate Overall Alignment
+
+```
+overall_alignment = (
+  (architecture_alignment * 0.33) +
+  (module_alignment * 0.33) +
+  (function_alignment * 0.34)
+)
+```
+
+**Example:**
+```
+Architecture: 95% aligned
+Module: 88% aligned
+Function: 92% aligned
+
+Overall: (95*0.33 + 88*0.33 + 92*0.34) = 91.62% aligned
+```
+
+---
+
+### Step 3.4: Identify All Discrepancies
+
+**For each misalignment found, create discrepancy record:**
+
+```markdown
+### Discrepancy D-042: UserService.updateUser signature mismatch
+
+**Severity:** HIGH
+**Category:** Function-level
+
+**Location:**
+- Documentation: `docs/api/user-service.md:87`
+- Codebase: `src/services/user.service.ts:42`
+
+**What Documentation Says:**
+```
+updateUser(userId: string, data: UpdateUserDto): Promise<User>
+```
+
+**What Codebase Actually Has:**
+```
+updateUser(userId: string, data: UpdateUserDto, options?: UpdateOptions): Promise<User>
+```
+
+**Issue:** Missing optional `options` parameter in documentation
+
+**Impact:** Developers won't know about options parameter
+
+**Required Fix:** Add options parameter to documentation
+
+**Assigned To:** APO-2 (for next iteration)
+```
+
+---
+
+### Step 3.5: Generate Verification Report
+
+**Use template:** `trinity/templates/documentation/reports/docs-update-verification.md`
+
+**Report includes:**
+- Overall alignment percentage
+- Architecture-level alignment details
+- Module-level alignment details
+- Function-level alignment details
+- Complete discrepancy list (all severities)
+- APO performance review
+- Decision: PROCEED TO PHASE 4 or ITERATE
+
+**Save to:** `trinity/reports/DOCS-UPDATE-VERIFICATION-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+### Step 3.6: Decision Tree
+
+**Update global state:**
+```json
+{
+  "alignmentHistory": [
+    {
+      "iteration": 1,
+      "alignmentPercentage": 91.62,
+      "discrepanciesFound": 23
+    }
+  ]
+}
+```
+
+---
+
+#### Decision 1: 100% Alignment Achieved
+
+```
+IF overall_alignment === 100%:
+  → PROCEED TO PHASE 4 (Completion)
+  → stopCondition = "100_percent_aligned"
+```
+
+**Stop Condition Met: SUCCESS**
+
+---
+
+#### Decision 2: Not 100% Aligned, Iterations Remaining
+
+```
+IF overall_alignment < 100% AND currentIteration < 3:
+  → ITERATE (Repeat Phases 1-3)
+  → currentIteration++
+  → currentPhase = "audit"
+  → Focus JUNO audit on identified discrepancies
+```
+
+**Continue to next iteration:**
+1. Increment iteration counter
+2. Go back to Phase 1 (JUNO Audit)
+3. JUNO focuses on discrepancies found in previous iteration
+4. APOs fix discrepancies
+5. JUNO verifies again
+
+---
+
+#### Decision 3: Not 100% Aligned, Max Iterations Reached
+
+```
+IF overall_alignment < 100% AND currentIteration === 3:
+  → ABORT (Max iterations without 100% alignment)
+  → stopCondition = "max_iterations"
+  → Generate final report
+```
+
+**Stop Condition Met: MAX ITERATIONS REACHED**
+
+Proceed to Phase 4 with INCOMPLETE status.
+
+---
+
+## Phase 4: Completion & Cleanup
+
+**Agent:** JUNO (Quality Auditor)
+**Output:** `trinity/reports/DOCS-UPDATE-COMPLETE-{{DATE}}.md`
+
+---
+
+### Step 4.1: Generate Final Completion Report
+
+**Use template:** `trinity/templates/documentation/reports/docs-update-complete.md`
+
+**Report includes:**
+- Final alignment percentage (100% if successful, <100% if max iterations)
+- Total iterations executed
+- Journey overview (alignment progress per iteration)
+- All work completed summary (APO-1, APO-2, APO-3 totals)
+- All files modified list
+- Quality metrics (4-tier scoring)
+- Business logic inventory
+- Discrepancy resolution tracking
+- Performance metrics
+- Lessons learned
+- All reports generated list
+
+**Save to:** `trinity/reports/DOCS-UPDATE-COMPLETE-{{DATE}}.md`
+
+---
+
+### Step 4.2: Move All Reports to trinity/sessions/
+
+**Move ALL reports generated during execution:**
+
+```bash
+mv trinity/reports/DOCS-UPDATE-AUDIT-iteration-*.md trinity/sessions/
+mv trinity/reports/APO-1-BASE-UPDATE-COMPLETE-iteration-*.md trinity/sessions/
+mv trinity/reports/APO-2-BUSINESS-UPDATE-COMPLETE-iteration-*.md trinity/sessions/
+mv trinity/reports/APO-3-BUSINESS-CREATE-COMPLETE-iteration-*.md trinity/sessions/
+mv trinity/reports/DOCS-UPDATE-VERIFICATION-iteration-*.md trinity/sessions/
+mv trinity/reports/DOCS-UPDATE-COMPLETE-*.md trinity/sessions/
+```
+
+**Verify trinity/reports/ is now empty of docs-update related reports.**
+
+---
+
+### Step 4.3: Report Completion to User
+
+**If 100% alignment achieved:**
+
+```
+✅ SUCCESS: Documentation Update Complete
+
+Final Alignment: 100% ✅
+Iterations: {{TOTAL_ITERATIONS}}
+Files Updated: {{FILES_UPDATED}}
+New Files Created: {{NEW_FILES_CREATED}}
+Business Logic Documented: {{BUSINESS_LOGIC_COUNT}}
+
+Your documentation now perfectly reflects your codebase at all levels:
+- Architecture-level: 100% aligned ✅
+- Module-level: 100% aligned ✅
+- Function-level: 100% aligned ✅
+
+Reports archived to: trinity/sessions/
+
+To view final report:
+  trinity/sessions/DOCS-UPDATE-COMPLETE-{{DATE}}.md
+
+Your documentation is now trustworthy and up-to-date.
+```
+
+---
+
+**If max iterations reached without 100% alignment:**
+
+```
+⚠️ INCOMPLETE: Documentation Update Reached Max Iterations
+
+Final Alignment: {{FINAL_ALIGNMENT}}% (Target: 100%)
+Iterations: 3 (max)
+Discrepancies Remaining: {{DISCREPANCIES_REMAINING}}
+
+Alignment by Level:
+- Architecture-level: {{ARCH_ALIGNMENT}}%
+- Module-level: {{MODULE_ALIGNMENT}}%
+- Function-level: {{FUNCTION_ALIGNMENT}}%
+
+Root Cause:
+{{ROOT_CAUSE_DESCRIPTION}}
+
+Reports archived to: trinity/sessions/
+
+To view detailed analysis:
+  trinity/sessions/DOCS-UPDATE-COMPLETE-{{DATE}}.md
+  trinity/sessions/DOCS-UPDATE-VERIFICATION-iteration-3-{{DATE}}.md
+
+Recommended Actions:
+1. {{ACTION_1}}
+2. {{ACTION_2}}
+3. Re-run trinity-docs-update after corrections
+
+Manual intervention required.
+```
+
+---
+
+### Step 4.4: Update Global State (Final)
+
+```json
+{
+  "command": "trinity-docs-update",
+  "startTime": "{{START_TIMESTAMP}}",
+  "endTime": "{{END_TIMESTAMP}}",
+  "currentIteration": {{FINAL_ITERATION}},
+  "maxIterations": 3,
+  "currentPhase": "complete",
+  "finalAlignment": {{FINAL_ALIGNMENT}},
+  "alignmentHistory": [
+    {"iteration": 1, "alignmentPercentage": 91.62, "discrepanciesFound": 23},
+    {"iteration": 2, "alignmentPercentage": 97.5, "discrepanciesFound": 7},
+    {"iteration": 3, "alignmentPercentage": 100, "discrepanciesFound": 0}
+  ],
+  "apoAssignments": [...],
+  "reportsGenerated": [...],
+  "stopCondition": "{{STOP_CONDITION}}"
+}
+```
+
+---
+
+## Context Recovery Mechanism
+
+**If execution is interrupted mid-command due to context window limits:**
+
+### Recovery Procedure
+
+1. **Read Most Recent Report**
+   - Check `trinity/reports/` for most recent DOCS-UPDATE-* report
+   - Read the state snapshot JSON at end of report
+
+2. **Extract State Information**
+   ```json
+   {
+     "currentIteration": 2,
+     "currentPhase": "apo_execution",
+     "alignmentHistory": [...],
+     "apoAssignments": [...],
+     "reportsGenerated": [...]
+   }
+   ```
+
+3. **Resume from Current Phase**
+
+**If currentPhase === "audit":**
+- Resume Phase 1 (JUNO Audit) for current iteration
+- Complete audit report
+- Proceed to Phase 2
+
+**If currentPhase === "apo_execution":**
+- Read audit report for current iteration
+- Check which APO reports exist
+  - If APO-1 report missing → Run APO-1
+  - If APO-2 report missing → Run APO-2
+  - If APO-3 report missing → Run APO-3
+- After all APOs complete, proceed to Phase 3
+
+**If currentPhase === "verification":**
+- Resume Phase 3 (JUNO Verification)
+- Read all APO reports from current iteration
+- Complete verification
+- Make decision (iterate or complete)
+
+**If currentPhase === "complete":**
+- Execution was nearly complete
+- Generate final report if missing
+- Move reports to trinity/sessions/
+- Report to user
+
+4. **Continue Until Stop Condition**
+   - Do NOT ask user for confirmation to resume
+   - Automatically continue execution
+   - Stop only when one of 3 stop conditions is met
+
+---
+
+## Quality Scoring (4-Tier System)
+
+**Same as trinity-docs command:**
+
+**1. Completion (40 points):**
+- All assigned work completed
+- All iterations executed
+- All reports generated
+
+**2. Quality (40 points):**
+- Accuracy of documentation
+- Completeness of coverage
+- Clarity of explanations
+- Technical depth
+
+**3. Accuracy (15 points):**
+- Codebase verification
+- No fake components
+- Cross-references validated
+
+**4. Excellence (5 points):**
+- Above-and-beyond factors
+- Exceptional clarity
+- Proactive improvements
+
+**Total: 100 points**
+
+**Grading:**
+- 90-100: A (Excellent)
+- 80-89: B (Good)
+- 70-79: C (Acceptable)
+- 60-69: D (Needs Improvement)
+- Below 60: F (Unacceptable)
+
+---
+
+## Workflow Summary
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              TRINITY-DOCS-UPDATE WORKFLOW                   │
+└─────────────────────────────────────────────────────────────┘
+
+PHASE 0: Pre-Flight Check
+├─ Check docs/ exists → ABORT if missing
+└─ Initialize global state
+
+PHASE 1: JUNO Audit (Iteration {{N}})
+├─ Scan existing docs/
+├─ Scan codebase (ALL levels: architecture, module, function)
+├─ Cross-reference docs vs code
+├─ Identify discrepancies
+├─ Assign work to APOs (APO-1: base, APO-2: tied, APO-3: modular)
+├─ Zero-tolerance check
+└─ Generate audit report
+
+PHASE 2: Parallel APO Execution
+├─ APO-1: Update base docs (architecture, guides, setup)
+├─ APO-2: Update business logic docs (tied components)
+├─ APO-3: Create new business logic docs (modular components)
+└─ All APOs generate completion reports
+
+PHASE 3: JUNO Verification
+├─ Read APO reports
+├─ Verify alignment at ALL levels
+│  ├─ Architecture-level verification
+│  ├─ Module-level verification
+│  └─ Function-level verification
+├─ Calculate overall alignment percentage
+├─ Identify all discrepancies
+└─ Decision:
+   ├─ IF 100% aligned → PROCEED TO PHASE 4 ✅
+   ├─ IF <100% AND iteration < 3 → ITERATE (back to PHASE 1) 🔄
+   └─ IF <100% AND iteration === 3 → ABORT (max iterations) ⚠️
+
+PHASE 4: Completion
+├─ Generate final completion report
+├─ Move all reports to trinity/sessions/
+└─ Report to user (SUCCESS or INCOMPLETE)
+
+┌─────────────────────────────────────────────────────────────┐
+│  STOP CONDITIONS (Only 3)                                   │
+├─────────────────────────────────────────────────────────────┤
+│  1. docs/ directory missing → ABORT                        │
+│  2. 3 iterations without 100% → ABORT                       │
+│  3. 100% alignment achieved → SUCCESS                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Key Differences from /maintenance:trinity-docs
+
+| Feature | trinity-docs | trinity-docs-update |
+|---------|--------------|---------------------|
+| **Purpose** | Generate NEW docs from scratch | UPDATE EXISTING docs |
+| **docs/ required** | No (creates it) | Yes (ABORT if missing) |
+| **Iterations** | Single pass | Up to 3 iterations until 100% |
+| **Verification** | Single JUNO verification | Iterative JUNO verification loop |
+| **Alignment goal** | Best effort | 100% alignment required |
+| **Stop conditions** | Completion | 3 conditions (docs missing, max iterations, 100% aligned) |
+| **Context recovery** | Standard | Enhanced with iteration state |
+
+---
+
+## Examples
+
+### Example 1: Successful 100% Alignment (2 iterations)
+
+```
+User: /maintenance:trinity-docs-update
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PHASE 0: Pre-Flight Check
+
+✅ docs/ directory found
+✅ Global state initialized
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ITERATION 1 - PHASE 1: JUNO Audit
+
+Scanning existing documentation...
+✅ Found 45 documentation files
+
+Scanning codebase for business logic...
+✅ Found 67 business logic components
+
+Cross-referencing...
+❌ 23 discrepancies found
+
+APO Work Assignment:
+- APO-1: 12 base documentation files
+- APO-2: 18 tied business logic components
+- APO-3: 8 modular components (new docs)
+
+Zero-tolerance check: PASS ✅
+
+Audit report: trinity/reports/DOCS-UPDATE-AUDIT-iteration-1-2026-01-16.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ITERATION 1 - PHASE 2: APO Execution
+
+APO-1: Updating 12 base documentation files...
+✅ APO-1 complete (12 files updated)
+
+APO-2: Updating 18 business logic docs...
+✅ APO-2 complete (18 components updated)
+
+APO-3: Creating 8 new business logic docs...
+✅ APO-3 complete (8 new files created)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ITERATION 1 - PHASE 3: JUNO Verification
+
+Verifying alignment...
+- Architecture-level: 95% aligned
+- Module-level: 88% aligned
+- Function-level: 92% aligned
+
+Overall Alignment: 91.67%
+
+❌ Not 100% aligned (7 discrepancies remaining)
+
+Decision: ITERATE (1 of 3 iterations used)
+
+Verification report: trinity/reports/DOCS-UPDATE-VERIFICATION-iteration-1-2026-01-16.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ITERATION 2 - PHASE 1: JUNO Audit (Focus on remaining discrepancies)
+
+Re-scanning with focus on 7 identified discrepancies...
+
+APO Work Assignment:
+- APO-1: 2 files (fix missing config docs)
+- APO-2: 4 components (fix signature mismatches)
+- APO-3: 1 component (complete missing sections)
+
+Audit report: trinity/reports/DOCS-UPDATE-AUDIT-iteration-2-2026-01-16.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ITERATION 2 - PHASE 2: APO Execution
+
+APO-1: Fixing 2 base docs...
+✅ APO-1 complete
+
+APO-2: Fixing 4 component docs...
+✅ APO-2 complete
+
+APO-3: Completing 1 component doc...
+✅ APO-3 complete
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ITERATION 2 - PHASE 3: JUNO Verification
+
+Verifying alignment...
+- Architecture-level: 100% aligned ✅
+- Module-level: 100% aligned ✅
+- Function-level: 100% aligned ✅
+
+Overall Alignment: 100% ✅
+
+Decision: PROCEED TO PHASE 4 (100% alignment achieved!)
+
+Verification report: trinity/reports/DOCS-UPDATE-VERIFICATION-iteration-2-2026-01-16.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PHASE 4: Completion
+
+Generating final report...
+✅ Final report generated
+
+Moving reports to trinity/sessions/...
+✅ 9 reports archived
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ SUCCESS: Documentation Update Complete
+
+Final Alignment: 100% ✅
+Iterations: 2
+Files Updated: 32
+New Files Created: 8
+Business Logic Documented: 67
+
+Reports archived to: trinity/sessions/
+
+Final report: trinity/sessions/DOCS-UPDATE-COMPLETE-2026-01-16.md
+```
+
+---
+
+### Example 2: ABORT - Max Iterations Without 100%
+
+```
+[After 3 iterations]
+
+ITERATION 3 - PHASE 3: JUNO Verification
+
+Verifying alignment...
+- Architecture-level: 100% aligned ✅
+- Module-level: 98% aligned ⚠️
+- Function-level: 97% aligned ⚠️
+
+Overall Alignment: 98.33%
+
+❌ Not 100% aligned (3 discrepancies remaining)
+❌ Max iterations (3) reached
+
+Decision: ABORT (Max iterations without 100% alignment)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PHASE 4: Completion (INCOMPLETE)
+
+⚠️ INCOMPLETE: Documentation Update Reached Max Iterations
+
+Final Alignment: 98.33% (Target: 100%)
+Iterations: 3 (max)
+Discrepancies Remaining: 3
+
+Remaining Issues:
+1. UserService.resetPassword() - missing error case docs
+2. OrderService.calculateTotal() - incorrect return type documented
+3. PaymentService - missing new processRefund() method
+
+Root Cause: Complex interdependencies require manual resolution
+
+Recommended Actions:
+1. Manually review UserService error handling edge cases
+2. Fix OrderService return type in code or docs (verify which is correct)
+3. Add processRefund() method documentation to PaymentService
+
+Reports archived to: trinity/sessions/
+
+Final report: trinity/sessions/DOCS-UPDATE-COMPLETE-2026-01-16.md
+```
+
+---
+
+## Troubleshooting
+
+### Issue: Context Window Exhausted Mid-Execution
+
+**Solution:** Automatic context recovery
+1. When resumed, read most recent report's state snapshot
+2. Identify current iteration and phase
+3. Resume from that phase
+4. Continue until stop condition
+
+### Issue: APO Takes Too Long
+
+**Mitigation:**
+- Break work into smaller chunks
+- Prioritize HIGH severity discrepancies first
+- If one APO is blocked, others continue in parallel
+
+### Issue: Discrepancies Keep Appearing
+
+**Root Cause:** Systemic issues in codebase or documentation structure
+
+**Solution:**
+- After 3 iterations, ABORT with detailed root cause analysis
+- Provide specific recommendations for manual fixes
+- User addresses systemic issues, then re-runs command
+
+### Issue: Zero-Tolerance Violation Found
+
+**Action:** ABORT immediately
+- Generate report detailing violation
+- Do not proceed with updates
+- User fixes violation, then re-runs command
+
+---
+
+## Command Complete
+
+This command provides iterative, verified documentation updates that achieve 100% alignment between documentation and codebase reality, or clearly reports why 100% was not achievable after 3 iterations.
+
+**When to use this command:**
+- After significant codebase changes
+- When documentation drift is suspected
+- As part of regular maintenance (quarterly recommended)
+- Before major releases to ensure docs are accurate
+
+**When NOT to use this command:**
+- If docs/ doesn't exist (use `/maintenance:trinity-docs` first)
+- For brand new projects (use `/maintenance:trinity-docs` first)
+- If you want to regenerate docs from scratch (use `/maintenance:trinity-docs`)

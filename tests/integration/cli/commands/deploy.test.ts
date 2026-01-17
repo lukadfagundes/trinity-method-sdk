@@ -173,7 +173,7 @@ describe('Deploy Command - Integration Tests', () => {
   });
 
   describe('Slash Command Deployment', () => {
-    it('should deploy all 20 slash commands to categorized directories', async () => {
+    it('should deploy all 21 slash commands to categorized directories', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // Session commands (3)
@@ -191,9 +191,10 @@ describe('Deploy Command - Integration Tests', () => {
       expect(await fs.pathExists('.claude/commands/execution/trinity-orchestrate.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/execution/trinity-audit.md')).toBe(true);
 
-      // Maintenance commands (3)
+      // Maintenance commands (4)
       expect(await fs.pathExists('.claude/commands/maintenance/trinity-readme.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/maintenance/trinity-docs.md')).toBe(true);
+      expect(await fs.pathExists('.claude/commands/maintenance/trinity-docs-update.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/maintenance/trinity-changelog.md')).toBe(true);
 
       // Investigation commands (3)
@@ -292,13 +293,38 @@ describe('Deploy Command - Integration Tests', () => {
       }
     });
 
-    it('should deploy 2 documentation templates', async () => {
+    it('should deploy 8 documentation templates (2 README + 6 reports)', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
+      // README templates
       expect(await fs.pathExists('trinity/templates/documentation/ROOT-README.md')).toBe(true);
       expect(await fs.pathExists('trinity/templates/documentation/SUBDIRECTORY-README.md')).toBe(
         true
       );
+
+      // Report templates (for trinity-docs-update command)
+      expect(
+        await fs.pathExists('trinity/templates/documentation/reports/docs-update-audit.md')
+      ).toBe(true);
+      expect(
+        await fs.pathExists('trinity/templates/documentation/reports/docs-update-verification.md')
+      ).toBe(true);
+      expect(
+        await fs.pathExists('trinity/templates/documentation/reports/apo-base-update-completion.md')
+      ).toBe(true);
+      expect(
+        await fs.pathExists(
+          'trinity/templates/documentation/reports/apo-business-update-completion.md'
+        )
+      ).toBe(true);
+      expect(
+        await fs.pathExists(
+          'trinity/templates/documentation/reports/apo-business-create-completion.md'
+        )
+      ).toBe(true);
+      expect(
+        await fs.pathExists('trinity/templates/documentation/reports/docs-update-complete.md')
+      ).toBe(true);
     });
 
     it('should not include .template extension in deployed templates', async () => {
@@ -431,15 +457,15 @@ describe('Deploy Command - Integration Tests', () => {
 
       // Expected minimum files:
       // - 19 agents
-      // - 20 slash commands
+      // - 21 slash commands (added trinity-docs-update)
       // - 9 knowledge base files
       // - 6 work order templates
       // - 5 investigation templates
-      // - 2 documentation templates
+      // - 8 documentation templates (2 README + 6 reports for trinity-docs-update)
       // - 3 root files (TRINITY.md, CLAUDE.md, trinity/VERSION)
       // - 1 trinity/CLAUDE.md
       // - 1 EMPLOYEE-DIRECTORY.md
-      // = 66 minimum files
+      // = 73 minimum files
 
       const trinityFileCount = await countFiles('trinity');
       const claudeFileCount = await countFiles('.claude');

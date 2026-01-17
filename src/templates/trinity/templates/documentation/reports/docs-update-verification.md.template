@@ -1,0 +1,345 @@
+# Documentation Update Verification Report
+
+**Report Type:** Verification (Per-Iteration)
+**Generated:** {{TIMESTAMP}}
+**Iteration:** {{ITERATION_NUMBER}} of 3
+**Project:** {{PROJECT_NAME}}
+
+---
+
+## Executive Summary
+
+**Verification Scope:**
+- Documentation Updated: {{UPDATED_DOC_COUNT}} files
+- Codebase Cross-Reference: Full repository validation
+- Granularity Levels: Architecture, Module, Function
+
+**Alignment Assessment:**
+- **Overall Alignment:** {{ALIGNMENT_PERCENTAGE}}%
+- **Target Alignment:** 100%
+- **Gap:** {{GAP_PERCENTAGE}}%
+
+**Outcome:** {{ALIGNED_OR_NEEDS_ITERATION}}
+
+---
+
+## Alignment Analysis
+
+### Architecture-Level Alignment
+
+**Status:** {{ARCH_ALIGNMENT_STATUS}} ({{ARCH_ALIGNMENT_PERCENTAGE}}%)
+
+{{#ARCH_DISCREPANCIES}}
+#### Discrepancy: {{DISCREPANCY_TITLE}}
+
+- **Documentation:** `{{DOC_FILE}}`
+- **Codebase Reality:** `{{CODE_FILE}}`
+- **Issue:** {{ISSUE_DESCRIPTION}}
+- **Severity:** {{SEVERITY}}
+- **Required Fix:** {{REQUIRED_FIX}}
+
+---
+
+{{/ARCH_DISCREPANCIES}}
+
+{{#IF_ARCH_ALIGNED}}
+All architecture-level documentation is 100% aligned with codebase.
+{{/IF_ARCH_ALIGNED}}
+
+---
+
+### Module-Level Alignment
+
+**Status:** {{MODULE_ALIGNMENT_STATUS}} ({{MODULE_ALIGNMENT_PERCENTAGE}}%)
+
+{{#MODULE_DISCREPANCIES}}
+#### Discrepancy: {{DISCREPANCY_TITLE}}
+
+- **Documentation:** `{{DOC_FILE}}`
+- **Codebase Reality:** `{{CODE_FILE}}`
+- **Issue:** {{ISSUE_DESCRIPTION}}
+- **Severity:** {{SEVERITY}}
+- **Required Fix:** {{REQUIRED_FIX}}
+
+---
+
+{{/MODULE_DISCREPANCIES}}
+
+{{#IF_MODULE_ALIGNED}}
+All module-level documentation is 100% aligned with codebase.
+{{/IF_MODULE_ALIGNED}}
+
+---
+
+### Function-Level Alignment
+
+**Status:** {{FUNCTION_ALIGNMENT_STATUS}} ({{FUNCTION_ALIGNMENT_PERCENTAGE}}%)
+
+{{#FUNCTION_DISCREPANCIES}}
+#### Discrepancy: {{DISCREPANCY_TITLE}}
+
+- **Documentation:** `{{DOC_FILE}}`
+- **Codebase Reality:** `{{CODE_FILE}}`
+- **Issue:** {{ISSUE_DESCRIPTION}}
+- **Severity:** {{SEVERITY}}
+- **Required Fix:** {{REQUIRED_FIX}}
+
+---
+
+{{/FUNCTION_DISCREPANCIES}}
+
+{{#IF_FUNCTION_ALIGNED}}
+All function-level documentation is 100% aligned with codebase.
+{{/IF_FUNCTION_ALIGNED}}
+
+---
+
+## APO Performance Review
+
+### APO-1: Base Documentation Updates
+
+**Files Updated:** {{APO1_FILES_UPDATED}}
+**Alignment Contribution:** {{APO1_ALIGNMENT_CONTRIBUTION}}%
+
+**Performance:**
+{{#APO1_METRICS}}
+- {{METRIC_NAME}}: {{METRIC_VALUE}}
+{{/APO1_METRICS}}
+
+**Issues Identified:**
+{{#APO1_ISSUES}}
+- {{ISSUE_DESCRIPTION}}
+{{/APO1_ISSUES}}
+
+{{#IF_NO_APO1_ISSUES}}
+No issues identified. APO-1 performance excellent.
+{{/IF_NO_APO1_ISSUES}}
+
+---
+
+### APO-2: Business Logic Updates
+
+**Components Updated:** {{APO2_COMPONENTS_UPDATED}}
+**Alignment Contribution:** {{APO2_ALIGNMENT_CONTRIBUTION}}%
+
+**Performance:**
+{{#APO2_METRICS}}
+- {{METRIC_NAME}}: {{METRIC_VALUE}}
+{{/APO2_METRICS}}
+
+**Issues Identified:**
+{{#APO2_ISSUES}}
+- {{ISSUE_DESCRIPTION}}
+{{/APO2_ISSUES}}
+
+{{#IF_NO_APO2_ISSUES}}
+No issues identified. APO-2 performance excellent.
+{{/IF_NO_APO2_ISSUES}}
+
+---
+
+### APO-3: New Business Logic Documentation
+
+**Components Documented:** {{APO3_COMPONENTS_DOCUMENTED}}
+**Alignment Contribution:** {{APO3_ALIGNMENT_CONTRIBUTION}}%
+
+**Performance:**
+{{#APO3_METRICS}}
+- {{METRIC_NAME}}: {{METRIC_VALUE}}
+{{/APO3_METRICS}}
+
+**Issues Identified:**
+{{#APO3_ISSUES}}
+- {{ISSUE_DESCRIPTION}}
+{{/APO3_ISSUES}}
+
+{{#IF_NO_APO3_ISSUES}}
+No issues identified. APO-3 performance excellent.
+{{/IF_NO_APO3_ISSUES}}
+
+---
+
+## Detailed Discrepancy Report
+
+### Critical Discrepancies (Severity: HIGH)
+
+{{#CRITICAL_DISCREPANCIES}}
+#### {{DISCREPANCY_ID}}: {{TITLE}}
+
+**Location:**
+- Documentation: `{{DOC_FILE}}:{{DOC_LINE}}`
+- Codebase: `{{CODE_FILE}}:{{CODE_LINE}}`
+
+**What Documentation Says:**
+```
+{{DOC_CONTENT}}
+```
+
+**What Codebase Actually Does:**
+```
+{{CODE_CONTENT}}
+```
+
+**Impact:** {{IMPACT_DESCRIPTION}}
+
+**Required Correction:**
+{{REQUIRED_CORRECTION}}
+
+**Assigned To:** {{APO_ASSIGNMENT}} (for next iteration)
+
+---
+
+{{/CRITICAL_DISCREPANCIES}}
+
+{{#IF_NO_CRITICAL}}
+No critical discrepancies identified.
+{{/IF_NO_CRITICAL}}
+
+---
+
+### Moderate Discrepancies (Severity: MEDIUM)
+
+{{#MODERATE_DISCREPANCIES}}
+#### {{DISCREPANCY_ID}}: {{TITLE}}
+
+**Location:**
+- Documentation: `{{DOC_FILE}}:{{DOC_LINE}}`
+- Codebase: `{{CODE_FILE}}:{{CODE_LINE}}`
+
+**Issue:** {{ISSUE_DESCRIPTION}}
+
+**Required Correction:** {{REQUIRED_CORRECTION}}
+
+**Assigned To:** {{APO_ASSIGNMENT}}
+
+---
+
+{{/MODERATE_DISCREPANCIES}}
+
+{{#IF_NO_MODERATE}}
+No moderate discrepancies identified.
+{{/IF_NO_MODERATE}}
+
+---
+
+### Minor Discrepancies (Severity: LOW)
+
+{{#MINOR_DISCREPANCIES}}
+- **{{DISCREPANCY_ID}}:** {{TITLE}} (`{{DOC_FILE}}` vs `{{CODE_FILE}}`)
+  - Fix: {{REQUIRED_CORRECTION}}
+{{/MINOR_DISCREPANCIES}}
+
+{{#IF_NO_MINOR}}
+No minor discrepancies identified.
+{{/IF_NO_MINOR}}
+
+---
+
+## Verification Statistics
+
+**Validation Metrics:**
+- Total Documentation Files Verified: {{TOTAL_DOCS_VERIFIED}}
+- Total Codebase Files Cross-Referenced: {{TOTAL_CODE_FILES}}
+- Total Discrepancies Found: {{TOTAL_DISCREPANCIES}}
+  - Critical: {{CRITICAL_COUNT}}
+  - Moderate: {{MODERATE_COUNT}}
+  - Minor: {{MINOR_COUNT}}
+
+**Alignment Progress:**
+- Iteration {{ITERATION_NUMBER}} Alignment: {{CURRENT_ALIGNMENT}}%
+- Previous Iteration Alignment: {{PREVIOUS_ALIGNMENT}}%
+- Improvement: {{ALIGNMENT_IMPROVEMENT}}%
+
+---
+
+## Decision: Proceed or Iterate?
+
+### Current Status
+
+**Alignment:** {{ALIGNMENT_PERCENTAGE}}%
+**Iteration:** {{ITERATION_NUMBER}} of 3
+
+### Decision Tree
+
+{{#IF_100_PERCENT_ALIGNED}}
+**Decision:** PROCEED TO PHASE 4 (Completion)
+
+**Rationale:**
+- 100% alignment achieved
+- All discrepancies resolved
+- Documentation fully reflects codebase reality
+
+**Next Step:** Generate final completion report and archive to trinity/sessions/
+{{/IF_100_PERCENT_ALIGNED}}
+
+{{#IF_NOT_ALIGNED_AND_ITERATIONS_REMAINING}}
+**Decision:** ITERATE (Repeat Phases 1-3)
+
+**Rationale:**
+- Current alignment: {{ALIGNMENT_PERCENTAGE}}% (target: 100%)
+- {{DISCREPANCIES_REMAINING}} discrepancies remaining
+- Iteration {{ITERATION_NUMBER}} of 3 complete
+- Iterations remaining: {{ITERATIONS_REMAINING}}
+
+**Next Steps:**
+1. Re-run JUNO audit with focus on identified discrepancies
+2. Re-assign work to APOs (prioritize critical discrepancies)
+3. Execute parallel APO updates
+4. Verify again in iteration {{NEXT_ITERATION_NUMBER}}
+
+**Expected Outcome:** {{EXPECTED_NEXT_ALIGNMENT}}% alignment after next iteration
+{{/IF_NOT_ALIGNED_AND_ITERATIONS_REMAINING}}
+
+{{#IF_NOT_ALIGNED_AND_MAX_ITERATIONS_REACHED}}
+**Decision:** ABORT (Max iterations reached without 100% alignment)
+
+**Rationale:**
+- Current alignment: {{ALIGNMENT_PERCENTAGE}}% (target: 100%)
+- 3 iterations completed without achieving 100% alignment
+- {{DISCREPANCIES_REMAINING}} discrepancies still remaining
+
+**Root Cause Analysis:**
+{{#ABORT_REASONS}}
+- {{REASON}}
+{{/ABORT_REASONS}}
+
+**Recommended Actions:**
+{{#ABORT_RECOMMENDATIONS}}
+1. {{RECOMMENDATION}}
+{{/ABORT_RECOMMENDATIONS}}
+
+**Manual Intervention Required:** Yes
+
+**Next Steps:**
+1. Review this verification report thoroughly
+2. Address systemic issues preventing alignment
+3. Re-run trinity-docs-update after corrections
+{{/IF_NOT_ALIGNED_AND_MAX_ITERATIONS_REACHED}}
+
+---
+
+## Context Recovery Information
+
+**State Snapshot:**
+```json
+{
+  "iteration": {{ITERATION_NUMBER}},
+  "phase": "verification_complete",
+  "timestamp": "{{TIMESTAMP}}",
+  "alignment": {{ALIGNMENT_PERCENTAGE}},
+  "discrepancies": {
+    "critical": {{CRITICAL_COUNT}},
+    "moderate": {{MODERATE_COUNT}},
+    "minor": {{MINOR_COUNT}},
+    "total": {{TOTAL_DISCREPANCIES}}
+  },
+  "decision": "{{DECISION}}",
+  "next_phase": "{{NEXT_PHASE}}"
+}
+```
+
+---
+
+**Verification Completed By:** JUNO (Quality Auditor)
+**Report Version:** 1.0
+**Next Phase:** {{NEXT_PHASE}}

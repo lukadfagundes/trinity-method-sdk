@@ -1,0 +1,280 @@
+# Documentation Update Audit Report
+
+**Report Type:** Initial Audit
+**Generated:** {{TIMESTAMP}}
+**Iteration:** {{ITERATION_NUMBER}}
+**Project:** {{PROJECT_NAME}}
+
+---
+
+## Executive Summary
+
+**Audit Scope:**
+- Existing Documentation: `docs/` directory
+- Codebase Analysis: Full repository scan
+- Granularity Levels: Architecture, Module, Function
+
+**Overall Assessment:**
+- Documentation Completeness: {{COMPLETENESS_PERCENTAGE}}%
+- Documentation Accuracy: {{ACCURACY_PERCENTAGE}}%
+- Business Logic Coverage: {{BUSINESS_LOGIC_COVERAGE}}%
+
+**Recommendation:** {{PROCEED_OR_ABORT}}
+
+---
+
+## Part 1: Base Documentation Updates Needed
+
+### Architecture-Level Documentation
+
+**Files Requiring Updates:**
+{{#ARCHITECTURE_UPDATES}}
+- **File:** `{{FILE_PATH}}`
+  - **Current State:** {{CURRENT_STATE}}
+  - **Required Update:** {{REQUIRED_UPDATE}}
+  - **Reason:** {{REASON}}
+  - **Priority:** {{PRIORITY}}
+{{/ARCHITECTURE_UPDATES}}
+
+### Module-Level Documentation
+
+**Files Requiring Updates:**
+{{#MODULE_UPDATES}}
+- **File:** `{{FILE_PATH}}`
+  - **Current State:** {{CURRENT_STATE}}
+  - **Required Update:** {{REQUIRED_UPDATE}}
+  - **Reason:** {{REASON}}
+  - **Priority:** {{PRIORITY}}
+{{/MODULE_UPDATES}}
+
+### Function-Level Documentation
+
+**Files Requiring Updates:**
+{{#FUNCTION_UPDATES}}
+- **File:** `{{FILE_PATH}}`
+  - **Current State:** {{CURRENT_STATE}}
+  - **Required Update:** {{REQUIRED_UPDATE}}
+  - **Reason:** {{REASON}}
+  - **Priority:** {{PRIORITY}}
+{{/FUNCTION_UPDATES}}
+
+---
+
+## Part 2: Existing Business Logic Requiring Updates
+
+### Business Logic Detection Methodology
+
+**Detection Patterns Used:**
+- Directory structure analysis (controllers/, services/, models/, etc.)
+- File naming conventions (*Service.ts, *Repository.ts, *Controller.ts)
+- Code structure markers (classes, interfaces, enums, custom logic)
+- Framework-specific patterns ({{FRAMEWORK_PATTERNS}})
+
+### Identified Business Logic Components
+
+{{#EXISTING_BUSINESS_LOGIC}}
+#### {{COMPONENT_NAME}}
+
+**Location:** `{{FILE_PATH}}`
+**Type:** {{COMPONENT_TYPE}} (Controller/Service/Model/Utility/etc.)
+**Documentation Status:** {{DOC_STATUS}}
+
+**Current Documentation Issues:**
+{{#ISSUES}}
+- {{ISSUE_DESCRIPTION}}
+{{/ISSUES}}
+
+**Required Updates:**
+{{#UPDATES}}
+- {{UPDATE_DESCRIPTION}}
+{{/UPDATES}}
+
+**Dependency Analysis:**
+- **Directly Tied Systems:** {{TIED_SYSTEMS}}
+- **Routing Decision:** {{APO_ASSIGNMENT}} (APO-2: Update existing | APO-3: Create new)
+
+**Priority:** {{PRIORITY}}
+
+---
+
+{{/EXISTING_BUSINESS_LOGIC}}
+
+---
+
+## Part 3: Missing Business Logic Requiring New Documentation
+
+### Gap Analysis
+
+**Undocumented Business Logic Discovered:**
+
+{{#MISSING_BUSINESS_LOGIC}}
+#### {{COMPONENT_NAME}}
+
+**Location:** `{{FILE_PATH}}`
+**Type:** {{COMPONENT_TYPE}}
+**Complexity:** {{COMPLEXITY_LEVEL}}
+
+**What Makes This Unique to the Repository:**
+{{UNIQUENESS_DESCRIPTION}}
+
+**Required Documentation:**
+{{#DOC_REQUIREMENTS}}
+- {{DOC_REQUIREMENT}}
+{{/DOC_REQUIREMENTS}}
+
+**Modularity Analysis:**
+- **Is Modular:** {{IS_MODULAR}}
+- **Routing Decision:** {{APO_ASSIGNMENT}} (APO-2: Update existing | APO-3: Create new)
+
+**Priority:** {{PRIORITY}}
+
+---
+
+{{/MISSING_BUSINESS_LOGIC}}
+
+---
+
+## APO Work Assignment
+
+### APO-1: Base Documentation Updates
+
+**Scope:** Update foundational documentation (architecture, setup, configuration)
+**Files Assigned:** {{APO1_FILE_COUNT}} files
+
+{{#APO1_ASSIGNMENTS}}
+- `{{FILE_PATH}}` - {{UPDATE_TYPE}}
+{{/APO1_ASSIGNMENTS}}
+
+**Estimated Effort:** {{APO1_ESTIMATED_HOURS}} hours
+
+---
+
+### APO-2: Update Existing Business Logic Documentation
+
+**Scope:** Update documentation for existing business logic with dependency ties
+**Components Assigned:** {{APO2_COMPONENT_COUNT}} components
+
+{{#APO2_ASSIGNMENTS}}
+- **{{COMPONENT_NAME}}** (`{{FILE_PATH}}`)
+  - Tied to: {{TIED_SYSTEMS}}
+  - Update type: {{UPDATE_TYPE}}
+{{/APO2_ASSIGNMENTS}}
+
+**Estimated Effort:** {{APO2_ESTIMATED_HOURS}} hours
+
+---
+
+### APO-3: Create New Business Logic Documentation
+
+**Scope:** Create new documentation for modular business logic components
+**Components Assigned:** {{APO3_COMPONENT_COUNT}} components
+
+{{#APO3_ASSIGNMENTS}}
+- **{{COMPONENT_NAME}}** (`{{FILE_PATH}}`)
+  - Modularity level: {{MODULARITY_LEVEL}}
+  - Documentation type: {{DOC_TYPE}}
+{{/APO3_ASSIGNMENTS}}
+
+**Estimated Effort:** {{APO3_ESTIMATED_HOURS}} hours
+
+---
+
+## Quality Gates
+
+### Zero-Tolerance Policy Checks
+
+{{#ZERO_TOLERANCE_CHECKS}}
+- **{{CHECK_NAME}}:** {{STATUS}} {{ICON}}
+  {{#IF_FAILED}}
+  - **Violation:** {{VIOLATION_DESCRIPTION}}
+  - **Action:** ABORT required
+  {{/IF_FAILED}}
+{{/ZERO_TOLERANCE_CHECKS}}
+
+**Zero-Tolerance Status:** {{OVERALL_STATUS}}
+
+### Critical Issues
+
+{{#CRITICAL_ISSUES}}
+- **Issue:** {{ISSUE_DESCRIPTION}}
+  - **Severity:** {{SEVERITY}}
+  - **Impact:** {{IMPACT}}
+  - **Recommendation:** {{RECOMMENDATION}}
+{{/CRITICAL_ISSUES}}
+
+---
+
+## Audit Statistics
+
+**Codebase Metrics:**
+- Total Files Scanned: {{TOTAL_FILES}}
+- Business Logic Components: {{BUSINESS_LOGIC_COUNT}}
+- Documentation Files: {{DOC_FILE_COUNT}}
+
+**Update Requirements:**
+- Base Documentation Updates: {{BASE_UPDATE_COUNT}}
+- Existing Business Logic Updates: {{EXISTING_BL_UPDATE_COUNT}}
+- New Business Logic Documentation: {{NEW_BL_DOC_COUNT}}
+- **Total Updates Required:** {{TOTAL_UPDATES}}
+
+**Coverage Analysis:**
+- Architecture-Level Coverage: {{ARCH_COVERAGE}}%
+- Module-Level Coverage: {{MODULE_COVERAGE}}%
+- Function-Level Coverage: {{FUNCTION_COVERAGE}}%
+
+---
+
+## Recommendations
+
+### Proceed or Abort?
+
+**Decision:** {{DECISION}}
+
+{{#IF_PROCEED}}
+**Rationale:**
+- All zero-tolerance checks passed
+- Update scope is manageable
+- APO assignments are balanced
+- Expected alignment: {{EXPECTED_ALIGNMENT}}% after updates
+
+**Next Steps:**
+1. Launch APO-1, APO-2, APO-3 in parallel
+2. Monitor progress via completion reports
+3. Proceed to verification phase upon completion
+{{/IF_PROCEED}}
+
+{{#IF_ABORT}}
+**Rationale:**
+- {{ABORT_REASON}}
+
+**Required Actions Before Retry:**
+{{#ABORT_ACTIONS}}
+- {{ACTION}}
+{{/ABORT_ACTIONS}}
+{{/IF_ABORT}}
+
+---
+
+## Context Recovery Information
+
+**State Snapshot:**
+```json
+{
+  "iteration": {{ITERATION_NUMBER}},
+  "phase": "audit_complete",
+  "timestamp": "{{TIMESTAMP}}",
+  "apo_assignments": {
+    "apo1_files": {{APO1_FILE_COUNT}},
+    "apo2_components": {{APO2_COMPONENT_COUNT}},
+    "apo3_components": {{APO3_COMPONENT_COUNT}}
+  },
+  "total_updates_required": {{TOTAL_UPDATES}},
+  "zero_tolerance_status": "{{ZERO_TOLERANCE_STATUS}}"
+}
+```
+
+---
+
+**Audit Completed By:** JUNO (Quality Auditor)
+**Report Version:** 1.0
+**Next Phase:** Parallel APO Execution (Phase 2)
