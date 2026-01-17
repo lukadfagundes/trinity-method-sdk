@@ -1028,6 +1028,7 @@ Dependency Analysis:
 
 1. **Read current documentation**
    - Use Read tool on docs file (e.g., `docs/api/refund-service.md`)
+   - **If file does NOT exist:** Note that file must be CREATED (not updated)
 
 2. **Read component source code**
    - Use Read tool on source file (e.g., `src/services/refund.service.ts`)
@@ -1042,12 +1043,46 @@ Dependency Analysis:
    - Missing error cases
    - Missing dependencies
 
-4. **Apply updates**
-   - Add missing methods
-   - Fix incorrect signatures
-   - Update behavior descriptions
-   - Document error cases
-   - Document dependencies and ties
+4. **Create or Update Documentation File**
+
+   **⚠️ CRITICAL: Physical file creation/modification is MANDATORY**
+
+   **IF file exists** (existing documentation):
+   ```typescript
+   // Use Edit tool to update existing file
+   const current_content = await read_file(target_doc)
+   const updated_content = apply_updates(current_content)
+   await edit_file(target_doc, old_string, new_string)
+
+   // VERIFY edit succeeded
+   const verify_content = await read_file(target_doc)
+   if (!verify_content.includes(expected_changes)) {
+     throw Error(`Edit failed for ${target_doc}`)
+   }
+   ```
+
+   **IF file does NOT exist** (new documentation):
+   ```typescript
+   // Use Write tool to CREATE new file
+   const doc_content = generate_documentation(component)
+   await write_file(target_doc, doc_content)
+
+   // VERIFY file was created
+   const verify_content = await read_file(target_doc)
+   if (!verify_content || verify_content.length < 100) {
+     throw Error(`Write failed for ${target_doc} - file not created or empty`)
+   }
+   ```
+
+   **DO NOT ACCEPT:**
+   - "Documented component in completion report" ❌
+   - "Created documentation plan for component" ❌
+   - "Described documentation structure" ❌
+
+   **ONLY ACCEPT:**
+   - "Created file at docs/path/file.md using Write tool" ✅
+   - "Updated file at docs/path/file.md using Edit tool" ✅
+   - "Verified file exists with Read tool" ✅
 
 5. **Update cross-references**
    - If RefundService docs updated, check if PaymentService docs need cross-reference update
@@ -1088,6 +1123,85 @@ class RefundService {
 #### APO-2 Step 5: Web Search for Framework Standards
 
 Same as APO-1 - search for framework-specific documentation standards if needed.
+
+---
+
+#### APO-2 Step 5A: Physical File Verification Gate (MANDATORY)
+
+**⚠️ THIS IS A BLOCKING GATE - CANNOT PROCEED WITHOUT 100% FILE VERIFICATION**
+
+**Before generating completion report, verify EVERY assigned component's documentation file physically exists:**
+
+1. **Extract assignment list**
+   ```typescript
+   // From audit report Part 2
+   const assigned_components = [
+     { name: "UserService", target_doc: "docs/api/user-service.md" },
+     { name: "PaymentService", target_doc: "docs/api/payment-service.md" },
+     // ... all assigned components
+   ]
+   const assignedCount = assigned_components.length
+   ```
+
+2. **Verify each target documentation file exists**
+   ```typescript
+   let verified = 0
+   let missing = []
+
+   for (const component of assigned_components) {
+     const file_exists = await check_file_exists(component.target_doc)
+
+     if (file_exists) {
+       const file_size = await get_file_size(component.target_doc)
+
+       if (file_size > 100) {
+         console.log(`✅ ${component.name} → ${component.target_doc} (${file_size} bytes)`)
+         verified++
+       } else {
+         console.log(`⚠️ ${component.name} → ${component.target_doc} (${file_size} bytes) [STUB/EMPTY]`)
+         missing.push({...component, reason: "stub"})
+       }
+     } else {
+       console.log(`❌ ${component.name} → ${component.target_doc} [MISSING]`)
+       missing.push({...component, reason: "missing"})
+     }
+   }
+   ```
+
+3. **Verify 100% completion**
+   ```typescript
+   console.log(`\nVerification Results:`)
+   console.log(`Assigned: ${assignedCount}`)
+   console.log(`Verified: ${verified}`)
+   console.log(`Missing/Stub: ${missing.length}`)
+
+   if (verified !== assignedCount) {
+     console.log(`\n❌ GATE FAILURE: Physical file verification failed`)
+     console.log(`Cannot generate completion report`)
+     console.log(`\nMissing/Stub files:`)
+     for (const item of missing) {
+       console.log(`  - ${item.name} → ${item.target_doc} [${item.reason.toUpperCase()}]`)
+     }
+     console.log(`\nREQUIRED ACTION:`)
+     if (missing.some(m => m.reason === "missing")) {
+       console.log(`  1. Use Write tool to create missing files`)
+     }
+     if (missing.some(m => m.reason === "stub")) {
+       console.log(`  2. Fill stub files with complete documentation (>100 bytes)`)
+     }
+     console.log(`  3. Use Read tool to verify each file`)
+     console.log(`  4. Re-run this verification`)
+
+     throw new Error(`APO-2 Gate Failure: ${missing.length} files not verified`)
+   }
+
+   console.log(`\n✅ GATE PASS: All ${assignedCount} documentation files verified`)
+   ```
+
+4. **Only if gate passes, proceed to completion report**
+   - Gate ensures 100% physical file creation
+   - Prevents false completion reports
+   - Forces APO to create all assigned files
 
 ---
 
@@ -1211,19 +1325,39 @@ Modularity Analysis:
 
 #### APO-3 Step 3: Create Documentation for Each Component
 
-**For each component, create NEW documentation file:**
+**For each component, create NEW documentation file using Write tool:**
 
-**Determine documentation location:**
-```
-Component: CacheHelper (src/utils/cache.helper.ts)
-Documentation: docs/utilities/cache-helper.md
+**⚠️ CRITICAL: You MUST physically CREATE files, not describe them**
 
-Component: RateLimiter (src/middleware/rate-limiter.ts)
-Documentation: docs/middleware/rate-limiter.md
+**Step-by-Step File Creation:**
 
-Component: ValidationPipe (src/pipes/validation.pipe.ts)
-Documentation: docs/pipes/validation-pipe.md
-```
+1. **Read component source code**
+   ```typescript
+   const source_file = component.source_file_path
+   const source_code = await read_file(source_file)
+   ```
+
+2. **Analyze and extract information**
+   - Purpose and overview
+   - Public methods and their signatures
+   - Parameters with types
+   - Return values with types
+   - Dependencies and integrations
+   - Usage examples from actual code
+
+3. **Determine documentation location:**
+   ```
+   Component: CacheHelper (src/utils/cache.helper.ts)
+   Documentation: docs/utilities/cache-helper.md
+
+   Component: RateLimiter (src/middleware/rate-limiter.ts)
+   Documentation: docs/middleware/rate-limiter.md
+
+   Component: ValidationPipe (src/pipes/validation.pipe.ts)
+   Documentation: docs/pipes/validation-pipe.md
+   ```
+
+4. **Generate documentation content**
 
 **Documentation structure (use existing docs/ structure as reference):**
 
@@ -1294,6 +1428,85 @@ How to test code that uses this component.
 Links to related documentation.
 ```
 
+5. **CREATE physical file using Write tool**
+   ```typescript
+   const target_doc = component.target_documentation_path
+
+   // WRITE THE FILE
+   await write_file(target_doc, doc_content)
+
+   console.log(`✅ Created ${target_doc}`)
+   ```
+
+6. **VERIFY file was created**
+   ```typescript
+   // Use Read tool to verify
+   const verify_content = await read_file(target_doc)
+
+   // Check file exists and has content
+   if (!verify_content) {
+     throw Error(`CRITICAL: File ${target_doc} was not created`)
+   }
+
+   if (verify_content.length < 100) {
+     throw Error(`CRITICAL: File ${target_doc} is too short (stub/empty)`)
+   }
+
+   if (verify_content !== doc_content) {
+     throw Error(`CRITICAL: File ${target_doc} content mismatch`)
+   }
+
+   console.log(`✅ Verified ${target_doc} (${verify_content.length} bytes)`)
+   ```
+
+7. **Only if verification passes, mark as complete**
+   ```typescript
+   completed_files.push(target_doc)
+   ```
+
+**Example Complete Workflow:**
+```markdown
+Processing: BaseDealerScraper
+Source: backend/src/scrapers/BaseDealerScraper.js
+Target: docs/scrapers/base-dealer-scraper.md
+
+Step 1: Reading source...
+  ✅ Read 465 lines from BaseDealerScraper.js
+
+Step 2: Analyzing...
+  ✅ Found 8 methods: initialize(), scrape(), extractEquipmentData(), ...
+  ✅ Found dependencies: Playwright, Equipment model, logger
+
+Step 3: Generating documentation (18,432 characters)...
+  ✅ Documentation content generated
+
+Step 5: Creating file...
+  [Using Write tool]
+  ✅ File created: docs/scrapers/base-dealer-scraper.md
+
+Step 6: Verifying...
+  [Using Read tool]
+  ✅ File exists: docs/scrapers/base-dealer-scraper.md
+  ✅ File size: 18,432 bytes
+  ✅ Content matches generated documentation
+
+RESULT: ✅ docs/scrapers/base-dealer-scraper.md successfully created
+```
+
+**DO NOT ACCEPT:**
+```markdown
+❌ "Documented BaseDealerScraper in completion report"
+❌ "Created documentation plan for BaseDealerScraper"
+❌ "BaseDealerScraper documentation described in APO-3 report"
+```
+
+**ONLY ACCEPT:**
+```markdown
+✅ "Created docs/scrapers/base-dealer-scraper.md using Write tool"
+✅ "Verified file exists with 18,432 bytes using Read tool"
+✅ "File creation confirmed"
+```
+
 ---
 
 #### APO-3 Step 4: Validate Documentation Against Code
@@ -1339,6 +1552,99 @@ Links to related documentation.
 #### APO-3 Step 6: Web Search for Framework Standards
 
 Same as APO-1 and APO-2 - search for framework-specific documentation standards.
+
+---
+
+#### APO-3 Step 6A: Physical File Verification Gate (MANDATORY)
+
+**⚠️ THIS IS A BLOCKING GATE - CANNOT PROCEED WITHOUT 100% FILE VERIFICATION**
+
+**Before generating completion report, verify EVERY assigned component's documentation file physically exists:**
+
+1. **Extract assignment list**
+   ```typescript
+   // From audit report Part 3
+   const assigned_components = [
+     { name: "CacheHelper", source: "src/utils/cache.helper.ts", target_doc: "docs/utilities/cache-helper.md" },
+     { name: "RateLimiter", source: "src/middleware/rate-limiter.ts", target_doc: "docs/middleware/rate-limiter.md" },
+     // ... all assigned components
+   ]
+   const assignedCount = assigned_components.length
+   ```
+
+2. **Verify each new file exists and has content**
+   ```typescript
+   let verified = 0
+   let missing = []
+   let stub = []
+
+   for (const component of assigned_components) {
+     const file_exists = await check_file_exists(component.target_doc)
+
+     if (file_exists) {
+       const file_size = await get_file_size(component.target_doc)
+
+       if (file_size > 100) {
+         console.log(`✅ ${component.name} → ${component.target_doc} (${file_size} bytes)`)
+         verified++
+       } else {
+         console.log(`⚠️ ${component.name} → ${component.target_doc} (${file_size} bytes) [STUB/EMPTY]`)
+         stub.push({...component, file_size})
+       }
+     } else {
+       console.log(`❌ ${component.name} → ${component.target_doc} [MISSING]`)
+       missing.push(component)
+     }
+   }
+   ```
+
+3. **Verify 100% completion with non-stub content**
+   ```typescript
+   console.log(`\nVerification Results:`)
+   console.log(`Assigned: ${assignedCount}`)
+   console.log(`Verified: ${verified}`)
+   console.log(`Missing: ${missing.length}`)
+   console.log(`Stub/Empty: ${stub.length}`)
+
+   if (verified !== assignedCount) {
+     console.log(`\n❌ GATE FAILURE: Physical file verification failed`)
+     console.log(`Cannot generate completion report`)
+
+     if (missing.length > 0) {
+       console.log(`\nMissing files:`)
+       for (const item of missing) {
+         console.log(`  - ${item.name} → ${item.target_doc} [NOT CREATED]`)
+       }
+     }
+
+     if (stub.length > 0) {
+       console.log(`\nStub/Empty files:`)
+       for (const item of stub) {
+         console.log(`  - ${item.name} → ${item.target_doc} (${item.file_size} bytes)`)
+       }
+     }
+
+     console.log(`\nREQUIRED ACTION:`)
+     if (missing.length > 0) {
+       console.log(`  1. Use Write tool to create ${missing.length} missing files`)
+     }
+     if (stub.length > 0) {
+       console.log(`  2. Fill ${stub.length} stub files with complete documentation (>100 bytes)`)
+     }
+     console.log(`  3. Use Read tool to verify each file`)
+     console.log(`  4. Re-run this verification`)
+
+     throw new Error(`APO-3 Gate Failure: ${missing.length} missing, ${stub.length} stub/empty`)
+   }
+
+   console.log(`\n✅ GATE PASS: All ${assignedCount} files verified with content`)
+   ```
+
+4. **Only if gate passes, proceed to completion report**
+   - Gate ensures 100% physical file creation
+   - Gate ensures no stub/empty files
+   - Prevents false completion reports
+   - Forces APO to create all assigned files with real content
 
 ---
 
@@ -1456,41 +1762,194 @@ const apo3Assigned: string[] = [
 
 ---
 
-#### Step 3.1A.2: Read APO Completions from Completion Reports
+#### Step 3.1A.2: Verify Physical File Creation (Cross-Check Reports vs Filesystem)
 
-Read all 3 APO completion reports:
-- `trinity/reports/APO-1-BASE-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
-- `trinity/reports/APO-2-BUSINESS-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
-- `trinity/reports/APO-3-BUSINESS-CREATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+**⚠️ CRITICAL: Do not trust APO reports - verify EVERY file physically exists in filesystem.**
 
-**Extract completions:**
+**Verification Process:**
 
-```typescript
-// From APO-1 report: "Files Modified" section
-const apo1Completed: string[] = [
-  "docs/architecture/system-design.md",
-  "docs/setup/installation.md",
-  // ... all files actually updated by APO-1
-];
+**For APO-1 (Base Documentation Updates):**
 
-// From APO-2 report: "Components Updated" section
-const apo2Completed: string[] = [
-  "UserService",
-  "PaymentService",
-  // ... all components actually documented by APO-2
-  // NOTE: If only 25/33 were documented, this array has 25 items
-];
+1. **Extract claimed files from APO-1 report**
+   - Read: `trinity/reports/APO-1-BASE-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+   - Section: "Files Modified"
+   - Example: `["docs/architecture/system-design.md", ...]`
 
-// From APO-3 report: "New Files Created" section
-const apo3Completed: string[] = [
-  "NotificationService",
-  "CacheHelper",
-  // ... all new docs actually created by APO-3
-];
+2. **Verify each file exists in filesystem**
+   ```typescript
+   const apo1_claimed_files = extract_from_report("APO-1", "Files Modified")
+   const apo1_verified_files = []
+   const apo1_missing_files = []
+
+   for (const file of apo1_claimed_files) {
+     const exists = await file_exists(file)
+
+     if (exists) {
+       apo1_verified_files.push(file)
+     } else {
+       apo1_missing_files.push(file)
+
+       // Create CRITICAL discrepancy
+       create_discrepancy({
+         severity: "CRITICAL",
+         category: "File Creation Failure",
+         message: "APO-1 claimed file modified but file not found in filesystem",
+         file: file,
+         apo: "APO-1"
+       })
+     }
+   }
+   ```
+
+3. **Use only VERIFIED files for completeness calculation**
+   ```typescript
+   const apo1Completed = apo1_verified_files  // NOT apo1_claimed_files
+   ```
+
+**For APO-2 (Business Logic Updates):**
+
+1. **Extract claimed components from APO-2 report**
+   - Read: `trinity/reports/APO-2-BUSINESS-UPDATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+   - Section: "Components Updated"
+   - Extract: Component name + Target documentation path
+
+2. **Verify each target documentation file exists**
+   ```typescript
+   const apo2_report_components = extract_from_report("APO-2", "Components Updated")
+   const apo2_verified_components = []
+   const apo2_missing_components = []
+
+   for (const component of apo2_report_components) {
+     const target_doc = component.target_documentation_path
+     const exists = await file_exists(target_doc)
+
+     if (exists) {
+       const file_size = await get_file_size(target_doc)
+
+       if (file_size > 100) {
+         apo2_verified_components.push(component.name)
+       } else {
+         // File exists but is stub/empty
+         create_discrepancy({
+           severity: "HIGH",
+           category: "Stub Documentation",
+           message: "APO-2 created file but content is stub/empty (<100 bytes)",
+           file: target_doc,
+           file_size: file_size,
+           apo: "APO-2"
+         })
+       }
+     } else {
+       apo2_missing_components.push(component.name)
+
+       // Create CRITICAL discrepancy
+       create_discrepancy({
+         severity: "CRITICAL",
+         category: "File Creation Failure",
+         message: "APO-2 claimed component documented but file not found",
+         component: component.name,
+         expected_file: target_doc,
+         apo: "APO-2"
+       })
+     }
+   }
+   ```
+
+3. **Use only VERIFIED components for completeness calculation**
+   ```typescript
+   const apo2Completed = apo2_verified_components  // NOT apo2_claimed_components
+   ```
+
+**For APO-3 (New Documentation):**
+
+1. **Extract claimed new files from APO-3 report**
+   - Read: `trinity/reports/APO-3-BUSINESS-CREATE-COMPLETE-iteration-{{ITERATION}}-{{DATE}}.md`
+   - Section: "New Files Created"
+   - Example: `["docs/scrapers/base-dealer-scraper.md", ...]`
+
+2. **Verify each new file exists and has content**
+   ```typescript
+   const apo3_claimed_files = extract_from_report("APO-3", "New Files Created")
+   const apo3_verified_files = []
+   const apo3_missing_files = []
+   const apo3_stub_files = []
+
+   for (const file of apo3_claimed_files) {
+     const exists = await file_exists(file)
+
+     if (exists) {
+       const file_size = await get_file_size(file)
+
+       if (file_size > 100) {
+         apo3_verified_files.push(file)
+       } else {
+         apo3_stub_files.push(file)
+
+         // Create HIGH severity discrepancy for stub
+         create_discrepancy({
+           severity: "HIGH",
+           category: "Stub Documentation",
+           message: "APO-3 created file but content is stub/empty (<100 bytes)",
+           file: file,
+           file_size: file_size,
+           apo: "APO-3"
+         })
+       }
+     } else {
+       apo3_missing_files.push(file)
+
+       // Create CRITICAL discrepancy for missing
+       create_discrepancy({
+         severity: "CRITICAL",
+         category: "File Creation Failure",
+         message: "APO-3 claimed file created but file not found in filesystem",
+         file: file,
+         apo: "APO-3"
+       })
+     }
+   }
+   ```
+
+3. **Use only VERIFIED files for completeness calculation**
+   ```typescript
+   const apo3Completed = apo3_verified_files  // NOT apo3_claimed_files
+   ```
+
+**Example Production Failure Detection:**
+```markdown
+=== JUNO Step 3.1A.2 Filesystem Verification ===
+
+APO-2 Completion Report Claims:
+- 19 components documented
+- Target files: docs/database/equipment-model.md, docs/database/dealer-model.md, [+ 17 more]
+
+Filesystem Verification Results:
+✅ docs/api/README.md - EXISTS (1,327,543 bytes)
+❌ docs/database/equipment-model.md - MISSING
+❌ docs/database/dealer-model.md - MISSING
+❌ docs/database/change-model.md - MISSING
+[... 16 more MISSING]
+
+Verification Summary:
+- APO-2 Claimed: 19 components
+- APO-2 Verified: 1 components ✅
+- APO-2 Missing: 18 components ❌
+- APO-2 Completeness: 1/19 = 5.26% (NOT 100%)
+
+CRITICAL DISCREPANCIES CREATED: 18
+
+Assignment Completeness Calculation:
+- APO-1: 3/3 verified (100%)
+- APO-2: 1/19 verified (5.26%)  ← DETECTED FAILURE
+- APO-3: 0/16 verified (0%)     ← DETECTED FAILURE
+- Overall: 4/38 = 10.53%        ← REAL COMPLETENESS
+
+Result: NOT 100% aligned, must ITERATE
 ```
 
 ---
 
+#### Step 3.1A.3: Calculate Missing Work
 #### Step 3.1A.3: Calculate Missing Work
 
 **For each APO, identify missing items:**
@@ -1510,7 +1969,8 @@ const apo3Completeness = (apo3Completed.length / apo3Assigned.length) * 100;
 
 // Overall Assignment Completeness
 const totalAssigned = apo1Assigned.length + apo2Assigned.length + apo3Assigned.length;
-const totalCompleted = apo1Completed.length + apo2Completed.length + apo3Completed.length;
+// CRITICAL: Use VERIFIED counts (from filesystem check), not claimed counts from reports
+const totalCompleted = apo1_verified_files.length + apo2_verified_components.length + apo3_verified_files.length;
 const assignment_completeness = (totalCompleted / totalAssigned) * 100;
 ```
 
