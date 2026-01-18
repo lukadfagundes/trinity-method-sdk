@@ -157,6 +157,45 @@ interface GlobalState {
 
 ---
 
+### Step 1.0: Pre-Flight Checklist (Command Integrity Verification)
+
+**Execute BEFORE beginning Phase 1 audit:**
+
+**Verification Checklist:**
+
+1. ✅ **Step 1.3A Marked MANDATORY:**
+   - Verify: Step 1.3A header contains "(MANDATORY)"
+   - Verify: Step 1.3A has "CRITICAL: This step MUST be executed in EVERY iteration"
+
+2. ✅ **Step 1.3B Marked MANDATORY:**
+   - Verify: Step 1.3B header contains "(MANDATORY)"
+   - Verify: Step 1.3B has "CRITICAL: This step MUST be executed in EVERY iteration"
+
+3. ✅ **Decision Tree Has Only 3 Stop Conditions:**
+   - Condition 1: `overall_alignment === 100%` → SUCCESS
+   - Condition 2: `overall_alignment < 100% AND currentIteration < 3` → ITERATE
+   - Condition 3: `overall_alignment < 100% AND currentIteration === 3` → INCOMPLETE
+   - Verify: No "95% threshold" logic exists
+   - Verify: FORBIDDEN LOGIC section exists
+
+4. ✅ **No "Good Enough" Thresholds:**
+   - Search command for: "95%", "90%", "pragmatic", "good enough", "close enough"
+   - Verify: No unauthorized threshold logic
+
+5. ✅ **docs/ Directory Exists:**
+   - Verify: `docs/` directory exists in project root
+   - If missing: ABORT workflow with error
+
+**If ANY verification fails:**
+- ❌ ABORT workflow immediately
+- Report: "Command integrity check failed - template validation error"
+- User action required: Review and update command template
+
+**If ALL verifications pass:**
+- ✅ Proceed to Step 1.1 (Scan Existing Documentation)
+
+---
+
 ### Step 1.1: Scan Existing Documentation
 
 **Scan `docs/` directory recursively:**
@@ -420,9 +459,18 @@ If docs reference deprecated processCreditCard method → STALENESS (outdated)
 
 ---
 
-### Step 1.3A: Service Module Discovery and API Documentation Requirement
+### Step 1.3A: Service Module Discovery and API Documentation Requirement (MANDATORY)
+
+**CRITICAL: This step MUST be executed in EVERY iteration. DO NOT skip.**
 
 **Purpose:** Identify service modules and require API reference documentation (distinct from guide-level docs).
+
+**Execution Requirements:**
+1. Run the conditional discovery bash script below
+2. Record results in audit report (Part 3: Missing Business Logic)
+3. Assign discovered services to APO-2 or APO-3 based on coupling
+4. If services found: Create assignment for each service (one service = one file)
+5. If no services found: Log "No services detected - skipping service documentation" and continue
 
 **Conditional Discovery (Graceful Degradation):**
 
@@ -513,9 +561,18 @@ When assigning services to APO-2 or APO-3:
 
 ---
 
-### Step 1.3B: Frontend Module Discovery and Component Documentation
+### Step 1.3B: Frontend Module Discovery and Component Documentation (MANDATORY)
+
+**CRITICAL: This step MUST be executed in EVERY iteration. DO NOT skip.**
 
 **Purpose:** Identify frontend modules and document components, pages, hooks, utilities.
+
+**Execution Requirements:**
+1. Run the conditional discovery bash script below
+2. Record results in audit report (Part 3: Missing Business Logic)
+3. Assign discovered frontend modules to APO-3 (modular components)
+4. If frontend found: Create assignment for each component (one component = one file)
+5. If no frontend found: Log "No frontend detected - skipping frontend documentation" and continue
 
 **Conditional Discovery (Graceful Degradation):**
 
@@ -1575,7 +1632,9 @@ updateUser(userId: string, data: UpdateUserDto, options?: UpdateOptions): Promis
 
 ---
 
-### Step 3.6: Decision Tree
+### Step 3.6: Decision Tree (STRICT ENFORCEMENT)
+
+**CRITICAL: Only THREE stop conditions exist. No other conditions permitted.**
 
 **Update global state:**
 ```json
@@ -1592,7 +1651,7 @@ updateUser(userId: string, data: UpdateUserDto, options?: UpdateOptions): Promis
 
 ---
 
-#### Decision 1: 100% Alignment Achieved
+#### Decision 1: 100% Alignment Achieved (SUCCESS)
 
 ```
 IF overall_alignment === 100%:
@@ -1600,7 +1659,9 @@ IF overall_alignment === 100%:
   → stopCondition = "100_percent_aligned"
 ```
 
-**Stop Condition Met: SUCCESS**
+**Stop Condition Met: SUCCESS - 100% alignment achieved**
+
+**This is the ONLY condition for declaring SUCCESS.**
 
 ---
 
@@ -1679,7 +1740,7 @@ Per Rule 2 (Continuous Execution):
 
 ---
 
-#### Decision 3: Not 100% Aligned, Max Iterations Reached
+#### Decision 3: Not 100% Aligned, Max Iterations Reached (INCOMPLETE)
 
 ```
 IF overall_alignment < 100% AND currentIteration === 3:
@@ -1691,6 +1752,40 @@ IF overall_alignment < 100% AND currentIteration === 3:
 **Stop Condition Met: MAX ITERATIONS REACHED**
 
 Proceed to Phase 4 with INCOMPLETE status.
+
+---
+
+#### FORBIDDEN LOGIC (Unauthorized Stop Conditions)
+
+**The following logic is FORBIDDEN and must NOT be used:**
+
+❌ **NO "Good Enough" Thresholds:**
+- `IF overall_alignment >= 95%: → Consider SUCCESS`
+- `IF overall_alignment >= 90%: → Pragmatic approval`
+- Any threshold other than exact 100%
+
+❌ **NO "Pragmatic Judgment" Calls:**
+- "95% is close enough for production use"
+- "Remaining gaps are minor, declare success"
+- "Perfect is the enemy of good, stop at 90%+"
+
+❌ **NO Early Termination:**
+- Stopping before 100% when iterations remain (currentIteration < 3)
+- Declaring SUCCESS at <100% alignment
+- Skipping Iteration 3 if Iteration 2 reaches 95%+
+
+**ENFORCEMENT:**
+
+If alignment < 100% AND currentIteration < 3:
+  → MUST iterate (no exceptions, no judgment calls)
+  → MUST NOT proceed to Phase 4
+  → MUST NOT declare SUCCESS
+
+**Only TWO valid stop conditions exist:**
+1. overall_alignment === 100% → SUCCESS
+2. currentIteration === 3 AND overall_alignment < 100% → INCOMPLETE
+
+**No other conditions may stop the workflow.**
 
 ---
 
