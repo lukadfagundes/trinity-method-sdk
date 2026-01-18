@@ -867,7 +867,38 @@ Aborting documentation update.
 }
 ```
 
-**Proceed to Phase 2.**
+---
+
+### Phase 1 → Phase 2 Transition (AUTOMATIC - NO STOP POINT)
+
+**CRITICAL: IMMEDIATELY proceed to Phase 2. NO USER APPROVAL REQUIRED.**
+
+**Automatic Phase Transition Protocol:**
+
+1. **Phase 1 (Audit) complete** → **IMMEDIATELY begin Phase 2 (Execution)**
+2. **DO NOT present options (A/B/C) to user**
+3. **DO NOT ask for execution approach approval**
+4. **DO NOT pause for review or user decision**
+5. **DO NOT create summary and wait**
+
+**Forbidden Behaviors:**
+
+❌ DO NOT:
+- Stop and ask: "Would you like to proceed with full execution, reduced scope, or work orders?"
+- Present: "Option A, Option B, Option C"
+- Wait for: "User direction on execution approach"
+- Create: Detailed summary requiring approval
+
+✅ MUST DO:
+- Immediately execute APO-1 work assignments
+- Immediately execute APO-2 work assignments (if any)
+- Immediately execute APO-3 work assignments
+- Complete all APO work without stopping
+
+**This is a ZERO-STOP-POINT operation:**
+- Phase 1 → Phase 2 → Phase 3 → Phase 4 (continuous execution)
+- Only valid stops: token limits, 100% alignment, or max iterations
+- NO approval gates between phases
 
 ---
 
@@ -1397,7 +1428,22 @@ Same as APO-1 and APO-2 - search for framework-specific documentation standards.
 }
 ```
 
-**Proceed to Phase 3.**
+---
+
+### Phase 2 → Phase 3 Transition (AUTOMATIC - NO STOP POINT)
+
+**CRITICAL: IMMEDIATELY proceed to Phase 3. NO USER APPROVAL REQUIRED.**
+
+**All APO work complete** → **IMMEDIATELY begin Phase 3 (Verification)**
+
+❌ DO NOT:
+- Stop and present APO completion summary
+- Wait for user review of APO outputs
+- Ask: "Should I proceed to verification?"
+
+✅ MUST DO:
+- Immediately begin JUNO verification (Step 3.1)
+- Continue automatic execution
 
 ---
 
