@@ -420,6 +420,184 @@ If docs reference deprecated processCreditCard method → STALENESS (outdated)
 
 ---
 
+### Step 1.3A: Service Module Discovery and API Documentation Requirement
+
+**Purpose:** Identify service modules and require API reference documentation (distinct from guide-level docs).
+
+**Conditional Discovery (Graceful Degradation):**
+
+```bash
+# Check if services directory exists
+if [ ! -d "backend/src/services" ] && [ ! -d "src/services" ] && [ ! -d "services" ] && [ ! -d "server/services" ]; then
+  echo "ℹ️ No services directory detected - skipping service documentation"
+  # Continue to next step - NOT an error
+else
+  echo "✅ Services detected - scanning for service modules"
+
+  # Scan for service files
+  SERVICE_FILES=$(find backend/src/services src/services services server/services -name "*.js" -o -name "*.ts" 2>/dev/null || true)
+
+  if [ -z "$SERVICE_FILES" ]; then
+    echo "ℹ️ Services directory exists but no service files found"
+  else
+    echo "Found service modules - documenting..."
+  fi
+fi
+```
+
+**Service Module Identification:**
+
+For each service file discovered:
+
+1. **Extract information:**
+   - Service name (emailService.js → EmailService)
+   - Methods exported (public API)
+   - Dependencies
+
+2. **Documentation Requirements:**
+
+   **MANDATORY: API Reference Documentation**
+   - Location: `docs/services/{serviceName}.md`
+   - Content: Method signatures, parameters, return types, usage examples
+
+   **OPTIONAL: Guide-Level Documentation**
+   - Location: `docs/guides/{topic}.md`
+   - Content: Configuration, setup, troubleshooting
+
+3. **Verification:**
+   ```bash
+   # Count services in codebase
+   SERVICE_COUNT=$(find backend/src/services src/services services server/services -name "*.js" -o -name "*.ts" 2>/dev/null | wc -l || echo 0)
+
+   # Count service API docs
+   SERVICE_DOCS=$(find docs/services -name "*.md" ! -name "README.md" 2>/dev/null | wc -l || echo 0)
+
+   if [ $SERVICE_COUNT -gt 0 ] && [ $SERVICE_COUNT -ne $SERVICE_DOCS ]; then
+     echo "❌ Service documentation gap: $SERVICE_COUNT services, $SERVICE_DOCS API docs"
+     # Add to discrepancies
+   fi
+   ```
+
+**Assignment Specification for Services:**
+
+When assigning services to APO-2 or APO-3:
+
+```json
+{
+  "component": "emailService",
+  "type": "service",
+  "source_file": "backend/src/services/emailService.js",
+  "output_type": "API_REFERENCE",
+  "output_file": "docs/services/emailService.md",
+  "required_sections": [
+    "Class/Module Description",
+    "Dependencies",
+    "Public Methods (with signatures)",
+    "Parameter Documentation",
+    "Return Types",
+    "Usage Examples",
+    "Error Handling"
+  ]
+}
+```
+
+**DO NOT accept:**
+- Guide-level docs as substitute for API reference
+- Overview without method signatures
+- "See docs/guides/email-notifications.md" as completion
+
+**REQUIRE:**
+- Individual file per service: `docs/services/{serviceName}.md`
+- Complete method signatures
+- Code examples
+
+---
+
+### Step 1.3B: Frontend Module Discovery and Component Documentation
+
+**Purpose:** Identify frontend modules and document components, pages, hooks, utilities.
+
+**Conditional Discovery (Graceful Degradation):**
+
+```bash
+# Check if frontend exists
+if [ ! -d "frontend" ] && [ ! -d "src/app" ] && [ ! -d "client" ] && [ ! -d "src/components" ]; then
+  echo "ℹ️ No frontend detected - skipping frontend documentation"
+  # Continue to next step - NOT an error
+else
+  echo "✅ Frontend detected - scanning for components"
+
+  # Scan for React/Next.js components
+  COMPONENT_FILES=$(find frontend src/app client src/components -name "*.jsx" -o -name "*.tsx" 2>/dev/null || true)
+
+  if [ -z "$COMPONENT_FILES" ]; then
+    echo "ℹ️ Frontend directory exists but no component files found"
+  else
+    echo "Found frontend modules - documenting..."
+  fi
+fi
+```
+
+**Frontend Module Identification:**
+
+For each frontend module discovered:
+
+1. **Module Categories:**
+   - **Components:** Reusable UI components (Button, Modal, Card)
+   - **Pages:** Route-level components (HomePage, DashboardPage)
+   - **Hooks:** Custom React hooks (useAuth, useFetch)
+   - **Utilities:** Frontend utility modules (formatters, validators)
+
+2. **Documentation Requirements:**
+
+   **Location:** `docs/frontend/{category}/{moduleName}.md`
+
+   **Required Content:**
+   - Component props (name, type, required, description)
+   - State management
+   - Event handlers
+   - Usage examples
+   - Integration points
+
+3. **Verification:**
+   ```bash
+   # Count frontend modules
+   COMPONENT_COUNT=$(find frontend src/app client src/components -name "*.jsx" -o -name "*.tsx" 2>/dev/null | wc -l || echo 0)
+
+   # Count frontend docs
+   FRONTEND_DOCS=$(find docs/frontend -name "*.md" ! -name "README.md" 2>/dev/null | wc -l || echo 0)
+
+   if [ $COMPONENT_COUNT -gt 0 ] && [ $FRONTEND_DOCS -eq 0 ]; then
+     echo "❌ Frontend documentation missing: $COMPONENT_COUNT modules, 0 docs"
+     # Add to discrepancies
+   fi
+   ```
+
+**Assignment Specification for Frontend:**
+
+When assigning frontend modules to APO-3:
+
+```json
+{
+  "component": "UserProfile",
+  "type": "react_component",
+  "source_file": "frontend/src/components/UserProfile.tsx",
+  "output_file": "docs/frontend/components/UserProfile.md",
+  "required_sections": [
+    "Component Description",
+    "Props Documentation",
+    "State Management",
+    "Event Handlers",
+    "Usage Examples",
+    "Integration Points"
+  ]
+}
+```
+
+**Granularity:** One component = One file (same as backend services)
+
+---
+
 ### Step 1.4: Generate 3-Part Audit Report
 
 **Use template:** `trinity/templates/documentation/reports/docs-update-audit.md`
