@@ -302,6 +302,73 @@ end
 
 ---
 
+### Step 1.2A: Scope Boundary Enforcement
+
+**CRITICAL: This command ONLY modifies files in the `docs/` directory.**
+
+**Scope Rules:**
+
+1. **ALLOWED operations:**
+   - ✅ Read ANY file in project (for verification and analysis)
+   - ✅ Write files in `docs/` directory
+   - ✅ Edit files in `docs/` directory
+   - ✅ Create new files in `docs/` directory
+
+2. **FORBIDDEN operations:**
+   - ❌ Write/Edit files in `src/`, `backend/`, `frontend/`, `app/` directories
+   - ❌ Modify database schemas (`database/`, `migrations/`, `*.sql`)
+   - ❌ Modify configuration (`package.json`, `tsconfig.json`, `.env`, `*.config.js`)
+   - ❌ Modify build files (`Dockerfile`, `docker-compose.yml`, `.github/`)
+   - ❌ Modify test files (`*.test.js`, `*.spec.ts`)
+   - ❌ Modify any file outside `docs/` directory
+
+3. **Discrepancy Resolution Strategy:**
+
+   **When documentation is WRONG (doesn't match code):**
+   - ✅ Update documentation to match actual code
+   - ❌ DO NOT modify code to match documentation
+
+   **Example Scenarios:**
+
+   **Scenario A: Database Schema Mismatch**
+   ```
+   Documentation: docs/architecture/database-er.md shows "dealers" table
+   Code: database/init.sql is Phase 1 schema (no dealers table)
+   Actual Runtime: Production uses Phase 2 with dealers table
+
+   ❌ WRONG: Update database/init.sql to add dealers table
+   ✅ RIGHT: Add note to database-er.md:
+   "Note: database/init.sql contains Phase 1 schema for backward compatibility.
+   Production database uses Phase 2 schema with dealers table as documented above."
+   ```
+
+   **Scenario B: API Endpoint Mismatch**
+   ```
+   Documentation: docs/api/README.md shows GET /api/users
+   Code: backend/src/api/routes/users.js shows GET /api/v1/users
+
+   ❌ WRONG: Modify routes/users.js to remove /v1 prefix
+   ✅ RIGHT: Update docs/api/README.md to show GET /api/v1/users
+   ```
+
+4. **Pre-Write Validation:**
+
+   **Before EVERY Write or Edit operation, verify target path starts with `docs/`.**
+
+5. **APO Assignment Restrictions:**
+
+   **JUNO must NOT assign APOs to:**
+   - Fix source code files
+   - Update database schemas
+   - Modify configuration files
+
+   **JUNO must ONLY assign APOs to:**
+   - Create documentation files in docs/
+   - Update existing documentation files in docs/
+   - Verify documentation accuracy against source code (read-only)
+
+---
+
 ### Step 1.3: Cross-Reference Documentation with Codebase
 
 **For each documentation file, verify:**
@@ -435,6 +502,75 @@ Q: Is RateLimiter modular?
 A: YES - middleware that works independently
 → APO-3 creates new docs/middleware/rate-limiter.md
 ```
+
+---
+
+#### APO-3 Granularity Requirements
+
+**For collections of similar components (scrapers, utilities, services):**
+
+**REQUIRE BOTH:**
+
+1. **Overview/Summary File** (Optional but recommended)
+   - Purpose: High-level comparison, shared patterns, getting started
+   - Example: `dealer-scrapers-overview.md`, `api-routes-overview.md`
+   - Content: Table of components, common patterns, architecture
+
+2. **Individual Component Files** (MANDATORY)
+   - Purpose: Per-component implementation details
+   - Requirement: ONE file per component
+   - Content: Constructor, methods, configuration, examples, challenges
+
+**Assignment Format:**
+
+When assigning collections to APO-3, specify:
+
+❌ WRONG:
+```json
+{
+  "apo": "APO-3",
+  "components": ["19 dealer scrapers"],
+  "deliverables": ["dealer-scrapers documentation"]
+}
+```
+
+✅ CORRECT:
+```json
+{
+  "apo": "APO-3",
+  "components": [
+    "LionMachineryScraper",
+    "PrestigeEquipmentScraper",
+    "EquipmentHubScraper"
+    // ... (list all 19 individually)
+  ],
+  "deliverables": [
+    "docs/backend/scrapers/LionMachineryScraper.md",
+    "docs/backend/scrapers/PrestigeEquipmentScraper.md",
+    "docs/backend/scrapers/EquipmentHubScraper.md"
+    // ... (19 individual files)
+  ],
+  "optional": ["docs/backend/scrapers/dealer-scrapers-overview.md"]
+}
+```
+
+**Granularity Rules:**
+
+1. **One component = One file**
+   - LionMachineryScraper.js → LionMachineryScraper.md
+   - EmailService.js → email-service.md
+   - Equipment.js → Equipment.md
+
+2. **Collections get overview + individuals**
+   - 19 scrapers → 1 overview.md + 19 individual .md files
+   - 5 middleware → 1 overview.md + 5 individual .md files
+
+3. **No "bulk documentation" accepted**
+   - ❌ "scrapers.md" documenting all scrapers
+   - ❌ "services-overview.md" as only service documentation
+   - ✅ Individual file per service + optional overview
+
+**APO-3 must create N files for N components (not 1 file for N components).**
 
 ---
 
@@ -824,7 +960,42 @@ Modularity Analysis:
 
 #### APO-3 Step 3: Create Documentation for Each Component
 
-**For each component, create NEW documentation file:**
+**CRITICAL: Create ONE file per component. No bulk/summary files as substitutes.**
+
+**For each component assigned:**
+
+1. **Verify assignment is for individual component, not collection:**
+   ```
+   ❌ Assignment: "19 dealer scrapers"
+   → REJECT: Too broad, request individual component list
+
+   ✅ Assignment: "LionMachineryScraper, PrestigeEquipmentScraper, EquipmentHubScraper"
+   → ACCEPT: Individual components clearly specified
+   ```
+
+2. **Create individual documentation file for EACH component:**
+
+   **File naming convention:**
+   - Component: `LionMachineryScraper.js` → File: `LionMachineryScraper.md`
+   - Component: `EmailService.js` → File: `email-service.md`
+   - Component: `retryUtils.js` → File: `retry-logic.md`
+
+3. **Optional: Create overview file AFTER individual files complete:**
+   - If assigned 5+ similar components, you MAY create overview file
+   - Overview is SUPPLEMENTARY (not replacement for individual files)
+   - Example: After creating 19 scraper files, create dealer-scrapers-overview.md
+
+**Forbidden Practices:**
+
+❌ **DO NOT:**
+- Create "scrapers.md" documenting all 19 scrapers in one file
+- Create "services-overview.md" as sole documentation for 6 services
+- Consolidate N components into 1 file for "efficiency"
+
+✅ **MUST DO:**
+- Create N individual files for N components
+- Each file contains full implementation details for that component
+- Report N files created (not "1 comprehensive file covering N components")
 
 **Determine documentation location:**
 ```
@@ -1067,7 +1238,59 @@ Read all 3 APO completion reports from current iteration:
    - Are there methods documented that don't exist in code?
    - Count as discrepancy
 
-6. **Calculate alignment**
+6. **Verify granularity for collections:**
+
+   **If codebase has collection of similar components, check:**
+
+   ```bash
+   # Example: Dealer scrapers
+   scrapers_in_code=$(ls backend/src/scrapers/*Scraper.js | wc -l)  # 20 files
+   scrapers_in_docs=$(ls docs/backend/scrapers/*Scraper.md | wc -l)  # Should be 20
+
+   if [ $scrapers_in_code -ne $scrapers_in_docs ]; then
+     echo "❌ MISMATCH: $scrapers_in_code scrapers in code, $scrapers_in_docs in docs"
+     create_discrepancy "Scraper documentation incomplete"
+   fi
+   ```
+
+   **Granularity verification rules:**
+
+   a. **One component in code = One file in docs**
+      - LionMachineryScraper.js exists → LionMachineryScraper.md must exist
+      - NOT sufficient: dealer-scrapers-overview.md mentions LionMachinery
+
+   b. **Overview files are supplementary (not counted as primary docs)**
+      - dealer-scrapers-overview.md does NOT count toward 19 scraper coverage
+      - services-overview.md does NOT count toward 6 service coverage
+      - Overview files get bonus points but don't substitute individual files
+
+   c. **Coverage calculation:**
+      ```
+      # For component category (e.g., scrapers)
+      components_in_code = count(backend/src/scrapers/*Scraper.js)
+      individual_docs = count(docs/backend/scrapers/*Scraper.md) - count(*overview.md)
+
+      coverage = (individual_docs / components_in_code) * 100
+
+      # DO NOT count overview files in numerator
+      ```
+
+   d. **Discrepancy creation:**
+      ```
+      # For each component without individual file
+      for scraper in LionMachineryScraper PrestigeEquipmentScraper ...; do
+        if [ ! -f "docs/backend/scrapers/$scraper.md" ]; then
+          create_discrepancy(
+            component: "$scraper",
+            severity: "HIGH",
+            type: "Missing individual documentation",
+            resolution: "Create docs/backend/scrapers/$scraper.md"
+          )
+        fi
+      done
+      ```
+
+7. **Calculate alignment**
    - Count total methods in code
    - Count correctly documented methods
    - Calculate: (correct / total) * 100 = module_alignment%
@@ -1215,10 +1438,66 @@ IF overall_alignment < 100% AND currentIteration < 3:
 
 **Continue to next iteration:**
 1. Increment iteration counter
-2. Go back to Phase 1 (JUNO Audit)
+2. **IMMEDIATELY proceed to Phase 1 (NO USER APPROVAL REQUIRED)**
 3. JUNO focuses on discrepancies found in previous iteration
 4. APOs fix discrepancies
 5. JUNO verifies again
+
+**CRITICAL: Automatic Continuation Protocol**
+
+**Iteration transitions are AUTOMATIC and MANDATORY:**
+
+1. **Update global state:**
+   ```json
+   {
+     "currentIteration": iteration + 1,
+     "previousAlignment": overall_alignment,
+     "remainingDiscrepancies": discrepancy_count,
+     "autoProceeding": true
+   }
+   ```
+
+2. **Generate brief transition message:**
+   ```
+   Iteration {N} Complete: {X}% alignment achieved
+   Target: 100% (gap: {100-X}%)
+   Remaining discrepancies: {count}
+
+   Automatically proceeding to Iteration {N+1}...
+   ```
+
+3. **IMMEDIATELY begin Phase 1 for next iteration:**
+   - DO NOT wait for user approval
+   - DO NOT ask "Should I continue?"
+   - DO NOT create a detailed summary and pause
+   - DO NOT stop for any reason except token/context limits
+
+4. **Token/Context Limit Handling:**
+   - If token limits reached DURING iteration → Save checkpoint, resume when continued
+   - If token limits reached BETWEEN iterations → Treat as mid-iteration, resume Phase 1 of next iteration
+   - Never interpret iteration boundary as stopping point
+
+**Rule 2 Enforcement:**
+
+Per Rule 2 (Continuous Execution):
+- ✅ Automatic iteration continuation is MANDATORY
+- ✅ No user approval gates between iterations
+- ✅ Token constraints pause execution but do NOT stop the workflow
+- ✅ When resumed, immediately continue from checkpoint
+
+**Forbidden Behaviors:**
+
+❌ DO NOT:
+- Stop and ask: "Iteration 1 complete. Should I proceed to Iteration 2?"
+- Generate long summary and wait for feedback
+- Pause between Phase 3 (verification) and Phase 1 (next audit)
+- Treat iteration boundary as approval gate
+
+✅ MUST DO:
+- Automatically proceed to next iteration
+- Only pause if token limits hit mid-task
+- Complete all iterations up to 100% or 3 iterations
+- Generate ONE final report at Phase 4
 
 ---
 
