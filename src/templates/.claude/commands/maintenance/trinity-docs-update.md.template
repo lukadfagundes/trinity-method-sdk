@@ -897,8 +897,10 @@ Aborting documentation update.
 
 **This is a ZERO-STOP-POINT operation:**
 - Phase 1 → Phase 2 → Phase 3 → Phase 4 (continuous execution)
-- Only valid stops: token limits, 100% alignment, or max iterations
+- Only valid stops: 100% alignment OR max iterations reached
+- Token constraints: Continue until ACTUAL token/context limit hit (not anticipated usage)
 - NO approval gates between phases
+- NO stopping mid-phase for workload concerns
 
 ---
 
@@ -1755,12 +1757,15 @@ IF overall_alignment < 100% AND currentIteration < 3:
    - DO NOT wait for user approval
    - DO NOT ask "Should I continue?"
    - DO NOT create a detailed summary and pause
-   - DO NOT stop for any reason except token/context limits
+   - DO NOT stop for anticipated workload/token concerns
+   - ONLY stop if ACTUAL token/context limit hit (context window full)
 
 4. **Token/Context Limit Handling:**
-   - If token limits reached DURING iteration → Save checkpoint, resume when continued
-   - If token limits reached BETWEEN iterations → Treat as mid-iteration, resume Phase 1 of next iteration
+   - If ACTUAL token limit hit DURING iteration → Save checkpoint, resume when continued
+   - If ACTUAL token limit hit BETWEEN iterations → Treat as mid-iteration, resume Phase 1 of next iteration
    - Never interpret iteration boundary as stopping point
+   - "Anticipated high token usage" is NOT a valid stop reason
+   - Continue execution until context window actually fills
 
 **Rule 2 Enforcement:**
 
