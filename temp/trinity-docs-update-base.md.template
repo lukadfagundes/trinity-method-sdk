@@ -72,6 +72,13 @@ If interrupted mid-execution:
 - Manual confirmation
 - Any reason other than the 3 stop conditions
 
+### Rule 3: Disregard Constraints
+
+1. You are to complete the tasks regardless of token contraints.
+2. You are to complete the tasks regardless of time contraints.
+3. You are to complete the tasks as needed without modification.
+4. No shortening or simplifying tasks in any capicity.
+
 ---
 
 ## Phase 0: Pre-Flight Check & State Initialization
@@ -154,6 +161,45 @@ interface GlobalState {
 **Agent:** JUNO (Quality Auditor)
 **Mode:** READ-ONLY (No changes made in this phase)
 **Output:** Audit report in `trinity/reports/DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
+
+---
+
+### Step 1.0: Pre-Flight Checklist (Command Integrity Verification)
+
+**Execute BEFORE beginning Phase 1 audit:**
+
+**Verification Checklist:**
+
+1. ✅ **Step 1.3A Marked MANDATORY:**
+   - Verify: Step 1.3A header contains "(MANDATORY)"
+   - Verify: Step 1.3A has "CRITICAL: This step MUST be executed in EVERY iteration"
+
+2. ✅ **Step 1.3B Marked MANDATORY:**
+   - Verify: Step 1.3B header contains "(MANDATORY)"
+   - Verify: Step 1.3B has "CRITICAL: This step MUST be executed in EVERY iteration"
+
+3. ✅ **Decision Tree Has Only 3 Stop Conditions:**
+   - Condition 1: `overall_alignment === 100%` → SUCCESS
+   - Condition 2: `overall_alignment < 100% AND currentIteration < 3` → ITERATE
+   - Condition 3: `overall_alignment < 100% AND currentIteration === 3` → INCOMPLETE
+   - Verify: No "95% threshold" logic exists
+   - Verify: FORBIDDEN LOGIC section exists
+
+4. ✅ **No "Good Enough" Thresholds:**
+   - Search command for: "95%", "90%", "pragmatic", "good enough", "close enough"
+   - Verify: No unauthorized threshold logic
+
+5. ✅ **docs/ Directory Exists:**
+   - Verify: `docs/` directory exists in project root
+   - If missing: ABORT workflow with error
+
+**If ANY verification fails:**
+- ❌ ABORT workflow immediately
+- Report: "Command integrity check failed - template validation error"
+- User action required: Review and update command template
+
+**If ALL verifications pass:**
+- ✅ Proceed to Step 1.1 (Scan Existing Documentation)
 
 ---
 
@@ -302,6 +348,73 @@ end
 
 ---
 
+### Step 1.2A: Scope Boundary Enforcement
+
+**CRITICAL: This command ONLY modifies files in the `docs/` directory.**
+
+**Scope Rules:**
+
+1. **ALLOWED operations:**
+   - ✅ Read ANY file in project (for verification and analysis)
+   - ✅ Write files in `docs/` directory
+   - ✅ Edit files in `docs/` directory
+   - ✅ Create new files in `docs/` directory
+
+2. **FORBIDDEN operations:**
+   - ❌ Write/Edit files in `src/`, `backend/`, `frontend/`, `app/` directories
+   - ❌ Modify database schemas (`database/`, `migrations/`, `*.sql`)
+   - ❌ Modify configuration (`package.json`, `tsconfig.json`, `.env`, `*.config.js`)
+   - ❌ Modify build files (`Dockerfile`, `docker-compose.yml`, `.github/`)
+   - ❌ Modify test files (`*.test.js`, `*.spec.ts`)
+   - ❌ Modify any file outside `docs/` directory
+
+3. **Discrepancy Resolution Strategy:**
+
+   **When documentation is WRONG (doesn't match code):**
+   - ✅ Update documentation to match actual code
+   - ❌ DO NOT modify code to match documentation
+
+   **Example Scenarios:**
+
+   **Scenario A: Database Schema Mismatch**
+   ```
+   Documentation: docs/architecture/database-er.md shows "dealers" table
+   Code: database/init.sql is Phase 1 schema (no dealers table)
+   Actual Runtime: Production uses Phase 2 with dealers table
+
+   ❌ WRONG: Update database/init.sql to add dealers table
+   ✅ RIGHT: Add note to database-er.md:
+   "Note: database/init.sql contains Phase 1 schema for backward compatibility.
+   Production database uses Phase 2 schema with dealers table as documented above."
+   ```
+
+   **Scenario B: API Endpoint Mismatch**
+   ```
+   Documentation: docs/api/README.md shows GET /api/users
+   Code: backend/src/api/routes/users.js shows GET /api/v1/users
+
+   ❌ WRONG: Modify routes/users.js to remove /v1 prefix
+   ✅ RIGHT: Update docs/api/README.md to show GET /api/v1/users
+   ```
+
+4. **Pre-Write Validation:**
+
+   **Before EVERY Write or Edit operation, verify target path starts with `docs/`.**
+
+5. **APO Assignment Restrictions:**
+
+   **JUNO must NOT assign APOs to:**
+   - Fix source code files
+   - Update database schemas
+   - Modify configuration files
+
+   **JUNO must ONLY assign APOs to:**
+   - Create documentation files in docs/
+   - Update existing documentation files in docs/
+   - Verify documentation accuracy against source code (read-only)
+
+---
+
 ### Step 1.3: Cross-Reference Documentation with Codebase
 
 **For each documentation file, verify:**
@@ -350,6 +463,202 @@ If docs say processPayment takes (userId, amount) → DISCREPANCY (wrong paramet
 If docs don't mention error cases → INCOMPLETENESS (missing info)
 If docs reference deprecated processCreditCard method → STALENESS (outdated)
 ```
+
+---
+
+### Step 1.3A: Service Module Discovery and API Documentation Requirement (MANDATORY)
+
+**CRITICAL: This step MUST be executed in EVERY iteration. DO NOT skip.**
+
+**Purpose:** Identify service modules and require API reference documentation (distinct from guide-level docs).
+
+**Execution Requirements:**
+1. Run the conditional discovery bash script below
+2. Record results in audit report (Part 3: Missing Business Logic)
+3. Assign discovered services to APO-2 or APO-3 based on coupling
+4. If services found: Create assignment for each service (one service = one file)
+5. If no services found: Log "No services detected - skipping service documentation" and continue
+
+**Conditional Discovery (Graceful Degradation):**
+
+```bash
+# Check if services directory exists
+if [ ! -d "backend/src/services" ] && [ ! -d "src/services" ] && [ ! -d "services" ] && [ ! -d "server/services" ]; then
+  echo "ℹ️ No services directory detected - skipping service documentation"
+  # Continue to next step - NOT an error
+else
+  echo "✅ Services detected - scanning for service modules"
+
+  # Scan for service files
+  SERVICE_FILES=$(find backend/src/services src/services services server/services -name "*.js" -o -name "*.ts" 2>/dev/null || true)
+
+  if [ -z "$SERVICE_FILES" ]; then
+    echo "ℹ️ Services directory exists but no service files found"
+  else
+    echo "Found service modules - documenting..."
+  fi
+fi
+```
+
+**Service Module Identification:**
+
+For each service file discovered:
+
+1. **Extract information:**
+   - Service name (emailService.js → EmailService)
+   - Methods exported (public API)
+   - Dependencies
+
+2. **Documentation Requirements:**
+
+   **MANDATORY: API Reference Documentation**
+   - Location: `docs/services/{serviceName}.md`
+   - Content: Method signatures, parameters, return types, usage examples
+
+   **OPTIONAL: Guide-Level Documentation**
+   - Location: `docs/guides/{topic}.md`
+   - Content: Configuration, setup, troubleshooting
+
+3. **Verification:**
+   ```bash
+   # Count services in codebase
+   SERVICE_COUNT=$(find backend/src/services src/services services server/services -name "*.js" -o -name "*.ts" 2>/dev/null | wc -l || echo 0)
+
+   # Count service API docs
+   SERVICE_DOCS=$(find docs/services -name "*.md" ! -name "README.md" 2>/dev/null | wc -l || echo 0)
+
+   if [ $SERVICE_COUNT -gt 0 ] && [ $SERVICE_COUNT -ne $SERVICE_DOCS ]; then
+     echo "❌ Service documentation gap: $SERVICE_COUNT services, $SERVICE_DOCS API docs"
+     # Add to discrepancies
+   fi
+   ```
+
+**Assignment Specification for Services:**
+
+When assigning services to APO-2 or APO-3:
+
+```json
+{
+  "component": "emailService",
+  "type": "service",
+  "source_file": "backend/src/services/emailService.js",
+  "output_type": "API_REFERENCE",
+  "output_file": "docs/services/emailService.md",
+  "required_sections": [
+    "Class/Module Description",
+    "Dependencies",
+    "Public Methods (with signatures)",
+    "Parameter Documentation",
+    "Return Types",
+    "Usage Examples",
+    "Error Handling"
+  ]
+}
+```
+
+**DO NOT accept:**
+- Guide-level docs as substitute for API reference
+- Overview without method signatures
+- "See docs/guides/email-notifications.md" as completion
+
+**REQUIRE:**
+- Individual file per service: `docs/services/{serviceName}.md`
+- Complete method signatures
+- Code examples
+
+---
+
+### Step 1.3B: Frontend Module Discovery and Component Documentation (MANDATORY)
+
+**CRITICAL: This step MUST be executed in EVERY iteration. DO NOT skip.**
+
+**Purpose:** Identify frontend modules and document components, pages, hooks, utilities.
+
+**Execution Requirements:**
+1. Run the conditional discovery bash script below
+2. Record results in audit report (Part 3: Missing Business Logic)
+3. Assign discovered frontend modules to APO-3 (modular components)
+4. If frontend found: Create assignment for each component (one component = one file)
+5. If no frontend found: Log "No frontend detected - skipping frontend documentation" and continue
+
+**Conditional Discovery (Graceful Degradation):**
+
+```bash
+# Check if frontend exists
+if [ ! -d "frontend" ] && [ ! -d "src/app" ] && [ ! -d "client" ] && [ ! -d "src/components" ]; then
+  echo "ℹ️ No frontend detected - skipping frontend documentation"
+  # Continue to next step - NOT an error
+else
+  echo "✅ Frontend detected - scanning for components"
+
+  # Scan for React/Next.js components
+  COMPONENT_FILES=$(find frontend src/app client src/components -name "*.jsx" -o -name "*.tsx" 2>/dev/null || true)
+
+  if [ -z "$COMPONENT_FILES" ]; then
+    echo "ℹ️ Frontend directory exists but no component files found"
+  else
+    echo "Found frontend modules - documenting..."
+  fi
+fi
+```
+
+**Frontend Module Identification:**
+
+For each frontend module discovered:
+
+1. **Module Categories:**
+   - **Components:** Reusable UI components (Button, Modal, Card)
+   - **Pages:** Route-level components (HomePage, DashboardPage)
+   - **Hooks:** Custom React hooks (useAuth, useFetch)
+   - **Utilities:** Frontend utility modules (formatters, validators)
+
+2. **Documentation Requirements:**
+
+   **Location:** `docs/frontend/{category}/{moduleName}.md`
+
+   **Required Content:**
+   - Component props (name, type, required, description)
+   - State management
+   - Event handlers
+   - Usage examples
+   - Integration points
+
+3. **Verification:**
+   ```bash
+   # Count frontend modules
+   COMPONENT_COUNT=$(find frontend src/app client src/components -name "*.jsx" -o -name "*.tsx" 2>/dev/null | wc -l || echo 0)
+
+   # Count frontend docs
+   FRONTEND_DOCS=$(find docs/frontend -name "*.md" ! -name "README.md" 2>/dev/null | wc -l || echo 0)
+
+   if [ $COMPONENT_COUNT -gt 0 ] && [ $FRONTEND_DOCS -eq 0 ]; then
+     echo "❌ Frontend documentation missing: $COMPONENT_COUNT modules, 0 docs"
+     # Add to discrepancies
+   fi
+   ```
+
+**Assignment Specification for Frontend:**
+
+When assigning frontend modules to APO-3:
+
+```json
+{
+  "component": "UserProfile",
+  "type": "react_component",
+  "source_file": "frontend/src/components/UserProfile.tsx",
+  "output_file": "docs/frontend/components/UserProfile.md",
+  "required_sections": [
+    "Component Description",
+    "Props Documentation",
+    "State Management",
+    "Event Handlers",
+    "Usage Examples",
+    "Integration Points"
+  ]
+}
+```
+
+**Granularity:** One component = One file (same as backend services)
 
 ---
 
@@ -438,6 +747,75 @@ A: YES - middleware that works independently
 
 ---
 
+#### APO-3 Granularity Requirements
+
+**For collections of similar components (scrapers, utilities, services):**
+
+**REQUIRE BOTH:**
+
+1. **Overview/Summary File** (Optional but recommended)
+   - Purpose: High-level comparison, shared patterns, getting started
+   - Example: `dealer-scrapers-overview.md`, `api-routes-overview.md`
+   - Content: Table of components, common patterns, architecture
+
+2. **Individual Component Files** (MANDATORY)
+   - Purpose: Per-component implementation details
+   - Requirement: ONE file per component
+   - Content: Constructor, methods, configuration, examples, challenges
+
+**Assignment Format:**
+
+When assigning collections to APO-3, specify:
+
+❌ WRONG:
+```json
+{
+  "apo": "APO-3",
+  "components": ["19 dealer scrapers"],
+  "deliverables": ["dealer-scrapers documentation"]
+}
+```
+
+✅ CORRECT:
+```json
+{
+  "apo": "APO-3",
+  "components": [
+    "LionMachineryScraper",
+    "PrestigeEquipmentScraper",
+    "EquipmentHubScraper"
+    // ... (list all 19 individually)
+  ],
+  "deliverables": [
+    "docs/backend/scrapers/LionMachineryScraper.md",
+    "docs/backend/scrapers/PrestigeEquipmentScraper.md",
+    "docs/backend/scrapers/EquipmentHubScraper.md"
+    // ... (19 individual files)
+  ],
+  "optional": ["docs/backend/scrapers/dealer-scrapers-overview.md"]
+}
+```
+
+**Granularity Rules:**
+
+1. **One component = One file**
+   - LionMachineryScraper.js → LionMachineryScraper.md
+   - EmailService.js → email-service.md
+   - Equipment.js → Equipment.md
+
+2. **Collections get overview + individuals**
+   - 19 scrapers → 1 overview.md + 19 individual .md files
+   - 5 middleware → 1 overview.md + 5 individual .md files
+
+3. **No "bulk documentation" accepted**
+   - ❌ "scrapers.md" documenting all scrapers
+   - ❌ "services-overview.md" as only service documentation
+   - ✅ Individual file per service + optional overview
+
+**APO-3 must create N files for N components (not 1 file for N components).**
+
+---
+
 ### Step 1.6: Zero-Tolerance Policy Check
 
 **ABORT immediately if any of these are found:**
@@ -496,7 +874,38 @@ Aborting documentation update.
 }
 ```
 
-**Proceed to Phase 2.**
+---
+
+### Phase 1 → Phase 2 Transition (AUTOMATIC - NO STOP POINT)
+
+**CRITICAL: IMMEDIATELY proceed to Phase 2. NO USER APPROVAL REQUIRED.**
+
+**Automatic Phase Transition Protocol:**
+
+1. **Phase 1 (Audit) complete** → **IMMEDIATELY begin Phase 2 (Execution)**
+2. **DO NOT present options (A/B/C) to user**
+3. **DO NOT ask for execution approach approval**
+4. **DO NOT pause for review or user decision**
+5. **DO NOT create summary and wait**
+
+**Forbidden Behaviors:**
+
+❌ DO NOT:
+- Stop and ask: "Would you like to proceed with full execution, reduced scope, or work orders?"
+- Present: "Option A, Option B, Option C"
+- Wait for: "User direction on execution approach"
+- Create: Detailed summary requiring approval
+
+✅ MUST DO:
+- Immediately execute APO-1 work assignments
+- Immediately execute APO-2 work assignments (if any)
+- Immediately execute APO-3 work assignments
+- Complete all APO work without stopping
+
+**This is a ZERO-STOP-POINT operation:**
+- Phase 1 → Phase 2 → Phase 3 → Phase 4 (continuous execution)
+- Only valid stops: token limits, 100% alignment, or max iterations
+- NO approval gates between phases
 
 ---
 
@@ -824,7 +1233,42 @@ Modularity Analysis:
 
 #### APO-3 Step 3: Create Documentation for Each Component
 
-**For each component, create NEW documentation file:**
+**CRITICAL: Create ONE file per component. No bulk/summary files as substitutes.**
+
+**For each component assigned:**
+
+1. **Verify assignment is for individual component, not collection:**
+   ```
+   ❌ Assignment: "19 dealer scrapers"
+   → REJECT: Too broad, request individual component list
+
+   ✅ Assignment: "LionMachineryScraper, PrestigeEquipmentScraper, EquipmentHubScraper"
+   → ACCEPT: Individual components clearly specified
+   ```
+
+2. **Create individual documentation file for EACH component:**
+
+   **File naming convention:**
+   - Component: `LionMachineryScraper.js` → File: `LionMachineryScraper.md`
+   - Component: `EmailService.js` → File: `email-service.md`
+   - Component: `retryUtils.js` → File: `retry-logic.md`
+
+3. **Optional: Create overview file AFTER individual files complete:**
+   - If assigned 5+ similar components, you MAY create overview file
+   - Overview is SUPPLEMENTARY (not replacement for individual files)
+   - Example: After creating 19 scraper files, create dealer-scrapers-overview.md
+
+**Forbidden Practices:**
+
+❌ **DO NOT:**
+- Create "scrapers.md" documenting all 19 scrapers in one file
+- Create "services-overview.md" as sole documentation for 6 services
+- Consolidate N components into 1 file for "efficiency"
+
+✅ **MUST DO:**
+- Create N individual files for N components
+- Each file contains full implementation details for that component
+- Report N files created (not "1 comprehensive file covering N components")
 
 **Determine documentation location:**
 ```
@@ -991,7 +1435,22 @@ Same as APO-1 and APO-2 - search for framework-specific documentation standards.
 }
 ```
 
-**Proceed to Phase 3.**
+---
+
+### Phase 2 → Phase 3 Transition (AUTOMATIC - NO STOP POINT)
+
+**CRITICAL: IMMEDIATELY proceed to Phase 3. NO USER APPROVAL REQUIRED.**
+
+**All APO work complete** → **IMMEDIATELY begin Phase 3 (Verification)**
+
+❌ DO NOT:
+- Stop and present APO completion summary
+- Wait for user review of APO outputs
+- Ask: "Should I proceed to verification?"
+
+✅ MUST DO:
+- Immediately begin JUNO verification (Step 3.1)
+- Continue automatic execution
 
 ---
 
@@ -1067,7 +1526,59 @@ Read all 3 APO completion reports from current iteration:
    - Are there methods documented that don't exist in code?
    - Count as discrepancy
 
-6. **Calculate alignment**
+6. **Verify granularity for collections:**
+
+   **If codebase has collection of similar components, check:**
+
+   ```bash
+   # Example: Dealer scrapers
+   scrapers_in_code=$(ls backend/src/scrapers/*Scraper.js | wc -l)  # 20 files
+   scrapers_in_docs=$(ls docs/backend/scrapers/*Scraper.md | wc -l)  # Should be 20
+
+   if [ $scrapers_in_code -ne $scrapers_in_docs ]; then
+     echo "❌ MISMATCH: $scrapers_in_code scrapers in code, $scrapers_in_docs in docs"
+     create_discrepancy "Scraper documentation incomplete"
+   fi
+   ```
+
+   **Granularity verification rules:**
+
+   a. **One component in code = One file in docs**
+      - LionMachineryScraper.js exists → LionMachineryScraper.md must exist
+      - NOT sufficient: dealer-scrapers-overview.md mentions LionMachinery
+
+   b. **Overview files are supplementary (not counted as primary docs)**
+      - dealer-scrapers-overview.md does NOT count toward 19 scraper coverage
+      - services-overview.md does NOT count toward 6 service coverage
+      - Overview files get bonus points but don't substitute individual files
+
+   c. **Coverage calculation:**
+      ```
+      # For component category (e.g., scrapers)
+      components_in_code = count(backend/src/scrapers/*Scraper.js)
+      individual_docs = count(docs/backend/scrapers/*Scraper.md) - count(*overview.md)
+
+      coverage = (individual_docs / components_in_code) * 100
+
+      # DO NOT count overview files in numerator
+      ```
+
+   d. **Discrepancy creation:**
+      ```
+      # For each component without individual file
+      for scraper in LionMachineryScraper PrestigeEquipmentScraper ...; do
+        if [ ! -f "docs/backend/scrapers/$scraper.md" ]; then
+          create_discrepancy(
+            component: "$scraper",
+            severity: "HIGH",
+            type: "Missing individual documentation",
+            resolution: "Create docs/backend/scrapers/$scraper.md"
+          )
+        fi
+      done
+      ```
+
+7. **Calculate alignment**
    - Count total methods in code
    - Count correctly documented methods
    - Calculate: (correct / total) * 100 = module_alignment%
@@ -1174,7 +1685,9 @@ updateUser(userId: string, data: UpdateUserDto, options?: UpdateOptions): Promis
 
 ---
 
-### Step 3.6: Decision Tree
+### Step 3.6: Decision Tree (STRICT ENFORCEMENT)
+
+**CRITICAL: Only THREE stop conditions exist. No other conditions permitted.**
 
 **Update global state:**
 ```json
@@ -1191,7 +1704,7 @@ updateUser(userId: string, data: UpdateUserDto, options?: UpdateOptions): Promis
 
 ---
 
-#### Decision 1: 100% Alignment Achieved
+#### Decision 1: 100% Alignment Achieved (SUCCESS)
 
 ```
 IF overall_alignment === 100%:
@@ -1199,7 +1712,9 @@ IF overall_alignment === 100%:
   → stopCondition = "100_percent_aligned"
 ```
 
-**Stop Condition Met: SUCCESS**
+**Stop Condition Met: SUCCESS - 100% alignment achieved**
+
+**This is the ONLY condition for declaring SUCCESS.**
 
 ---
 
@@ -1215,14 +1730,70 @@ IF overall_alignment < 100% AND currentIteration < 3:
 
 **Continue to next iteration:**
 1. Increment iteration counter
-2. Go back to Phase 1 (JUNO Audit)
+2. **IMMEDIATELY proceed to Phase 1 (NO USER APPROVAL REQUIRED)**
 3. JUNO focuses on discrepancies found in previous iteration
 4. APOs fix discrepancies
 5. JUNO verifies again
 
+**CRITICAL: Automatic Continuation Protocol**
+
+**Iteration transitions are AUTOMATIC and MANDATORY:**
+
+1. **Update global state:**
+   ```json
+   {
+     "currentIteration": iteration + 1,
+     "previousAlignment": overall_alignment,
+     "remainingDiscrepancies": discrepancy_count,
+     "autoProceeding": true
+   }
+   ```
+
+2. **Generate brief transition message:**
+   ```
+   Iteration {N} Complete: {X}% alignment achieved
+   Target: 100% (gap: {100-X}%)
+   Remaining discrepancies: {count}
+
+   Automatically proceeding to Iteration {N+1}...
+   ```
+
+3. **IMMEDIATELY begin Phase 1 for next iteration:**
+   - DO NOT wait for user approval
+   - DO NOT ask "Should I continue?"
+   - DO NOT create a detailed summary and pause
+   - DO NOT stop for any reason except token/context limits
+
+4. **Token/Context Limit Handling:**
+   - If token limits reached DURING iteration → Save checkpoint, resume when continued
+   - If token limits reached BETWEEN iterations → Treat as mid-iteration, resume Phase 1 of next iteration
+   - Never interpret iteration boundary as stopping point
+
+**Rule 2 Enforcement:**
+
+Per Rule 2 (Continuous Execution):
+- ✅ Automatic iteration continuation is MANDATORY
+- ✅ No user approval gates between iterations
+- ✅ Token constraints pause execution but do NOT stop the workflow
+- ✅ When resumed, immediately continue from checkpoint
+
+**Forbidden Behaviors:**
+
+❌ DO NOT:
+- Stop and ask: "Iteration 1 complete. Should I proceed to Iteration 2?"
+- Generate long summary and wait for feedback
+- Pause between Phase 3 (verification) and Phase 1 (next audit)
+- Treat iteration boundary as approval gate
+
+✅ MUST DO:
+- Automatically proceed to next iteration
+- Only pause if token limits hit mid-task
+- Complete all iterations up to 100% or 3 iterations
+- Generate ONE final report at Phase 4
+
 ---
 
-#### Decision 3: Not 100% Aligned, Max Iterations Reached
+#### Decision 3: Not 100% Aligned, Max Iterations Reached (INCOMPLETE)
 
 ```
 IF overall_alignment < 100% AND currentIteration === 3:
@@ -1234,6 +1805,40 @@ IF overall_alignment < 100% AND currentIteration === 3:
 **Stop Condition Met: MAX ITERATIONS REACHED**
 
 Proceed to Phase 4 with INCOMPLETE status.
+
+---
+
+#### FORBIDDEN LOGIC (Unauthorized Stop Conditions)
+
+**The following logic is FORBIDDEN and must NOT be used:**
+
+❌ **NO "Good Enough" Thresholds:**
+- `IF overall_alignment >= 95%: → Consider SUCCESS`
+- `IF overall_alignment >= 90%: → Pragmatic approval`
+- Any threshold other than exact 100%
+
+❌ **NO "Pragmatic Judgment" Calls:**
+- "95% is close enough for production use"
+- "Remaining gaps are minor, declare success"
+- "Perfect is the enemy of good, stop at 90%+"
+
+❌ **NO Early Termination:**
+- Stopping before 100% when iterations remain (currentIteration < 3)
+- Declaring SUCCESS at <100% alignment
+- Skipping Iteration 3 if Iteration 2 reaches 95%+
+
+**ENFORCEMENT:**
+
+If alignment < 100% AND currentIteration < 3:
+  → MUST iterate (no exceptions, no judgment calls)
+  → MUST NOT proceed to Phase 4
+  → MUST NOT declare SUCCESS
+
+**Only TWO valid stop conditions exist:**
+1. overall_alignment === 100% → SUCCESS
+2. currentIteration === 3 AND overall_alignment < 100% → INCOMPLETE
+
+**No other conditions may stop the workflow.**
 
 ---
 
@@ -1758,3 +2363,60 @@ This command provides iterative, verified documentation updates that achieve 100
 - If docs/ doesn't exist (use `/maintenance:trinity-docs` first)
 - For brand new projects (use `/maintenance:trinity-docs` first)
 - If you want to regenerate docs from scratch (use `/maintenance:trinity-docs`)
+
+---
+
+## Critical Rules
+
+### Rule 1: No Self-Serving Trinity Documentation
+
+**NEVER document Trinity Method itself in this command's output.**
+
+This command updates documentation about the USER'S codebase, not about Trinity Method.
+
+**Examples of FORBIDDEN content:**
+- Trinity Method agent descriptions
+- Trinity Method workflow explanations
+- Trinity Method work orders
+- Trinity Method investigation processes
+- Any content from `trinity/` directory
+
+**If you find Trinity content in docs/:**
+- IGNORE it (do not update or verify Trinity Method documentation)
+- Focus only on repository-specific business logic and architecture
+
+---
+
+### Rule 2: Continuous Execution Protocol
+
+**Stop ONLY for these 3 conditions:**
+1. `docs/` directory does not exist → ABORT with instruction to run `/maintenance:trinity-docs` first
+2. 3 iterations completed without achieving 100% alignment → ABORT with detailed report
+3. 100% alignment achieved → SUCCESS, generate final report
+
+**Continue execution regardless of:**
+- Time constraints
+- Token constraints
+- Context window approaching limit
+
+**Context Recovery Protocol:**
+If interrupted mid-execution:
+1. Read global state object from most recent report
+2. Identify last completed phase and iteration number
+3. Resume from next phase in sequence
+4. Continue until one of the 3 stop conditions is met
+
+**DO NOT stop for:**
+- User review (unless 100% alignment reached or max iterations hit)
+- Approval gates during iterations
+- Manual confirmation
+- Any reason other than the 3 stop conditions
+
+### Rule 3: Disregard Constraints
+
+1. You are to complete the tasks regardless of token contraints.
+2. You are to complete the tasks regardless of time contraints.
+3. You are to complete the tasks as needed without modification.
+4. No shortening or simplifying tasks in any capicity.
+
+---

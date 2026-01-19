@@ -1,0 +1,894 @@
+# JUNO Documentation Update Checklist
+
+**Version:** 2.0.9
+**Purpose:** Comprehensive audit checklist for trinity-docs-update command
+**Agent:** JUNO (Quality Auditor)
+**Output:** Audit report saved to `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
+
+---
+
+## Instructions
+
+This checklist contains ALL instructions for performing the Phase 1 audit. Follow each step in order.
+
+At the end, generate a complete audit report with APO work assignments (APO-1, APO-2, APO-3 checklists).
+
+---
+
+## Step 1.1: Scan Existing Documentation
+
+**Scan `docs/` directory recursively:**
+
+```bash
+find docs/ -type f -name "*.md" | sort
+```
+
+**Catalog all documentation files:**
+- Architecture documentation (e.g., `docs/architecture/`, `docs/system-design/`)
+- API documentation (e.g., `docs/api/`, `docs/endpoints/`)
+- Guides and tutorials (e.g., `docs/guides/`, `docs/tutorials/`)
+- Configuration documentation (e.g., `docs/configuration/`, `docs/setup/`)
+- Component documentation (e.g., `docs/components/`, `docs/modules/`)
+
+**For each file, analyze:**
+- **Content type:** Architecture, API, guide, tutorial, reference, configuration
+- **Accuracy:** Does content match codebase reality?
+- **Completeness:** Are there gaps or missing information?
+- **Staleness:** Does it reference outdated code, APIs, or structures?
+
+---
+
+## Step 1.2: Scan Codebase for Business Logic
+
+**ALL-LEVEL GRANULARITY REQUIRED:**
+- **Architecture Level:** System design, project structure, major components
+- **Module Level:** Services, controllers, models, utilities, middleware
+- **Function Level:** Individual functions, methods, APIs, endpoints
+
+### Database Schema Discovery (If Database Present):
+
+**CRITICAL: The production database itself is the PRIMARY source of truth.**
+
+**Discovery Priority Order:**
+
+1. **PRIMARY SOURCE: Production Database (Live Connection)**
+
+   **Attempt to connect to production database and query schema directly:**
+
+   ```bash
+   # PostgreSQL example
+   psql -h <host> -U <user> -d <database> -c "\dt" # List tables
+   psql -h <host> -U <user> -d <database> -c "\d+ table_name" # Describe table
+
+   # MySQL example
+   mysql -h <host> -u <user> -p -D <database> -e "SHOW TABLES;"
+   mysql -h <host> -u <user> -p -D <database> -e "DESCRIBE table_name;"
+
+   # SQLite example
+   sqlite3 database.db ".schema"
+
+   # Via Docker (if database is containerized)
+   docker exec <container_name> psql -U <user> -d <database> -c "\dt"
+   docker exec <container_name> psql -U <user> -d <database> -c "\d+ table_name"
+   ```
+
+   **Extract from production database:**
+   - Exact table names
+   - Exact column names and types
+   - Constraints (PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL)
+   - Indexes
+   - Triggers
+   - Relationships between tables
+
+   **If production database is accessible, this is the DEFINITIVE schema to document.**
+
+2. **SECONDARY SOURCE: Schema Files (Only if production database inaccessible)**
+
+   ```bash
+   # Check for schema files (SQL, migration files, etc.)
+   find . -name "*.sql" -o -name "schema.prisma" -o -name "*migration*" 2>/dev/null
+
+   # Common locations:
+   # - database/init.sql
+   # - database/schema.sql
+   # - migrations/*.sql
+   # - prisma/schema.prisma
+   # - db/schema.rb (Rails)
+   ```
+
+   **Read schema files:**
+   - Parse CREATE TABLE statements for exact field names and types
+   - Note constraints, indexes, relationships
+   - Record schema version if documented
+   - Mark as "FROM SCHEMA FILES - production database not accessible"
+
+3. **TERTIARY SOURCE: Existing Documentation (Last resort only)**
+   - Use docs/architecture/database-er.md as fallback ONLY if:
+     - Production database is inaccessible
+     - No schema files found in codebase
+     - Schema files exist but are unreadable
+   - Mark as "UNVERIFIED - based on existing documentation only"
+
+**Record in audit:**
+- Source of schema information (production DB > schema files > documentation)
+- Exact table names
+- Exact column names and types
+- Constraints, indexes, relationships
+- Schema version (if available)
+- Any discrepancies found between sources
+
+**CRITICAL: Schema Synchronization Requirement**
+
+**If production database schema differs from init.sql (or other schema files):**
+- ✅ Production database is the SOURCE OF TRUTH
+- ✅ Include init.sql update in the APO checklist (to be executed in Phase 2)
+- ✅ Flag this discrepancy in the audit report under APO work assignments
+- ✅ Document both the current init.sql state and required changes
+- ❌ DO NOT assume init.sql is correct if it conflicts with production database
+
+**Example checklist item for schema file sync:**
+```markdown
+- [ ] `database/init.sql`
+  - Issue: Schema file outdated - missing `dealers` table and updated `equipment_items` columns
+  - Required: Update init.sql to match production database schema exactly
+  - Source: Production database (verified via psql connection)
+  - Priority: HIGH
+```
+
+### Business Logic Detection Patterns:
+
+**Directory Patterns (varies by framework):**
+```
+Common patterns across frameworks:
+- controllers/, routes/, handlers/     (Request handling)
+- services/, business/, domain/        (Business logic)
+- models/, entities/, schemas/         (Data models)
+- repositories/, data-access/, dao/    (Data layer)
+- middleware/, interceptors/, guards/  (Request processing)
+- utils/, helpers/, lib/               (Utilities)
+- config/, configuration/              (Configuration)
+```
+
+**File Naming Patterns:**
+```
+*Controller.ts, *Controller.js
+*Service.ts, *Service.js
+*Repository.ts, *Repository.js
+*Model.ts, *Model.js
+*Helper.ts, *Helper.js
+*Util.ts, *Util.js
+*Middleware.ts, *Middleware.js
+*Handler.ts, *Handler.js
+*Provider.ts, *Provider.js
+```
+
+**Code Structure Markers:**
+```typescript
+// Classes (business logic)
+export class UserService { ... }
+export class PaymentProcessor { ... }
+
+// Interfaces (data contracts)
+export interface User { ... }
+export interface PaymentRequest { ... }
+
+// Enums (business constants)
+export enum OrderStatus { ... }
+export enum PaymentMethod { ... }
+
+// Custom functions (business rules)
+export function calculateTax(...) { ... }
+export function validateOrder(...) { ... }
+```
+
+### Framework-Specific Patterns:
+
+**Express.js:**
+```javascript
+// Route handlers
+app.get('/api/users', (req, res) => { ... })
+router.post('/orders', orderController.create)
+
+// Middleware
+app.use(authMiddleware)
+```
+
+**NestJS:**
+```typescript
+@Controller('users')
+@Injectable()
+@Module({ ... })
+```
+
+**React/Next.js:**
+```typescript
+// Components
+export function UserDashboard() { ... }
+
+// Hooks
+export function useAuth() { ... }
+
+// API routes (Next.js)
+export default function handler(req, res) { ... }
+```
+
+**Django:**
+```python
+# Views
+class UserViewSet(viewsets.ModelViewSet):
+    ...
+
+# Models
+class User(models.Model):
+    ...
+```
+
+**Ruby on Rails:**
+```ruby
+# Controllers
+class UsersController < ApplicationController
+  ...
+end
+
+# Models
+class User < ApplicationRecord
+  ...
+end
+```
+
+### What Makes Code "Business Logic":
+
+- **Unique to this repository:** Not generic framework boilerplate
+- **Implements business rules:** Tax calculation, order validation, payment processing
+- **Defines data models:** User schema, Order structure, Product catalog
+- **Handles domain logic:** Authentication flow, authorization rules, workflow state machines
+
+### Exclude:
+
+- Generic framework setup (config/webpack.config.js, etc.)
+- Node modules and dependencies
+- Build artifacts and dist/
+- Test fixtures and mocks (unless they define API contracts)
+
+---
+
+## Step 1.2A: Scope Boundary Enforcement
+
+**CRITICAL: This command ONLY modifies files in the `docs/` directory.**
+
+### Scope Rules:
+
+1. **ALLOWED operations:**
+   - ✅ Read ANY file in project (for verification and analysis)
+   - ✅ Write files in `docs/` directory
+   - ✅ Edit files in `docs/` directory
+   - ✅ Create new files in `docs/` directory
+
+2. **FORBIDDEN operations:**
+   - ❌ Write/Edit files in `src/`, `backend/`, `frontend/`, `app/` directories
+   - ❌ Modify database schemas (`database/`, `migrations/`, `*.sql`)
+   - ❌ Modify configuration (`package.json`, `tsconfig.json`, `.env`, `*.config.js`)
+   - ❌ Modify build files (`Dockerfile`, `docker-compose.yml`, `.github/`)
+   - ❌ Modify test files (`*.test.js`, `*.spec.ts`)
+   - ❌ Modify any file outside `docs/` directory
+
+3. **Discrepancy Resolution Strategy:**
+
+   **When documentation is WRONG (doesn't match code):**
+   - ✅ Update documentation to match actual code
+   - ❌ DO NOT modify code to match documentation
+
+   **Example Scenarios:**
+
+   **Scenario A: Database Schema Mismatch**
+   ```
+   Documentation: docs/architecture/database-er.md shows "dealers" table
+   Code: database/init.sql is Phase 1 schema (no dealers table)
+   Actual Runtime: Production uses Phase 2 with dealers table
+
+   ❌ WRONG: Update database/init.sql to add dealers table
+   ✅ RIGHT: Add note to database-er.md:
+   "Note: database/init.sql contains Phase 1 schema for backward compatibility.
+   Production database uses Phase 2 schema with dealers table as documented above."
+   ```
+
+   **Scenario B: API Endpoint Mismatch**
+   ```
+   Documentation: docs/api/README.md shows GET /api/users
+   Code: backend/src/api/routes/users.js shows GET /api/v1/users
+
+   ❌ WRONG: Modify routes/users.js to remove /v1 prefix
+   ✅ RIGHT: Update docs/api/README.md to show GET /api/v1/users
+   ```
+
+4. **Pre-Write Validation:**
+
+   **Before EVERY Write or Edit operation, verify target path starts with `docs/`.**
+
+5. **APO Assignment Restrictions:**
+
+   **JUNO must NOT assign APOs to:**
+   - Fix source code files
+   - Update database schemas
+   - Modify configuration files
+
+   **JUNO must ONLY assign APOs to:**
+   - Create documentation files in docs/
+   - Update existing documentation files in docs/
+   - Verify documentation accuracy against source code (read-only)
+
+---
+
+## Step 1.3: Cross-Reference Documentation with Codebase
+
+**For each documentation file, verify:**
+
+### Architecture-Level Verification:
+- Does architecture diagram match actual directory structure?
+- Are major components documented correctly?
+- Are system boundaries accurate?
+- Are data flows correct?
+
+### Module-Level Verification:
+- Does API documentation match actual API routes/endpoints?
+- Are service responsibilities accurately described?
+- Are controller actions documented correctly?
+- Are model schemas up-to-date?
+
+### Function-Level Verification:
+- Do function signatures match documentation?
+- Are parameters documented correctly?
+- Are return types accurate?
+- Are error cases covered?
+- Are edge cases documented?
+
+### Example Cross-Reference:
+
+```typescript
+// CODE: src/services/payment.service.ts
+export class PaymentService {
+  async processPayment(
+    orderId: string,
+    amount: number,
+    method: PaymentMethod
+  ): Promise<PaymentResult> {
+    // Implementation
+  }
+}
+
+// DOCS: docs/api/payment.md
+Should document:
+✅ Function name: processPayment
+✅ Parameters: orderId (string), amount (number), method (PaymentMethod)
+✅ Return type: Promise<PaymentResult>
+✅ Behavior: Processes payment for given order
+✅ Error cases: InvalidAmount, PaymentDeclined, NetworkError
+
+If docs say processPayment takes (userId, amount) → DISCREPANCY (wrong parameter)
+If docs don't mention error cases → INCOMPLETENESS (missing info)
+If docs reference deprecated processCreditCard method → STALENESS (outdated)
+```
+
+---
+
+## Step 1.3A: Service Module Discovery and API Documentation Requirement
+
+**Purpose:** Identify service modules and require API reference documentation (distinct from guide-level docs).
+
+### Execution Requirements:
+
+1. Run the conditional discovery bash script below
+2. Record results in audit report (Part 3: Missing Business Logic)
+3. Assign discovered services to APO-2 or APO-3 based on coupling
+4. If services found: Create assignment for each service (one service = one file)
+5. If no services found: Log "No services detected - skipping service documentation" and continue
+
+### Conditional Discovery (Graceful Degradation):
+
+```bash
+# Check if services directory exists
+if [ ! -d "backend/src/services" ] && [ ! -d "src/services" ] && [ ! -d "services" ] && [ ! -d "server/services" ]; then
+  echo "ℹ️ No services directory detected - skipping service documentation"
+  # Continue to next step - NOT an error
+else
+  echo "✅ Services detected - scanning for service modules"
+
+  # Scan for service files
+  SERVICE_FILES=$(find backend/src/services src/services services server/services -name "*.js" -o -name "*.ts" 2>/dev/null || true)
+
+  if [ -z "$SERVICE_FILES" ]; then
+    echo "ℹ️ Services directory exists but no service files found"
+  else
+    echo "Found service modules - documenting..."
+  fi
+fi
+```
+
+### Service Module Identification:
+
+For each service file discovered:
+
+1. **Extract information:**
+   - Service name (emailService.js → EmailService)
+   - Methods exported (public API)
+   - Dependencies
+
+2. **Documentation Requirements:**
+
+   **MANDATORY: API Reference Documentation**
+   - Location: `docs/services/{serviceName}.md`
+   - Content: Method signatures, parameters, return types, usage examples
+
+   **OPTIONAL: Guide-Level Documentation**
+   - Location: `docs/guides/{topic}.md`
+   - Content: Configuration, setup, troubleshooting
+
+3. **Verification:**
+   ```bash
+   # Count services in codebase
+   SERVICE_COUNT=$(find backend/src/services src/services services server/services -name "*.js" -o -name "*.ts" 2>/dev/null | wc -l || echo 0)
+
+   # Count service API docs
+   SERVICE_DOCS=$(find docs/services -name "*.md" ! -name "README.md" 2>/dev/null | wc -l || echo 0)
+
+   if [ $SERVICE_COUNT -gt 0 ] && [ $SERVICE_COUNT -ne $SERVICE_DOCS ]; then
+     echo "❌ Service documentation gap: $SERVICE_COUNT services, $SERVICE_DOCS API docs"
+     # Add to discrepancies
+   fi
+   ```
+
+### Assignment Specification for Services:
+
+When assigning services to APO-2 or APO-3:
+
+```json
+{
+  "component": "emailService",
+  "type": "service",
+  "source_file": "backend/src/services/emailService.js",
+  "output_type": "API_REFERENCE",
+  "output_file": "docs/services/emailService.md",
+  "required_sections": [
+    "Class/Module Description",
+    "Dependencies",
+    "Public Methods (with signatures)",
+    "Parameter Documentation",
+    "Return Types",
+    "Usage Examples",
+    "Error Handling"
+  ]
+}
+```
+
+**DO NOT accept:**
+- Guide-level docs as substitute for API reference
+- Overview without method signatures
+- "See docs/guides/email-notifications.md" as completion
+
+**REQUIRE:**
+- Individual file per service: `docs/services/{serviceName}.md`
+- Complete method signatures
+- Code examples
+
+---
+
+## Step 1.3B: Frontend Module Discovery and Component Documentation
+
+**Purpose:** Identify frontend modules and document components, pages, hooks, utilities.
+
+### Execution Requirements:
+
+1. Run the conditional discovery bash script below
+2. Record results in audit report (Part 3: Missing Business Logic)
+3. Assign discovered frontend modules to APO-3 (modular components)
+4. If frontend found: Create assignment for each component (one component = one file)
+5. If no frontend found: Log "No frontend detected - skipping frontend documentation" and continue
+
+### Conditional Discovery (Graceful Degradation):
+
+```bash
+# Check if frontend exists
+if [ ! -d "frontend" ] && [ ! -d "src/app" ] && [ ! -d "client" ] && [ ! -d "src/components" ]; then
+  echo "ℹ️ No frontend detected - skipping frontend documentation"
+  # Continue to next step - NOT an error
+else
+  echo "✅ Frontend detected - scanning for components"
+
+  # Scan for React/Next.js components
+  COMPONENT_FILES=$(find frontend src/app client src/components -name "*.jsx" -o -name "*.tsx" 2>/dev/null || true)
+
+  if [ -z "$COMPONENT_FILES" ]; then
+    echo "ℹ️ Frontend directory exists but no component files found"
+  else
+    echo "Found frontend modules - documenting..."
+  fi
+fi
+```
+
+### Frontend Module Identification:
+
+For each frontend module discovered:
+
+1. **Module Categories:**
+   - **Components:** Reusable UI components (Button, Modal, Card)
+   - **Pages:** Route-level components (HomePage, DashboardPage)
+   - **Hooks:** Custom React hooks (useAuth, useFetch)
+   - **Utilities:** Frontend utility modules (formatters, validators)
+
+2. **Documentation Requirements:**
+
+   **Location:** `docs/frontend/{category}/{moduleName}.md`
+
+   **Required Content:**
+   - Component props (name, type, required, description)
+   - State management
+   - Event handlers
+   - Usage examples
+   - Integration points
+
+3. **Verification:**
+   ```bash
+   # Count frontend modules
+   COMPONENT_COUNT=$(find frontend src/app client src/components -name "*.jsx" -o -name "*.tsx" 2>/dev/null | wc -l || echo 0)
+
+   # Count frontend docs
+   FRONTEND_DOCS=$(find docs/frontend -name "*.md" ! -name "README.md" 2>/dev/null | wc -l || echo 0)
+
+   if [ $COMPONENT_COUNT -gt 0 ] && [ $FRONTEND_DOCS -eq 0 ]; then
+     echo "❌ Frontend documentation missing: $COMPONENT_COUNT modules, 0 docs"
+     # Add to discrepancies
+   fi
+   ```
+
+### Assignment Specification for Frontend:
+
+When assigning frontend modules to APO-3:
+
+```json
+{
+  "component": "UserProfile",
+  "type": "react_component",
+  "source_file": "frontend/src/components/UserProfile.tsx",
+  "output_file": "docs/frontend/components/UserProfile.md",
+  "required_sections": [
+    "Component Description",
+    "Props Documentation",
+    "State Management",
+    "Event Handlers",
+    "Usage Examples",
+    "Integration Points"
+  ]
+}
+```
+
+**Granularity:** One component = One file (same as backend services)
+
+---
+
+## Step 1.4: Generate 3-Part Audit Report
+
+**Use template:** `trinity/templates/documentation/reports/docs-update-audit.md`
+
+### Part 1: Base Documentation Updates Needed
+
+List all documentation files requiring updates:
+- **File:** `docs/architecture/system-design.md`
+  - **Current State:** References old monolith architecture
+  - **Required Update:** Update to reflect microservices migration
+  - **Reason:** Codebase now has services/users, services/orders, services/payments
+  - **Priority:** HIGH
+
+### Part 2: Existing Business Logic Requiring Updates
+
+List all business logic components with existing docs that need updates:
+- **Component:** UserService (`src/services/user.service.ts`)
+  - **Current Documentation:** `docs/api/user-service.md`
+  - **Issues:** Missing new `suspendUser()` method, incorrect parameter for `updateUser()`
+  - **Required Updates:** Add suspendUser docs, fix updateUser signature
+  - **Dependency Analysis:**
+    - Tied systems: AuthService, EmailService, AuditLogService
+    - Routing: APO-2 (update existing docs - tightly coupled)
+  - **Priority:** HIGH
+
+### Part 3: Missing Business Logic Requiring New Documentation
+
+List all business logic components without documentation:
+- **Component:** NotificationService (`src/services/notification.service.ts`)
+  - **Why Undocumented:** New feature added in recent sprint
+  - **Uniqueness:** Implements multi-channel notifications (email, SMS, push) with templating
+  - **Modularity Analysis:**
+    - Independent: Can be used standalone
+    - No tight coupling: Uses dependency injection
+    - Routing: APO-3 (create new docs - modular component)
+  - **Priority:** MEDIUM
+
+---
+
+## Step 1.5: APO Work Assignment
+
+**Assign work to 3 parallel APOs:**
+
+### APO-1: Base Documentation Updates
+- Architecture docs
+- Setup/configuration docs
+- Guides and tutorials
+- General repository documentation
+
+### APO-2: Update Existing Business Logic Documentation
+- Components with DIRECT TIES to other systems
+- Decision logic: "Is this component directly tied to X system?"
+  - YES → APO-2 updates existing documentation
+  - NO → Check if modular (APO-3)
+
+**Example (APO-2):**
+```
+Q: Is RefundService directly tied to PaymentService?
+A: YES - refunds can only happen after payments
+→ APO-2 updates existing docs/api/refund-service.md
+
+Q: Is AuthMiddleware directly tied to UserService?
+A: YES - authentication requires user validation
+→ APO-2 updates existing docs/middleware/auth.md
+```
+
+### APO-3: Create New Business Logic Documentation
+- Components that are MODULAR and INDEPENDENT
+- Decision logic: "Is this component modular and reusable?"
+  - YES → APO-3 creates new documentation
+  - NO → Check if tied (APO-2)
+
+**Example (APO-3):**
+```
+Q: Is CacheHelper modular?
+A: YES - can be used independently, no tight coupling
+→ APO-3 creates new docs/utilities/cache-helper.md
+
+Q: Is RateLimiter modular?
+A: YES - middleware that works independently
+→ APO-3 creates new docs/middleware/rate-limiter.md
+```
+
+---
+
+### APO-3 Granularity Requirements
+
+**For collections of similar components (scrapers, utilities, services):**
+
+**REQUIRE BOTH:**
+
+1. **Overview/Summary File** (Optional but recommended)
+   - Purpose: High-level comparison, shared patterns, getting started
+   - Example: `dealer-scrapers-overview.md`, `api-routes-overview.md`
+   - Content: Table of components, common patterns, architecture
+
+2. **Individual Component Files** (MANDATORY)
+   - Purpose: Per-component implementation details
+   - Requirement: ONE file per component
+   - Content: Constructor, methods, configuration, examples, challenges
+
+### Assignment Format:
+
+When assigning collections to APO-3, specify:
+
+❌ WRONG:
+```json
+{
+  "apo": "APO-3",
+  "components": ["19 dealer scrapers"],
+  "deliverables": ["dealer-scrapers documentation"]
+}
+```
+
+✅ CORRECT:
+```json
+{
+  "apo": "APO-3",
+  "components": [
+    "LionMachineryScraper",
+    "PrestigeEquipmentScraper",
+    "EquipmentHubScraper"
+    // ... (list all 19 individually)
+  ],
+  "deliverables": [
+    "docs/backend/scrapers/LionMachineryScraper.md",
+    "docs/backend/scrapers/PrestigeEquipmentScraper.md",
+    "docs/backend/scrapers/EquipmentHubScraper.md"
+    // ... (19 individual files)
+  ],
+  "optional": ["docs/backend/scrapers/dealer-scrapers-overview.md"]
+}
+```
+
+### Granularity Rules:
+
+1. **One component = One file**
+   - LionMachineryScraper.js → LionMachineryScraper.md
+   - EmailService.js → email-service.md
+   - Equipment.js → Equipment.md
+
+2. **Collections get overview + individuals**
+   - 19 scrapers → 1 overview.md + 19 individual .md files
+   - 5 middleware → 1 overview.md + 5 individual .md files
+
+3. **No "bulk documentation" accepted**
+   - ❌ "scrapers.md" documenting all scrapers
+   - ❌ "services-overview.md" as only service documentation
+   - ✅ Individual file per service + optional overview
+
+**APO-3 must create N files for N components (not 1 file for N components).**
+
+---
+
+## Step 1.6: Zero-Tolerance Policy Check
+
+**ABORT immediately if any of these are found:**
+
+1. **Fake Components in Documentation**
+   - Documentation references components that don't exist in codebase
+   - Action: ABORT with list of fake components
+
+2. **Security Violations in Documentation**
+   - Documentation exposes secrets, API keys, passwords
+   - Documentation contains insecure code examples
+   - Action: ABORT with security violation details
+
+3. **Stub Content in Documentation**
+   - Documentation has "TODO", "Coming soon", "To be implemented"
+   - Placeholder sections without real content
+   - Action: ABORT with list of stub sections
+
+**If any zero-tolerance violation found:**
+```
+❌ ABORT: Zero-Tolerance Policy Violation
+
+Violation Type: Fake Components
+Details:
+- docs/api/blockchain-service.md documents BlockchainService
+- BlockchainService does not exist in codebase
+- Located at: docs/api/blockchain-service.md:15-45
+
+Action Required:
+1. Remove fake documentation or
+2. Implement the component
+3. Re-run trinity-docs-update
+
+Aborting documentation update.
+```
+
+---
+
+## Step 1.7: Generate Audit Report with APO Checklists
+
+**CRITICAL: Generate a single audit report with three UNCHECKED checklists.**
+
+**All checkboxes MUST be unchecked (`- [ ]`) as this is only the audit/checklist generation phase.**
+
+### Report Structure:
+
+```markdown
+# Documentation Update Audit Report
+
+**Date:** {{DATE}}
+**Project:** {{PROJECT_NAME}}
+**Status:** Audit Complete - Work Assignments Ready
+
+---
+
+## Executive Summary
+
+- Total documentation files found: {{COUNT}}
+- Files needing updates: {{COUNT}}
+- Missing business logic documentation: {{COUNT}}
+- Total discrepancies identified: {{COUNT}}
+
+---
+
+## Part 1: Audit Findings
+
+### Base Documentation Issues
+[List all base documentation files with issues found]
+
+### Existing Business Logic Issues
+[List all business logic with existing docs needing updates]
+
+### Missing Business Logic
+[List all business logic components without documentation]
+
+---
+
+## Part 2: APO-1 Checklist - Base Documentation Updates
+
+**Assignment:** Update {{COUNT}} base documentation files
+
+**IMPORTANT: All boxes below are UNCHECKED. These will be checked off during Phase 2 execution.**
+
+**Files to Update:**
+
+- [ ] `docs/architecture/system-design.md`
+  - Issue: References old monolith architecture
+  - Required: Update to reflect microservices migration
+  - Priority: HIGH
+
+- [ ] `docs/guides/getting-started.md`
+  - Issue: Incorrect setup steps
+  - Required: Update installation instructions
+  - Priority: MEDIUM
+
+[Continue for each file...]
+
+---
+
+## Part 3: APO-2 Checklist - Existing Business Logic Updates
+
+**Assignment:** Update {{COUNT}} existing business logic documentation files
+
+**Components to Update:**
+
+- [ ] `UserService` (docs/api/user-service.md)
+  - Issue: Missing suspendUser() method
+  - Required: Add suspendUser documentation
+  - Source: src/services/user.service.ts
+  - Priority: HIGH
+
+[Continue for each component...]
+
+---
+
+## Part 4: APO-3 Checklist - New Business Logic Documentation
+
+**Assignment:** Create {{COUNT}} new business logic documentation files
+
+**Components to Document:**
+
+- [ ] `NotificationService`
+  - Output file: docs/services/notification-service.md
+  - Source: src/services/notification.service.ts
+  - Purpose: Multi-channel notification system
+  - Priority: MEDIUM
+
+- [ ] `CacheHelper`
+  - Output file: docs/utilities/cache-helper.md
+  - Source: src/utils/cache-helper.ts
+  - Purpose: Redis caching utility
+  - Priority: LOW
+
+[Continue for each component...]
+
+---
+
+## Audit Summary
+
+- **Phase:** Audit Complete
+- **Checklists Generated:** APO-1, APO-2, APO-3
+- **Total Items:** {{TOTAL_COUNT}}
+- **Report:** DOCS-UPDATE-AUDIT-{{DATE}}.md
+
+---
+
+**End of Audit Report**
+```
+
+**Save report to:** `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
+
+**Key Requirements:**
+1. **CRITICAL:** Each checklist item must have an UNCHECKED checkbox: `- [ ]` (not `- [x]` or `- [X]`)
+2. Each item must specify the file/component name
+3. Each item must describe what needs to be done
+4. Each item must specify the output file location (for APO-3)
+5. Include source file references for verification
+6. For database schemas: Use production database as primary source (see Step 1.2 priority order)
+
+---
+
+## Completion
+
+Once audit is complete:
+1. ✅ Audit report generated with three unchecked checklists
+2. ✅ Each checklist has clear, actionable work items
+3. ✅ Report saved to `trinity/reports/`
+4. ✅ **Phase 1 complete**
+
+**DO NOT execute any documentation updates.**
+**ONLY generate the audit report with checklists.**
+
+**End of JUNO audit checklist.**
