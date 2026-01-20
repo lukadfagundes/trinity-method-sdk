@@ -2,9 +2,9 @@
 
 **Command:** `/maintenance:trinity-docs-update`
 **Purpose:** Update existing documentation to reflect codebase changes
-**Architecture:** JUNO Audit
+**Architecture:** JUNO Audit → 3 Parallel APOs → JUNO Verification
 **Trinity Version:** 2.0.9
-**Last Updated:** 2026-01-18
+**Last Updated:** 2026-01-19
 
 ---
 
@@ -52,6 +52,65 @@ fi
    trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
    ```
 
-**That's it for Phase 1.** All audit instructions are contained in the checklist template.
+---
+
+## Phase 2: APO Documentation Updates
+
+**Agents:** APO-1, APO-2, APO-3 (parallel execution)
+**Mode:** WRITE (Create/update documentation files)
+**Output:** Updated/new documentation files in `docs/`
+
+### Step 2.1: Launch Three APO Agents in Parallel
+
+Use the Task tool to launch all three APO agents simultaneously:
+
+1. **APO-1** - Base documentation updates
+2. **APO-2** - Existing business logic documentation updates OR new documentation (first half)
+3. **APO-3** - New business logic documentation (second half)
+
+Each APO will:
+1. Read the APO checklist template: `trinity/templates/documentation/reports/apo-docs-update-checklist.md`
+2. Execute all instructions in the checklist
+3. Complete their assigned work from JUNO's audit report
+
+**CRITICAL: Launch all three APOs in a SINGLE message with three Task tool calls.**
+
+---
+
+## Phase 3: JUNO Verification Loop
+
+**Agent:** JUNO (Quality Auditor)
+**Mode:** READ-ONLY verification
+**Output:** Verification report or restart Phase 2
+
+### Step 3.1: JUNO Verifies APO Work Completion
+
+1. **JUNO audits each APO's checklist:**
+   - `trinity/reports/apo-1-docs-update-checklist.md`
+   - `trinity/reports/apo-2-docs-update-checklist.md`
+   - `trinity/reports/apo-3-docs-update-checklist.md`
+
+2. **Check if all tasks marked complete:**
+   - If YES → Proceed to Step 3.2
+   - If NO → Restart Phase 2 for incomplete APOs
+
+### Step 3.2: JUNO Audits Documentation Quality
+
+1. **Verify 100% coverage:**
+   - All assigned files created/updated
+   - No missing documentation
+
+2. **Verify 100% accuracy:**
+   - Documentation matches codebase reality
+   - No hallucinated components
+   - Code examples are valid
+
+3. **Generate final report:**
+   - Save to `trinity/reports/DOCS-UPDATE-VERIFICATION-{{DATE}}.md`
+   - Report coverage and accuracy metrics
+
+**If verification passes:** Documentation update complete ✅
+
+**If verification fails:** Identify issues and restart Phase 2 for affected APOs
 
 ---

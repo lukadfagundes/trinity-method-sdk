@@ -1,0 +1,296 @@
+# APO Documentation Update Checklist
+
+**Agent:** APO-{{DESIGNATION}} (1, 2, or 3)
+**Purpose:** Execute documentation updates from JUNO's audit
+**Trinity Version:** 2.0.9
+
+---
+
+## Step 1: Create Your Personal Checklist
+
+**Copy this template and save it with your designation:**
+
+```
+trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
+```
+
+**Example:**
+- APO-1 saves as: `trinity/reports/apo-1-docs-update-checklist.md`
+- APO-2 saves as: `trinity/reports/apo-2-docs-update-checklist.md`
+- APO-3 saves as: `trinity/reports/apo-3-docs-update-checklist.md`
+
+**CRITICAL:** You MUST create your personal checklist file before proceeding.
+
+---
+
+## Step 2: Copy Your Tasks from JUNO's Audit Report
+
+1. **Read JUNO's audit report:**
+   ```
+   trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+   ```
+
+2. **Find your section:**
+   - APO-1: Look for "Part 2: APO-1 Checklist - Base Documentation Updates"
+   - APO-2: Look for "Part 3: APO-2 Checklist - Update Existing Business Logic Documentation"
+   - APO-3: Look for "Part 4: APO-3 Checklist - New Business Logic Documentation"
+
+3. **Copy ALL your tasks** from JUNO's report to your personal checklist
+
+4. **Preserve the checkbox format:**
+   - All tasks should start as: `- [ ]` (unchecked)
+   - You will check them off as you complete them: `- [x]`
+
+**Example of copied tasks:**
+
+```markdown
+## My Tasks
+
+- [ ] `docs/architecture/database-er.md`
+  - Issue: Missing dealers and scraper_executions tables
+  - Required: Add 2 tables to ER diagram
+  - Priority: HIGH
+
+- [ ] `docs/api/README.md`
+  - Issue: Endpoint paths incorrect
+  - Required: Fix 3 endpoint paths
+  - Priority: HIGH
+```
+
+---
+
+## Step 3: Execute Your Tasks
+
+**CRITICAL WORKFLOW:**
+
+1. **Start with the first unchecked task** on your list
+2. **Complete the task** (create or update the documentation file)
+3. **Update your checklist** - Mark the task as complete: `- [x]`
+4. **Save your checklist** to `trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md`
+5. **Move to the next task** and repeat
+
+**DO NOT:**
+- Skip tasks
+- Work on multiple tasks simultaneously
+- Mark tasks complete before finishing them
+- Forget to save your checklist after each completion
+
+---
+
+## Step 4: Task Completion Guidelines
+
+### For Documentation Updates (APO-1 or APO-2 with existing docs):
+
+**Read the existing file first:**
+```bash
+# Example
+Read docs/architecture/database-er.md
+```
+
+**Make precise updates:**
+- Only change what JUNO specified
+- Preserve existing accurate content
+- Maintain consistent formatting
+- Update examples if needed
+
+**Verify your changes:**
+- Re-read the updated file
+- Check that all required changes were made
+- Ensure no unintended modifications
+
+### For New Documentation (APO-2 or APO-3 creating new files):
+
+**Read the source code file:**
+```bash
+# Example
+Read backend/src/services/emailService.js
+```
+
+**Analyze the component:**
+- Identify purpose and functionality
+- Document all public methods/functions
+- Note dependencies and configuration
+- Find usage examples in codebase
+
+**Create comprehensive documentation:**
+- Use consistent structure
+- Include code examples
+- Document parameters and return types
+- Add usage examples
+
+**Required sections for new documentation:**
+
+#### Services:
+```markdown
+# Service Name
+
+## Overview
+[Description]
+
+## Dependencies
+[List dependencies]
+
+## Configuration
+[Environment variables, config options]
+
+## Methods
+
+### methodName()
+**Description:** [What it does]
+
+**Parameters:**
+- param1 (type): description
+- param2 (type): description
+
+**Returns:** (type) description
+
+**Example:**
+```js
+// Usage example
+```
+
+## Error Handling
+[How errors are handled]
+
+## Usage Examples
+[Complete examples]
+```
+
+#### Controllers/Routes:
+```markdown
+# Route Name
+
+## Overview
+[Description]
+
+## Endpoints
+
+### GET /api/resource
+**Description:** [What it does]
+
+**Authentication:** Required/Not Required
+
+**Query Parameters:**
+- param1 (type): description
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": []
+}
+```
+
+**Example:**
+```bash
+curl http://localhost:4000/api/resource
+```
+
+## Middleware
+[Applied middleware]
+
+## Error Responses
+[Possible errors]
+```
+
+#### Components:
+```markdown
+# Component Name
+
+## Overview
+[Description]
+
+## Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| prop1 | string | Yes | Description |
+| prop2 | number | No | Description |
+
+## Usage
+
+```tsx
+import ComponentName from './ComponentName';
+
+<ComponentName prop1="value" />
+```
+
+## State Management
+[If applicable]
+
+## Examples
+[Usage examples]
+```
+
+---
+
+## Step 5: Mark Task Complete and Continue
+
+**After completing each task:**
+
+1. **Update your checklist:**
+   ```markdown
+   - [x] `docs/architecture/database-er.md`
+     - Issue: Missing dealers and scraper_executions tables
+     - Required: Add 2 tables to ER diagram
+     - Priority: HIGH
+   ```
+
+2. **Save your checklist file**
+
+3. **Move to the next unchecked task**
+
+4. **Repeat until all tasks are complete**
+
+---
+
+## Step 6: Final Verification
+
+**Before finishing, verify:**
+
+1.  All tasks on your checklist are marked `- [x]`
+2.  All documentation files created/updated
+3.  All files saved to correct locations
+4.  Your checklist saved to `trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md`
+
+**Once all tasks complete:**
+- Report completion
+- JUNO will verify your work in Phase 3
+
+---
+
+## Quality Standards
+
+### Accuracy Requirements:
+-  Document ONLY what exists in the codebase
+-  Verify all method names, parameters, types
+-  Test all code examples
+- L DO NOT hallucinate features that don't exist
+- L DO NOT copy incorrect information from old docs
+
+### Completeness Requirements:
+-  Document all public methods/functions
+-  Include usage examples
+-  Document parameters and return types
+-  Note dependencies and configuration
+- L DO NOT skip methods or features
+
+### Consistency Requirements:
+-  Use consistent formatting across all docs
+-  Follow existing documentation style
+-  Use proper markdown syntax
+-  Maintain heading hierarchy
+
+---
+
+## Checklist Template
+
+**Replace this section with your tasks from JUNO's audit report.**
+
+## My Tasks
+
+[Copy your tasks from JUNO's audit report here]
+
+---
+
+**End of APO Checklist Template**
