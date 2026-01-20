@@ -51,9 +51,17 @@ find docs/ -type f -name "*.md" | sort
 
 **Discovery Priority Order:**
 
-1. **PRIMARY SOURCE: Production Database (Live Connection)**
+1. **PRIMARY SOURCE: Production Database (Live Connection) - MANDATORY FIRST ATTEMPT**
 
-   **Attempt to connect to production database and query schema directly:**
+   **YOU MUST attempt to connect to the production database BEFORE checking schema files.**
+
+   **Step 1: Look for database connection information:**
+   - Check `.env` file for DATABASE_URL or DB_* variables
+   - Check `docker-compose.yml` for database service configuration
+   - Check application config files for connection strings
+   - Check README.md for database setup instructions
+
+   **Step 2: Attempt connection with discovered credentials:**
 
    ```bash
    # PostgreSQL example
@@ -64,15 +72,17 @@ find docs/ -type f -name "*.md" | sort
    mysql -h <host> -u <user> -p -D <database> -e "SHOW TABLES;"
    mysql -h <host> -u <user> -p -D <database> -e "DESCRIBE table_name;"
 
-   # SQLite example
+   # SQLite example (check for .db or .sqlite files)
+   find . -name "*.db" -o -name "*.sqlite" 2>/dev/null
    sqlite3 database.db ".schema"
 
    # Via Docker (if database is containerized)
+   docker ps # Check if database container is running
    docker exec <container_name> psql -U <user> -d <database> -c "\dt"
    docker exec <container_name> psql -U <user> -d <database> -c "\d+ table_name"
    ```
 
-   **Extract from production database:**
+   **Step 3: Extract from production database:**
    - Exact table names
    - Exact column names and types
    - Constraints (PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL)
@@ -80,9 +90,15 @@ find docs/ -type f -name "*.md" | sort
    - Triggers
    - Relationships between tables
 
-   **If production database is accessible, this is the DEFINITIVE schema to document.**
+   **Step 4: Document your attempt:**
+   - If successful: "✅ Database schema verified (production database via [method])"
+   - If failed: "❌ Production database connection failed: [reason]"
 
-2. **SECONDARY SOURCE: Schema Files (Only if production database inaccessible)**
+   **ONLY proceed to option 2 if connection fails.**
+
+2. **SECONDARY SOURCE: Schema Files (ONLY if production database connection failed)**
+
+   **You may ONLY use this option if you attempted Step 1 and documented the failure.**
 
    ```bash
    # Check for schema files (SQL, migration files, etc.)
@@ -100,7 +116,8 @@ find docs/ -type f -name "*.md" | sort
    - Parse CREATE TABLE statements for exact field names and types
    - Note constraints, indexes, relationships
    - Record schema version if documented
-   - Mark as "FROM SCHEMA FILES - production database not accessible"
+   - **CRITICAL:** Mark as "⚠️ FROM SCHEMA FILES - production database not accessible - may be outdated"
+   - Document why production database was inaccessible
 
 3. **TERTIARY SOURCE: Existing Documentation (Last resort only)**
    - Use docs/architecture/database-er.md as fallback ONLY if:

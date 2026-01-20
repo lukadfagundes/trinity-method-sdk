@@ -2,7 +2,7 @@
 
 **Command:** `/maintenance:trinity-docs-update`
 **Purpose:** Update existing documentation to reflect codebase changes
-**Architecture:** JUNO Audit → 3 Parallel APOs → JUNO Verification Loop (max 3 iterations until 100% alignment)
+**Architecture:** JUNO Audit
 **Trinity Version:** 2.0.9
 **Last Updated:** 2026-01-18
 
@@ -30,64 +30,11 @@ fi
 
 ---
 
-### Step 0.2: Initialize Global State Object
-
-Create a global state tracking object for context recovery:
-
-```typescript
-interface GlobalState {
-  command: "trinity-docs-update";
-  startTime: string; // ISO timestamp
-  currentIteration: number; // 1, 2, or 3
-  maxIterations: 3;
-  currentPhase: "audit" | "apo_execution" | "verification" | "complete" | "aborted";
-
-  alignmentHistory: {
-    iteration: number;
-    alignmentPercentage: number;
-    discrepanciesFound: number;
-  }[];
-
-  apoAssignments: {
-    iteration: number;
-    apo1Files: string[];
-    apo2Components: string[];
-    apo3Components: string[];
-  }[];
-
-  reportsGenerated: string[];
-
-  stopCondition: null | "docs_missing" | "max_iterations" | "100_percent_aligned";
-}
-```
-
-**Initialize state:**
-```json
-{
-  "command": "trinity-docs-update",
-  "startTime": "{{CURRENT_TIMESTAMP}}",
-  "currentIteration": 1,
-  "maxIterations": 3,
-  "currentPhase": "audit",
-  "alignmentHistory": [],
-  "apoAssignments": [],
-  "reportsGenerated": [],
-  "stopCondition": null
-}
-```
-
-**State Persistence:**
-- Embed state snapshot in every report generated
-- If interrupted, read state from most recent report's state snapshot
-- Use state to resume from correct phase and iteration
-
----
-
 ## Phase 1: JUNO Comprehensive Audit
 
 **Agent:** JUNO (Quality Auditor)
 **Mode:** READ-ONLY (No changes made in this phase)
-**Output:** `trinity/reports/DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md`
+**Output:** `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
 
 ### Step 1.1: Execute JUNO Audit
 
@@ -102,7 +49,7 @@ interface GlobalState {
 
 4. **Save the report to:**
    ```
-   trinity/reports/DOCS-UPDATE-AUDIT-iteration-{{ITERATION}}-{{DATE}}.md
+   trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
    ```
 
 **That's it for Phase 1.** All audit instructions are contained in the checklist template.
