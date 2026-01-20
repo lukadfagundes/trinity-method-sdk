@@ -47,21 +47,68 @@ find docs/ -type f -name "*.md" | sort
 
 ### Database Schema Discovery (If Database Present):
 
-**CRITICAL: The production database itself is the PRIMARY source of truth.**
+**STEP 1: DETECT IF PROJECT HAS A DATABASE**
+
+**YOU MUST run this detection command FIRST:**
+
+```bash
+# Detect database presence
+DB_DETECTED=false
+
+# Check for database files/indicators
+if [ -f "database/init.sql" ] || \
+   [ -f "database/schema.sql" ] || \
+   [ -f "prisma/schema.prisma" ] || \
+   [ -d "migrations" ] || \
+   [ -d "database/migrations" ] || \
+   grep -rq "DATABASE_URL" .env* 2>/dev/null || \
+   grep -rq "createConnection\|Pool\|Sequelize\|mongoose.connect" backend/ src/ 2>/dev/null; then
+  DB_DETECTED=true
+  echo "✅ DATABASE DETECTED - Production database verification REQUIRED"
+else
+  DB_DETECTED=false
+  echo "ℹ️ NO DATABASE DETECTED - Skipping database verification"
+fi
+```
+
+**Record the result in your audit report:**
+- Database detected: YES / NO
+- If NO: Skip to Step 1.2 (no database verification needed)
+- If YES: YOU MUST PROCEED TO STEP 2 BELOW
+
+---
+
+**STEP 2: MANDATORY PRODUCTION DATABASE CONNECTION ATTEMPT (Only if database detected)**
+
+**CRITICAL: If you detected a database in STEP 1, you MUST attempt production database connection.**
+
+**YOU CANNOT SKIP THIS STEP. YOU MUST DOCUMENT YOUR CONNECTION ATTEMPT.**
 
 **Discovery Priority Order:**
 
 1. **PRIMARY SOURCE: Production Database (Live Connection) - MANDATORY FIRST ATTEMPT**
 
-   **YOU MUST attempt to connect to the production database BEFORE checking schema files.**
-
    **Step 1: Look for database connection information:**
-   - Check `.env` file for DATABASE_URL or DB_* variables
-   - Check `docker-compose.yml` for database service configuration
-   - Check application config files for connection strings
-   - Check README.md for database setup instructions
+
+   YOU MUST check ALL of these locations:
+   - [ ] `.env` file for DATABASE_URL or DB_* variables
+   - [ ] `.env.local` for local database config
+   - [ ] `docker-compose.yml` for database service configuration
+   - [ ] Application config files (config/database.js, database.config.ts, etc.)
+   - [ ] README.md for database setup instructions
+
+   **Document what you found:**
+   ```markdown
+   Database Connection Info Search:
+   - .env: [FOUND/NOT FOUND] [if found: what variables?]
+   - docker-compose.yml: [FOUND/NOT FOUND] [if found: service name?]
+   - Config files: [FOUND/NOT FOUND] [if found: which file?]
+   - README: [CHECKED] [any connection instructions?]
+   ```
 
    **Step 2: Attempt connection with discovered credentials:**
+
+   **YOU MUST EXECUTE AT LEAST ONE CONNECTION COMMAND:**
 
    ```bash
    # PostgreSQL example
@@ -82,23 +129,42 @@ find docs/ -type f -name "*.md" | sort
    docker exec <container_name> psql -U <user> -d <database> -c "\d+ table_name"
    ```
 
-   **Step 3: Extract from production database:**
-   - Exact table names
-   - Exact column names and types
-   - Constraints (PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL)
-   - Indexes
-   - Triggers
-   - Relationships between tables
+   **Step 3: Document your connection attempt result:**
 
-   **Step 4: Document your attempt:**
-   - If successful: "✅ Database schema verified (production database via [method])"
-   - If failed: "❌ Production database connection failed: [reason]"
+   **YOU MUST include this section in your audit report:**
 
-   **ONLY proceed to option 2 if connection fails.**
+   ```markdown
+   ## Database Verification
+
+   **Database Detected:** YES
+
+   **Connection Attempt:**
+   - Method attempted: [psql / mysql / sqlite3 / docker exec / other]
+   - Command executed: [exact command]
+   - Result: [SUCCESS / FAILED]
+   - If failed, error message: [exact error]
+   - If failed, reason: [database not running / credentials not found / network issue / etc.]
+
+   **Schema Data Source:** [Production Database / Schema Files (fallback)]
+   ```
+
+   **If connection SUCCEEDED:**
+   - Extract: Exact table names, column names and types, constraints, indexes, relationships
+   - Mark in audit: "✅ Database schema verified (production database via [method])"
+   - Proceed to record schema in audit report
+
+   **If connection FAILED:**
+   - Document the failure reason
+   - Mark in audit: "❌ Production database connection failed: [reason]"
+   - **ONLY THEN proceed to option 2 (schema files)**
 
 2. **SECONDARY SOURCE: Schema Files (ONLY if production database connection failed)**
 
-   **You may ONLY use this option if you attempted Step 1 and documented the failure.**
+   **You may ONLY use this option if you:**
+   - ✅ Detected a database in STEP 1
+   - ✅ Attempted connection in STEP 2
+   - ✅ Documented the connection failure
+   - ✅ Recorded the failure reason
 
    ```bash
    # Check for schema files (SQL, migration files, etc.)
@@ -117,22 +183,53 @@ find docs/ -type f -name "*.md" | sort
    - Note constraints, indexes, relationships
    - Record schema version if documented
    - **CRITICAL:** Mark as "⚠️ FROM SCHEMA FILES - production database not accessible - may be outdated"
-   - Document why production database was inaccessible
+   - Reference the connection failure reason from STEP 2
 
 3. **TERTIARY SOURCE: Existing Documentation (Last resort only)**
    - Use docs/architecture/database-er.md as fallback ONLY if:
-     - Production database is inaccessible
+     - Production database is inaccessible (connection failed)
      - No schema files found in codebase
      - Schema files exist but are unreadable
-   - Mark as "UNVERIFIED - based on existing documentation only"
+   - Mark as "⚠️ UNVERIFIED - based on existing documentation only (production DB inaccessible, no schema files found)"
 
-**Record in audit:**
-- Source of schema information (production DB > schema files > documentation)
-- Exact table names
-- Exact column names and types
-- Constraints, indexes, relationships
-- Schema version (if available)
-- Any discrepancies found between sources
+**CRITICAL CHECKLIST - VERIFY YOU COMPLETED ALL STEPS:**
+
+Before moving to Step 1.3, verify:
+- [ ] Ran database detection bash command
+- [ ] Documented database detection result in audit
+- [ ] If database detected: Searched for connection info in .env, docker-compose.yml, config files
+- [ ] If database detected: Documented what connection info was found
+- [ ] If database detected: Executed at least ONE connection attempt command
+- [ ] If database detected: Documented connection attempt result (success/failure with reason)
+- [ ] Included "Database Verification" section in audit report
+- [ ] Recorded schema data source used (production DB / schema files / docs)
+
+**If you cannot check ALL boxes above and a database was detected, you MUST go back and complete the missing steps.**
+
+---
+
+**Record in audit (MANDATORY section if database detected):**
+
+```markdown
+## Database Verification
+
+**Database Detected:** [YES/NO]
+
+**If YES, connection attempt REQUIRED:**
+- Connection info search: [results from .env, docker-compose.yml, etc.]
+- Connection method attempted: [psql / mysql / docker exec / etc.]
+- Connection command executed: [exact command]
+- Connection result: [SUCCESS / FAILED: reason]
+- Schema data source: [Production Database / Schema Files (fallback) / Documentation (last resort)]
+
+**Schema Information:**
+- Source of schema information: [PRIMARY: Production DB / SECONDARY: Schema files / TERTIARY: Documentation]
+- Exact table names: [list]
+- Exact column names and types: [per table]
+- Constraints, indexes, relationships: [describe]
+- Schema version (if available): [version]
+- Any discrepancies found between sources: [list]
+```
 
 **CRITICAL: Schema Synchronization Requirement**
 
@@ -802,6 +899,47 @@ Aborting documentation update.
 
 ---
 
+## Step 1.6A: Pre-Report Database Verification Enforcement
+
+**CRITICAL: Before generating your audit report, verify you followed database requirements.**
+
+**If the project has a database, you MUST verify you completed all database verification steps.**
+
+**Self-Check Questions:**
+
+1. **Did I detect if a database exists?**
+   - [ ] YES - I ran the database detection bash command
+   - [ ] YES - I documented the result (YES/NO) in my draft
+   - If NO to either: GO BACK to STEP 1 and run detection
+
+2. **If database detected, did I attempt connection?**
+   - [ ] YES - I searched for connection info (.env, docker-compose.yml, config files, README)
+   - [ ] YES - I documented what connection info I found
+   - [ ] YES - I executed at least ONE connection command
+   - [ ] YES - I documented the exact command, result, and error (if failed)
+   - [ ] N/A - No database detected
+   - If NO to any (and database detected): GO BACK to STEP 2 and attempt connection
+
+3. **Did I document my database verification in the audit report?**
+   - [ ] YES - My audit draft includes "Database Verification" section
+   - [ ] YES - It documents detection result (YES/NO)
+   - [ ] YES - It documents connection attempt (if database detected)
+   - [ ] YES - It documents schema data source used
+   - [ ] N/A - No database detected
+   - If NO to any: ADD the "Database Verification" section to your audit draft
+
+**ENFORCEMENT:**
+
+**If ANY checks fail:**
+- ❌ DO NOT proceed to Step 1.7
+- ❌ DO NOT generate your final audit report
+- ✅ GO BACK to the failed step and complete it
+- ✅ Then return here and re-run self-check
+
+**Only proceed to Step 1.7 if ALL applicable checks pass.**
+
+---
+
 ## Step 1.7: Generate Audit Report with APO Checklists
 
 **CRITICAL: Generate a single audit report with three UNCHECKED checklists.**
@@ -825,6 +963,62 @@ Aborting documentation update.
 - Files needing updates: {{COUNT}}
 - Missing business logic documentation: {{COUNT}}
 - Total discrepancies identified: {{COUNT}}
+- **Database detected:** [YES/NO]
+- **Database verification:** [✅ Production DB verified / ⚠️ Schema files used / ℹ️ No database]
+
+---
+
+## Part 0: Database Verification (REQUIRED if database detected)
+
+**This section is MANDATORY if the project has a database.**
+
+### Database Detection
+
+- **Database detected:** [YES/NO]
+- **Detection method:** [Checked for init.sql, schema files, DATABASE_URL, etc.]
+
+**If NO database detected:**
+- No database verification required ℹ️
+
+**If database detected, COMPLETE ALL SECTIONS BELOW:**
+
+### Connection Information Search
+
+- **`.env` file:** [FOUND/NOT FOUND] - [Variables found: DATABASE_URL=...]
+- **`docker-compose.yml`:** [FOUND/NOT FOUND] - [Service: postgres, port: 5432]
+- **Config files:** [FOUND/NOT FOUND] - [Files checked: config/database.js]
+- **README instructions:** [Connection instructions found: YES/NO]
+
+### Production Database Connection Attempt
+
+**YOU MUST DOCUMENT YOUR CONNECTION ATTEMPT:**
+
+- **Method attempted:** [psql / mysql / sqlite3 / docker exec]
+- **Command executed:**
+  ```bash
+  [exact command you ran]
+  ```
+- **Connection result:** [SUCCESS ✅ / FAILED ❌]
+- **If failed, error message:**
+  ```
+  [exact error output]
+  ```
+- **If failed, reason:** [Database not running / Credentials not found / Network issue / Other]
+
+### Schema Data Source Used
+
+- **PRIMARY (Production Database):** [USED ✅ / NOT USED - connection failed]
+- **SECONDARY (Schema Files):** [USED ⚠️ - fallback / NOT USED]
+- **TERTIARY (Documentation):** [USED ⚠️ - last resort / NOT USED]
+
+**If schema files or documentation used as fallback:**
+- Reason production DB not used: [connection failed because...]
+- Files consulted: [database/init.sql, prisma/schema.prisma, etc.]
+- Confidence level: [HIGH (recent schema files) / MEDIUM / LOW (may be outdated)]
+
+### Schema Information Extracted
+
+[List exact table names, column names and types, constraints, indexes, relationships]
 
 ---
 

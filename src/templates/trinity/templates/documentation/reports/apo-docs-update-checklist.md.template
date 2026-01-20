@@ -86,22 +86,58 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
 
 ### For Documentation Updates (APO-1 or APO-2 with existing docs):
 
-**Use Task skill Read to read the existing file first:**
-```
-Use Task tool with subagent_type="APO (Documentation Specialist)" to read:
-- File path: docs/architecture/database-er.md (example)
+**CRITICAL: You MUST verify ALL changes against the actual codebase.**
+
+**For EVERY change you make, you MUST:**
+
+1. **Identify what needs to change** (from JUNO's assignment)
+
+2. **Verify the correct value in the codebase:**
+
+   Examples:
+   - API port numbers → Read .env, backend/server.js, or backend/src/app.js
+   - Table names → Read database/init.sql or check production database
+   - Endpoint URLs → Read route files (routes/*.js, api/*.ts)
+   - Method signatures → Read actual source file
+   - Configuration values → Read config files
+
+3. **Document your verification in the task:**
+
+   When marking a task complete, add a verification note:
+
+   ```markdown
+   - [x] `docs/api/README.md`
+     - Issue: API port incorrect
+     - Required: Fix API port
+     - Verification: Read backend/.env - confirmed port is 3001
+     - Changes made: Updated 49 instances of port number to 3001
+     - Priority: HIGH
+   ```
+
+4. **Use Read tool to read source files BEFORE making changes**
+
+5. **Use Edit tool to make precise updates based on verified information**
+
+6. **DO NOT make assumptions or guesses - always verify against code**
+
+**Examples of Required Verification:**
+
+❌ WRONG:
+```markdown
+- [x] Fixed API base URL in docs/api/README.md
+  (No verification documented - how do you know it was wrong? What's correct?)
 ```
 
-**Use Task skill Edit to make precise updates:**
-- Only change what JUNO specified
-- Preserve existing accurate content
-- Maintain consistent formatting
-- Update examples if needed
+✅ CORRECT:
+```markdown
+- [x] Fixed API base URL in docs/api/README.md
+  - Verification: Read .env and backend/src/app.js
+  - Found: process.env.PORT defaults to 3001
+  - Found: Production URL from fly.toml is https://rinoa.sunny-stack.com
+  - Changes: Updated base URL to https://rinoa.sunny-stack.com/api
+```
 
-**Verify your changes:**
-- Use Task skill Read to re-read the updated file
-- Check that all required changes were made
-- Ensure no unintended modifications
+**Use Read tool to verify EVERY factual claim BEFORE documenting it.**
 
 ### For New Documentation (APO-2 or APO-3 creating new files):
 
