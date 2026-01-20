@@ -631,13 +631,41 @@ List all business logic components without documentation:
 - Guides and tutorials
 - General repository documentation
 
-### APO-2: Update Existing Business Logic Documentation
+### APO-2: Update Existing Business Logic Documentation (OR Share APO-3's Workload)
+
+**CRITICAL WORKLOAD ALLOCATION LOGIC:**
+
+**IF existing business logic documentation found (from Step 1.3 Part 2):**
+- APO-2 updates existing business logic documentation
 - Components with DIRECT TIES to other systems
 - Decision logic: "Is this component directly tied to X system?"
   - YES → APO-2 updates existing documentation
   - NO → Check if modular (APO-3)
 
-**Example (APO-2):**
+**IF NO existing business logic documentation found:**
+- **APO-2 and APO-3 split new documentation work 50/50**
+- Take total undocumented components from Step 1.3 Part 3
+- Divide into two roughly equal groups
+- **APO-2 gets:** First half (prioritize HIGH priority items)
+- **APO-3 gets:** Second half (MEDIUM and LOW priority items)
+- Both agents create NEW documentation (not updates)
+
+**Example Decision:**
+```
+Scenario 1 (Existing docs found):
+- Step 1.3 Part 2: 5 components with existing docs needing updates
+- Step 1.3 Part 3: 40 components without documentation
+→ APO-2: Updates 5 existing docs
+→ APO-3: Creates 40 new docs
+
+Scenario 2 (No existing docs):
+- Step 1.3 Part 2: 0 components with existing docs
+- Step 1.3 Part 3: 40 components without documentation
+→ APO-2: Creates 20 new docs (first half, HIGH priority)
+→ APO-3: Creates 20 new docs (second half, MEDIUM/LOW priority)
+```
+
+**Example (APO-2 with existing docs):**
 ```
 Q: Is RefundService directly tied to PaymentService?
 A: YES - refunds can only happen after payments
@@ -837,6 +865,22 @@ Aborting documentation update.
 
 ## Part 3: APO-2 Checklist - Existing Business Logic Updates
 
+**WORKLOAD ALLOCATION LOGIC:**
+
+**IF existing business logic documentation found:**
+- APO-2 updates existing business logic documentation
+- APO-3 creates new business logic documentation
+
+**IF NO existing business logic documentation found:**
+- APO-2 receives HALF of APO-3's new documentation tasks
+- APO-3 receives the other HALF of new documentation tasks
+- Split components as evenly as possible between APO-2 and APO-3
+- Prioritize giving HIGH priority items to APO-2, MEDIUM/LOW to APO-3
+
+---
+
+### Scenario A: Existing Business Logic Documentation Found
+
 **Assignment:** Update {{COUNT}} existing business logic documentation files
 
 **Components to Update:**
@@ -851,9 +895,31 @@ Aborting documentation update.
 
 ---
 
+### Scenario B: NO Existing Business Logic Documentation Found
+
+**Assignment:** APO-2 will create {{HALF_COUNT}} new business logic documentation files (shared workload with APO-3)
+
+**IMPORTANT:** Since no existing business logic documentation was found, APO-2 and APO-3 will split the new documentation creation work evenly.
+
+**Components to Document (APO-2's half):**
+
+[List approximately half of the undocumented components, prioritizing HIGH priority items]
+
+- [ ] `ServiceName`
+  - Output file: docs/services/service-name.md
+  - Source: src/services/service-name.js
+  - Purpose: [Description]
+  - Priority: HIGH
+
+[Continue for APO-2's half...]
+
+---
+
 ## Part 4: APO-3 Checklist - New Business Logic Documentation
 
 **Assignment:** Create {{COUNT}} new business logic documentation files
+
+**NOTE:** If APO-2 had no existing documentation to update, this count represents APO-3's half of the total workload (see Part 3 for APO-2's assignments).
 
 **Components to Document:**
 
