@@ -33,7 +33,7 @@ fi
 ## Phase 1: JUNO Comprehensive Audit
 
 **Agent:** JUNO (Quality Auditor)
-**Mode:** READ-ONLY (No changes made in this phase)
+**Mode:** AUDIT + REPORT (Creates audit report file only)
 **Output:** `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
 
 ### Step 1.1: Execute JUNO Audit
@@ -80,7 +80,7 @@ Each APO will:
 ## Phase 3: JUNO Verification Loop
 
 **Agent:** JUNO (Quality Auditor)
-**Mode:** READ-ONLY verification
+**Mode:** VERIFICATION + REPORT (Creates verification report file)
 **Output:** Verification report or restart Phase 2
 
 ### Step 3.1: JUNO Verifies APO Work Completion

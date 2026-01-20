@@ -8,26 +8,29 @@
 
 ## Step 1: Create Your Personal Checklist
 
-**Copy this template and save it with your designation:**
+**CRITICAL: Use Task skill Write to create your personal checklist file.**
 
 ```
-trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
+Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
+- File path: trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
+- Content: Copy of this template
 ```
 
-**Example:**
-- APO-1 saves as: `trinity/reports/apo-1-docs-update-checklist.md`
-- APO-2 saves as: `trinity/reports/apo-2-docs-update-checklist.md`
-- APO-3 saves as: `trinity/reports/apo-3-docs-update-checklist.md`
+**Example file paths:**
+- APO-1: `trinity/reports/apo-1-docs-update-checklist.md`
+- APO-2: `trinity/reports/apo-2-docs-update-checklist.md`
+- APO-3: `trinity/reports/apo-3-docs-update-checklist.md`
 
-**CRITICAL:** You MUST create your personal checklist file before proceeding.
+**You MUST use Task skill Write to create your checklist file before proceeding.**
 
 ---
 
 ## Step 2: Copy Your Tasks from JUNO's Audit Report
 
-1. **Read JUNO's audit report:**
+1. **Use Task skill Read to read JUNO's audit report:**
    ```
-   trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+   Use Task tool with subagent_type="APO (Documentation Specialist)" to read:
+   - File path: trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
    ```
 
 2. **Find your section:**
@@ -64,16 +67,18 @@ trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
 **CRITICAL WORKFLOW:**
 
 1. **Start with the first unchecked task** on your list
-2. **Complete the task** (create or update the documentation file)
+2. **Complete the task** (create or update the documentation file using Task skill)
 3. **Update your checklist** - Mark the task as complete: `- [x]`
-4. **Save your checklist** to `trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md`
+4. **Use Task skill Edit to save your updated checklist** to `trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md`
 5. **Move to the next task** and repeat
 
 **DO NOT:**
 - Skip tasks
 - Work on multiple tasks simultaneously
 - Mark tasks complete before finishing them
-- Forget to save your checklist after each completion
+- Forget to use Task skill Edit to save your checklist after each completion
+
+**CRITICAL: All file operations (Read, Write, Edit) MUST use Task skill.**
 
 ---
 
@@ -81,29 +86,29 @@ trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
 
 ### For Documentation Updates (APO-1 or APO-2 with existing docs):
 
-**Read the existing file first:**
-```bash
-# Example
-Read docs/architecture/database-er.md
+**Use Task skill Read to read the existing file first:**
+```
+Use Task tool with subagent_type="APO (Documentation Specialist)" to read:
+- File path: docs/architecture/database-er.md (example)
 ```
 
-**Make precise updates:**
+**Use Task skill Edit to make precise updates:**
 - Only change what JUNO specified
 - Preserve existing accurate content
 - Maintain consistent formatting
 - Update examples if needed
 
 **Verify your changes:**
-- Re-read the updated file
+- Use Task skill Read to re-read the updated file
 - Check that all required changes were made
 - Ensure no unintended modifications
 
 ### For New Documentation (APO-2 or APO-3 creating new files):
 
-**Read the source code file:**
-```bash
-# Example
-Read backend/src/services/emailService.js
+**Use Task skill Read to read the source code file:**
+```
+Use Task tool with subagent_type="APO (Documentation Specialist)" to read:
+- File path: backend/src/services/emailService.js (example)
 ```
 
 **Analyze the component:**
@@ -112,7 +117,14 @@ Read backend/src/services/emailService.js
 - Note dependencies and configuration
 - Find usage examples in codebase
 
-**Create comprehensive documentation:**
+**Use Task skill Write to create comprehensive documentation:**
+```
+Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
+- File path: docs/backend/services/emailService.md (example)
+- Content: Complete documentation with all sections
+```
+
+**Documentation requirements:**
 - Use consistent structure
 - Include code examples
 - Document parameters and return types

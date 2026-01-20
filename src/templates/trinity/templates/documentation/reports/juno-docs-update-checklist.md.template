@@ -951,7 +951,13 @@ Aborting documentation update.
 **End of Audit Report**
 ```
 
-**Save report to:** `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
+**CRITICAL: Use Task skill Write to save the report:**
+
+```
+Use Task tool with subagent_type="APO (Documentation Specialist)" to write the file:
+- File path: trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+- Content: Complete audit report with all sections above
+```
 
 **Key Requirements:**
 1. **CRITICAL:** Each checklist item must have an UNCHECKED checkbox: `- [ ]` (not `- [x]` or `- [X]`)
@@ -960,6 +966,7 @@ Aborting documentation update.
 4. Each item must specify the output file location (for APO-3)
 5. Include source file references for verification
 6. For database schemas: Use production database as primary source (see Step 1.2 priority order)
+7. **CRITICAL:** Use Task skill Write to create the audit report file
 
 ---
 
@@ -968,7 +975,7 @@ Aborting documentation update.
 Once audit is complete:
 1. ✅ Audit report generated with three unchecked checklists
 2. ✅ Each checklist has clear, actionable work items
-3. ✅ Report saved to `trinity/reports/`
+3. ✅ Report saved to `trinity/reports/` using Task skill Write
 4. ✅ **Phase 1 complete**
 
 **DO NOT execute any documentation updates.**

@@ -1,7 +1,7 @@
 ---
 name: JUNO (Quality Auditor)
 description: Comprehensive Trinity v2.0 deployment audit and quality assurance
-tools: Read, Bash, Glob, Grep
+tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # JUNO - Quality Auditor
