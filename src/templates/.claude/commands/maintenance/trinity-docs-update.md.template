@@ -1,0 +1,279 @@
+# Trinity Documentation Update
+
+**Command:** `/maintenance:trinity-docs-update`
+**Purpose:** Update existing documentation to reflect codebase changes
+**Architecture:** JUNO Audit → 3 Parallel APOs → JUNO Verification
+**Trinity Version:** 2.1.0
+**Last Updated:** 2026-01-21
+
+---
+
+## CRITICAL: Autonomous Execution Mode
+
+**This command runs in AUTONOMOUS mode from start to finish.**
+
+**YOU (Claude Code orchestrator) MUST:**
+- ✅ Execute all phases automatically (Phase 0 → 1 → 2 → 3 → Loop → Complete)
+- ✅ Call JUNO to check completion after APOs return
+- ✅ Re-launch incomplete APOs without asking
+- ✅ Continue Phase 3 loop until 100% complete
+- ✅ Only report to user when FINAL verification passes or fails
+
+**YOU MUST NOT:**
+- ❌ Stop and ask user "would you like me to continue?"
+- ❌ Ask user to choose between options
+- ❌ Present interim progress reports and wait for input
+- ❌ Stop execution until command fully completes
+
+**User interaction is ONLY required if:**
+- Zero-tolerance policy violation found (abort case)
+- Final verification FAILS and requires user decision
+- Unrecoverable error occurs (e.g., cannot write files)
+
+**Otherwise: Execute the full workflow autonomously without stopping.**
+
+---
+
+## Phase 0: Pre-Flight Check & State Initialization
+
+### Step 0.1: Verify docs/ Directory Exists
+
+```bash
+if [ ! -d "docs/" ]; then
+  echo "❌ ABORT: docs/ directory not found"
+  echo ""
+  echo "This command updates EXISTING documentation."
+  echo "To generate NEW documentation, run:"
+  echo "  /maintenance:trinity-docs"
+  exit 1
+fi
+```
+
+**If docs/ does not exist:**
+- **STOP IMMEDIATELY**
+- Report to user that `/maintenance:trinity-docs` must be run first
+- **DO NOT PROCEED** with any further steps
+
+---
+
+## Phase 1: JUNO Comprehensive Audit
+
+**Agent:** JUNO (Quality Auditor)
+**Mode:** AUDIT + REPORT (Creates audit report file only)
+**Output:** `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
+
+### Step 1.1: Execute JUNO Audit
+
+1. **Read the audit checklist template:**
+   ```
+   trinity/templates/documentation/reports/juno-docs-update-checklist.md
+   ```
+
+2. **Follow all instructions in the checklist** to perform the comprehensive audit
+
+3. **Generate the audit report** with APO work assignments
+
+4. **Save the report to:**
+   ```
+   trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+   ```
+
+---
+
+## Phase 2: APO Documentation Updates
+
+**Agents:** APO-1, APO-2, APO-3 (parallel execution)
+**Mode:** WRITE (Create/update documentation files)
+**Output:** Updated/new documentation files in `docs/`
+
+### Step 2.1: Launch Three APO Agents in Parallel
+
+Use the Task tool to launch all three APO agents simultaneously:
+
+1. **APO-1** - Base documentation updates
+2. **APO-2** - Existing business logic documentation updates OR new documentation (first half)
+3. **APO-3** - New business logic documentation (second half)
+
+Each APO will:
+1. Read the APO checklist template: `trinity/templates/documentation/reports/apo-docs-update-checklist.md`
+2. Execute all instructions in the checklist
+3. Complete their assigned work from JUNO's audit report
+
+**CRITICAL: Launch all three APOs in a SINGLE message with three Task tool calls.**
+
+### Step 2.2: Monitor APO Completion Status
+
+**CRITICAL: After APOs return, you MUST check completion status before proceeding.**
+
+**DO NOT:**
+- ❌ Stop and ask user for guidance
+- ❌ Present summary to user and wait
+- ❌ Assume APOs are complete
+- ❌ Skip to Phase 3 without checking
+
+**YOU MUST:**
+1. Wait for all three APO agents to return
+2. Immediately proceed to Phase 3 Step 3.1 (JUNO verification)
+3. Do NOT stop or ask user for input
+
+**The workflow is automatic: Phase 2 → Phase 3 → Loop if needed → Complete**
+
+---
+
+## Phase 3: JUNO Verification Loop
+
+**Agent:** JUNO (Quality Auditor)
+**Mode:** VERIFICATION + REPORT (Creates verification report file)
+**Output:** Verification report or restart Phase 2
+
+### Step 3.1: JUNO Verifies APO Work Completion
+
+**CRITICAL: You MUST call JUNO immediately after APOs return in Phase 2.**
+
+**Instructions for launching JUNO:**
+
+Use the Task tool to launch JUNO with this prompt:
+
+"Execute JUNO Completion Verification for APO Checklists
+
+**Mission:** Verify if all APO work is complete
+
+**Instructions:**
+
+1. Read all three APO checklists:
+   - trinity/reports/apo-1-docs-update-checklist.md
+   - trinity/reports/apo-2-docs-update-checklist.md
+   - trinity/reports/apo-3-docs-update-checklist.md
+
+2. For each checklist, count:
+   - Total tasks assigned
+   - Tasks marked complete [x]
+   - Tasks still incomplete [ ]
+
+3. Calculate completion percentage for each APO
+
+4. Report results in this format:
+   - APO-1: X/Y tasks complete (Z%)
+   - APO-2: X/Y tasks complete (Z%)
+   - APO-3: X/Y tasks complete (Z%)
+
+5. Determine next action:
+   - If ALL APOs = 100%: Report 'PROCEED TO STEP 3.2'
+   - If ANY APO < 100%: Report 'RESTART PHASE 2' with list of incomplete APOs
+
+**Output Required:**
+- Completion status for each APO
+- Next action (PROCEED or RESTART)
+- List of incomplete APOs (if any)"
+
+**After JUNO reports:**
+
+- **If JUNO says "PROCEED TO STEP 3.2"** → Continue to Step 3.2 below
+- **If JUNO says "RESTART PHASE 2"** → Go to Step 3.1A (Restart Incomplete APOs)
+
+### Step 3.1A: Restart Incomplete APOs
+
+**CRITICAL: If any APO reported < 100%, you MUST restart them.**
+
+**Instructions:**
+
+1. Identify which APOs are incomplete from JUNO's report
+
+2. Re-launch ONLY the incomplete APOs using the Task tool
+
+3. Use this prompt for each incomplete APO:
+
+"Continue Your Remaining Documentation Work
+
+**Agent ID:** APO-{{DESIGNATION}}
+
+**Instructions:**
+
+1. Read your personal checklist:
+   - trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
+
+2. Find the FIRST task marked [ ] (unchecked)
+
+3. Continue working from that task onward
+
+4. Follow the same workflow:
+   - Complete task
+   - Mark as [x]
+   - Save checklist
+   - Move to next task
+
+5. DO NOT ask for guidance - continue until you reach your stopping point
+
+**You are resuming work, not starting over. Pick up where you left off.**"
+
+4. Wait for incomplete APOs to return
+
+5. **Repeat Step 3.1** (call JUNO again to verify completion)
+
+6. **Continue this loop until JUNO reports all APOs at 100%**
+
+### Step 3.2: JUNO Audits Documentation Quality
+
+**CRITICAL: Only reach this step when ALL APOs are 100% complete.**
+
+Use the Task tool to launch JUNO with this prompt:
+
+"Execute JUNO Final Quality Audit
+
+**Mission:** Verify documentation quality and accuracy
+
+**Instructions:**
+
+1. Read JUNO's original audit report:
+   - trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+
+2. For each item that was assigned to APOs, verify:
+   - File was created/updated (check file exists)
+   - Content matches requirements
+   - No hallucinated components
+   - Code examples are valid
+
+3. Perform accuracy checks:
+   - Read source code files
+   - Compare against documentation
+   - Verify method signatures, parameters, types
+   - Check for outdated information
+
+4. Generate verification report:
+   - Save to: trinity/reports/DOCS-UPDATE-VERIFICATION-{{DATE}}.md
+   - Include: Coverage percentage, accuracy percentage, issues found
+
+5. Determine final status:
+   - If 100% coverage + 100% accuracy: Report 'VERIFICATION PASSED'
+   - If any issues: Report 'VERIFICATION FAILED' with issue list
+
+**Output Required:**
+- Coverage percentage
+- Accuracy percentage
+- Final status (PASSED or FAILED)
+- Path to verification report"
+
+**After JUNO reports:**
+
+- **If verification PASSED:** Documentation update complete ✅ - Report to user
+- **If verification FAILED:** Go to Step 3.2A (Fix Issues)
+
+### Step 3.2A: Fix Documentation Issues
+
+**If JUNO reports verification failed:**
+
+1. Read JUNO's verification report to see issues
+
+2. Identify which APO(s) need to fix issues
+
+3. Re-launch affected APOs with specific fix instructions
+
+4. Return to Step 3.2 (quality audit)
+
+5. Continue loop until verification passes
+
+---
+
+**End of Phase 3**
+
+---

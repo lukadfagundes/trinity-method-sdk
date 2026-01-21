@@ -293,7 +293,7 @@ describe('Deploy Command - Integration Tests', () => {
       }
     });
 
-    it('should deploy 8 documentation templates (2 README + 6 reports)', async () => {
+    it('should deploy 6 documentation templates (2 README + 4 reports)', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // README templates
@@ -302,28 +302,18 @@ describe('Deploy Command - Integration Tests', () => {
         true
       );
 
-      // Report templates (for trinity-docs-update command)
+      // Report templates (for trinity-docs and trinity-docs-update commands)
       expect(
-        await fs.pathExists('trinity/templates/documentation/reports/docs-update-audit.md')
+        await fs.pathExists('trinity/templates/documentation/reports/juno-internal-report.md')
       ).toBe(true);
       expect(
-        await fs.pathExists('trinity/templates/documentation/reports/docs-update-verification.md')
+        await fs.pathExists('trinity/templates/documentation/reports/juno-final-report.md')
       ).toBe(true);
       expect(
-        await fs.pathExists('trinity/templates/documentation/reports/apo-base-update-completion.md')
+        await fs.pathExists('trinity/templates/documentation/reports/juno-docs-update-checklist.md')
       ).toBe(true);
       expect(
-        await fs.pathExists(
-          'trinity/templates/documentation/reports/apo-business-update-completion.md'
-        )
-      ).toBe(true);
-      expect(
-        await fs.pathExists(
-          'trinity/templates/documentation/reports/apo-business-create-completion.md'
-        )
-      ).toBe(true);
-      expect(
-        await fs.pathExists('trinity/templates/documentation/reports/docs-update-complete.md')
+        await fs.pathExists('trinity/templates/documentation/reports/apo-docs-update-checklist.md')
       ).toBe(true);
     });
 
