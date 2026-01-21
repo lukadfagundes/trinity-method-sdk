@@ -3,8 +3,8 @@
 **Command:** `/execution:trinity-docs`
 **Purpose:** Generate comprehensive project documentation using multi-agent orchestration
 **Architecture:** JUNO audit → Parallel APO execution → Verification
-**Trinity Version:** 2.0.9
-**Last Updated:** 2026-01-12
+**Trinity Version:** 2.1.0
+**Last Updated:** 2026-01-21
 
 ---
 
@@ -2460,7 +2460,6 @@ else grade = "Poor (Significant issues, re-generation recommended)";
 let report = `# Trinity Documentation Verification Report
 
 **Generated:** ${new Date().toISOString()}
-**Command Version:** 2.0.9
 **JUNO Report:** ${audit_report_path}
 
 ---
@@ -2827,8 +2826,3 @@ LOG: "";
 - Check JUNO agent availability
 
 ---
-
-**Command Version:** 2.0.9
-**Last Updated:** 2026-01-14
-**Architecture:** Multi-agent orchestration with enhanced quality gates
-**Improvements:** 13 architectural recommendations implemented (WO-1.5)

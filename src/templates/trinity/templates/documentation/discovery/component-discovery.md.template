@@ -2,7 +2,6 @@
 **Category:** Discovery
 **Purpose:** Discover React, Vue, Angular, and Svelte components with glob patterns
 **Used By:** JUNO (Phase 1), APO-1 (Diagrams), APO-2 (Guides)
-**Last Updated:** 2026-01-15
 
 ---
 
@@ -253,6 +252,3 @@ COMPONENT_FRAMEWORK = "Vue.js"
 - Provide full list to APO-1 but summarize in JUNO report
 
 ---
-
-*Trinity Method v2.0 - Discovery Template*
-*WO-004: Template Infrastructure & Discovery Recipes*

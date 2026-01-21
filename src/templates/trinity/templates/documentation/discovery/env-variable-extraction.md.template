@@ -2,7 +2,6 @@
 **Category:** Discovery
 **Purpose:** Extract environment variables from .env files and process.env usage
 **Used By:** JUNO (Phase 1), APO-3 (Config Files)
-**Last Updated:** 2026-01-15
 
 ---
 
@@ -315,6 +314,3 @@ ENV_VAR_SOURCE = "code_scanning"
 5. **Provide safe placeholder values** - Help developers understand expected format
 
 ---
-
-*Trinity Method v2.0 - Discovery Template*
-*WO-004: Template Infrastructure & Discovery Recipes*

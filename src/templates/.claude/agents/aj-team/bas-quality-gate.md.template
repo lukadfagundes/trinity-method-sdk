@@ -770,13 +770,6 @@ Before approving task:
 
 ---
 
-**Agent Maintained By**: Trinity Method SDK Team
-**Trinity Version:** 2.0.9
-**Last Updated:** 2026-01-12
-**Coordinates With**: KIL, DRA
-
----
-
 ## Configuration Priority Order
 
 Trinity supports configuration at multiple levels. Priority (highest to lowest):
@@ -904,3 +897,8 @@ Attempt 3 (after coverage improvement):
 ```
 
 ---
+
+**Agent Maintained By**: Trinity Method SDK Team
+**Trinity Version:** 2.1.0
+**Last Updated:** 2026-01-21
+**Coordinates With**: KIL, DRA

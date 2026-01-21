@@ -1,6 +1,6 @@
 # CLI Commands Reference
 
-**Trinity Version:** 2.0.9
+**Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
 Complete reference for Trinity Method SDK command-line interface.
@@ -214,7 +214,7 @@ ls -lh trinity/backups/
 🔄 Trinity Method Update
 
 📦 Current Version: 1.5.0
-📦 Latest Version: 2.0.9
+📦 Latest Version: 2.1.0
 
 Creating backup...
 ✓ Backup created: trinity/backups/backup-2025-12-28T12-30-00.tar.gz

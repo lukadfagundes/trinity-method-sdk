@@ -1,6 +1,6 @@
 # Template Variables Reference
 
-**\*Trinity Version:** 2.0.9
+**\*Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
 Complete reference for Trinity Method template variables.
@@ -317,7 +317,7 @@ Workflows are located in:
 **After Substitution:**
 
 ```markdown
-**Trinity Version:** 2.0.9
+**Trinity Version:** 2.1.0
 **Deployed:** 2025-12-29
 ```
 
@@ -355,7 +355,7 @@ Workflows are located in:
 **After Substitution:**
 
 ```markdown
-**Trinity Version:** 2.0.9
+**Trinity Version:** 2.1.0
 ```
 
 ---
@@ -669,7 +669,7 @@ find .claude -type f -name "*.md" -exec sed -i 's/{{COMPANY_NAME}}/Acme Corp/g' 
 | `{{LINTING_TOOL}}`    | User selection            | `ESLint + Prettier` | Trinity.md, pre-commit    | ❌ No (can be "None") |
 | `{{CI_PLATFORM}}`     | User selection            | `GitHub Actions`    | Trinity.md                | ❌ No (can be "None") |
 | `{{CURRENT_DATE}}`    | System date               | `2025-12-29`        | Trinity.md, VERSION       | ✅ Yes                |
-| `{{VERSION}}`         | SDK package.json          | `2.0.9`             | Trinity.md, VERSION       | ✅ Yes                |
+| `{{VERSION}}`         | SDK package.json          | `2.1.0`             | Trinity.md, VERSION       | ✅ Yes                |
 | `{{NODE_VERSION}}`    | Hardcoded                 | `16.9.0`            | CI/CD (Node.js only)      | ❌ No (Node.js only)  |
 
 ---

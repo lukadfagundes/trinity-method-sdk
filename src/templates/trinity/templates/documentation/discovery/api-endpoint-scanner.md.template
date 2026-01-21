@@ -2,7 +2,6 @@
 **Category:** Discovery
 **Purpose:** Discover API routes and endpoints for Express, Fastify, NestJS, and Koa
 **Used By:** JUNO (Phase 1), APO-1 (API Diagrams), APO-2 (API Docs)
-**Last Updated:** 2026-01-15
 
 ---
 
@@ -342,5 +341,3 @@ API_BASE_URL = "/users"
 
 ---
 
-*Trinity Method v2.0 - Discovery Template*
-*WO-004: Template Infrastructure & Discovery Recipes*

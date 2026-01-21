@@ -1,6 +1,6 @@
 # Agent Guide: The 19-Agent Trinity Team
 
-**Trinity Version:** 2.0.9
+**Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
 ## Overview

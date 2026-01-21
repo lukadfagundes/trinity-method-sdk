@@ -2,7 +2,6 @@
 **Category:** Discovery
 **Purpose:** Detect backend frameworks, frontend frameworks, databases, ORMs, and testing frameworks from package.json
 **Used By:** JUNO (Phase 1), APO-1, APO-2, APO-3 (Fallback Mode)
-**Last Updated:** 2026-01-15
 
 ---
 
@@ -204,6 +203,3 @@ TEST_FRAMEWORK = "Jest"
 4. **Graceful degradation** - If detection fails, continue with "Unknown" rather than aborting
 
 ---
-
-*Trinity Method v2.0 - Discovery Template*
-*WO-004: Template Infrastructure & Discovery Recipes*

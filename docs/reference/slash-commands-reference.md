@@ -1,6 +1,6 @@
 # Slash Commands Reference
 
-**Trinity Version:** 2.0.9
+**Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
 Complete reference for Trinity Method's 19 slash commands.
@@ -1280,7 +1280,7 @@ Audit Summary:
 ✅ Commands: All 19 present
 ✅ Knowledge base: Complete
 ✅ Configuration: Valid
-✅ Version: 2.0.9 (latest)
+✅ Version: 2.1.0 (latest)
 
 Quality Score: 100/100
 

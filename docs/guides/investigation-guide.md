@@ -1,6 +1,6 @@
 # Investigation Guide: Structured Problem-Solving with Trinity
 
-**Trinity Version:** 2.0.9
+**Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
 ## Overview

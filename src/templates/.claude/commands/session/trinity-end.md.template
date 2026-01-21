@@ -3,8 +3,8 @@
 **Command:** `/session:trinity-end`
 **Purpose:** End session and archive work to trinity/archive/
 **Architecture:** ALY session summary → Work archival → Documentation update
-**Trinity Version:** 2.0.9
-**Last Updated:** 2026-01-12
+**Trinity Version:** 2.1.0
+**Last Updated:** 2026-01-21
 
 ---
 

@@ -3,8 +3,8 @@
 **Command:** `/investigation:trinity-plan-investigation`
 **Purpose:** Generate AI-powered investigation plans with visualizations
 **Architecture:** INO analysis → Plan generation → Mermaid visualization
-**Trinity Version:** 2.0.9
-**Last Updated:** 2026-01-12
+**Trinity Version:** 2.1.0
+**Last Updated:** 2026-01-21
 
 ---
 
@@ -125,15 +125,15 @@ Save investigation plan to:
 ```
 1. /trinity-create-investigation
    → Creates INV-XXX-problem.md
-   
+
 2. /trinity-plan-investigation
    → Reads INV-XXX-problem.md
    → Creates investigation-plan-XXX.md
-   
+
 3. Execute investigation
    → Follow plan
    → Document findings
-   
+
 4. Archive results
    → Update INV-XXX with conclusions
 ```

@@ -1,6 +1,6 @@
 # Trinity Method SDK - CI/CD Guide
 
-**Trinity Version:** 2.0.9
+**Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 **Maintained by:** EIN (CI/CD Specialist)
 
@@ -369,10 +369,10 @@ The `prepublishOnly` script runs automatically before every publish:
 
 ```bash
 # Verify package is available on npm
-npm view trinity-method-sdk@2.0.9
+npm view trinity-method-sdk@2.1.0
 
 # Install and test
-npm install -g trinity-method-sdk@2.0.9
+npm install -g trinity-method-sdk@2.1.0
 trinity --version
 
 # Test deployment
@@ -459,17 +459,17 @@ Use consistent casing for file names
 
 #### Version Mismatch
 
-**Error:** Version mismatch - Tag: 2.0.9, package.json: 2.0.0
+**Error:** Version mismatch - Tag: 2.1.0, package.json: 2.0.0
 
 **Solution:**
 
 ```bash
 # Update package.json version
-npm version 2.0.9 --no-git-tag-version
+npm version 2.1.0 --no-git-tag-version
 
 # Commit changes
 git add package.json
-git commit -m "Bump version to 2.0.9"
+git commit -m "Bump version to 2.1.0"
 
 # Create tag
 git tag v2.0.9
@@ -619,5 +619,5 @@ chore: Update dependencies
 ---
 
 **Maintained by:** EIN (CI/CD Specialist)
-**Trinity Version:** 2.0.9
+**Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
