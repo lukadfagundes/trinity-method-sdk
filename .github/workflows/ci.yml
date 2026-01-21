@@ -1,4 +1,4 @@
-# Trinity Method SDK v2.0.9 - CI/CD Pipeline
+# Trinity Method SDK v2.1.0 - CI/CD Pipeline
 # EIN (CI/CD Specialist) - BAS 6-Phase Quality Gates
 # Multi-platform testing: Ubuntu, Windows, macOS
 # Multi-version Node.js: 18.x, 20.x, 22.x
@@ -38,11 +38,11 @@ jobs:
 
           # Expected agent directories
           agent_dirs=(
-            "src/templates/agents/leadership"
-            "src/templates/agents/planning"
-            "src/templates/agents/aj-team"
-            "src/templates/agents/deployment"
-            "src/templates/agents/audit"
+            "src/templates/.claude/agents/leadership"
+            "src/templates/.claude/agents/planning"
+            "src/templates/.claude/agents/aj-team"
+            "src/templates/.claude/agents/deployment"
+            "src/templates/.claude/agents/audit"
           )
 
           for dir in "${agent_dirs[@]}"; do
@@ -53,55 +53,80 @@ jobs:
           done
 
           # Count agent templates
-          agent_count=$(find src/templates/agents -name "*.md.template" | wc -l)
+          agent_count=$(find src/templates/.claude/agents -name "*.md.template" | wc -l)
           echo "Found $agent_count agent templates"
 
-          if [ "$agent_count" -lt 19 ]; then
-            echo "WARNING: Expected 19 agent templates, found $agent_count"
+          if [ "$agent_count" -ne 19 ]; then
+            echo "ERROR: Expected 19 agent templates, found $agent_count"
+            exit 1
           fi
 
-          echo "Agent templates validated"
+          echo "✅ Agent templates validated: $agent_count agents"
 
-      - name: Validate slash command templates (19+ commands)
+      - name: Validate slash command templates (20 commands)
         run: |
           echo "Validating Trinity slash command templates..."
 
           # Count slash command templates
-          cmd_count=$(find src/templates/shared/claude-commands -name "*.md.template" | wc -l)
+          cmd_count=$(find src/templates/.claude/commands -name "*.md.template" | wc -l)
           echo "Found $cmd_count slash command templates"
 
-          if [ "$cmd_count" -lt 19 ]; then
-            echo "ERROR: Expected at least 19 slash commands, found $cmd_count"
+          if [ "$cmd_count" -ne 20 ]; then
+            echo "ERROR: Expected 20 slash commands, found $cmd_count"
             exit 1
           fi
 
+          # Verify command categories exist
+          command_categories=(
+            "src/templates/.claude/commands/execution"
+            "src/templates/.claude/commands/infrastructure"
+            "src/templates/.claude/commands/investigation"
+            "src/templates/.claude/commands/maintenance"
+            "src/templates/.claude/commands/planning"
+            "src/templates/.claude/commands/session"
+            "src/templates/.claude/commands/utility"
+          )
+
+          for category in "${command_categories[@]}"; do
+            if [ ! -d "$category" ]; then
+              echo "ERROR: Command category missing: $category"
+              exit 1
+            fi
+          done
+
           # Verify critical commands exist
           critical_commands=(
-            "trinity-init.md.template"
-            "trinity-start.md.template"
-            "trinity-orchestrate.md.template"
-            "trinity-audit.md.template"
-            "trinity-docs.md.template"
+            "src/templates/.claude/commands/infrastructure/trinity-init.md.template"
+            "src/templates/.claude/commands/session/trinity-start.md.template"
+            "src/templates/.claude/commands/execution/trinity-orchestrate.md.template"
+            "src/templates/.claude/commands/execution/trinity-audit.md.template"
+            "src/templates/.claude/commands/maintenance/trinity-docs.md.template"
+            "src/templates/.claude/commands/maintenance/trinity-docs-update.md.template"
           )
 
           for cmd in "${critical_commands[@]}"; do
-            if [ ! -f "src/templates/shared/claude-commands/$cmd" ]; then
+            if [ ! -f "$cmd" ]; then
               echo "ERROR: Critical command template missing: $cmd"
               exit 1
             fi
           done
 
-          echo "Slash command templates validated"
+          echo "✅ Slash command templates validated: $cmd_count commands across 7 categories"
 
-      - name: Validate knowledge base templates
+      - name: Validate knowledge base templates (9 files)
         run: |
           echo "Validating knowledge base templates..."
 
           required_kb=(
-            "src/templates/knowledge-base/ARCHITECTURE.md.template"
-            "src/templates/knowledge-base/CODING-PRINCIPLES.md.template"
-            "src/templates/knowledge-base/TESTING-PRINCIPLES.md.template"
-            "src/templates/knowledge-base/DOCUMENTATION-CRITERIA.md.template"
+            "src/templates/trinity/knowledge-base/ARCHITECTURE.md.template"
+            "src/templates/trinity/knowledge-base/CODING-PRINCIPLES.md.template"
+            "src/templates/trinity/knowledge-base/TESTING-PRINCIPLES.md.template"
+            "src/templates/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md.template"
+            "src/templates/trinity/knowledge-base/ISSUES.md.template"
+            "src/templates/trinity/knowledge-base/Technical-Debt.md.template"
+            "src/templates/trinity/knowledge-base/To-do.md.template"
+            "src/templates/trinity/knowledge-base/Trinity.md.template"
+            "src/templates/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md.template"
           )
 
           for kb in "${required_kb[@]}"; do
@@ -111,23 +136,30 @@ jobs:
             fi
           done
 
-          echo "Knowledge base templates validated"
+          kb_count=$(find src/templates/trinity/knowledge-base -name "*.md.template" | wc -l)
+
+          if [ "$kb_count" -ne 9 ]; then
+            echo "ERROR: Expected 9 knowledge base templates, found $kb_count"
+            exit 1
+          fi
+
+          echo "✅ Knowledge base templates validated: $kb_count files"
 
       - name: Validate CI/CD templates
         run: |
           echo "Validating CI/CD templates..."
 
-          if [ ! -f "src/templates/ci/ci.yml.template" ]; then
-            echo "ERROR: CI/CD template missing"
+          if [ ! -f "src/templates/github/workflows/ci.yml.template" ]; then
+            echo "ERROR: CI workflow template missing"
             exit 1
           fi
 
-          if [ ! -f "src/templates/ci/cd.yml.template" ]; then
-            echo "ERROR: CD template missing"
+          if [ ! -f "src/templates/github/workflows/cd.yml.template" ]; then
+            echo "ERROR: CD workflow template missing"
             exit 1
           fi
 
-          echo "CI/CD templates validated"
+          echo "✅ CI/CD templates validated"
 
       - name: Validate template placeholders
         run: |
@@ -247,7 +279,7 @@ jobs:
       - name: Check coverage thresholds (Trinity ≥80% requirement)
         run: |
           echo "BAS PHASE 5: Coverage Check (≥80%)"
-          echo "Trinity Method SDK v2.0.9 - 80% coverage enforcement"
+          echo "Trinity Method SDK v2.1.0 - 80% coverage enforcement"
           echo ""
 
           # Check if coverage-summary.json exists (Jest)
@@ -594,7 +626,7 @@ jobs:
       - name: All Trinity quality gates passed
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "   Trinity Method SDK v2.0.9 - CI/CD Success"
+          echo "   Trinity Method SDK v2.1.0 - CI/CD Success"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
           echo "BAS 6-Phase Quality Gates: ALL PASSED"
@@ -608,8 +640,8 @@ jobs:
           echo ""
           echo "Trinity Component Validation:"
           echo "  19 Agent Templates                      - VALIDATED"
-          echo "  19+ Slash Commands                      - VALIDATED"
-          echo "  Knowledge Base Templates                - VALIDATED"
+          echo "  20 Slash Commands (7 categories)        - VALIDATED"
+          echo "  9 Knowledge Base Templates              - VALIDATED"
           echo "  CI/CD Templates                         - VALIDATED"
           echo ""
           echo "Multi-Platform Testing:"
