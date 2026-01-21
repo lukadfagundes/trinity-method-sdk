@@ -55,7 +55,35 @@ trinity deploy
 # - Configure CI/CD (GitHub Actions, GitLab CI)
 ```
 
-### 2. What Gets Deployed
+### 2. Codebase Metrics Collection
+
+During deployment (Step 3.5), Trinity automatically collects metrics about your codebase to create a baseline in `ARCHITECTURE.md`. This provides institutional knowledge about your project's state.
+
+**Metrics Collected:**
+
+- **Code Quality:** TODO/FIXME comments, console statements, commented code blocks
+- **File Complexity:** Total files, files over 500/1000/3000 lines, average file length
+- **Dependencies:** Production and dev dependencies count, framework version
+- **Git History:** Commit count, contributors, last commit date
+
+**Skipping Metrics Collection:**
+
+If you want to skip metrics collection (faster deployment), use the `--skipAudit` flag:
+
+```bash
+trinity deploy --skipAudit
+```
+
+**Why Metrics Matter:**
+
+Metrics provide a quantitative baseline for:
+
+- Technical debt tracking in `ARCHITECTURE.md`
+- Performance baselines for investigations
+- Code quality trends over time
+- Project health monitoring
+
+### 3. What Gets Deployed
 
 Trinity deploys **64 production-ready components** to your project:
 
@@ -85,7 +113,7 @@ Trinity deploys **64 production-ready components** to your project:
 
 - `trinity/templates/` - Work orders, investigations, documentation
 
-### 3. Using Trinity Commands
+### 4. Using Trinity Commands
 
 ```bash
 # Start a new Trinity session

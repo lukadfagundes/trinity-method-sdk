@@ -89,7 +89,7 @@ Trinity Method SDK is a **production-ready development methodology** that transf
 
 ### The 19-Agent Team
 
-Trinity SDK includes **19 specialized agents** (core team of 14 primary agents + 5 infrastructure agents):
+Trinity SDK includes **19 specialized agents** organized across 5 functional teams:
 
 **Planning Layer:**
 
@@ -116,17 +116,18 @@ Trinity SDK includes **19 specialized agents** (core team of 14 primary agents +
 - **ALY** - Chief Technology Officer (investigation orchestration, strategic coordination)
 - **JUNO** - Quality Auditor (comprehensive codebase audits, deployment verification)
 
-**Infrastructure (5 agents):**
+**Infrastructure & Legacy:**
 
 - **TAN** - Structure Specialist (directory structure validation)
 - **ZEN** - Knowledge Base Specialist (comprehensive documentation)
 - **INO** - Context Specialist (CLAUDE.md hierarchy management)
 - **EIN** - CI/CD Specialist (continuous integration/deployment automation)
+- **AJ-CC** - Claude Code Orchestrator (specialized v2.0 orchestration)
 - **AJ MAESTRO** - Legacy Orchestrator (deprecated v1.0, replaced by ALY in v2.0)
 
 ### What Gets Deployed
 
-Trinity deploys **64 production-ready components** in 90 seconds:
+Trinity deploys **88 production-ready components** in 90 seconds:
 
 **Methodology Infrastructure:**
 
@@ -141,9 +142,9 @@ Trinity deploys **64 production-ready components** in 90 seconds:
   - DOCUMENTATION-CRITERIA.md (documentation standards)
   - AI-DEVELOPMENT-GUIDE.md (AI-assisted development best practices)
 - `trinity/templates/` - Reusable templates
-  - `documentation/` - Documentation templates
-  - `investigations/` - 5 investigation templates (Bug, Performance, Security, System Analysis, Incident)
-  - `work-orders/` - Work order templates
+  - `documentation/` - Documentation templates (2 README templates + 23 report templates)
+  - `investigations/` - 5 investigation templates (bug, feature, performance, security, technical)
+  - `work-orders/` - 6 work order templates
 - `trinity/investigations/` - Active investigations with execution plans
 - `trinity/sessions/` - Session archives
 - `trinity/reports/` - Audit and integration reports
@@ -154,15 +155,16 @@ Trinity deploys **64 production-ready components** in 90 seconds:
 **Agent System:**
 
 - `.claude/agents/` - 19 specialized agents organized by category:
-  - `aj-team/` - AJ MAESTRO orchestration agents
-  - `audit/` - JUNO quality auditor
-  - `deployment/` - 6 deployment specialists (BON, CAP, EIN, INO, TAN, ZEN)
-  - `leadership/` - ALY strategic leadership
+  - `aj-team/` - 7 execution agents (APO, BAS, BON, CAP, DRA, KIL, URO)
+  - `audit/` - 1 quality auditor (JUNO)
+  - `deployment/` - 4 infrastructure agents (EIN, INO, TAN, ZEN)
+  - `leadership/` - 3 orchestration agents (ALY, AJ-CC, AJ-MAESTRO)
   - `planning/` - 4 planning agents (MON, ROR, EUS, TRA)
-- `.claude/commands/` - 20 slash commands organized in 6 categories:
-  - `execution/` - 5 commands (orchestrate, audit, readme, docs, changelog)
-  - `infrastructure/` - 1 command (trinity-init)
-  - `investigation/` - 3 commands (create, plan, templates)
+- `.claude/commands/` - 20 slash commands organized in 7 categories:
+  - `execution/` - 2 commands (orchestrate, audit)
+  - `infrastructure/` - 1 command (init)
+  - `investigation/` - 3 commands (create-investigation, plan-investigation, investigate-templates)
+  - `maintenance/` - 4 commands (readme, docs, docs-update, changelog)
   - `planning/` - 4 commands (requirements, design, decompose, plan)
   - `session/` - 3 commands (start, continue, end)
   - `utility/` - 3 commands (verify, agents, workorder)
@@ -256,7 +258,8 @@ After deployment, access Trinity functionality through Claude Code slash command
 - `/trinity-orchestrate` - Execute with ALY orchestration
 - `/trinity-audit` - Run codebase audit (JUNO)
 - `/trinity-readme` - Update README coverage (APO)
-- `/trinity-docs` - Organize docs/ directory (APO)
+- `/trinity-docs` - Generate new documentation (JUNO + 3 parallel APOs)
+- `/trinity-docs-update` - Update existing documentation (JUNO audit → 3 APOs → verification loop)
 - `/trinity-changelog` - Maintain CHANGELOG.md (APO)
 
 **Investigation:**
@@ -364,11 +367,11 @@ After deploying Trinity to your project, comprehensive documentation is availabl
 
 Your project contains:
 
-- **64 production-ready components** deployed in 90 seconds
-- **19 specialized agents** in `.claude/agents/` (organized by category: aj-team, audit, deployment, leadership, planning)
-- **20 slash commands** in `.claude/commands/` (organized by category: execution, infrastructure, investigation, planning, session, utility)
+- **88 production-ready components** deployed in 90 seconds
+- **19 specialized agents** in `.claude/agents/` (7 execution + 1 audit + 4 infrastructure + 3 leadership + 4 planning)
+- **20 slash commands** in `.claude/commands/` (2 execution + 1 infrastructure + 3 investigation + 4 maintenance + 4 planning + 3 session + 3 utility)
 - **Complete knowledge base** in `trinity/knowledge-base/` (ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md)
-- **Investigation templates** in `trinity/templates/investigations/` (bug, performance, security, system analysis, incident)
+- **Investigation templates** in `trinity/templates/investigations/` (bug, feature, performance, security, technical)
 - **Work order templates** in `trinity/templates/work-orders/`
 - **Session archives** in `trinity/sessions/`
 - **Audit reports** in `trinity/reports/`
@@ -380,15 +383,16 @@ Your project contains:
 your-project/
 ├── .claude/
 │   ├── agents/
-│   │   ├── aj-team/              # AJ MAESTRO orchestration agents
-│   │   ├── audit/                # JUNO quality auditor
-│   │   ├── deployment/           # Deployment specialists (BON, CAP, EIN, INO, TAN, ZEN)
-│   │   ├── leadership/           # ALY strategic leadership
-│   │   └── planning/             # MON, ROR, EUS, TRA agents
+│   │   ├── aj-team/              # 7 execution agents (APO, BAS, BON, CAP, DRA, KIL, URO)
+│   │   ├── audit/                # 1 quality auditor (JUNO)
+│   │   ├── deployment/           # 4 infrastructure agents (EIN, INO, TAN, ZEN)
+│   │   ├── leadership/           # 3 orchestration agents (ALY, AJ-CC, AJ-MAESTRO)
+│   │   └── planning/             # 4 planning agents (MON, ROR, EUS, TRA)
 │   ├── commands/
-│   │   ├── execution/            # trinity-orchestrate, trinity-audit, trinity-readme, trinity-docs, trinity-changelog
+│   │   ├── execution/            # trinity-orchestrate, trinity-audit
 │   │   ├── infrastructure/       # trinity-init
 │   │   ├── investigation/        # trinity-create-investigation, trinity-plan-investigation, trinity-investigate-templates
+│   │   ├── maintenance/          # trinity-readme, trinity-docs, trinity-docs-update, trinity-changelog
 │   │   ├── planning/             # trinity-requirements, trinity-design, trinity-decompose, trinity-plan
 │   │   ├── session/              # trinity-start, trinity-continue, trinity-end
 │   │   └── utility/              # trinity-verify, trinity-agents, trinity-workorder
@@ -396,9 +400,9 @@ your-project/
 ├── trinity/
 │   ├── knowledge-base/           # ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md, Trinity.md
 │   ├── templates/
-│   │   ├── documentation/        # Documentation templates
-│   │   ├── investigations/       # Bug, performance, security, system analysis, incident templates
-│   │   └── work-orders/          # Work order templates
+│   │   ├── documentation/        # 2 README templates + 23 report templates
+│   │   ├── investigations/       # 5 investigation templates (bug, feature, performance, security, technical)
+│   │   └── work-orders/          # 6 work order templates
 │   ├── investigations/           # Active investigations
 │   │   └── plans/                # Investigation execution plans
 │   ├── sessions/                 # Session archives
@@ -460,7 +464,7 @@ Trinity uses GitHub Actions for comprehensive continuous integration and deploym
 
 - ✅ Multi-platform testing (Ubuntu, Windows, macOS)
 - ✅ Multi-version testing (Node.js 18.x, 20.x, 22.x)
-- ✅ Trinity component validation (19 agents, 19+ slash commands, knowledge base, CI/CD templates)
+- ✅ Trinity component validation (19 agents, 20 slash commands, knowledge base, CI/CD templates)
 - ✅ Test suite execution (unit, integration, e2e, performance)
 - ✅ Code coverage validation (80%+ threshold enforced)
 - ✅ Linting and type checking
@@ -526,11 +530,6 @@ MIT License - see [LICENSE](LICENSE) for details
 
 - **API Documentation**: [docs/](docs/) - Generated TypeDoc API reference
 - **Contributing Guide**: [CONTRIBUTING.md](CONTRIBUTING.md) - Development setup, workflow, and standards
-- **Architectural Decisions**: [docs/adr/](docs/adr/) - ADRs documenting major technical decisions
-  - [ADR-001: CLI Architecture](docs/adr/ADR-001-cli-architecture.md)
-  - [ADR-002: Template System Design](docs/adr/ADR-002-template-system-design.md)
-  - [ADR-003: ESLint Flat Config](docs/adr/ADR-003-eslint-flat-config.md)
-  - [ADR-004: Test Strategy](docs/adr/ADR-004-test-strategy.md)
 - **Changelog**: [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
 
 ---

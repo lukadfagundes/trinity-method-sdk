@@ -407,4 +407,4 @@ Trinity does not use a configuration file in v2.0. All configuration is done via
 
 ---
 
-**Trinity Method SDK v2.0.9** - Command-Line Interface Reference
+**Trinity Method SDK v2.1.0** - Command-Line Interface Reference

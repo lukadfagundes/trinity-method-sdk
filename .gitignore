@@ -9,6 +9,7 @@ test-results/
 *.lcov
 .nyc_output
 .tmp-test-*
+test-output.txt
 
 # Production
 dist/
