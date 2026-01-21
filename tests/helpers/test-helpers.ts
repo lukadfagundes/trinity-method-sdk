@@ -20,10 +20,30 @@ export async function createTempDir(): Promise<string> {
 
 /**
  * Clean up temporary directory
+ * Handles Windows file locking issues by retrying
  */
 export async function cleanupTempDir(dir: string): Promise<void> {
-  if (await fs.pathExists(dir)) {
-    await fs.remove(dir);
+  if (!(await fs.pathExists(dir))) {
+    return;
+  }
+
+  const maxRetries = 3;
+  const retryDelay = 100; // ms
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await fs.remove(dir);
+      return; // Success
+    } catch (error: unknown) {
+      const err = error as { code?: string };
+      // Windows EBUSY/EPERM errors - retry after delay
+      if (i < maxRetries - 1 && (err.code === 'EBUSY' || err.code === 'EPERM')) {
+        await new Promise((resolve) => setTimeout(resolve, retryDelay * (i + 1)));
+        continue;
+      }
+      // Last retry or different error - throw
+      throw error;
+    }
   }
 }
 

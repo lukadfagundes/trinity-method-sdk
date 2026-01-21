@@ -7,16 +7,52 @@
 const fs = require('fs');
 const path = require('path');
 
-const templatesPath = path.join('dist', 'templates', 'linting', 'nodejs');
+// Verify templates directory structure exists
+const requiredPaths = [
+  path.join('dist', 'templates'),
+  path.join('dist', 'templates', '.claude'),
+  path.join('dist', 'templates', '.claude', 'agents'),
+  path.join('dist', 'templates', '.claude', 'commands'),
+  path.join('dist', 'templates', 'trinity'),
+  path.join('dist', 'templates', 'root'),
+  path.join('dist', 'templates', 'root', 'linting', 'nodejs'),
+  path.join('dist', 'templates', 'source'),
+  path.join('dist', 'templates', 'ci'),
+];
 
-if (!fs.existsSync(templatesPath)) {
-  console.error('❌ ERROR: Templates missing at', templatesPath);
-  console.error('Build may have failed to copy templates');
+let hasErrors = false;
+
+for (const checkPath of requiredPaths) {
+  if (!fs.existsSync(checkPath)) {
+    console.error('❌ ERROR: Required path missing:', checkPath);
+    hasErrors = true;
+  } else {
+    console.log('✅', checkPath);
+  }
+}
+
+if (hasErrors) {
+  console.error('\n❌ Build verification failed: Templates not copied correctly');
   process.exit(1);
 }
 
-console.log('✅ Templates verified at', templatesPath);
+// Verify some key template files exist
+const keyTemplates = [
+  path.join('dist', 'templates', 'root', 'CLAUDE.md.template'),
+  path.join('dist', 'templates', 'root', 'linting', 'nodejs', '.eslintrc-typescript.json.template'),
+  path.join('dist', 'templates', '.claude', 'agents', 'leadership', 'aly-cto.md.template'),
+];
 
-// List some template files to confirm
-const files = fs.readdirSync(templatesPath);
-console.log(`Found ${files.length} template files:`, files.slice(0, 3).join(', '));
+for (const templateFile of keyTemplates) {
+  if (!fs.existsSync(templateFile)) {
+    console.error('❌ ERROR: Key template missing:', templateFile);
+    hasErrors = true;
+  }
+}
+
+if (hasErrors) {
+  console.error('\n❌ Build verification failed: Key templates missing');
+  process.exit(1);
+}
+
+console.log('\n✅ Build verification passed: All templates copied correctly');
