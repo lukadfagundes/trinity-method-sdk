@@ -9,6 +9,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **NEW: Trinity-docs-update command** - Comprehensive documentation update system for maintaining existing docs
+  - **Command:** `/maintenance:trinity-docs-update` - Updates existing documentation to reflect codebase changes
+  - **Architecture:** JUNO audit → 3 parallel APO instances → JUNO verification loop → Final quality audit
+  - **Autonomous Execution:** Runs from start to finish without user intervention unless errors occur
+  - **Version:** 2.0.9
+  - **Last Updated:** 2026-01-19
+
+- **Trinity-docs-update - JUNO audit system** - Phase 1 comprehensive codebase analysis with mandatory verification protocols
+  - **Database Verification Protocol (Mandatory):**
+    - Step 1: Detect database presence via bash detection script
+    - Step 2: **MANDATORY** production database connection attempt if database detected
+    - Documents connection info search (.env, docker-compose.yml, config files)
+    - Documents connection attempt method and result (success/failure with reason)
+    - Falls back to schema files ONLY after documented connection failure
+    - Prevents documentation based on outdated schema files
+  - **Environment Configuration Verification Protocol (All Projects):**
+    - Priority 1: Check actual environment files (.env, .env.local) FIRST
+    - Priority 2: Check template files (.env.example)
+    - Priority 3: Check code defaults (|| fallback values)
+    - Documents all findings and discrepancies
+    - Source of truth order: Actual config > Template > Code defaults
+    - **Prevents false positives:** Won't flag correct docs as wrong by verifying against actual config
+  - **Business Logic Discovery:** Scans controllers, services, models, utilities at function-level granularity
+  - **Output:** `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md` with APO work assignments
+
+- **Trinity-docs-update - Configuration false positive prevention** - Resolution rules prevent incorrect audit findings
+  - **Resolution Rule 1:** If .env sets value X, then X is correct (docs showing X are correct)
+  - **Resolution Rule 2:** Code defaults contradicting .env should be fixed (not docs)
+  - **Resolution Rule 3:** Documentation showing actual config value is NEVER wrong
+  - **Example:** Port 3001 in docs + .env, but code shows `|| 4000` → docs are correct, code default needs fixing
+  - **Impact:** Eliminates false positives where JUNO would flag correct documentation as wrong
+
+- **Trinity-docs-update - Scope boundary with consistency exceptions** - Defines strict boundaries with limited exceptions
+  - **ALLOWED:** Read any file, write/edit files in docs/ directory only
+  - **FORBIDDEN:** Modify source code, database schemas, config files, build files, tests
+  - **EXCEPTIONS (APO-1 only):**
+    - Fix hardcoded default values contradicting documented standards (e.g., `|| 4000` → `|| 3001`)
+    - Update .env.example template values to match actual standards
+    - ONLY simple constant/default changes (no logic modifications)
+    - MUST verify against actual .env first
+  - **Scenario C Example:** Docs show port 3001, .env has 3001, code default is 4000 → Fix code default to 3001
+
+- **Trinity-docs-update - APO parallel execution system** - Phase 2 launches three documentation specialists concurrently
+  - **APO-1:** Base documentation updates (architecture, setup, guides)
+    - **NEW:** Configuration consistency fixes (simple defaults that contradict standards)
+    - Update .env.example to match actual standards
+    - Align configuration values across codebase and docs
+    - Restriction: Only simple constants (no logic changes)
+  - **APO-2:** Update existing business logic documentation OR new docs (first half)
+  - **APO-3:** New business logic documentation (second half)
+  - Each APO creates personal checklist from JUNO's audit report
+  - All APOs verify changes against actual codebase (not assumptions)
+  - Output: Updated/new documentation files in docs/
+
+- **Trinity-docs-update - APO verification requirements** - Mandatory codebase verification for all documentation changes
+  - **For EVERY change, APO must:**
+    1. Identify what needs to change (from JUNO's assignment)
+    2. Verify correct value in codebase (read .env, source files, config)
+    3. Document verification in task (which files read, what found)
+    4. Use Read tool BEFORE making changes
+    5. Use Edit tool with verified information only
+    6. DO NOT make assumptions or guesses
+  - **Verification examples:**
+    - API ports → Read .env, server.js, app.js
+    - Table names → Read init.sql or check production database
+    - Endpoint URLs → Read route files
+    - Method signatures → Read actual source file
+    - Configuration values → Read config files
+  - **Documentation format:**
+    ```markdown
+    - [x] docs/api/README.md
+      - Verification: Read backend/.env - confirmed port is 3001
+      - Changes made: Updated 49 instances of port number to 3001
+    ```
+
+- **Trinity-docs-update - JUNO verification loop** - Phase 3 ensures 100% completion before final audit
+  - **Step 3.1:** JUNO checks all three APO checklists for completion status
+    - Counts total tasks vs completed tasks per APO
+    - Calculates completion percentage
+    - Determines next action (PROCEED or RESTART)
+  - **Step 3.1A:** Re-launch incomplete APOs automatically
+    - Identifies incomplete APOs from JUNO's report
+    - Restarts only incomplete APOs with resume instructions
+    - Loops until all APOs reach 100%
+  - **Step 3.2:** JUNO final quality audit (only when all APOs 100% complete)
+    - Verifies files created/updated
+    - Checks content accuracy against codebase
+    - Validates no hallucinated components
+    - Generates verification report with pass/fail status
+  - **Output:** `trinity/reports/DOCS-UPDATE-VERIFICATION-{{DATE}}.md`
+
+- **Trinity-docs-update - Three template files** - Command template and two checklist templates deployed via CLI
+  - **Command Template:** `src/templates/.claude/commands/maintenance/trinity-docs-update.md.template`
+    - Deployed to: `.claude/commands/maintenance/trinity-docs-update.md`
+    - Updated by: `trinity update` command via `updateCommands()` function
+  - **JUNO Checklist:** `src/templates/trinity/templates/documentation/reports/juno-docs-update-checklist.md.template`
+    - Deployed to: `trinity/templates/documentation/reports/juno-docs-update-checklist.md`
+    - Updated by: `trinity update` command via `updateTemplates()` function (recursively copies all documentation templates)
+  - **APO Checklist:** `src/templates/trinity/templates/documentation/reports/apo-docs-update-checklist.md.template`
+    - Deployed to: `trinity/templates/documentation/reports/apo-docs-update-checklist.md`
+    - Updated by: `trinity update` command via `updateTemplates()` function (recursively copies all documentation templates)
+  - All templates automatically deployed during `trinity deploy` and updated during `trinity update`
+
 - **Trinity-docs command - Complete architectural overhaul** - Transformed from single-agent to multi-agent orchestration
   - **New Architecture:** JUNO audit → 3 parallel APO instances → Verification
   - **JUNO Agent Integration:** Read-only codebase audit creates documentation checklist before generation
