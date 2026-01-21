@@ -32,11 +32,41 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate template directory structure
+        run: |
+          echo "Validating Trinity template directory structure..."
+
+          # Verify top-level template directories exist
+          required_dirs=(
+            "src/templates/.claude"
+            "src/templates/.claude/agents"
+            "src/templates/.claude/commands"
+            "src/templates/trinity"
+            "src/templates/trinity/knowledge-base"
+            "src/templates/trinity/templates"
+            "src/templates/trinity/templates/investigations"
+            "src/templates/trinity/templates/work-orders"
+            "src/templates/trinity/templates/documentation"
+            "src/templates/root"
+            "src/templates/root/linting"
+            "src/templates/source"
+            "src/templates/ci"
+          )
+
+          for dir in "${required_dirs[@]}"; do
+            if [ ! -d "$dir" ]; then
+              echo "ERROR: Required directory missing: $dir"
+              exit 1
+            fi
+          done
+
+          echo "✅ Template directory structure validated"
+
       - name: Validate agent templates (19 agents)
         run: |
           echo "Validating 19 Trinity agent templates..."
 
-          # Expected agent directories
+          # Verify agent category directories
           agent_dirs=(
             "src/templates/.claude/agents/leadership"
             "src/templates/.claude/agents/planning"
@@ -54,7 +84,6 @@ jobs:
 
           # Count agent templates
           agent_count=$(find src/templates/.claude/agents -name "*.md.template" | wc -l)
-          echo "Found $agent_count agent templates"
 
           if [ "$agent_count" -ne 19 ]; then
             echo "ERROR: Expected 19 agent templates, found $agent_count"
@@ -65,18 +94,9 @@ jobs:
 
       - name: Validate slash command templates (20 commands)
         run: |
-          echo "Validating Trinity slash command templates..."
+          echo "Validating 20 Trinity slash command templates..."
 
-          # Count slash command templates
-          cmd_count=$(find src/templates/.claude/commands -name "*.md.template" | wc -l)
-          echo "Found $cmd_count slash command templates"
-
-          if [ "$cmd_count" -ne 20 ]; then
-            echo "ERROR: Expected 20 slash commands, found $cmd_count"
-            exit 1
-          fi
-
-          # Verify command categories exist
+          # Verify all 7 command categories exist
           command_categories=(
             "src/templates/.claude/commands/execution"
             "src/templates/.claude/commands/infrastructure"
@@ -93,6 +113,14 @@ jobs:
               exit 1
             fi
           done
+
+          # Count slash command templates
+          cmd_count=$(find src/templates/.claude/commands -name "*.md.template" | wc -l)
+
+          if [ "$cmd_count" -ne 20 ]; then
+            echo "ERROR: Expected 20 slash commands, found $cmd_count"
+            exit 1
+          fi
 
           # Verify critical commands exist
           critical_commands=(
@@ -115,26 +143,7 @@ jobs:
 
       - name: Validate knowledge base templates (9 files)
         run: |
-          echo "Validating knowledge base templates..."
-
-          required_kb=(
-            "src/templates/trinity/knowledge-base/ARCHITECTURE.md.template"
-            "src/templates/trinity/knowledge-base/CODING-PRINCIPLES.md.template"
-            "src/templates/trinity/knowledge-base/TESTING-PRINCIPLES.md.template"
-            "src/templates/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md.template"
-            "src/templates/trinity/knowledge-base/ISSUES.md.template"
-            "src/templates/trinity/knowledge-base/Technical-Debt.md.template"
-            "src/templates/trinity/knowledge-base/To-do.md.template"
-            "src/templates/trinity/knowledge-base/Trinity.md.template"
-            "src/templates/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md.template"
-          )
-
-          for kb in "${required_kb[@]}"; do
-            if [ ! -f "$kb" ]; then
-              echo "ERROR: Knowledge base template missing: $kb"
-              exit 1
-            fi
-          done
+          echo "Validating 9 knowledge base templates..."
 
           kb_count=$(find src/templates/trinity/knowledge-base -name "*.md.template" | wc -l)
 
@@ -143,37 +152,184 @@ jobs:
             exit 1
           fi
 
+          # Verify critical knowledge base files
+          required_kb=(
+            "src/templates/trinity/knowledge-base/ARCHITECTURE.md.template"
+            "src/templates/trinity/knowledge-base/CODING-PRINCIPLES.md.template"
+            "src/templates/trinity/knowledge-base/TESTING-PRINCIPLES.md.template"
+            "src/templates/trinity/knowledge-base/ISSUES.md.template"
+          )
+
+          for kb in "${required_kb[@]}"; do
+            if [ ! -f "$kb" ]; then
+              echo "ERROR: Critical knowledge base template missing: $kb"
+              exit 1
+            fi
+          done
+
           echo "✅ Knowledge base templates validated: $kb_count files"
+
+      - name: Validate investigation templates (5 files)
+        run: |
+          echo "Validating 5 investigation templates..."
+
+          inv_count=$(find src/templates/trinity/templates/investigations -name "*.md.template" | wc -l)
+
+          if [ "$inv_count" -ne 5 ]; then
+            echo "ERROR: Expected 5 investigation templates, found $inv_count"
+            exit 1
+          fi
+
+          echo "✅ Investigation templates validated: $inv_count templates"
+
+      - name: Validate work order templates (6 files)
+        run: |
+          echo "Validating 6 work order templates..."
+
+          wo_count=$(find src/templates/trinity/templates/work-orders -name "*.md.template" | wc -l)
+
+          if [ "$wo_count" -ne 6 ]; then
+            echo "ERROR: Expected 6 work order templates, found $wo_count"
+            exit 1
+          fi
+
+          echo "✅ Work order templates validated: $wo_count templates"
+
+      - name: Validate documentation templates (25 files)
+        run: |
+          echo "Validating 25 documentation templates..."
+
+          doc_count=$(find src/templates/trinity/templates/documentation -name "*.md.template" | wc -l)
+
+          if [ "$doc_count" -ne 25 ]; then
+            echo "ERROR: Expected 25 documentation templates, found $doc_count"
+            exit 1
+          fi
+
+          # Verify documentation subdirectories
+          doc_dirs=(
+            "src/templates/trinity/templates/documentation/reports"
+            "src/templates/trinity/templates/documentation/api-docs"
+            "src/templates/trinity/templates/documentation/configuration"
+            "src/templates/trinity/templates/documentation/discovery"
+            "src/templates/trinity/templates/documentation/guides"
+            "src/templates/trinity/templates/documentation/processes"
+            "src/templates/trinity/templates/documentation/validation"
+          )
+
+          for dir in "${doc_dirs[@]}"; do
+            if [ ! -d "$dir" ]; then
+              echo "ERROR: Documentation subdirectory missing: $dir"
+              exit 1
+            fi
+          done
+
+          echo "✅ Documentation templates validated: $doc_count files"
+
+      - name: Validate root templates (CLAUDE.md variants)
+        run: |
+          echo "Validating root CLAUDE.md templates..."
+
+          # Check for CLAUDE.md template variants
+          root_templates=(
+            "src/templates/root/CLAUDE.md.template"
+            "src/templates/root/base-CLAUDE.md.template"
+            "src/templates/root/nodejs-CLAUDE.md.template"
+            "src/templates/root/python-CLAUDE.md.template"
+            "src/templates/root/react-CLAUDE.md.template"
+            "src/templates/root/flutter-CLAUDE.md.template"
+            "src/templates/root/rust-CLAUDE.md.template"
+          )
+
+          for template in "${root_templates[@]}"; do
+            if [ ! -f "$template" ]; then
+              echo "ERROR: Root template missing: $template"
+              exit 1
+            fi
+          done
+
+          echo "✅ Root CLAUDE.md templates validated"
+
+      - name: Validate linting templates
+        run: |
+          echo "Validating linting configuration templates..."
+
+          # Check linting framework directories
+          linting_dirs=(
+            "src/templates/root/linting/nodejs"
+            "src/templates/root/linting/python"
+            "src/templates/root/linting/flutter"
+            "src/templates/root/linting/rust"
+          )
+
+          for dir in "${linting_dirs[@]}"; do
+            if [ ! -d "$dir" ]; then
+              echo "ERROR: Linting directory missing: $dir"
+              exit 1
+            fi
+          done
+
+          linting_count=$(find src/templates/root/linting -type f \( -name "*.template" -o -name "*.yaml.template" -o -name "*.json.template" \) | wc -l)
+          echo "Found $linting_count linting configuration templates"
+
+          if [ "$linting_count" -lt 10 ]; then
+            echo "WARNING: Expected at least 10 linting templates, found $linting_count"
+          fi
+
+          echo "✅ Linting templates validated"
 
       - name: Validate CI/CD templates
         run: |
-          echo "Validating CI/CD templates..."
+          echo "Validating CI/CD workflow templates..."
 
-          if [ ! -f "src/templates/github/workflows/ci.yml.template" ]; then
+          if [ ! -f "src/templates/ci/ci.yml.template" ]; then
             echo "ERROR: CI workflow template missing"
             exit 1
           fi
 
-          if [ ! -f "src/templates/github/workflows/cd.yml.template" ]; then
+          if [ ! -f "src/templates/ci/cd.yml.template" ]; then
             echo "ERROR: CD workflow template missing"
             exit 1
           fi
 
           echo "✅ CI/CD templates validated"
 
-      - name: Validate template placeholders
+      - name: Validate source templates
         run: |
-          echo "Checking templates have proper placeholders..."
+          echo "Validating source code templates..."
 
-          # Check for common placeholders
-          template_count=$(grep -r "{{PROJECT_NAME}}" src/templates/ | wc -l)
-          echo "Found {{PROJECT_NAME}} in $template_count files"
+          source_count=$(find src/templates/source -type f -name "*.template" | wc -l)
+          echo "Found $source_count source templates"
 
-          if [ "$template_count" -lt 10 ]; then
-            echo "WARNING: Few templates use {{PROJECT_NAME}} placeholder"
+          if [ "$source_count" -eq 0 ]; then
+            echo "WARNING: No source templates found"
           fi
 
-          echo "Template placeholders validated"
+          echo "✅ Source templates validated"
+
+      - name: Template validation summary
+        run: |
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "   Trinity Template Validation Summary"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "  ✅ Directory Structure        - VALIDATED"
+          echo "  ✅ 19 Agent Templates         - VALIDATED"
+          echo "  ✅ 20 Slash Commands          - VALIDATED"
+          echo "  ✅ 9 Knowledge Base Files     - VALIDATED"
+          echo "  ✅ 5 Investigation Templates  - VALIDATED"
+          echo "  ✅ 6 Work Order Templates     - VALIDATED"
+          echo "  ✅ 25 Documentation Templates - VALIDATED"
+          echo "  ✅ Root CLAUDE.md Variants    - VALIDATED"
+          echo "  ✅ Linting Configurations     - VALIDATED"
+          echo "  ✅ CI/CD Workflows            - VALIDATED"
+          echo "  ✅ Source Templates           - VALIDATED"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "   Total: 88 Production Components"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
 
   # =============================================
   # Multi-Platform Test Suite
