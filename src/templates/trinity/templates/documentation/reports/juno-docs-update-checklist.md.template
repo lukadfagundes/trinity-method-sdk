@@ -379,12 +379,20 @@ end
    - ✅ Create new files in `docs/` directory
 
 2. **FORBIDDEN operations:**
-   - ❌ Write/Edit files in `src/`, `backend/`, `frontend/`, `app/` directories
+   - ❌ Write/Edit source code files in `src/`, `backend/`, `frontend/`, `app/` directories
    - ❌ Modify database schemas (`database/`, `migrations/`, `*.sql`)
-   - ❌ Modify configuration (`package.json`, `tsconfig.json`, `.env`, `*.config.js`)
+   - ❌ Modify configuration (`package.json`, `tsconfig.json`, `*.config.js`)
    - ❌ Modify build files (`Dockerfile`, `docker-compose.yml`, `.github/`)
    - ❌ Modify test files (`*.test.js`, `*.spec.ts`)
    - ❌ Modify any file outside `docs/` directory
+
+   **EXCEPTIONS (Simple consistency fixes only):**
+   - ✅ Fix hardcoded default values that contradict documented standards
+     - Example: Change `|| 4000` to `|| 3001` if 3001 is the documented standard
+   - ✅ Update `.env.example` template values to match documented standards
+   - ⚠️ ONLY for simple constant/default values (no logic changes)
+   - ⚠️ MUST verify against actual `.env` or running config first
+   - ⚠️ APO-1 ONLY - base documentation team handles consistency fixes
 
 3. **Discrepancy Resolution Strategy:**
 
@@ -415,6 +423,28 @@ end
    ✅ RIGHT: Update docs/api/README.md to show GET /api/v1/users
    ```
 
+   **Scenario C: Configuration Default Mismatch**
+   ```
+   Documentation: docs/guides/getting-started.md shows backend on port 3001
+   .env.example: Shows API_PORT=3001
+   Actual .env: Shows API_PORT=3001
+   Code Default: server.js shows `const PORT = process.env.API_PORT || 4000`
+
+   Analysis:
+   - Actual config: 3001 ✅
+   - Documentation: 3001 ✅
+   - .env.example: 3001 ✅
+   - Code default: 4000 ❌ (contradicts standard)
+
+   ✅ RIGHT: Assign APO-1 to:
+   1. Verify documentation is correct (no update needed)
+   2. Fix backend/src/server.js line 8: Change `|| 4000` to `|| 3001`
+   3. Rationale: Align code default with documented standard
+
+   ❌ WRONG: Update documentation to show port 4000
+   ❌ WRONG: Leave discrepancy unresolved
+   ```
+
 4. **Pre-Write Validation:**
 
    **Before EVERY Write or Edit operation, verify target path starts with `docs/`.**
@@ -430,6 +460,97 @@ end
    - Create documentation files in docs/
    - Update existing documentation files in docs/
    - Verify documentation accuracy against source code (read-only)
+
+---
+
+## Step 1.2A: Environment Configuration Verification
+
+**CRITICAL: Verify actual running configuration BEFORE making audit decisions.**
+
+**ALL projects require environment configuration verification** to prevent false positives in audit findings.
+
+### Priority 1: Check Actual Environment Files
+
+**YOU MUST check for actual configuration files FIRST:**
+
+```bash
+# Priority 1: Check actual environment files
+if [ -f ".env" ]; then
+  echo "✅ Found .env (ACTUAL CONFIG)"
+  grep -E "PORT|URL|HOST|DATABASE|API" .env 2>/dev/null || cat .env
+elif [ -f ".env.local" ]; then
+  echo "✅ Found .env.local (ACTUAL CONFIG)"
+  grep -E "PORT|URL|HOST|DATABASE|API" .env.local 2>/dev/null || cat .env.local
+else
+  echo "ℹ️ No actual environment files found (.env or .env.local)"
+fi
+
+# Priority 2: Check example/template files
+if [ -f ".env.example" ]; then
+  echo "📋 Found .env.example (TEMPLATE)"
+  grep -E "PORT|URL|HOST|DATABASE|API" .env.example 2>/dev/null || cat .env.example
+fi
+
+# Priority 3: Check code for default values
+echo "🔍 Checking code for default values..."
+grep -rn "process.env.*||" backend/src/ src/ 2>/dev/null --include="*.js" --include="*.ts" | head -20
+```
+
+### Document All Findings
+
+**YOU MUST document what you found in your audit report:**
+
+```markdown
+### Environment Configuration Analysis
+
+**Actual Config (.env or .env.local):**
+[If found, list all relevant variables and values]
+[If not found, state: "No actual environment files found"]
+
+**Template Config (.env.example):**
+[If found, list all relevant variables and values]
+[If not found, state: "No .env.example found"]
+
+**Code Defaults (fallback values):**
+[List all found with format: File:Line: Variable || Default Value]
+[If none found, state: "No code defaults found"]
+
+**Discrepancies Found:**
+[List any mismatches between actual config, template, and code defaults]
+[If none, state: "No discrepancies found"]
+```
+
+### Source of Truth Priority Order
+
+**When verifying configuration values (ports, URLs, domains, etc.):**
+
+1. **PRIMARY:** Actual running configuration
+   - Check `.env` or `.env.local` (actual config being used)
+   - Check running process/logs if available
+
+2. **SECONDARY:** Environment template files
+   - `.env.example` (documented standard)
+   - `.env.production` (production config)
+
+3. **TERTIARY:** Code defaults
+   - Fallback values in code (e.g., `|| 4000`)
+
+### Resolution Rules
+
+**CRITICAL: Apply these rules when discrepancies exist:**
+
+1. **If `.env` exists and sets value X:**
+   - X is the correct value
+   - Documentation showing X is CORRECT
+   - Code defaults showing Y are WRONG (need fixing)
+
+2. **If documentation matches actual config:**
+   - Documentation is CORRECT (no update needed)
+   - Assign APO to fix code if default contradicts standard
+
+3. **If code default contradicts `.env.example` and docs:**
+   - Code default needs fixing
+   - Assign APO-1 to align code with documented standard
 
 ---
 
@@ -482,6 +603,40 @@ If docs say processPayment takes (userId, amount) → DISCREPANCY (wrong paramet
 If docs don't mention error cases → INCOMPLETENESS (missing info)
 If docs reference deprecated processCreditCard method → STALENESS (outdated)
 ```
+
+### Configuration Value Verification:
+
+**When verifying configuration values (ports, URLs, domains, etc.):**
+
+1. **Priority Order for Source of Truth:**
+   - **PRIMARY:** Actual running configuration (check process/logs if available)
+   - **SECONDARY:** Environment files in priority order:
+     - `.env` or `.env.local` (actual config being used)
+     - `.env.production` (production config)
+     - `.env.example` (template/documentation)
+   - **TERTIARY:** Code defaults (fallback values in code)
+
+2. **Verification Process:**
+   ```bash
+   # Check actual environment files (if accessible)
+   cat .env 2>/dev/null || cat .env.local 2>/dev/null
+
+   # Check example/template files
+   cat .env.example 2>/dev/null
+
+   # Search code for default values
+   grep -r "PORT.*||.*[0-9]" backend/ src/ 2>/dev/null
+   ```
+
+3. **Resolution Rules:**
+   - If `.env` exists and sets value X → **X is correct**
+   - If docs show X, code default is Y, but `.env` uses X → **docs are CORRECT**
+   - If code default contradicts `.env.example` and docs → **code default needs fixing**
+
+4. **Assignment Logic:**
+   - If documentation matches actual config → **NO UPDATE NEEDED**
+   - If code default contradicts standard → **ASSIGN APO to fix code**
+   - If `.env.example` contradicts standard → **ASSIGN APO to fix .env.example**
 
 ---
 
@@ -727,6 +882,11 @@ List all business logic components without documentation:
 - Setup/configuration docs
 - Guides and tutorials
 - General repository documentation
+- **Configuration consistency fixes:**
+  - Fix simple code defaults that contradict documented standards
+  - Update `.env.example` to match actual standards
+  - Align configuration values across codebase and docs
+  - **RESTRICTION:** Only simple constant/default changes (no logic modifications)
 
 ### APO-2: Update Existing Business Logic Documentation (OR Share APO-3's Workload)
 
