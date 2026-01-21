@@ -537,5 +537,3 @@ MIT License - see [LICENSE](LICENSE) for details
 **Built with ❤️ by the Trinity Method Team**
 
 _Trinity Method: Investigation-first development for the AI age_
-
-Leave
