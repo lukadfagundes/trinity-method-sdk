@@ -226,29 +226,53 @@ jobs:
 
           echo "✅ Documentation templates validated: $doc_count files"
 
-      - name: Validate root templates (CLAUDE.md variants)
+      - name: Validate root templates
         run: |
-          echo "Validating root CLAUDE.md templates..."
+          echo "Validating root templates..."
 
-          # Check for CLAUDE.md template variants
-          root_templates=(
-            "src/templates/root/CLAUDE.md.template"
-            "src/templates/root/base-CLAUDE.md.template"
-            "src/templates/root/nodejs-CLAUDE.md.template"
-            "src/templates/root/python-CLAUDE.md.template"
-            "src/templates/root/react-CLAUDE.md.template"
-            "src/templates/root/flutter-CLAUDE.md.template"
-            "src/templates/root/rust-CLAUDE.md.template"
+          # Check for root templates
+          if [ ! -f "src/templates/root/CLAUDE.md.template" ]; then
+            echo "ERROR: Root CLAUDE.md template missing"
+            exit 1
+          fi
+
+          if [ ! -f "src/templates/root/TRINITY.md.template" ]; then
+            echo "ERROR: Root TRINITY.md template missing"
+            exit 1
+          fi
+
+          echo "✅ Root templates validated"
+
+      - name: Validate source templates (CLAUDE.md variants)
+        run: |
+          echo "Validating source CLAUDE.md templates..."
+
+          # Check for framework-specific CLAUDE.md template variants
+          source_claude_templates=(
+            "src/templates/source/base-CLAUDE.md.template"
+            "src/templates/source/nodejs-CLAUDE.md.template"
+            "src/templates/source/python-CLAUDE.md.template"
+            "src/templates/source/react-CLAUDE.md.template"
+            "src/templates/source/flutter-CLAUDE.md.template"
+            "src/templates/source/rust-CLAUDE.md.template"
+            "src/templates/source/tests-CLAUDE.md.template"
           )
 
-          for template in "${root_templates[@]}"; do
+          for template in "${source_claude_templates[@]}"; do
             if [ ! -f "$template" ]; then
-              echo "ERROR: Root template missing: $template"
+              echo "ERROR: Source template missing: $template"
               exit 1
             fi
           done
 
-          echo "✅ Root CLAUDE.md templates validated"
+          source_count=$(find src/templates/source -name "*.template" -type f | wc -l)
+
+          if [ "$source_count" -ne 7 ]; then
+            echo "ERROR: Expected 7 source templates, found $source_count"
+            exit 1
+          fi
+
+          echo "✅ Source CLAUDE.md templates validated: $source_count files"
 
       - name: Validate linting templates
         run: |
@@ -292,43 +316,30 @@ jobs:
             exit 1
           fi
 
-          echo "✅ CI/CD templates validated"
-
-      - name: Validate source templates
-        run: |
-          echo "Validating source code templates..."
-
-          source_count=$(find src/templates/source -type f -name "*.template" | wc -l)
-          echo "Found $source_count source templates"
-
-          if [ "$source_count" -eq 0 ]; then
-            echo "WARNING: No source templates found"
-          fi
-
-          echo "✅ Source templates validated"
+          echo "✅ CI/CD templates validated: 2 files"
 
       - name: Template validation summary
         run: |
           echo ""
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "   Trinity Template Validation Summary"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
-          echo "  ✅ Directory Structure        - VALIDATED"
-          echo "  ✅ 19 Agent Templates         - VALIDATED"
-          echo "  ✅ 20 Slash Commands          - VALIDATED"
-          echo "  ✅ 9 Knowledge Base Files     - VALIDATED"
-          echo "  ✅ 5 Investigation Templates  - VALIDATED"
-          echo "  ✅ 6 Work Order Templates     - VALIDATED"
-          echo "  ✅ 25 Documentation Templates - VALIDATED"
-          echo "  ✅ Root CLAUDE.md Variants    - VALIDATED"
-          echo "  ✅ Linting Configurations     - VALIDATED"
-          echo "  ✅ CI/CD Workflows            - VALIDATED"
-          echo "  ✅ Source Templates           - VALIDATED"
+          echo "  ✅ Directory Structure            - VALIDATED"
+          echo "  ✅ 19 Agent Templates             - VALIDATED"
+          echo "  ✅ 20 Slash Commands (7 cats)     - VALIDATED"
+          echo "  ✅ 9 Knowledge Base Files         - VALIDATED"
+          echo "  ✅ 5 Investigation Templates      - VALIDATED"
+          echo "  ✅ 6 Work Order Templates         - VALIDATED"
+          echo "  ✅ 25 Documentation Templates     - VALIDATED"
+          echo "  ✅ 2 Root Templates               - VALIDATED"
+          echo "  ✅ 7 Source CLAUDE.md Variants    - VALIDATED"
+          echo "  ✅ 13 Linting Configurations      - VALIDATED"
+          echo "  ✅ 2 CI/CD Workflows              - VALIDATED"
           echo ""
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "   Total: 88 Production Components"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "   Total: 88 Production Components + 13 Linting Configs"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
 
   # =============================================
