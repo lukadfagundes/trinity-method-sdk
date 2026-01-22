@@ -8,6 +8,7 @@ import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import fs from 'fs-extra';
 import path from 'path';
 import { deployCITemplates } from '../../../../src/cli/utils/deploy-ci.js';
+import { cleanupTempDir } from '../../../helpers/test-helpers.js';
 
 describe('deploy-ci', () => {
   let testDir: string;
@@ -49,7 +50,7 @@ describe('deploy-ci', () => {
 
   afterEach(async () => {
     process.chdir(originalCwd);
-    await fs.remove(testDir);
+    await cleanupTempDir(testDir);
   });
 
   describe('GitHub Platform Detection', () => {

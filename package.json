@@ -76,7 +76,8 @@
     "fs-extra": "^11.3.3",
     "glob": "^13.0.0",
     "inquirer": "^13.1.0",
-    "ora": "^9.0.0"
+    "ora": "^9.0.0",
+    "trinity-method-sdk": "^2.1.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
