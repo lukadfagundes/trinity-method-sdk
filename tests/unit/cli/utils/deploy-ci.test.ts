@@ -1,7 +1,7 @@
 /**
  * Unit Tests - deploy-ci.ts
  *
- * Tests CI/CD template deployment for GitHub Actions, GitLab CI, and generic workflows
+ * Tests CI template deployment for GitHub Actions, GitLab CI, and generic workflows
  */
 
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
@@ -27,14 +27,10 @@ describe('deploy-ci', () => {
     templatesPath = path.join(testDir, 'dist', 'templates', 'ci');
     await fs.ensureDir(templatesPath);
 
-    // Create template files
+    // Create template files (CI only - no CD)
     await fs.writeFile(
       path.join(templatesPath, 'ci.yml.template'),
-      'name: CI\non:\n  push:\njobs:\n  test:\n    runs-on: ubuntu-latest'
-    );
-    await fs.writeFile(
-      path.join(templatesPath, 'cd.yml.template'),
-      'name: CD\non:\n  release:\njobs:\n  deploy:\n    runs-on: ubuntu-latest'
+      'name: {{PROJECT_NAME}} CI\non:\n  push:\njobs:\n  test:\n    runs-on: ubuntu-latest'
     );
     await fs.writeFile(path.join(templatesPath, 'gitlab-ci.yml'), 'stages:\n  - test\n  - deploy');
     await fs.writeFile(
@@ -54,7 +50,7 @@ describe('deploy-ci', () => {
   });
 
   describe('GitHub Platform Detection', () => {
-    it('should deploy GitHub Actions workflows when .git/config contains github.com', async () => {
+    it('should deploy GitHub Actions CI workflow when .git/config contains github.com', async () => {
       await fs.ensureDir('.git');
       await fs.writeFile(
         '.git/config',
@@ -64,9 +60,7 @@ describe('deploy-ci', () => {
       const stats = await deployCITemplates();
 
       expect(stats.deployed).toContain('.github/workflows/ci.yml');
-      expect(stats.deployed).toContain('.github/workflows/cd.yml');
       expect(await fs.pathExists('.github/workflows/ci.yml')).toBe(true);
-      expect(await fs.pathExists('.github/workflows/cd.yml')).toBe(true);
     });
 
     it('should deploy generic template regardless of platform', async () => {
@@ -146,7 +140,6 @@ describe('deploy-ci', () => {
       const stats = await deployCITemplates();
 
       expect(stats.deployed).toContain('.github/workflows/ci.yml');
-      expect(stats.deployed).toContain('.github/workflows/cd.yml');
       expect(stats.deployed).toContain('trinity/templates/ci/generic-ci.yml');
     });
 
@@ -181,7 +174,7 @@ describe('deploy-ci', () => {
 
       const stats = await deployCITemplates();
 
-      expect(stats.deployed.length).toBeGreaterThanOrEqual(3); // ci.yml, cd.yml, generic-ci.yml
+      expect(stats.deployed.length).toBeGreaterThanOrEqual(2); // ci.yml, generic-ci.yml
     });
 
     it('should have no errors on successful deployment', async () => {
@@ -211,9 +204,10 @@ describe('deploy-ci', () => {
       );
 
       // Create a directory where ci.yml should be (will cause write error)
+      // Must use --force to bypass the existence check and trigger write error
       await fs.ensureDir('.github/workflows/ci.yml');
 
-      const stats = await deployCITemplates();
+      const stats = await deployCITemplates({ force: true });
 
       // Should have some errors but continue with other files
       expect(stats.errors.length).toBeGreaterThan(0);
@@ -245,24 +239,63 @@ describe('deploy-ci', () => {
       await deployCITemplates();
 
       const ciContent = await fs.readFile('.github/workflows/ci.yml', 'utf8');
-      expect(ciContent).toContain('Trinity');
-      expect(ciContent).toContain('BAS');
-    });
-
-    it('should deploy complete CD workflow', async () => {
-      await deployCITemplates();
-
-      const cdContent = await fs.readFile('.github/workflows/cd.yml', 'utf8');
-      expect(cdContent).toContain('Trinity');
-      expect(cdContent).toContain('deploy');
+      expect(ciContent).toContain('CI');
     });
 
     it('should deploy generic template with correct content', async () => {
       await deployCITemplates();
 
       const genericContent = await fs.readFile('trinity/templates/ci/generic-ci.yml', 'utf8');
-      expect(genericContent).toContain('Trinity');
       expect(genericContent).toContain('test');
+    });
+  });
+
+  describe('Template Variable Processing', () => {
+    it('should process template variables in deployed CI workflow', async () => {
+      const variables = {
+        PROJECT_NAME: 'TestProject',
+        FRAMEWORK: 'Node.js',
+        TRINITY_VERSION: '2.1.0',
+      };
+
+      await deployCITemplates({}, variables);
+
+      const ciContent = await fs.readFile('.github/workflows/ci.yml', 'utf8');
+      expect(ciContent).toContain('TestProject');
+      expect(ciContent).not.toContain('{{PROJECT_NAME}}');
+    });
+
+    it('should use default values when no variables provided', async () => {
+      await deployCITemplates();
+
+      const ciContent = await fs.readFile('.github/workflows/ci.yml', 'utf8');
+      // processTemplate fills defaults: PROJECT_NAME → 'Unknown Project'
+      expect(ciContent).toContain('Unknown Project');
+      expect(ciContent).not.toContain('{{PROJECT_NAME}}');
+    });
+  });
+
+  describe('--force Flag Protection', () => {
+    it('should skip existing ci.yml without --force', async () => {
+      await fs.ensureDir('.github/workflows');
+      await fs.writeFile('.github/workflows/ci.yml', 'existing ci content');
+
+      const stats = await deployCITemplates();
+
+      expect(stats.skipped).toContain('.github/workflows/ci.yml (already exists)');
+      const content = await fs.readFile('.github/workflows/ci.yml', 'utf8');
+      expect(content).toBe('existing ci content');
+    });
+
+    it('should overwrite existing ci.yml with --force', async () => {
+      await fs.ensureDir('.github/workflows');
+      await fs.writeFile('.github/workflows/ci.yml', 'existing ci content');
+
+      const stats = await deployCITemplates({ force: true });
+
+      expect(stats.deployed).toContain('.github/workflows/ci.yml');
+      const content = await fs.readFile('.github/workflows/ci.yml', 'utf8');
+      expect(content).not.toBe('existing ci content');
     });
   });
 });

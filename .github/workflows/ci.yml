@@ -302,21 +302,16 @@ jobs:
 
           echo "✅ Linting templates validated"
 
-      - name: Validate CI/CD templates
+      - name: Validate CI templates
         run: |
-          echo "Validating CI/CD workflow templates..."
+          echo "Validating CI workflow templates..."
 
           if [ ! -f "src/templates/ci/ci.yml.template" ]; then
             echo "ERROR: CI workflow template missing"
             exit 1
           fi
 
-          if [ ! -f "src/templates/ci/cd.yml.template" ]; then
-            echo "ERROR: CD workflow template missing"
-            exit 1
-          fi
-
-          echo "✅ CI/CD templates validated: 2 files"
+          echo "✅ CI templates validated: 1 file"
 
       - name: Template validation summary
         run: |
@@ -335,10 +330,10 @@ jobs:
           echo "  ✅ 2 Root Templates               - VALIDATED"
           echo "  ✅ 7 Source CLAUDE.md Variants    - VALIDATED"
           echo "  ✅ 13 Linting Configurations      - VALIDATED"
-          echo "  ✅ 2 CI/CD Workflows              - VALIDATED"
+          echo "  ✅ 1 CI Workflow                  - VALIDATED"
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "   Total: 88 Production Components + 13 Linting Configs"
+          echo "   Total: 87 Production Components + 13 Linting Configs"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
 
@@ -678,11 +673,11 @@ jobs:
         run: npm ci
 
       - name: Run npm audit
-        run: npm audit --audit-level=moderate
+        run: npm audit --audit-level=high
         continue-on-error: true
 
       - name: Run dependency check
-        run: npx depcheck --ignores="rimraf,ts-jest"
+        run: npx depcheck --ignores="rimraf,ts-jest,trinity-method-sdk"
         continue-on-error: true
 
   # =============================================

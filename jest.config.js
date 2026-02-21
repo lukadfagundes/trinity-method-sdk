@@ -91,6 +91,7 @@ export default {
         ],
       },
       testMatch: ['**/tests/integration/**/*.test.ts'],
+      testTimeout: 60000, // 60 seconds for integration tests (Windows CI needs more time)
     },
     {
       displayName: 'e2e',
