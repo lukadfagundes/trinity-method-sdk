@@ -192,10 +192,10 @@ describe('linting-tools', () => {
     it('should handle tools with no dependencies', () => {
       const tools: LintingTool[] = [
         {
-          id: 'precommit',
-          name: 'Pre-commit',
-          description: 'Hooks',
-          file: '.pre-commit-config.yaml',
+          id: 'dartanalyzer',
+          name: 'Dart Analyzer',
+          description: 'Linter',
+          file: 'analysis_options.yaml',
           recommended: true,
           dependencies: [],
         },
@@ -204,6 +204,13 @@ describe('linting-tools', () => {
       const deps = getDependenciesForTools(tools);
 
       expect(deps).toEqual([]);
+    });
+
+    it('should include husky deps for Node.js precommit tool', () => {
+      const precommit = lintingTools['Node.js'].find((t) => t.id === 'precommit');
+      expect(precommit).toBeDefined();
+      expect(precommit?.dependencies).toContain('husky@^9.1.7');
+      expect(precommit?.dependencies).toContain('lint-staged@^16.2.0');
     });
 
     it('should handle tools with multiple dependencies', () => {
@@ -301,10 +308,10 @@ describe('linting-tools', () => {
     it('should handle tools with no scripts', () => {
       const tools: LintingTool[] = [
         {
-          id: 'precommit',
-          name: 'Pre-commit',
-          description: 'Hooks',
-          file: '.pre-commit-config.yaml',
+          id: 'dartanalyzer',
+          name: 'Dart Analyzer',
+          description: 'Linter',
+          file: 'analysis_options.yaml',
           recommended: true,
           dependencies: [],
         },
@@ -313,6 +320,13 @@ describe('linting-tools', () => {
       const scripts = getScriptsForTools(tools);
 
       expect(scripts).toEqual({});
+    });
+
+    it('should include prepare script for Node.js precommit tool', () => {
+      const precommit = lintingTools['Node.js'].find((t) => t.id === 'precommit');
+      expect(precommit).toBeDefined();
+      expect(precommit?.scripts).toBeDefined();
+      expect(precommit?.scripts?.prepare).toBe('husky');
     });
 
     it('should handle empty tools array', () => {
