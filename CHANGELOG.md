@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **GitHub Releases workflow** - Automated draft release creation on version tags (`v*.*.*`) via `.github/workflows/release.yml` (Issue #5)
+  - 5-job pipeline: version extraction, CHANGELOG release notes extraction, tag-vs-package.json version validation, full CI quality gates (lint, type-check, build, verify-build, all test suites, coverage thresholds), and draft GitHub release creation
+  - Uses `softprops/action-gh-release@v2` with `draft: true` — releases require manual publishing
+  - CHANGELOG extraction uses Node.js script (not sed) matching `## [X.Y.Z]` Keep a Changelog format
+  - Fails fast on version mismatch or missing/empty CHANGELOG section
+  - Coverage thresholds mirror CI pipeline: lines >= 75%, branches >= 65%, functions >= 80%, statements >= 75%
+  - No `npm publish` automation — publishing remains manual via `npm publish`
+
 ### Fixed
 
 - **CRITICAL: Pre-commit hooks non-functional for Node.js** - Switched from Python's pre-commit framework to husky + lint-staged for Node.js/React projects (Issue #4)
