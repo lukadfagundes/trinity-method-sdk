@@ -1,0 +1,240 @@
+# Trinity Method SDK - Release Workflow
+# Creates draft GitHub releases on version tags (v*.*.*)
+# No npm publish — that is done manually
+
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  # =============================================
+  # Job 1: Extract version from tag
+  # =============================================
+  version:
+    name: Extract Version
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
+      version_without_v: ${{ steps.extract.outputs.version_without_v }}
+
+    steps:
+      - name: Extract version from tag
+        id: extract
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          VERSION_WITHOUT_V="${VERSION#v}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "version_without_v=${VERSION_WITHOUT_V}" >> "$GITHUB_OUTPUT"
+          echo "Tag version: ${VERSION}"
+          echo "Version without v: ${VERSION_WITHOUT_V}"
+
+  # =============================================
+  # Job 2: Extract release notes from CHANGELOG.md
+  # =============================================
+  release-notes:
+    name: Extract Release Notes
+    runs-on: ubuntu-latest
+
+    outputs:
+      notes: ${{ steps.extract-notes.outputs.notes }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract changelog section
+        id: extract-notes
+        run: |
+          node -e "
+            const fs = require('fs');
+            const version = process.env.GITHUB_REF_NAME.replace(/^v/, '');
+            const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+
+            // Find the section for this version: ## [X.Y.Z]
+            const sectionRegex = new RegExp(
+              '## \\\\[' + version.replace(/\\./g, '\\\\.') + '\\\\][^\\n]*\\n([\\s\\S]*?)(?=\\n## \\\\[|$)'
+            );
+            const match = changelog.match(sectionRegex);
+
+            if (!match) {
+              console.error('ERROR: No CHANGELOG section found for version ' + version);
+              console.error('Expected heading: ## [' + version + ']');
+              process.exit(1);
+            }
+
+            const notes = match[1].trim();
+            if (!notes) {
+              console.error('ERROR: CHANGELOG section for version ' + version + ' is empty');
+              process.exit(1);
+            }
+
+            console.log('Found release notes for v' + version + ' (' + notes.length + ' chars)');
+
+            // Write to GITHUB_OUTPUT with EOF delimiter for multiline
+            const output = 'notes<<RELEASE_NOTES_EOF\n' + notes + '\nRELEASE_NOTES_EOF\n';
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, output);
+          "
+
+  # =============================================
+  # Job 3: Validate tag version matches package.json
+  # =============================================
+  validate:
+    name: Validate Version Match
+    runs-on: ubuntu-latest
+    needs: version
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compare tag version with package.json
+        run: |
+          TAG_VERSION="${{ needs.version.outputs.version_without_v }}"
+          PKG_VERSION=$(node -e "console.log(require('./package.json').version)")
+
+          echo "Tag version:         ${TAG_VERSION}"
+          echo "package.json version: ${PKG_VERSION}"
+
+          if [ "${TAG_VERSION}" != "${PKG_VERSION}" ]; then
+            echo ""
+            echo "ERROR: Version mismatch!"
+            echo "Tag says v${TAG_VERSION} but package.json says ${PKG_VERSION}"
+            echo "Update package.json version to match the tag before releasing."
+            exit 1
+          fi
+
+          echo ""
+          echo "Version match confirmed: ${TAG_VERSION}"
+
+  # =============================================
+  # Job 4: Full CI validation
+  # =============================================
+  quality:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify build artifacts
+        run: node scripts/verify-build.cjs
+
+      - name: Unit tests
+        run: npm run test:unit
+        timeout-minutes: 5
+
+      - name: Integration tests
+        run: npm run test:integration
+        timeout-minutes: 5
+
+      - name: E2E tests
+        run: npm run test:e2e
+        timeout-minutes: 10
+
+      - name: Performance tests
+        run: npm run test:performance
+        timeout-minutes: 5
+
+      - name: Coverage check
+        run: |
+          npm run test:coverage
+
+          node -e "
+            const coverage = require('./coverage/coverage-summary.json');
+            const total = coverage.total;
+
+            const lines = total.lines.pct;
+            const branches = total.branches.pct;
+            const functions = total.functions.pct;
+            const statements = total.statements.pct;
+
+            console.log('Coverage Report:');
+            console.log('  Lines:      ' + lines + '%');
+            console.log('  Branches:   ' + branches + '%');
+            console.log('  Functions:  ' + functions + '%');
+            console.log('  Statements: ' + statements + '%');
+            console.log('');
+
+            const lineThreshold = 75;
+            const branchThreshold = 65;
+            const functionThreshold = 80;
+            const statementThreshold = 75;
+            let failed = false;
+
+            if (lines < lineThreshold) {
+              console.log('Line coverage ' + lines + '% is below ' + lineThreshold + '% threshold');
+              failed = true;
+            }
+            if (branches < branchThreshold) {
+              console.log('Branch coverage ' + branches + '% is below ' + branchThreshold + '% threshold');
+              failed = true;
+            }
+            if (functions < functionThreshold) {
+              console.log('Function coverage ' + functions + '% is below ' + functionThreshold + '% threshold');
+              failed = true;
+            }
+            if (statements < statementThreshold) {
+              console.log('Statement coverage ' + statements + '% is below ' + statementThreshold + '% threshold');
+              failed = true;
+            }
+
+            if (failed) {
+              process.exit(1);
+            }
+            console.log('All coverage thresholds met');
+          "
+
+  # =============================================
+  # Job 5: Create draft GitHub release
+  # =============================================
+  release:
+    name: Create Draft Release
+    runs-on: ubuntu-latest
+    needs: [version, release-notes, quality]
+
+    steps:
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.version.outputs.version }}
+          name: Trinity Method SDK ${{ needs.version.outputs.version }}
+          body: |
+            ${{ needs.release-notes.outputs.notes }}
+
+            ---
+
+            **Full Changelog:** [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)
+            **npm:** `npm install trinity-method-sdk@${{ needs.version.outputs.version_without_v }}`
+          draft: true
+          prerelease: false
+          generate_release_notes: false
