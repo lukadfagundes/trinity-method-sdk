@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# {{PROJECT_NAME}} - Pre-commit Quality Gates
+# Trinity Method v{{TRINITY_VERSION}}
+# Framework: {{FRAMEWORK}}
+npx lint-staged

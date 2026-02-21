@@ -29,10 +29,14 @@ export const lintingTools: Record<string, LintingTool[]> = {
     {
       id: 'precommit',
       name: 'Pre-commit hooks',
-      description: 'Git hooks for code quality',
-      file: '.pre-commit-config.yaml',
+      description: 'Git hooks for code quality (husky + lint-staged)',
+      file: '.husky/pre-commit',
       recommended: true,
-      dependencies: [],
+      dependencies: ['husky@^9.1.7', 'lint-staged@^16.2.0'],
+      scripts: {
+        prepare: 'husky',
+      },
+      postInstall: 'npm install',
     },
     {
       id: 'typescript-eslint',
@@ -72,10 +76,14 @@ export const lintingTools: Record<string, LintingTool[]> = {
     {
       id: 'precommit',
       name: 'Pre-commit hooks',
-      description: 'Git hooks for code quality',
-      file: '.pre-commit-config.yaml',
+      description: 'Git hooks for code quality (husky + lint-staged)',
+      file: '.husky/pre-commit',
       recommended: true,
-      dependencies: [],
+      dependencies: ['husky@^9.1.7', 'lint-staged@^16.2.0'],
+      scripts: {
+        prepare: 'husky',
+      },
+      postInstall: 'npm install',
     },
     {
       id: 'typescript-eslint',

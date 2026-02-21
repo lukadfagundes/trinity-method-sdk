@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **CRITICAL: Pre-commit hooks non-functional for Node.js** - Switched from Python's pre-commit framework to husky + lint-staged for Node.js/React projects (Issue #4)
+  - Node.js/React projects now deploy `.husky/pre-commit` with `npx lint-staged` instead of `.pre-commit-config.yaml`
+  - Added `husky@^9.1.7` and `lint-staged@^16.2.0` as devDependencies with `prepare: 'husky'` script
+  - Hooks activate automatically on `npm install` — no manual setup required
+  - `lint-staged` configuration injected into `package.json` (eslint + prettier for TS/JS, prettier for JSON/MD/YAML)
+  - Python/Flutter/Rust projects continue to use `.pre-commit-config.yaml` (unchanged)
+  - Existing pre-commit configurations detected and preserved (`.husky/`, `.pre-commit-config.yaml`, or husky/lint-staged in package.json)
+
 - **CRITICAL: CI/CD workflow templates never deployed** - Fixed `enableCICD` from interactive config never bridging to `ciDeploy` deployment flag
   - Added bridge in deploy orchestrator: `if (config.enableCICD) { options.ciDeploy = true; }`
   - CI templates now correctly deploy when user selects CI/CD during `trinity deploy`

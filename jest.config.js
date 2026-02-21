@@ -29,7 +29,7 @@ export default {
   collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/index.ts'],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
-  testTimeout: 30000, // 30 seconds for integration tests
+  testTimeout: 60000, // 60 seconds default (Windows CI needs more time for integration tests)
   verbose: true,
   projects: [
     {

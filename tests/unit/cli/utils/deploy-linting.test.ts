@@ -46,6 +46,14 @@ describe('deploy-linting', () => {
       'repos:\n  - repo: local\n    hooks:\n      - id: test'
     );
     await fs.writeFile(
+      path.join(templatesPath, 'root', 'linting', 'nodejs', '.husky-pre-commit.template'),
+      '#!/usr/bin/env sh\n# {{PROJECT_NAME}} - Pre-commit Quality Gates\nnpx lint-staged'
+    );
+    await fs.writeFile(
+      path.join(templatesPath, 'root', 'linting', 'python', '.pre-commit-config.yaml.template'),
+      'repos:\n  - repo: https://github.com/pre-commit/pre-commit-hooks\n    hooks:\n      - id: trailing-whitespace'
+    );
+    await fs.writeFile(
       path.join(templatesPath, 'root', 'linting', 'python', 'pyproject.toml.template'),
       '[tool.black]\nline-length = 88'
     );
@@ -211,15 +219,16 @@ describe('deploy-linting', () => {
   });
 
   describe('Pre-commit Hooks Deployment', () => {
-    it('should deploy pre-commit config', async () => {
-      const tool: LintingTool = {
-        id: 'precommit',
-        name: 'Pre-commit',
-        description: 'Hooks',
-        file: '.pre-commit-config.yaml',
-        recommended: true,
-        dependencies: [],
-      };
+    const precommitTool: LintingTool = {
+      id: 'precommit',
+      name: 'Pre-commit',
+      description: 'Hooks',
+      file: '.husky/pre-commit',
+      recommended: true,
+      dependencies: ['husky@^9.1.7', 'lint-staged@^16.2.0'],
+    };
+
+    it('should deploy husky pre-commit for Node.js', async () => {
       const stack: Stack = {
         language: 'JavaScript',
         framework: 'Node.js',
@@ -227,11 +236,175 @@ describe('deploy-linting', () => {
         sourceDirs: ['src'],
       };
 
+      await deployLintingTool(precommitTool, stack, templatesPath, {
+        PROJECT_NAME: 'Test Project',
+      });
+
+      expect(await fs.pathExists('.husky/pre-commit')).toBe(true);
+      const content = await fs.readFile('.husky/pre-commit', 'utf8');
+      expect(content).toContain('npx lint-staged');
+      expect(content).toContain('Test Project');
+    });
+
+    it('should deploy .pre-commit-config.yaml for Python', async () => {
+      const stack: Stack = {
+        language: 'Python',
+        framework: 'Python',
+        sourceDir: 'app',
+        sourceDirs: ['app'],
+      };
+      const tool: LintingTool = {
+        id: 'precommit',
+        name: 'Pre-commit',
+        description: 'Hooks',
+        file: '.pre-commit-config.yaml',
+        recommended: true,
+        dependencies: ['pre-commit>=3.3.0'],
+      };
+
       await deployLintingTool(tool, stack, templatesPath, {});
 
+      expect(await fs.pathExists('.pre-commit-config.yaml')).toBe(true);
       const content = await fs.readFile('.pre-commit-config.yaml', 'utf8');
       expect(content).toContain('repos:');
-      expect(content).toContain('hooks:');
+    });
+
+    it('should skip if .husky/ directory exists', async () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      await fs.ensureDir('.husky');
+
+      const stack: Stack = {
+        language: 'JavaScript',
+        framework: 'Node.js',
+        sourceDir: 'src',
+        sourceDirs: ['src'],
+      };
+
+      await deployLintingTool(precommitTool, stack, templatesPath, {});
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Existing pre-commit configuration detected')
+      );
+      consoleSpy.mockRestore();
+    });
+
+    it('should skip if .pre-commit-config.yaml exists', async () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      await fs.writeFile('.pre-commit-config.yaml', 'repos: []');
+
+      const stack: Stack = {
+        language: 'JavaScript',
+        framework: 'Node.js',
+        sourceDir: 'src',
+        sourceDirs: ['src'],
+      };
+
+      await deployLintingTool(precommitTool, stack, templatesPath, {});
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Existing pre-commit configuration detected')
+      );
+      expect(await fs.pathExists('.husky/pre-commit')).toBe(false);
+      consoleSpy.mockRestore();
+    });
+
+    it('should skip if package.json has husky in devDependencies', async () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      await fs.writeJson('package.json', {
+        devDependencies: { husky: '^9.0.0' },
+      });
+
+      const stack: Stack = {
+        language: 'JavaScript',
+        framework: 'Node.js',
+        sourceDir: 'src',
+        sourceDirs: ['src'],
+      };
+
+      await deployLintingTool(precommitTool, stack, templatesPath, {});
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Existing pre-commit configuration detected')
+      );
+      expect(await fs.pathExists('.husky/pre-commit')).toBe(false);
+      consoleSpy.mockRestore();
+    });
+
+    it('should skip if package.json has lint-staged in devDependencies', async () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      await fs.writeJson('package.json', {
+        devDependencies: { 'lint-staged': '^16.0.0' },
+      });
+
+      const stack: Stack = {
+        language: 'JavaScript',
+        framework: 'Node.js',
+        sourceDir: 'src',
+        sourceDirs: ['src'],
+      };
+
+      await deployLintingTool(precommitTool, stack, templatesPath, {});
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Existing pre-commit configuration detected')
+      );
+      expect(await fs.pathExists('.husky/pre-commit')).toBe(false);
+      consoleSpy.mockRestore();
+    });
+
+    it('should add lint-staged config to package.json for Node.js', async () => {
+      await fs.writeJson('package.json', {
+        name: 'test-project',
+        scripts: {},
+      });
+
+      const stack: Stack = {
+        language: 'JavaScript',
+        framework: 'Node.js',
+        sourceDir: 'src',
+        sourceDirs: ['src'],
+      };
+
+      await deployLintingTool(precommitTool, stack, templatesPath, {});
+
+      const pkg = await fs.readJson('package.json');
+      expect(pkg['lint-staged']).toBeDefined();
+      expect(pkg['lint-staged']['*.{ts,tsx}']).toBeDefined();
+      expect(pkg['lint-staged']['*.{js,jsx}']).toBeDefined();
+    });
+
+    it('should not overwrite existing lint-staged config in package.json', async () => {
+      await fs.writeJson('package.json', {
+        name: 'test-project',
+        'lint-staged': { '*.ts': ['custom-command'] },
+      });
+
+      const stack: Stack = {
+        language: 'JavaScript',
+        framework: 'Node.js',
+        sourceDir: 'src',
+        sourceDirs: ['src'],
+      };
+
+      await deployLintingTool(precommitTool, stack, templatesPath, {});
+
+      const pkg = await fs.readJson('package.json');
+      expect(pkg['lint-staged']['*.ts']).toEqual(['custom-command']);
+    });
+
+    it('should deploy husky pre-commit for React', async () => {
+      const stack: Stack = {
+        language: 'JavaScript/TypeScript',
+        framework: 'React',
+        sourceDir: 'src',
+        sourceDirs: ['src'],
+      };
+
+      await deployLintingTool(precommitTool, stack, templatesPath, {});
+
+      expect(await fs.pathExists('.husky/pre-commit')).toBe(true);
+      const content = await fs.readFile('.husky/pre-commit', 'utf8');
+      expect(content).toContain('npx lint-staged');
     });
   });
 

@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
+import chalk from 'chalk';
 import { processTemplate } from './template-processor.js';
 import { validatePath } from './validate-path.js';
 import { LintingTool, Stack } from '../types.js';
@@ -22,7 +23,7 @@ export async function deployLintingTool(
       await deployPrettier(tool, templateDir, variables);
       break;
     case 'precommit':
-      await deployPreCommit(tool, templateDir, variables);
+      await deployPreCommit(tool, stack, templateDir, variables);
       break;
     case 'typescript-eslint':
       await deployTypeScriptESLint(tool, stack, templateDir, variables);
@@ -96,6 +97,94 @@ async function deployPrettier(
 }
 
 async function deployPreCommit(
+  tool: LintingTool,
+  stack: Stack,
+  templateDir: string,
+  variables: Record<string, string | number>
+): Promise<void> {
+  // Skip if existing pre-commit setup detected
+  if (await hasExistingPreCommitSetup()) {
+    console.warn(
+      chalk.yellow('   Existing pre-commit configuration detected, skipping deployment')
+    );
+    return;
+  }
+
+  const framework = stack.framework;
+  if (framework === 'Node.js' || framework === 'React' || framework === 'Next.js') {
+    await deployHuskyPreCommit(tool, templateDir, variables);
+  } else {
+    await deployPythonPreCommit(tool, templateDir, variables);
+  }
+}
+
+async function hasExistingPreCommitSetup(): Promise<boolean> {
+  // Check for .husky/ directory
+  if (await fs.pathExists('.husky')) {
+    return true;
+  }
+
+  // Check for .pre-commit-config.yaml
+  if (await fs.pathExists('.pre-commit-config.yaml')) {
+    return true;
+  }
+
+  // Check package.json for husky or lint-staged
+  if (await fs.pathExists('package.json')) {
+    const pkg = await fs.readJson('package.json');
+    const allDeps = {
+      ...pkg.dependencies,
+      ...pkg.devDependencies,
+    };
+    if (allDeps.husky || allDeps['lint-staged']) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+async function deployHuskyPreCommit(
+  tool: LintingTool,
+  templateDir: string,
+  variables: Record<string, string | number>
+): Promise<void> {
+  // Create .husky directory
+  await fs.ensureDir('.husky');
+
+  // Deploy pre-commit hook from template
+  const templatePath = path.join(templateDir, '.husky-pre-commit.template');
+  const content = await fs.readFile(templatePath, 'utf8');
+  const processed = processTemplate(content, variables);
+
+  const destPath = validatePath('.husky/pre-commit');
+  await fs.writeFile(destPath, processed, { mode: 0o755 });
+
+  // Add lint-staged config to package.json
+  await addLintStagedConfig();
+}
+
+async function addLintStagedConfig(): Promise<void> {
+  const packageJsonPath = 'package.json';
+  if (!(await fs.pathExists(packageJsonPath))) {
+    return;
+  }
+
+  const pkg = await fs.readJson(packageJsonPath);
+  if (pkg['lint-staged']) {
+    return; // Already has lint-staged config
+  }
+
+  pkg['lint-staged'] = {
+    '*.{ts,tsx}': ['eslint --fix', 'prettier --write'],
+    '*.{js,jsx}': ['eslint --fix', 'prettier --write'],
+    '*.{json,md,yml,yaml}': ['prettier --write'],
+  };
+
+  await fs.writeJson(packageJsonPath, pkg, { spaces: 2 });
+}
+
+async function deployPythonPreCommit(
   tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>

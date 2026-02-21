@@ -286,16 +286,51 @@ Configure pre-commit hooks when:
 - Team wants to enforce quality standards early
 - Project needs to prevent bad commits from reaching CI
 
-### Pre-commit Configuration
+### Existing Configuration Detection
 
-Create `.pre-commit-config.yaml`:
+**IMPORTANT:** Before deploying pre-commit hooks, check for existing configurations:
+- `.husky/` directory exists - **Skip deployment** (user already has husky configured)
+- `.pre-commit-config.yaml` exists - **Skip deployment** (user already has pre-commit configured)
+- `package.json` has `husky` or `lint-staged` in dependencies - **Skip deployment**
+
+If any existing configuration is detected, log a warning and preserve the user's setup.
+
+### Node.js/React Projects: Husky + lint-staged
+
+For Node.js and React projects, deploy **husky + lint-staged** (native Node.js tooling):
+
+**Files deployed:**
+- `.husky/pre-commit` - Hook script that runs `npx lint-staged`
+- `package.json` - Updated with `lint-staged` config, `prepare` script, and devDependencies
+
+**Dependencies added to `devDependencies`:**
+- `husky@^9.1.7`
+- `lint-staged@^16.2.0`
+
+**Scripts added:**
+- `prepare: 'husky'`
+
+**lint-staged configuration added to `package.json`:**
+```json
+{
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{js,jsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,yml,yaml}": ["prettier --write"]
+  }
+}
+```
+
+**Activation:** Hooks activate automatically after `npm install` (via the `prepare` script).
+
+### Python/Flutter/Rust Projects: Python pre-commit
+
+For Python, Flutter, and Rust projects, deploy `.pre-commit-config.yaml` (Python's pre-commit framework):
 
 ```yaml
 # Trinity Method Pre-commit Hooks
 # Install: pip install pre-commit && pre-commit install
-
 repos:
-  # Linting and Formatting
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
@@ -307,44 +342,9 @@ repos:
         args: ['--maxkb=500']
       - id: check-merge-conflict
       - id: detect-private-key
-
-  # ESLint for JavaScript/TypeScript
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.56.0
-    hooks:
-      - id: eslint
-        files: \.(js|jsx|ts|tsx)$
-        args: ['--fix']
-        additional_dependencies:
-          - eslint
-          - '@typescript-eslint/eslint-plugin'
-          - '@typescript-eslint/parser'
-
-  # TypeScript type checking
-  - repo: local
-    hooks:
-      - id: tsc
-        name: TypeScript Compiler
-        entry: npx tsc --noEmit
-        language: system
-        types: [typescript]
-        pass_filenames: false
-
-  # Run tests for modified files
-  - repo: local
-    hooks:
-      - id: jest-changed
-        name: Jest (Changed Files)
-        entry: npm test -- --findRelatedTests --passWithNoTests
-        language: system
-        types: [javascript, typescript]
-        pass_filenames: true
 ```
 
-### Installation Instructions
-
-Provide user with installation steps:
-
+**Installation Instructions (Python/Flutter/Rust only):**
 ```bash
 # Install pre-commit (requires Python)
 pip install pre-commit
@@ -354,9 +354,6 @@ pre-commit install
 
 # Test hooks on all files (optional)
 pre-commit run --all-files
-
-# Update hooks to latest versions
-pre-commit autoupdate
 ```
 
 ---
@@ -489,8 +486,8 @@ Ein's work is complete when:
 1. ✅ `.github/workflows/ci.yml` created with all 6 BAS phases
 2. ✅ CI workflow triggers on main, dev, and pull requests
 3. ✅ Coverage threshold enforcement (≥80%) implemented
-4. ✅ Pre-commit configuration created (if deployed)
-5. ✅ Installation instructions provided to user
+4. ✅ Pre-commit hooks configured (husky for Node.js/React, Python pre-commit for others)
+5. ✅ Existing pre-commit configurations preserved (not overwritten)
 6. ✅ Environment setup instructions included
 
 ---
@@ -511,10 +508,10 @@ Ein's work is complete when:
   - Runtime: {{DETECTED_RUNTIME}}
   - Coverage: ≥80% enforced
 
-- .pre-commit-config.yaml ✅ (if exists)
+- .husky/pre-commit ✅ (Node.js/React) OR .pre-commit-config.yaml ✅ (Python/Flutter/Rust)
   - Status: Ready (customized for {{FRAMEWORK}})
-  - Hooks: Linting, type checking, tests
-  - Activation: Requires local install (see instructions below)
+  - Node.js/React: husky + lint-staged (activates on npm install)
+  - Python/Flutter/Rust: Python pre-commit (requires pip install)
 
 **Customizations Applied:**
 - ✅ Detected framework: {{FRAMEWORK}}
@@ -531,7 +528,7 @@ Ein's work is complete when:
 
 📁 Files Created:
 - .github/workflows/ci.yml (CI pipeline with BAS 6-phase quality gates)
-- .pre-commit-config.yaml (pre-commit hooks - if requested)
+- .husky/pre-commit (Node.js/React) OR .pre-commit-config.yaml (Python/Flutter/Rust)
 
 🔧 CI Configuration:
 - Triggers: push to main/dev, all pull requests
@@ -547,13 +544,18 @@ Ein's work is complete when:
    git push
    ```
 
-2. (Optional) Install pre-commit hooks:
+2. (Node.js/React) Activate husky hooks:
+   ```bash
+   npm install
+   ```
+
+3. (Python/Flutter/Rust) Install pre-commit hooks:
    ```bash
    pip install pre-commit
    pre-commit install
    ```
 
-3. Monitor workflows: https://github.com/{{USER}}/{{REPO}}/actions
+4. Monitor workflows: https://github.com/{{USER}}/{{REPO}}/actions
 
 💡 Workflow will automatically:
 - Run linting with auto-fix
