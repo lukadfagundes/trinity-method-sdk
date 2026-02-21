@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { validatePath } from './validate-path.js';
+import { processTemplate } from './template-processor.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -57,12 +58,16 @@ async function deployGitLabCI(
 }
 
 /**
- * Deploy CI/CD workflow templates based on detected Git platform
+ * Deploy CI workflow templates based on detected Git platform
  *
  * @param options - Deployment options
+ * @param variables - Template variables for processing
  * @returns Deployment results with statistics
  */
-export async function deployCITemplates(options: CIDeployOptions = {}): Promise<CIDeploymentStats> {
+export async function deployCITemplates(
+  options: CIDeployOptions = {},
+  variables: Record<string, string> = {}
+): Promise<CIDeploymentStats> {
   const stats: CIDeploymentStats = {
     deployed: [],
     skipped: [],
@@ -75,7 +80,7 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
 
     const templatesPath = path.join(__dirname, '../../templates/ci');
 
-    // GitHub Actions - Deploy both CI and CD workflows
+    // GitHub Actions - Deploy CI workflow
     if (platform === 'github' || platform === 'unknown') {
       try {
         await fs.ensureDir('.github/workflows');
@@ -83,28 +88,24 @@ export async function deployCITemplates(options: CIDeployOptions = {}): Promise<
         // Deploy CI workflow
         const ciTemplate = path.join(templatesPath, 'ci.yml.template');
         if (await fs.pathExists(ciTemplate)) {
-          const content = await fs.readFile(ciTemplate, 'utf8');
+          const ciExists = await fs.pathExists('.github/workflows/ci.yml');
 
-          // Validate destination path for security
-          const destPath = validatePath('.github/workflows/ci.yml');
-          await fs.writeFile(destPath, content);
-          stats.deployed.push('.github/workflows/ci.yml');
-        }
+          if (ciExists && !options.force) {
+            stats.skipped.push('.github/workflows/ci.yml (already exists)');
+          } else {
+            const content = await fs.readFile(ciTemplate, 'utf8');
+            const processed = processTemplate(content, variables);
 
-        // Deploy CD workflow
-        const cdTemplate = path.join(templatesPath, 'cd.yml.template');
-        if (await fs.pathExists(cdTemplate)) {
-          const content = await fs.readFile(cdTemplate, 'utf8');
-
-          // Validate destination path for security
-          const destPath = validatePath('.github/workflows/cd.yml');
-          await fs.writeFile(destPath, content);
-          stats.deployed.push('.github/workflows/cd.yml');
+            // Validate destination path for security
+            const destPath = validatePath('.github/workflows/ci.yml');
+            await fs.writeFile(destPath, processed);
+            stats.deployed.push('.github/workflows/ci.yml');
+          }
         }
       } catch (error: unknown) {
         const { getErrorMessage } = await import('./errors.js');
         stats.errors.push({
-          file: '.github/workflows/ci.yml or cd.yml',
+          file: '.github/workflows/ci.yml',
           error: getErrorMessage(error),
         });
       }

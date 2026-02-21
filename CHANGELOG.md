@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **CRITICAL: CI/CD workflow templates never deployed** - Fixed `enableCICD` from interactive config never bridging to `ciDeploy` deployment flag
+  - Added bridge in deploy orchestrator: `if (config.enableCICD) { options.ciDeploy = true; }`
+  - CI templates now correctly deploy when user selects CI/CD during `trinity deploy`
+
+- **CI template variables not processed** - Added `processTemplate()` call to CI workflow deployment
+  - `{{PROJECT_NAME}}`, `{{FRAMEWORK}}`, and other template variables now resolve in deployed `ci.yml`
+  - Passes variables from deploy orchestrator through `deployCICD()` to `deployCITemplates()`
+
+- **No --force protection for GitHub Actions templates** - Added existence check matching GitLab's pattern
+  - `.github/workflows/ci.yml` now skipped if it already exists (unless `--force` is used)
+  - Both GitHub and GitLab platforms now have consistent `--force` flag protection
+
+- **Configuration display showed wrong filename** - Changed `trinity-ci.yml` to `ci.yml` in interactive prompt output
+  - Both detected-platform and unknown-platform display now show correct filename
+
+- **CI workflow template header** - Changed `CI/CD Pipeline` to `CI Pipeline` in `ci.yml.template`
+
+### Removed
+
+- **Dead template files** - Deleted `cd.yml.template` (used undefined `{{DOMAIN}}` variable) and `github-actions.yml` (orphaned, never referenced)
+- **CD workflow references** - Removed all Continuous Deployment workflow references from source code, templates (EIN, TAN, init, verify), CI workflow, tests, and documentation
+
 ## [2.1.0] - 2026-01-21
 
 ### Added

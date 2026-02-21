@@ -110,7 +110,7 @@ npm run docs:generate        # Generate TypeDoc documentation
 npm version patch            # Bump patch version (2.0.0 → 2.0.1)
 npm version minor            # Bump minor version (2.0.0 → 2.1.0)
 npm version major            # Bump major version (2.0.0 → 3.0.0)
-npm publish                  # Publish to npm (use CD pipeline instead)
+npm publish                  # Publish to npm
 ```
 
 ---
@@ -144,9 +144,6 @@ npm version patch
 
 # 3. Push with tags
 git push origin main --tags
-
-# Alternative: Manual workflow dispatch
-# Go to: Actions → Trinity CD Pipeline → Run workflow
 ```
 
 ### Troubleshooting
@@ -177,13 +174,6 @@ npm run test:coverage -- path/to/file.ts
 | `GITHUB_TOKEN` | GitHub authentication         | Auto-generated |
 | `NODE_ENV`     | Environment (test/production) | Workflow       |
 
-### CD Environment
-
-| Variable       | Description              | Required       |
-| -------------- | ------------------------ | -------------- |
-| `NPM_TOKEN`    | npm authentication token | Yes (secret)   |
-| `GITHUB_TOKEN` | GitHub authentication    | Auto-generated |
-
 ---
 
 ## Workflow Triggers
@@ -203,24 +193,6 @@ on:
 - Direct push to `main`, `dev`, or `testing`
 - Opening a PR to `main` or `dev`
 - Pushing to PR branch
-
-### CD Triggers
-
-```yaml
-on:
-  push:
-    tags:
-      - 'v*.*.*'
-  workflow_dispatch:
-    inputs:
-      version: { required: true }
-      dry_run: { default: false }
-```
-
-**Triggered by:**
-
-- Pushing version tag (e.g., `v2.0.0`)
-- Manual workflow dispatch
 
 ---
 

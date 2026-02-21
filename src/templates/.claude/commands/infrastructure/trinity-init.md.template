@@ -402,7 +402,6 @@ Suggestions:
 1. **Check for GitHub Actions workflows:**
    ```bash
    ls .github/workflows/ci.yml 2>/dev/null && echo "CI FOUND" || echo "CI NOT_FOUND"
-   ls .github/workflows/cd.yml 2>/dev/null && echo "CD FOUND" || echo "CD NOT_FOUND"
    ```
 
 2. **Check for pre-commit configuration:**
@@ -412,7 +411,7 @@ Suggestions:
 
 **Decision Tree:**
 
-- **IF any CI/CD files exist (ci.yml, cd.yml, OR pre-commit config):**
+- **IF any CI/CD files exist (ci.yml OR pre-commit config):**
   - ✅ **Invoke EIN** - Adopt EIN (CI/CD Specialist) persona
   - Continue with "EIN's Responsibilities" below
   - Include EIN's work in JUNO's audit report
@@ -444,15 +443,7 @@ Suggestions:
    - **Validate** triggers are correct (push to main/dev, pull requests)
    - **Confirm** coverage threshold enforcement is configured
 
-**2. GitHub Actions CD Workflow** (if `.github/workflows/cd.yml` exists):
-   - **Read** the deployed cd.yml file
-   - **Verify** deployment stages (CI gate → build → staging → production)
-   - **Validate** CI workflow is called as prerequisite
-   - **Customize** deployment commands for project type
-   - **Confirm** environment protection is documented
-   - **Validate** artifact management (upload/download between jobs)
-
-**3. Pre-commit Hooks** (if `.pre-commit-config.yaml` exists):
+**2. Pre-commit Hooks** (if `.pre-commit-config.yaml` exists):
    - **Read** the deployed .pre-commit-config.yaml file
    - **Verify** all hooks are configured:
      - Standard hooks (trailing whitespace, YAML/JSON validation, etc.)
@@ -476,12 +467,6 @@ After reviewing and customizing CI/CD files, EIN should report:
   - Runtime: {{DETECTED_RUNTIME}}
   - Coverage: ≥80% enforced
 
-- .github/workflows/cd.yml ✅
-  - Status: Ready (deployment commands customized)
-  - Staging: Auto-deploy on main branch
-  - Production: Deploy via version tags (v*)
-  - Environments: Require setup (see instructions below)
-
 - .pre-commit-config.yaml ✅ (if deployed)
   - Status: Ready (customized for {{FRAMEWORK}})
   - Hooks: Linting, type checking, tests
@@ -496,23 +481,15 @@ After reviewing and customizing CI/CD files, EIN should report:
 
 **Activation Instructions:**
 
-📋 **Step 1: Activate GitHub Actions Workflows**
+📋 **Step 1: Activate GitHub Actions Workflow**
 ```bash
-# Workflows are already in place, just commit and push
-git add .github/workflows/ci.yml .github/workflows/cd.yml
-git commit -m "Activate Trinity CI/CD pipelines"
+# Workflow is already in place, just commit and push
+git add .github/workflows/ci.yml
+git commit -m "Activate Trinity CI pipeline"
 git push
 ```
 
-📋 **Step 2: Set Up GitHub Environments** (Required for CD)
-1. Go to: Repository Settings → Environments
-2. Create "staging" environment:
-   - No protection rules needed
-3. Create "production" environment:
-   - ✅ Enable "Required reviewers" (add team members)
-   - ⏱️ Optional: "Wait timer" (e.g., 5 minutes before deploy)
-
-📋 **Step 3: Activate Pre-commit Hooks** (Optional but Recommended)
+📋 **Step 2: Activate Pre-commit Hooks** (Optional but Recommended)
 ```bash
 # Install pre-commit framework
 pip install pre-commit

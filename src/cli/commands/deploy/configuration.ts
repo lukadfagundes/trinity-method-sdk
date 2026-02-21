@@ -144,14 +144,14 @@ function displayCICDConfig(platform: string): void {
     console.log(chalk.cyan(`📦 Detected platform: ${platform}\n`));
     console.log(chalk.white('  Will configure:'));
     if (platform === 'GitHub Actions') {
-      console.log(chalk.white('  ✓ .github/workflows/trinity-ci.yml'));
+      console.log(chalk.white('  ✓ .github/workflows/ci.yml'));
     } else if (platform === 'GitLab CI') {
       console.log(chalk.white('  ✓ .gitlab-ci.yml'));
     }
     console.log(chalk.white('  ✓ trinity/templates/ci/generic-ci.yml (reference)'));
   } else {
     console.log(chalk.cyan('\n📦 Will configure:\n'));
-    console.log(chalk.white('  ✓ .github/workflows/trinity-ci.yml (GitHub Actions)'));
+    console.log(chalk.white('  ✓ .github/workflows/ci.yml (GitHub Actions)'));
     console.log(chalk.white('  ✓ trinity/templates/ci/generic-ci.yml (reference)'));
   }
 }

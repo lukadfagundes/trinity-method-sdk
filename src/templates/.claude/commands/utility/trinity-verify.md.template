@@ -59,7 +59,6 @@ Check for:
 
 7. **CI/CD Workflows (if deployed):**
    - .github/workflows/ci.yml (BAS 6-phase quality gates)
-   - .github/workflows/cd.yml (Deployment pipeline)
 
 Report:
 - ✅ Installed components
@@ -152,7 +151,6 @@ Report:
 
 ### 5. CI/CD Workflows ✅ (Optional)
 - ✅ .github/workflows/ci.yml (BAS 6-phase gates)
-- ✅ .github/workflows/cd.yml (Deployment pipeline)
 
 ## Summary
 **Status**: ✅ FULLY DEPLOYED
@@ -452,7 +450,6 @@ ls -la .github/workflows/
 
 # Expected (if CI/CD requested):
 # ci.yml
-# cd.yml
 ```
 
 ---
