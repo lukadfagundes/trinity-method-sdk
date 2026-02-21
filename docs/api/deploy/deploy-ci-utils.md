@@ -14,7 +14,7 @@ The CI/CD Deployment Utilities module provides low-level functions for deploying
 ### Key Features
 
 - **Platform detection**: Automatically detects GitHub or GitLab from `.git/config`
-- **Multi-platform support**: Deploys GitHub Actions (CI+CD) or GitLab CI
+- **Multi-platform support**: Deploys GitHub Actions CI or GitLab CI
 - **Generic templates**: Always deploys platform-agnostic templates
 - **Path validation**: Security checks for file system operations
 - **Statistics tracking**: Tracks deployed, skipped, and error files
@@ -24,14 +24,17 @@ The CI/CD Deployment Utilities module provides low-level functions for deploying
 
 ## API Reference
 
-### `deployCITemplates(options)`
+### `deployCITemplates(options, variables)`
 
-Deploys CI/CD workflow templates based on detected Git platform.
+Deploys CI workflow templates based on detected Git platform.
 
 **Signature:**
 
 ```typescript
-async function deployCITemplates(options?: CIDeployOptions): Promise<CIDeploymentStats>;
+async function deployCITemplates(
+  options?: CIDeployOptions,
+  variables?: Record<string, string>
+): Promise<CIDeploymentStats>;
 ```
 
 **Parameters:**
@@ -140,14 +143,15 @@ type GitPlatform = 'github' | 'gitlab' | 'unknown';
 
 ```
 1. Detect Git Platform (detectGitPlatform)
-   ├─ GitHub detected → Deploy GitHub Actions (CI + CD)
+   ├─ GitHub detected → Deploy GitHub Actions CI
    ├─ GitLab detected → Deploy GitLab CI
    └─ Unknown → Deploy GitHub Actions (default)
 
 2. GitHub Actions Deployment
    ├─ Create .github/workflows/ directory
-   ├─ Deploy ci.yml.template → .github/workflows/ci.yml
-   └─ Deploy cd.yml.template → .github/workflows/cd.yml
+   ├─ Check if ci.yml exists (skip unless --force)
+   ├─ Process template variables ({{PROJECT_NAME}}, etc.)
+   └─ Deploy ci.yml.template → .github/workflows/ci.yml
 
 3. GitLab CI Deployment
    ├─ Check if .gitlab-ci.yml exists
@@ -278,18 +282,11 @@ if (platform === 'github') {
 - Linting, testing, building
 - Automated quality checks
 
-**2. CD Workflow (`.github/workflows/cd.yml`)**
-
-- Runs on version tags (v*.*.\*)
-- Deployment to production
-- Release automation
-
 ### Template Path
 
 ```
 src/cli/templates/ci/
-├── ci.yml.template → .github/workflows/ci.yml
-└── cd.yml.template → .github/workflows/cd.yml
+└── ci.yml.template → .github/workflows/ci.yml
 ```
 
 ### Deployment Process
@@ -298,19 +295,19 @@ src/cli/templates/ci/
 // 1. Ensure directory exists
 await fs.ensureDir('.github/workflows');
 
-// 2. Deploy CI workflow
-const ciTemplate = path.join(templatesPath, 'ci.yml.template');
-const ciContent = await fs.readFile(ciTemplate, 'utf8');
-const ciDestPath = validatePath('.github/workflows/ci.yml');
-await fs.writeFile(ciDestPath, ciContent);
-stats.deployed.push('.github/workflows/ci.yml');
-
-// 3. Deploy CD workflow
-const cdTemplate = path.join(templatesPath, 'cd.yml.template');
-const cdContent = await fs.readFile(cdTemplate, 'utf8');
-const cdDestPath = validatePath('.github/workflows/cd.yml');
-await fs.writeFile(cdDestPath, cdContent);
-stats.deployed.push('.github/workflows/cd.yml');
+// 2. Check if CI workflow already exists
+const ciExists = await fs.pathExists('.github/workflows/ci.yml');
+if (ciExists && !options.force) {
+  stats.skipped.push('.github/workflows/ci.yml (already exists)');
+} else {
+  // 3. Deploy CI workflow with template variable processing
+  const ciTemplate = path.join(templatesPath, 'ci.yml.template');
+  const content = await fs.readFile(ciTemplate, 'utf8');
+  const processed = processTemplate(content, variables);
+  const ciDestPath = validatePath('.github/workflows/ci.yml');
+  await fs.writeFile(ciDestPath, processed);
+  stats.deployed.push('.github/workflows/ci.yml');
+}
 ```
 
 ---
@@ -351,10 +348,10 @@ await fs.writeFile(destPath, content);
 stats.deployed.push('.gitlab-ci.yml');
 ```
 
-**Key Difference from GitHub:**
+**Consistent Behavior:**
 
-- GitLab: Checks for existing file (skips if exists)
-- GitHub: Always deploys (overwrites if exists)
+- Both GitHub and GitLab check for existing files
+- Existing files are skipped unless `--force` is used
 
 ---
 
@@ -419,7 +416,6 @@ await fs.writeFile(destPath, content);
 {
   deployed: [
     '.github/workflows/ci.yml',
-    '.github/workflows/cd.yml',
     'trinity/templates/ci/generic-ci.yml'
   ],
   skipped: [],
@@ -446,13 +442,12 @@ await fs.writeFile(destPath, content);
 ```typescript
 {
   deployed: [
-    '.github/workflows/ci.yml',
     'trinity/templates/ci/generic-ci.yml'
   ],
   skipped: [],
   errors: [
     {
-      file: '.github/workflows/cd.yml',
+      file: '.github/workflows/ci.yml',
       error: 'EACCES: permission denied'
     }
   ]
@@ -522,7 +517,6 @@ try {
 ### Templates Used
 
 - `src/cli/templates/ci/ci.yml.template` - GitHub Actions CI workflow
-- `src/cli/templates/ci/cd.yml.template` - GitHub Actions CD workflow
 - `src/cli/templates/ci/gitlab-ci.yml` - GitLab CI pipeline
 - `src/cli/templates/ci/generic-ci.yml` - Generic CI template
 
@@ -554,7 +548,6 @@ describe('deployCITemplates', () => {
     const stats = await deployCITemplates();
 
     expect(stats.deployed).toContain('.github/workflows/ci.yml');
-    expect(stats.deployed).toContain('.github/workflows/cd.yml');
     expect(stats.deployed).toContain('trinity/templates/ci/generic-ci.yml');
   });
 
@@ -654,7 +647,7 @@ describe('detectGitPlatform', () => {
 ### Deployment Time
 
 - **Platform detection**: ~10ms (read .git/config)
-- **GitHub Actions**: ~50-100ms (2 files + directory creation)
+- **GitHub Actions**: ~25-50ms (1 file + directory creation)
 - **GitLab CI**: ~25-50ms (1 file)
 - **Generic template**: ~25-50ms (1 file + directory creation)
 - **Total time**: ~100-200ms typical

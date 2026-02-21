@@ -86,6 +86,11 @@ export async function deploy(options: DeployOptions): Promise<void> {
     // STEP 3: Interactive configuration (or use defaults with --yes)
     const config = await promptConfiguration(options, stack);
 
+    // Bridge interactive CI/CD selection to deployment flag
+    if (config.enableCICD) {
+      options.ciDeploy = true;
+    }
+
     // STEP 3.5: Collect codebase metrics
     let metrics: CodebaseMetrics;
     if (!options.skipAudit) {
@@ -154,7 +159,7 @@ export async function deploy(options: DeployOptions): Promise<void> {
     progress.templatesDeployed = templatesDeployed;
 
     // STEP 11: Deploy CI/CD workflow templates (if enabled)
-    const cicdFiles = await deployCICD(options, spinner);
+    const cicdFiles = await deployCICD(options, spinner, variables);
     progress.rootFilesDeployed += cicdFiles;
 
     // STEP 11.5: Update .gitignore

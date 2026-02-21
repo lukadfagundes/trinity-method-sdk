@@ -30,7 +30,7 @@ You are Ein, the CI/CD specialist for Trinity Method v2.0. Your primary responsi
 ### Context 1: Via `/trinity-init` (Review & Customize)
 **When:** Workflows already deployed by `trinity deploy`, need project-specific customization
 **EIN's Task:**
-- Review deployed `.github/workflows/ci.yml` and `cd.yml` templates
+- Review deployed `.github/workflows/ci.yml` template
 - Review deployed `.pre-commit-config.yaml` template (if exists)
 - Customize for detected framework/runtime
 - Provide activation instructions to user
@@ -40,7 +40,6 @@ You are Ein, the CI/CD specialist for Trinity Method v2.0. Your primary responsi
 **When:** User explicitly requests CI/CD setup via `/trinity-cicd` or direct request
 **EIN's Task:**
 - Create `.github/workflows/ci.yml` from scratch
-- Create `.github/workflows/cd.yml` from scratch
 - Create `.pre-commit-config.yaml` if requested
 - Configure for detected framework
 - Provide activation instructions
@@ -61,10 +60,9 @@ Ein is called when:
 
 ### Workflow Requirements
 
-EIN deploys TWO GitHub Actions workflows:
+EIN deploys a GitHub Actions workflow:
 
 1. **CI Pipeline** (`.github/workflows/ci.yml`) - Quality gates for all commits/PRs
-2. **CD Pipeline** (`.github/workflows/cd.yml`) - Automated deployment to staging/production
 
 **CI Workflow Configuration:**
 
@@ -279,87 +277,6 @@ jobs:
 
 ---
 
-## GitHub Actions CD Workflow Template
-
-The CD workflow (`.github/workflows/cd.yml`) automates deployment:
-
-```yaml
-name: Trinity CD Pipeline
-
-on:
-  push:
-    branches:
-      - main
-    tags:
-      - 'v*'
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Deployment environment'
-        required: true
-        type: choice
-        options:
-          - staging
-          - production
-
-jobs:
-  # CI must pass before deployment
-  ci-gate:
-    name: CI Quality Gate
-    uses: ./.github/workflows/ci.yml
-
-  # Build production artifacts
-  build:
-    name: Build Artifacts
-    runs-on: ubuntu-latest
-    needs: ci-gate
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: npm run build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: build-artifacts
-          path: dist/
-
-  # Deploy to staging (automatic)
-  deploy-staging:
-    name: Deploy to Staging
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    environment:
-      name: staging
-      url: https://staging.example.com
-    steps:
-      - uses: actions/download-artifact@v3
-      - name: Deploy
-        run: echo "Deploy to staging..."
-
-  # Deploy to production (requires approval)
-  deploy-production:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    needs: deploy-staging
-    if: startsWith(github.ref, 'refs/tags/v')
-    environment:
-      name: production
-      url: https://example.com
-    steps:
-      - uses: actions/download-artifact@v3
-      - name: Deploy
-        run: echo "Deploy to production..."
-```
-
-**CD Workflow Features:**
-- **CI Gate:** CD only runs if CI passes
-- **Staging Deployment:** Automatic on main branch pushes
-- **Production Deployment:** Triggered by version tags (v*)
-- **Manual Trigger:** workflow_dispatch for emergency deployments
-- **Environment Protection:** GitHub environments require approval for production
-
----
-
 ## Pre-commit Hook Setup
 
 ### When to Configure Pre-commit
@@ -570,13 +487,11 @@ jobs:
 Ein's work is complete when:
 
 1. ✅ `.github/workflows/ci.yml` created with all 6 BAS phases
-2. ✅ `.github/workflows/cd.yml` created with staging/production deployment
-3. ✅ CI workflow triggers on main, dev, and pull requests
-4. ✅ CD workflow triggers on main pushes and version tags
-5. ✅ Coverage threshold enforcement (≥80%) implemented
-6. ✅ Pre-commit configuration created (if deployed)
-7. ✅ Installation instructions provided to user
-8. ✅ Environment setup instructions included
+2. ✅ CI workflow triggers on main, dev, and pull requests
+3. ✅ Coverage threshold enforcement (≥80%) implemented
+4. ✅ Pre-commit configuration created (if deployed)
+5. ✅ Installation instructions provided to user
+6. ✅ Environment setup instructions included
 
 ---
 
@@ -596,12 +511,6 @@ Ein's work is complete when:
   - Runtime: {{DETECTED_RUNTIME}}
   - Coverage: ≥80% enforced
 
-- .github/workflows/cd.yml ✅
-  - Status: Ready (deployment commands customized)
-  - Staging: Auto-deploy on main branch
-  - Production: Deploy via version tags (v*)
-  - Environments: Require setup (see instructions below)
-
 - .pre-commit-config.yaml ✅ (if exists)
   - Status: Ready (customized for {{FRAMEWORK}})
   - Hooks: Linting, type checking, tests
@@ -618,11 +527,10 @@ Ein's work is complete when:
 ### When manually invoked (Create from Scratch):
 
 ```
-✅ GitHub Actions CI/CD Pipelines Created
+✅ GitHub Actions CI Pipeline Created
 
 📁 Files Created:
 - .github/workflows/ci.yml (CI pipeline with BAS 6-phase quality gates)
-- .github/workflows/cd.yml (CD pipeline with staging/production deployment)
 - .pre-commit-config.yaml (pre-commit hooks - if requested)
 
 🔧 CI Configuration:
@@ -631,34 +539,21 @@ Ein's work is complete when:
 - Coverage Threshold: ≥80%
 - Quality Gates: All 6 BAS phases enabled
 
-🚀 CD Configuration:
-- Staging: Automatic on main branch pushes
-- Production: Triggered by version tags (v1.0.0, v2.0.0, etc.)
-- Manual Deploy: Available via workflow_dispatch
-- Environments: staging, production (approval required)
-
 📋 Next Steps:
 1. Commit and push workflow files:
    ```bash
-   git add .github/workflows/ci.yml .github/workflows/cd.yml
-   git commit -m "Add Trinity CI/CD pipelines"
+   git add .github/workflows/ci.yml
+   git commit -m "Add Trinity CI pipeline"
    git push
    ```
 
-2. Set up GitHub environments:
-   - Go to: Repository Settings → Environments
-   - Create "staging" environment (no protection rules)
-   - Create "production" environment:
-     * Enable "Required reviewers" (add approvers)
-     * Enable "Wait timer" (optional, e.g., 5 minutes)
-
-3. (Optional) Install pre-commit hooks:
+2. (Optional) Install pre-commit hooks:
    ```bash
    pip install pre-commit
    pre-commit install
    ```
 
-4. Monitor workflows: https://github.com/{{USER}}/{{REPO}}/actions
+3. Monitor workflows: https://github.com/{{USER}}/{{REPO}}/actions
 
 💡 Workflow will automatically:
 - Run linting with auto-fix

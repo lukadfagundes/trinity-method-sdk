@@ -24,7 +24,11 @@ Deploys CI/CD workflow templates based on user configuration and detected Git pl
 **Signature:**
 
 ```typescript
-async function deployCICD(options: DeployOptions, spinner: Spinner): Promise<number>;
+async function deployCICD(
+  options: DeployOptions,
+  spinner: Spinner,
+  variables?: Record<string, string>
+): Promise<number>;
 ```
 
 **Parameters:**
@@ -34,6 +38,7 @@ async function deployCICD(options: DeployOptions, spinner: Spinner): Promise<num
   - `yes` (boolean) - Skip confirmation prompts
   - `force` (boolean) - Force overwrite existing files
 - `spinner` (Spinner) - Ora spinner instance for displaying deployment progress
+- `variables` (Record<string, string>) - Optional template variables for processing (e.g., PROJECT_NAME, FRAMEWORK)
 
 **Returns:**
 
@@ -68,11 +73,12 @@ const filesDeployed = await deployCICD(
     yes: false,
     force: false,
   },
-  spinner
+  spinner,
+  { PROJECT_NAME: 'MyProject', FRAMEWORK: 'Node.js' }
 );
 
-console.log(`Deployed ${filesDeployed} CI/CD files`);
-// Output: Deployed 3 CI/CD files
+console.log(`Deployed ${filesDeployed} CI files`);
+// Output: Deployed 2 CI files
 ```
 
 ---
@@ -119,7 +125,6 @@ console.log(`Deployed ${filesDeployed} CI/CD files`);
 **Available Templates:**
 
 - `ci.yml.template` - GitHub Actions CI workflow
-- `cd.yml.template` - GitHub Actions CD workflow
 - `gitlab-ci.yml` - GitLab CI configuration
 - `generic-ci.yml` - Generic CI template
 
@@ -130,24 +135,23 @@ console.log(`Deployed ${filesDeployed} CI/CD files`);
 **Files Deployed:**
 
 1. `.github/workflows/ci.yml` - Continuous Integration workflow
-2. `.github/workflows/cd.yml` - Continuous Deployment workflow
-3. `trinity/templates/ci/generic-ci.yml` - Generic template for reference
+2. `trinity/templates/ci/generic-ci.yml` - Generic template for reference
 
 **Process:**
 
 1. Creates `.github/workflows/` directory (if doesn't exist)
 2. Reads `ci.yml.template` from SDK templates
-3. Validates destination path for security
-4. Writes to `.github/workflows/ci.yml`
-5. Repeats for `cd.yml.template`
-6. Always deploys generic template to `trinity/templates/ci/`
+3. Processes template variables (e.g., `{{PROJECT_NAME}}` → actual project name)
+4. Checks if `.github/workflows/ci.yml` already exists (skips unless `--force`)
+5. Validates destination path for security
+6. Writes to `.github/workflows/ci.yml`
+7. Always deploys generic template to `trinity/templates/ci/`
 
 **Typical Output:**
 
 ```
-✔ CI/CD templates deployed (3 files)
+✔ CI/CD templates deployed (2 files)
   ✓ .github/workflows/ci.yml
-  ✓ .github/workflows/cd.yml
   ✓ trinity/templates/ci/generic-ci.yml
 ```
 
@@ -284,51 +288,6 @@ jobs:
         run: npm run lint
       - name: Run tests
         run: npm test
-```
-
----
-
-### GitHub Actions CD Workflow
-
-**File:** `.github/workflows/cd.yml`
-
-**Purpose:** Automated deployment to production/staging on successful builds
-
-**Typical Workflow Steps:**
-
-1. Checkout code
-2. Setup language runtime
-3. Install dependencies
-4. Build production assets
-5. Run deployment script
-6. Notify team (Slack, Discord, etc.)
-
-**Example Template:**
-
-```yaml
-name: CD
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Install dependencies
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Deploy
-        run: npm run deploy
-        env:
-          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
 ```
 
 ---
@@ -476,13 +435,14 @@ if (ciDeploy) {
 
 ### Existing Files (Not Forced)
 
-**Scenario:** `.gitlab-ci.yml` already exists and `options.force` is false
+**Scenario:** CI workflow file already exists and `options.force` is false
 
 **Behavior:**
 
 - File added to `stats.skipped` array
 - Not overwritten (preserves existing configuration)
 - Other files still deployed
+- Applies to both `.github/workflows/ci.yml` (GitHub) and `.gitlab-ci.yml` (GitLab)
 
 **Example:**
 
@@ -490,7 +450,7 @@ if (ciDeploy) {
 ✔ CI/CD templates deployed (1 file)
   ✓ trinity/templates/ci/generic-ci.yml
   Skipped:
-  - .gitlab-ci.yml (already exists)
+  - .github/workflows/ci.yml (already exists)
 ```
 
 **Override:**
@@ -556,7 +516,7 @@ await deployCICD(options, spinner);
 
 **Behavior:**
 
-- When true: Overwrites existing `.gitlab-ci.yml`
+- When true: Overwrites existing CI workflow files (`.github/workflows/ci.yml` or `.gitlab-ci.yml`)
 - When false: Skips existing files (default)
 
 **Example:**
@@ -657,8 +617,8 @@ env:
 
 1. **Platform Selection:**
    - SDK auto-detects platform from `.git/config`
-   - GitHub: Gets CI + CD workflows
-   - GitLab: Gets unified `.gitlab-ci.yml`
+   - GitHub: Gets CI workflow + generic template
+   - GitLab: Gets `.gitlab-ci.yml` + generic template
    - Unknown: Gets GitHub Actions templates (most compatible)
 
 2. **Customization:**
@@ -673,7 +633,6 @@ env:
 
 4. **Workflow Testing:**
    - Test CI workflow on feature branches
-   - Test CD workflow on staging branch first
    - Monitor workflow runs in CI/CD platform UI
 
 ---
@@ -687,7 +646,7 @@ env:
 | **Configuration** | Multiple YAML files in `.github/workflows/`                 |
 | **Strengths**     | Large marketplace of actions, excellent documentation       |
 | **Pricing**       | Free for public repos, generous free tier for private repos |
-| **Deployment**    | 2 files (CI + CD workflows)                                 |
+| **Deployment**    | 2 files (CI workflow + generic template)                    |
 
 ---
 

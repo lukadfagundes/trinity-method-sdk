@@ -575,7 +575,6 @@ TAN's work is complete when:
 ### EIN Deployment Checklist
 
 - [ ] `.github/workflows/ci.yml` created (BAS 6-phase gates)
-- [ ] `.github/workflows/cd.yml` created (deployment pipeline)
 - [ ] Workflow files have correct project variables
 - [ ] GitHub Actions secrets documented
 

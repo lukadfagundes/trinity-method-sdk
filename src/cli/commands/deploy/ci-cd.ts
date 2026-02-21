@@ -11,9 +11,14 @@ import type { DeployOptions, Spinner } from './types.js';
  *
  * @param options - Deploy command options
  * @param spinner - Spinner instance for status updates
+ * @param variables - Template variables for processing
  * @returns Number of files deployed
  */
-export async function deployCICD(options: DeployOptions, spinner: Spinner): Promise<number> {
+export async function deployCICD(
+  options: DeployOptions,
+  spinner: Spinner,
+  variables: Record<string, string> = {}
+): Promise<number> {
   if (!options.ciDeploy) {
     return 0;
   }
@@ -21,7 +26,7 @@ export async function deployCICD(options: DeployOptions, spinner: Spinner): Prom
   spinner.start('Deploying CI/CD workflow templates...');
 
   try {
-    const ciStats = await deployCITemplates(options);
+    const ciStats = await deployCITemplates(options, variables);
 
     if (ciStats.deployed.length > 0) {
       spinner.succeed(`CI/CD templates deployed (${ciStats.deployed.length} files)`);
