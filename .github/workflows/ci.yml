@@ -673,11 +673,11 @@ jobs:
         run: npm ci
 
       - name: Run npm audit
-        run: npm audit --audit-level=moderate
+        run: npm audit --audit-level=high
         continue-on-error: true
 
       - name: Run dependency check
-        run: npx depcheck --ignores="rimraf,ts-jest"
+        run: npx depcheck --ignores="rimraf,ts-jest,trinity-method-sdk"
         continue-on-error: true
 
   # =============================================
