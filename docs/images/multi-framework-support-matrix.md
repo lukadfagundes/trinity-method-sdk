@@ -5,7 +5,7 @@
 ```mermaid
 graph TB
     subgraph "Trinity Method SDK"
-        CORE[Trinity Core<br/>19 Agents + 20 Commands<br/>Investigation Templates<br/>Knowledge Base]
+        CORE[Trinity Core<br/>18 Agents + 20 Commands<br/>Investigation Templates<br/>Knowledge Base]
     end
 
     subgraph "Framework Detection"
@@ -70,7 +70,7 @@ graph TB
 | Feature                 | Node.js | Python | Rust | Flutter | Go  |
 | ----------------------- | ------- | ------ | ---- | ------- | --- |
 | **Core Trinity**        |
-| 19 Agents               | ✅      | ✅     | ✅   | ✅      | ✅  |
+| 18 Agents               | ✅      | ✅     | ✅   | ✅      | ✅  |
 | 20 Slash Commands       | ✅      | ✅     | ✅   | ✅      | ✅  |
 | Investigation Templates | ✅      | ✅     | ✅   | ✅      | ✅  |
 | Knowledge Base          | ✅      | ✅     | ✅   | ✅      | ✅  |

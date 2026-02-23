@@ -84,7 +84,7 @@ Once work order is created in `.claude/trinity/work-orders/`, execute it:
 /trinity-orchestrate @WO-001-example-task.md
 ```
 
-**AJ MAESTRO** picks up the work order from `.claude/trinity/work-orders/` and orchestrates the 19-agent team to complete the task following Trinity Method workflows.
+**AJ MAESTRO** picks up the work order from `.claude/trinity/work-orders/` and orchestrates the 18-agent team to complete the task following Trinity Method workflows.
 
 ---
 

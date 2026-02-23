@@ -8,7 +8,7 @@
 
 ## System Overview
 
-Trinity Method SDK is a Node.js/TypeScript CLI tool that deploys a complete investigation-first development methodology to projects across multiple frameworks. It provides a 19-agent team, 20 slash commands, and comprehensive investigation templates for structured, quality-driven development.
+Trinity Method SDK is a Node.js/TypeScript CLI tool that deploys a complete investigation-first development methodology to projects across multiple frameworks. It provides an 18-agent team, 21 slash commands, and comprehensive investigation templates for structured, quality-driven development.
 
 ## Technology Stack
 
@@ -56,16 +56,19 @@ trinity-method-sdk/
 ├── src/                  # Source code
 │   ├── cli/              # CLI commands and utilities
 │   │   ├── commands/     # deploy, update commands
-│   │   └── utils/        # Template processing, validation
-│   ├── templates/        # Agent and command templates
-│   │   ├── agents/       # 19 agent templates
-│   │   ├── shared/       # Slash command templates
-│   │   ├── claude/       # CLAUDE.md context files
-│   │   ├── knowledge-base/ # Living documentation templates
-│   │   ├── investigations/ # Investigation templates
-│   │   ├── linting/      # Linting configuration templates
-│   │   ├── ci/           # CI/CD templates
-│   │   └── work-orders/  # Work order templates
+│   │   └── utils/        # Template processing, validation, metrics
+│   ├── templates/        # All deployment templates
+│   │   ├── .claude/      # Claude Code templates
+│   │   │   ├── agents/   # 18 agent templates (leadership, planning, aj-team, deployment, audit)
+│   │   │   ├── commands/ # 21 slash command templates (7 categories)
+│   │   │   └── EMPLOYEE-DIRECTORY.md.template
+│   │   ├── root/         # Root-level templates (CLAUDE.md)
+│   │   ├── source/       # Source directory templates (src/CLAUDE.md)
+│   │   ├── trinity/      # Trinity core templates
+│   │   │   ├── knowledge-base/  # 9 KB file templates
+│   │   │   ├── templates/       # Work order, investigation, documentation templates
+│   │   │   └── CLAUDE.md.template
+│   │   └── ci/           # CI/CD workflow templates
 │   └── index.ts          # Main entry point
 ├── tests/                # Test suite (405 tests)
 │   ├── unit/             # Unit tests (~200 tests)
@@ -84,7 +87,7 @@ trinity-method-sdk/
 
 ## Entry Points
 
-**Main Entry:** dist/index.js (exported SDK functions)
+**Main Entry:** dist/index.js (CLI-only, no programmatic API exports)
 **CLI Binary:** dist/cli/index.js (trinity command)
 
 **CLI Commands:**
@@ -108,7 +111,7 @@ trinity-method-sdk/
 
 1. **User invokes CLI:** `trinity deploy`
 2. **Interactive Configuration:**
-   - Framework detection (Node.js, Python, Rust, Flutter, Go)
+   - Framework detection (Flutter, Rust, Go, Node.js, Python)
    - Linting tool selection
    - CI/CD platform selection
 3. **Template Processing:**
@@ -116,8 +119,8 @@ trinity-method-sdk/
    - Directory structure creation (14 directories)
    - File deployment (64 components)
 4. **Deployment Execution:**
-   - Agent deployment (19 agents → `.claude/agents/`)
-   - Command deployment (20 commands → `.claude/commands/`)
+   - Agent deployment (18 agents → `.claude/agents/`)
+   - Command deployment (21 commands → `.claude/commands/`)
    - Knowledge base deployment (9 files → `.claude/trinity/knowledge-base/`)
    - Template deployment (work orders, investigations)
    - Linting configuration deployment (framework-specific)
@@ -130,7 +133,7 @@ trinity-method-sdk/
 ### Trinity Update Flow
 
 1. **Version Detection:** Read `.claude/trinity/VERSION` file
-2. **Backup Creation:** Create `.claude/trinity/backups/backup-{timestamp}.tar.gz`
+2. **Backup Creation:** Create `.trinity-backup-{timestamp}` directory at project root
 3. **User Content Preservation:** Save ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md
 4. **Update Deployment:** Deploy new templates while preserving user content
 5. **Restore on Failure:** Rollback to backup if deployment fails
@@ -179,7 +182,7 @@ Visual representations of Trinity Method SDK architecture and workflows:
 
 ### [Trinity Deployment Architecture](../images/trinity-deployment-architecture.md)
 
-Complete deployment flow showing how Trinity deploys 64 components (19 agents, 20 slash commands, knowledge base, linting configs, CI/CD workflows) to a target project. Illustrates the CLI entry point, framework detection, interactive configuration, template processing, and component deployment to `.claude/` and `.claude/trinity/` directories.
+Complete deployment flow showing how Trinity deploys 64 components (18 agents, 21 slash commands, knowledge base, linting configs, CI/CD workflows) to a target project. Illustrates the CLI entry point, framework detection, interactive configuration, template processing, and component deployment to `.claude/` and `.claude/trinity/` directories.
 
 ### [CLI Command Flow](../images/cli-command-flow.md)
 

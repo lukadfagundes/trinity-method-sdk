@@ -10,7 +10,6 @@ The `deploy-ci-cd` module handles the deployment of CI/CD workflow templates to 
 **Dependencies:**
 
 - `deploy-ci.ts` (utility) - CI/CD template deployment logic
-- `fs-extra` - File system operations
 - `chalk` - Terminal output styling
 
 ---

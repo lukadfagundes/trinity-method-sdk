@@ -30,7 +30,7 @@ flowchart LR
     end
 
     subgraph "Deployed Files"
-        OUT1[.claude/agents/KIL.md<br/>19 agent files]
+        OUT1[.claude/agents/KIL.md<br/>18 agent files]
         OUT2[.claude/commands/trinity-start.md<br/>20 command files]
         OUT3[.claude/trinity/knowledge-base/Trinity.md<br/>9 knowledge base files]
         OUT4[.eslintrc.js + .prettierrc<br/>Framework-specific configs]

@@ -2,7 +2,7 @@
 
 **Testing Framework:** Jest
 **Test Files:** 16 test files
-**Total Tests:** 405 tests
+**Total Tests:** 464 tests
 **Coverage Target:** 80%+
 
 ## Overview
@@ -76,7 +76,7 @@ npm run build && npm test
 
 ```
 Test Suites: 16 passed, 16 total
-Tests:       405 passed, 405 total
+Tests:       464 passed, 464 total
 Time:        ~12 seconds
 ```
 
@@ -104,9 +104,9 @@ describe('Feature Name', () => {
 
 ### Deploy Command Tests
 
-- ✅ Directory structure creation (14 directories)
-- ✅ Agent template deployment (19 agents)
-- ✅ Slash command deployment (20 commands)
+- ✅ Directory structure creation (16 directories)
+- ✅ Agent template deployment (18 agents)
+- ✅ Slash command deployment (21 commands)
 - ✅ Knowledge base deployment (9 files)
 - ✅ Template deployment (work orders, investigations, documentation)
 - ✅ Framework detection (Node.js, Python, Rust, Flutter, Go)
@@ -180,4 +180,4 @@ See [tests/CLAUDE.md](CLAUDE.md) for complete testing standards, patterns, and b
 
 ---
 
-**405 Tests, 16 Suites** - Comprehensive coverage for production-ready SDK
+**464 Tests, 16 Suites** - Comprehensive coverage for production-ready SDK

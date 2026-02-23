@@ -30,8 +30,8 @@ Check for:
    - Root CLAUDE.md (behavioral hierarchy)
    - .claude/trinity/CLAUDE.md (Trinity-specific context)
 
-3. **Agent Organization (19 agents in 5 subdirectories):**
-   - .claude/agents/leadership/ (3 agents: ALY, AJ MAESTRO, AJ CC)
+3. **Agent Organization (18 agents in 5 subdirectories):**
+   - .claude/agents/leadership/ (2 agents: ALY, AJ MAESTRO)
    - .claude/agents/deployment/ (4 agents: TAN, ZEN, INO, EIN)
    - .claude/agents/audit/ (1 agent: JUNO)
    - .claude/agents/planning/ (4 agents: MON, ROR, TRA, EUS)
@@ -90,11 +90,10 @@ Report:
 - ✅ .claude/trinity/planning/
 - ✅ .claude/trinity/reports/
 
-### 2. Agent Deployment ✅ (19/19)
-**Leadership** (3/3):
+### 2. Agent Deployment ✅ (18/18)
+**Leadership** (2/2):
 - ✅ aly-cto.md (2.4 KB)
 - ✅ aj-maestro.md (18.2 KB)
-- ✅ aj-cc.md (12.1 KB)
 
 **Deployment** (4/4):
 - ✅ tan-structure.md (8.5 KB)
@@ -180,11 +179,10 @@ Report:
 - ✅ .claude/trinity/planning/
 - ❌ .claude/trinity/reports/ (MISSING)
 
-### 2. Agent Deployment ⚠️ (17/19)
-**Leadership** (3/3):
+### 2. Agent Deployment ⚠️ (16/18)
+**Leadership** (2/2):
 - ✅ aly-cto.md
 - ✅ aj-maestro.md
-- ✅ aj-cc.md
 
 **Deployment** (2/4):
 - ✅ tan-structure.md

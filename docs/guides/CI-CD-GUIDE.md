@@ -32,7 +32,7 @@ Trinity Method SDK uses a comprehensive CI/CD pipeline that enforces BAS 6-phase
 
 ### Pipeline Jobs
 
-1. **validate-templates** - Validates all Trinity templates (19 agents, 19+ commands)
+1. **validate-templates** - Validates all Trinity templates (18 agents, 21 commands)
 2. **test** - Multi-platform, multi-version testing (Ubuntu, Windows, macOS × Node.js 18/20/22)
 3. **coverage** - Enforces ≥80% test coverage (BAS Phase 5)
 4. **quality** - Code quality checks (BAS Phase 1)
@@ -170,13 +170,13 @@ npm run docs:generate
 
 The CI pipeline validates all Trinity Method components:
 
-### 1. Agent Templates (19 agents)
+### 1. Agent Templates (18 agents)
 
-**Location:** `src/templates/agents/`
+**Location:** `src/templates/.claude/agents/`
 **Validated:**
 
-- Leadership (2): ALY (CTO), AJ (Maestro)
-- Planning (4): MON, TRA, EUS, ROR
+- Leadership (2): ALY (CTO), AJ MAESTRO (Orchestrator)
+- Planning (4): MON, ROR, TRA, EUS
 - AJ Team (7): KIL, BAS, DRA, APO, BON, CAP, URO
 - Deployment (4): TAN, ZEN, INO, EIN
 - Audit (1): JUNO
@@ -185,17 +185,17 @@ The CI pipeline validates all Trinity Method components:
 
 ```bash
 # Count agent templates
-agent_count=$(find src/templates/agents -name "*.md.template" | wc -l)
+agent_count=$(find src/templates/.claude/agents -name "*.md.template" | wc -l)
 
-if [ "$agent_count" -lt 19 ]; then
-  echo "ERROR: Expected 19 agent templates, found $agent_count"
+if [ "$agent_count" -lt 18 ]; then
+  echo "ERROR: Expected 18 agent templates, found $agent_count"
   exit 1
 fi
 ```
 
-### 2. Slash Command Templates (19+ commands)
+### 2. Slash Command Templates (21 commands)
 
-**Location:** `src/templates/shared/claude-commands/`
+**Location:** `src/templates/.claude/commands/`
 **Critical Commands Validated:**
 
 - `trinity-init` - Initialize Trinity Method
@@ -203,15 +203,16 @@ fi
 - `trinity-orchestrate` - Multi-agent orchestration
 - `trinity-audit` - Quality audit
 - `trinity-docs` - Documentation generation
+- `trinity-docs-update` - Documentation update orchestration
 
 **Validation:**
 
 ```bash
 # Count slash commands
-cmd_count=$(find src/templates/shared/claude-commands -name "*.md.template" | wc -l)
+cmd_count=$(find src/templates/.claude/commands -name "*.md.template" | wc -l)
 
-if [ "$cmd_count" -lt 19 ]; then
-  echo "ERROR: Expected 19+ slash commands, found $cmd_count"
+if [ "$cmd_count" -lt 21 ]; then
+  echo "ERROR: Expected 21 slash commands, found $cmd_count"
   exit 1
 fi
 ```
@@ -387,7 +388,7 @@ trinity deploy --dry-run
 
 #### Template Validation Failed
 
-**Error:** Expected 19 agent templates, found X
+**Error:** Expected 18 agent templates, found X
 
 **Solution:**
 

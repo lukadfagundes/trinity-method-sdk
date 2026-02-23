@@ -250,14 +250,14 @@ Discovers all source directories for monorepo support.
 
 **Detection Levels:**
 
-1. **Top-level directories** (18 common names):
+1. **Top-level directories** (11 common names):
    - `src`, `lib`, `app`, `backend`, `frontend`, `server`, `client`, `database`
    - `packages`, `apps`, `bot`
 
 2. **2-level nested patterns** (e.g., `backend/src`, `frontend/lib`)
 3. **3-level nested patterns** (e.g., `src/backend/src`, `frontend/app/lib`)
 
-**Total Patterns Checked:** 44 combinations
+**Total Patterns Checked:** 47 combinations
 
 **Returns:** `string[]` - Array of relative paths
 
@@ -581,5 +581,5 @@ it('should integrate with deploy command', async () => {
 ---
 
 **Last Updated:** 2026-01-21
-**Trinity Version:** 2.0.0
+**Trinity Version:** 2.1.0
 **Module Stability:** Stable (production-ready)

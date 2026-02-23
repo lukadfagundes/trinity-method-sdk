@@ -1,18 +1,18 @@
 # Agent Deployment API Reference
 
 **Module:** `src/cli/commands/deploy/agents.ts`
-**Purpose:** Deploy 19 Trinity agent templates to `.claude/agents/` directory
+**Purpose:** Deploy 18 Trinity agent templates to `.claude/agents/` directory
 **Priority:** MEDIUM (Agent orchestration)
 
 ---
 
 ## Overview
 
-The Agent Deployment module deploys Trinity Method's 19 specialized agents to the `.claude/agents/` directory with proper subdirectory organization. It processes agent templates with variable substitution and validates paths for security.
+The Agent Deployment module deploys Trinity Method's 18 specialized agents to the `.claude/agents/` directory with proper subdirectory organization. It processes agent templates with variable substitution and validates paths for security.
 
 **Key Features:**
 
-- 19 agent templates across 5 specialized teams
+- 18 agent templates across 5 specialized teams
 - Hierarchical directory structure (leadership, deployment, audit, planning, aj-team)
 - Template variable substitution
 - Path validation for security
@@ -63,7 +63,7 @@ const agentDirs = [
 ];
 ```
 
-**Total Agents:** 19
+**Total Agents:** 18
 
 ---
 
@@ -210,14 +210,14 @@ const variables = {
 
 const deployed = await deployAgents('/path/to/sdk/templates', variables, spinner);
 console.log(`Deployed ${deployed} agents`);
-// Output: "Deployed 19 agents"
+// Output: "Deployed 18 agents"
 ```
 
 **Spinner Messages:**
 
 ```
 ⠙ Deploying Claude Code agents...
-✓ Agents deployed (19 agents)
+✓ Agents deployed (18 agents)
 ```
 
 ---
@@ -312,7 +312,7 @@ const destPath = validatePath(`.claude/agents/${dir}/${agent}`);
 
 **Typical Performance:**
 
-- 19 agents × (read template + process + write)
+- 18 agents x (read template + process + write)
 - ~100ms total (SSD)
 
 **Optimization:** Sequential processing (could be parallelized)
@@ -337,9 +337,9 @@ const destPath = validatePath(`.claude/agents/${dir}/${agent}`);
 
 ```typescript
 describe('deployAgents', () => {
-  it('should deploy all 19 agents', async () => {
+  it('should deploy all 18 agents', async () => {
     const deployed = await deployAgents(templatesPath, variables, ora());
-    expect(deployed).toBe(19);
+    expect(deployed).toBe(18);
   });
 
   it('should create proper directory structure', async () => {

@@ -244,7 +244,7 @@ npx trinity deploy --yes --force
 
 ### Files That Are Overwritten:
 
-- ✅ `.claude/agents/*.md` (19 agent templates)
+- ✅ `.claude/agents/*.md` (18 agent templates)
 - ✅ `.claude/commands/*.md` (20 slash command templates)
 - ✅ `.claude/settings.json` (Claude Code configuration)
 - ✅ `.claude/EMPLOYEE-DIRECTORY.md` (agent directory)

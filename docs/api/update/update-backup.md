@@ -499,7 +499,7 @@ export async function update(options) {
     ├── agents/
     │   ├── mon.md
     │   ├── juno.md
-    │   └── ... (19 agents)
+    │   └── ... (18 agents)
     │
     ├── commands/
     │   ├── INVESTIGATION-TEMPLATE.md

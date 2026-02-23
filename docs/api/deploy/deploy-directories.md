@@ -11,7 +11,7 @@
 The Directories module creates the complete Trinity Method directory structure in the target project. It ensures all necessary folders exist for agents, knowledge base, sessions, investigations, and archives.
 
 **Why This Exists:**
-Trinity's 19-agent system requires a well-organized directory structure to function effectively. This module creates 16 directories that serve as the foundation for agent collaboration, knowledge management, and workflow orchestration.
+Trinity's 18-agent system requires a well-organized directory structure to function effectively. This module creates 16 directories that serve as the foundation for agent collaboration, knowledge management, and workflow orchestration.
 
 ---
 

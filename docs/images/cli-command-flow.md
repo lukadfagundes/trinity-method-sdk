@@ -24,7 +24,7 @@ flowchart TD
     PROMPT_CI --> PROMPT_NAME[Interactive Prompt:<br/>Project Name]
 
     PROMPT_NAME --> CREATE_DIRS[Create Directory Structure<br/>14 directories]
-    CREATE_DIRS --> DEPLOY_AGENTS[Deploy 19 Agents<br/>.claude/agents/]
+    CREATE_DIRS --> DEPLOY_AGENTS[Deploy 18 Agents<br/>.claude/agents/]
     DEPLOY_AGENTS --> DEPLOY_COMMANDS[Deploy 20 Slash Commands<br/>.claude/commands/]
     DEPLOY_COMMANDS --> DEPLOY_KB[Deploy Knowledge Base<br/>.claude/trinity/knowledge-base/]
     DEPLOY_KB --> DEPLOY_TEMPLATES[Deploy Templates<br/>.claude/trinity/templates/]

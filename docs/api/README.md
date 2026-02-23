@@ -25,8 +25,8 @@ The complete API reference is available as TypeDoc-generated HTML documentation 
   - Error handling and cleanup
 
 - **Templates** - `src/templates/` system
-  - Agent templates (19 agents)
-  - Command templates (20 slash commands)
+  - Agent templates (18 agents)
+  - Command templates (21 slash commands)
   - Framework-specific templates
 
 ## API Documentation Structure

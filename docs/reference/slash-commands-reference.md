@@ -3,17 +3,18 @@
 **Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
-Complete reference for Trinity Method's 19 slash commands.
+Complete reference for Trinity Method's 21 slash commands.
 
 ## Overview
 
-Trinity Method deploys 19 slash commands to `.claude/commands/` organized by category:
+Trinity Method deploys 21 slash commands to `.claude/commands/` organized by category:
 
 - **Session Management** (3 commands)
 - **Planning** (4 commands)
-- **Execution** (5 commands)
+- **Execution** (3 commands)
 - **Investigation** (3 commands)
 - **Infrastructure** (1 command)
+- **Maintenance** (4 commands)
 - **Utility** (3 commands)
 
 ---
@@ -63,8 +64,8 @@ User: /trinity-start
 ALY: 🎯 Trinity Session Initialization
 
 ✅ Trinity Deployment Verified
-- 19 agents deployed
-- 20 slash commands active
+- 18 agents deployed
+- 21 slash commands active
 - Knowledge base initialized
 
 📋 Project Context
@@ -1212,8 +1213,8 @@ Ready for Step 2? (Say "next" to continue)
 
 1. Audits all 64 Trinity components
 2. Verifies directory structure
-3. Checks agent files (19 agents)
-4. Validates slash commands (19 commands)
+3. Checks agent files (18 agents)
+4. Validates slash commands (21 commands)
 5. Reviews knowledge base
 6. Generates comprehensive audit report
 
@@ -1249,6 +1250,7 @@ Auditing Trinity deployment...
 │ ✓ .claude/commands/execution/                     │
 │ ✓ .claude/commands/investigation/                 │
 │ ✓ .claude/commands/infrastructure/                │
+│ ✓ .claude/commands/maintenance/                   │
 │ ✓ .claude/commands/utility/                       │
 │ ✓ .claude/trinity/                                         │
 │ ✓ .claude/trinity/knowledge-base/                         │
@@ -1259,7 +1261,7 @@ Auditing Trinity deployment...
 │ ✅ 14/14 directories present                      │
 └──────────────────────────────────────────────────┘
 
-┌─ Agent Files (19) ───────────────────────────────┐
+┌─ Agent Files (18) ───────────────────────────────┐
 │ Planning:                                          │
 │   ✓ mon-requirements.md                           │
 │   ✓ ror-design.md                                 │
@@ -1287,11 +1289,10 @@ Auditing Trinity deployment...
 │   ✓ ino-context.md                                │
 │   ✓ ein-cicd.md                                   │
 │   ✓ aj-maestro.md                                 │
-│   ✓ aj-cc.md                                      │
-│ ✅ 19/19 agents present                           │
+│ ✅ 18/18 agents present                           │
 └──────────────────────────────────────────────────┘
 
-┌─ Slash Commands (19) ────────────────────────────┐
+┌─ Slash Commands (21) ────────────────────────────┐
 │ Session:                                           │
 │   ✓ trinity-start.md                              │
 │   ✓ trinity-continue.md                           │
@@ -1305,9 +1306,13 @@ Auditing Trinity deployment...
 │                                                    │
 │ Execution:                                         │
 │   ✓ trinity-orchestrate.md                        │
+│   ✓ trinity-breakdown.md                          │
 │   ✓ trinity-audit.md                              │
+│                                                    │
+│ Maintenance:                                       │
 │   ✓ trinity-readme.md                             │
 │   ✓ trinity-docs.md                               │
+│   ✓ trinity-docs-update.md                        │
 │   ✓ trinity-changelog.md                          │
 │                                                    │
 │ Investigation:                                     │
@@ -1322,7 +1327,7 @@ Auditing Trinity deployment...
 │   ✓ trinity-verify.md                             │
 │   ✓ trinity-agents.md                             │
 │   ✓ trinity-workorder.md                          │
-│ ✅ 19/19 commands present                         │
+│ ✅ 21/21 commands present                         │
 └──────────────────────────────────────────────────┘
 
 ┌─ Knowledge Base ─────────────────────────────────┐
@@ -1359,8 +1364,8 @@ Audit Summary:
 ✅ Trinity deployment: HEALTHY
 ✅ Components: 64/64 (100%)
 ✅ Directory structure: Valid
-✅ Agents: All 19 present
-✅ Commands: All 19 present
+✅ Agents: All 18 present
+✅ Commands: All 21 present
 ✅ Knowledge base: Complete
 ✅ Configuration: Valid
 ✅ Version: 2.1.0 (latest)
@@ -1374,9 +1379,11 @@ Trinity is ready for use! Start with /trinity-start
 
 ---
 
+## Maintenance Commands
+
 ### `/trinity-readme`
 
-**Location:** `.claude/commands/execution/trinity-readme.md`
+**Location:** `.claude/commands/maintenance/trinity-readme.md`
 **Agent:** APO (Documentation Specialist)
 
 **Purpose:** Create or update comprehensive README.md
@@ -1457,7 +1464,7 @@ README.md is now comprehensive and production-ready.
 
 ### `/trinity-docs`
 
-**Location:** `.claude/commands/execution/trinity-docs.md`
+**Location:** `.claude/commands/maintenance/trinity-docs.md`
 **Agent:** APO (Documentation Specialist)
 
 **Purpose:** Organize docs/ directory with comprehensive structure
@@ -1552,9 +1559,96 @@ Documentation is now well-organized and production-ready.
 
 ---
 
+### `/trinity-docs-update`
+
+**Location:** `.claude/commands/maintenance/trinity-docs-update.md`
+**Agent:** JUNO (Quality Auditor) + APO-1, APO-2, APO-3 (Documentation Specialists)
+
+**Purpose:** Update existing documentation to reflect codebase changes using autonomous multi-agent orchestration
+
+**When to Use:**
+
+- Documentation has drifted from actual codebase behavior
+- After significant code changes that affect documented APIs, commands, or architecture
+- Periodic documentation accuracy maintenance
+- When `docs/` directory already exists (created by `/trinity-docs`)
+
+**What It Does:**
+
+1. Verifies `docs/` directory exists (aborts if not -- run `/trinity-docs` first)
+2. Launches JUNO to perform comprehensive documentation audit against actual codebase
+3. JUNO generates audit report with categorized work assignments for three APO agents
+4. Launches APO-1, APO-2, APO-3 in parallel to execute documentation updates
+5. JUNO verifies APO completion status and restarts incomplete APOs if needed
+6. JUNO performs final quality audit for accuracy and coverage
+7. Loops verification until 100% completion and accuracy achieved
+
+**Usage:**
+
+```
+/trinity-docs-update
+```
+
+**Expected Output:**
+
+- Comprehensive documentation audit report (`.claude/trinity/reports/DOCS-UPDATE-AUDIT-{date}.md`)
+- Individual APO checklists tracking task completion (`.claude/trinity/reports/apo-{1,2,3}-docs-update-checklist.md`)
+- Updated documentation files across `docs/` reflecting current codebase reality
+- Final verification report (`.claude/trinity/reports/DOCS-UPDATE-VERIFICATION-{date}.md`)
+- 100% documentation accuracy against source code
+
+**Example:**
+
+```
+User: /trinity-docs-update
+
+Phase 0: Pre-Flight Check
+  docs/ directory exists
+
+Phase 1: JUNO Comprehensive Audit
+  Reading codebase source files...
+  Comparing against existing documentation...
+  21 discrepancies identified across 12 documentation files
+
+  Audit Report: .claude/trinity/reports/DOCS-UPDATE-AUDIT-2025-12-28.md
+
+  Work Assignments:
+  - APO-1: 24 base documentation fixes (counts, versions, categories)
+  - APO-2: 12 API documentation accuracy fixes (deploy/update docs)
+  - APO-3: 4 items (new command documentation + verification)
+
+Phase 2: APO Documentation Updates (Parallel)
+  Launching APO-1, APO-2, APO-3 simultaneously...
+
+  APO-1: Updating slash-commands-reference.md, agents-quick-reference.md,
+         getting-started.md, agent-guide.md, architecture/overview.md...
+  APO-2: Updating deploy-command.md, deploy-agents.md, update-agents.md,
+         update-summary.md...
+  APO-3: Creating /trinity-docs-update documentation, verifying
+         command template accuracy...
+
+Phase 3: JUNO Verification Loop
+  Step 3.1: Checking APO completion...
+  - APO-1: 24/24 tasks complete (100%)
+  - APO-2: 12/12 tasks complete (100%)
+  - APO-3: 4/4 tasks complete (100%)
+  PROCEED TO STEP 3.2
+
+  Step 3.2: Final Quality Audit...
+  - Coverage: 100% (all audit items addressed)
+  - Accuracy: 100% (documentation matches codebase)
+  VERIFICATION PASSED
+
+Documentation update complete.
+40 documentation items updated across 16 files.
+All documentation now reflects current codebase state.
+```
+
+---
+
 ### `/trinity-changelog`
 
-**Location:** `.claude/commands/execution/trinity-changelog.md`
+**Location:** `.claude/commands/maintenance/trinity-changelog.md`
 **Agent:** APO (Documentation Specialist)
 
 **Purpose:** Maintain CHANGELOG.md in Keep-a-Changelog format
@@ -2009,8 +2103,8 @@ TAN: ✓ Trinity Structure Verification
 
 Directory Structure:
 ✓ .claude/
-✓ .claude/agents/ (19 files)
-✓ .claude/commands/ (19 files)
+✓ .claude/agents/ (18 files)
+✓ .claude/commands/ (21 files)
 ✓ .claude/trinity/
 ✓ .claude/trinity/knowledge-base/ (9 files)
 ✓ .claude/trinity/templates/
@@ -2040,7 +2134,7 @@ All Trinity components are properly organized.
 - Finding agent capabilities
 
 **What It Does:**
-1. Lists all 19 agents
+1. Lists all 18 agents
 2. Shows agent roles
 3. Displays agent categories
 4. Provides usage guidance
@@ -2085,14 +2179,13 @@ Leadership Agents (2):
 - ALY: Chief Technology Officer
 - JUNO: Quality Auditor
 
-Infrastructure Agents (6):
+Infrastructure Agents (5):
 
 - TAN: Structure Specialist
 - ZEN: Knowledge Base Specialist
 - INO: Context Specialist
 - EIN: CI/CD Specialist
 - AJ MAESTRO: Orchestration Coordinator
-- AJ (CC): Collaboration Coordinator
 
 For detailed agent guide: See docs/guides/agent-guide.md
 For quick reference: See docs/reference/agents-quick-reference.md
@@ -2184,11 +2277,12 @@ Next Steps:
 |----------|---------------|---------|
 | **Session Management** | 3 | Session lifecycle (start, continue, end) |
 | **Planning** | 4 | Requirements, design, decomposition, planning |
-| **Execution** | 6 | Orchestration, guided implementation, quality assurance, documentation |
+| **Execution** | 3 | Orchestration, guided implementation, quality assurance |
 | **Investigation** | 3 | Structured problem-solving and investigations |
 | **Infrastructure** | 1 | Complete Trinity initialization |
+| **Maintenance** | 4 | README, docs, docs-update, changelog |
 | **Utility** | 3 | Verification, agent directory, work orders |
-| **Total** | **20** | Complete Trinity Method toolkit |
+| **Total** | **21** | Complete Trinity Method toolkit |
 
 ---
 
@@ -2226,6 +2320,7 @@ Next Steps:
 ```bash
 /trinity-readme        # Update README
 /trinity-docs          # Organize docs/
+/trinity-docs-update   # Update existing docs to match codebase
 /trinity-changelog     # Update CHANGELOG
 ```
 
@@ -2258,4 +2353,4 @@ Next Steps:
 
 ---
 
-**Trinity Method SDK v2.0.9** - 19 Slash Commands Reference
+**Trinity Method SDK v2.1.0** - 21 Slash Commands Reference

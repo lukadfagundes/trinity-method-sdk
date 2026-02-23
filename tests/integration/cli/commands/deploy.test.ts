@@ -123,7 +123,7 @@ describe('Deploy Command - Integration Tests', () => {
   });
 
   describe('Agent Template Deployment', () => {
-    it('should deploy all 19 agents to correct subdirectories', async () => {
+    it('should deploy all 18 agents to correct subdirectories', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // Leadership agents (2)
@@ -455,7 +455,7 @@ describe('Deploy Command - Integration Tests', () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // Expected minimum files:
-      // - 19 agents
+      // - 18 agents
       // - 21 slash commands (added trinity-docs-update)
       // - 9 knowledge base files
       // - 6 work order templates

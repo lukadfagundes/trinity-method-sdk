@@ -481,7 +481,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation Accuracy:** Fixed 6 critical inaccuracies in README.md
   - Removed 24+ non-existent CLI commands (`npx trinity investigate`, `crisis`, `analytics`, etc.)
   - Fixed 13 broken documentation links (docs/methodology/, docs/adr/, docs/workflows/)
-  - Corrected agent count inconsistencies throughout documentation (unified to 19 agents)
+  - Corrected agent count inconsistencies throughout documentation (unified to 18 agents)
   - Updated deployment examples to reflect actual CLI (`npx @trinity-method/cli deploy/update`)
 - Fixed broken ADR links in src/README.md (replaced with design principles summary)
 - Fixed broken ADR links in docs/README.md (removed non-existent file references)

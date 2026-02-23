@@ -80,7 +80,7 @@ Displays what was deployed and created.
 ### Agent Distribution (v2.0)
 
 ```
-19 Agents Total:
+18 Agents Total:
 ├── 2 Leadership (AJ MAESTRO, JUNO)
 ├── 4 Planning (MON, ROR, TRA, EUS)
 ├── 7 Execution (KIL, APO, ZEN, INO, EIN, VER, TAN)

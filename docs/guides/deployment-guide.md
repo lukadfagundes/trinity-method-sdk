@@ -43,8 +43,8 @@ trinity deploy
 
 **What Gets Deployed:**
 
-- 19 agents → `.claude/agents/`
-- 20 slash commands → `.claude/commands/`
+- 18 agents → `.claude/agents/`
+- 21 slash commands → `.claude/commands/`
 - Knowledge base → `.claude/trinity/knowledge-base/`
 - Investigation templates → `.claude/trinity/templates/`
 - Linting configs → Root directory

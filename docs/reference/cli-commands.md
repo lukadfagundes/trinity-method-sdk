@@ -30,8 +30,8 @@ trinity deploy [options]
 
 Deploys 64 Trinity components to your project:
 
-- 19 agents (`.claude/agents/`)
-- 20 slash commands (`.claude/commands/`)
+- 18 agents (`.claude/agents/`)
+- 21 slash commands (`.claude/commands/`)
 - Knowledge base (`.claude/trinity/knowledge-base/`)
 - Investigation templates (`.claude/trinity/templates/`)
 - Linting configurations (framework-specific)
@@ -43,7 +43,7 @@ Deploys 64 Trinity components to your project:
 | ------------------ | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | **Framework**      | Node.js, Python, Rust, Flutter, Go                                        | Auto-detected from package.json, requirements.txt, Cargo.toml, pubspec.yaml, go.mod |
 | **Linting Tools**  | ESLint+Prettier, Black+Flake8+isort, Clippy+Rustfmt, Dart Analyzer, gofmt | Based on framework                                                                  |
-| **CI/CD Platform** | GitHub Actions, GitLab CI, CircleCI, Jenkins, None                        | No auto-detection                                                                   |
+| **CI/CD Platform** | GitHub Actions, GitLab CI, None                                           | Auto-detected from .git/config                                                      |
 | **Project Name**   | Free text input                                                           | Auto-detected from package.json/Cargo.toml/etc.                                     |
 
 ### Deployment Process
@@ -60,12 +60,11 @@ Deploys 64 Trinity components to your project:
 
 ### Exit Codes
 
-| Code | Meaning                                                |
-| ---- | ------------------------------------------------------ |
-| `0`  | Successful deployment                                  |
-| `1`  | Error during deployment                                |
-| `2`  | User canceled deployment                               |
-| `3`  | Trinity already deployed (and user declined overwrite) |
+| Code | Meaning                                               |
+| ---- | ----------------------------------------------------- |
+| `0`  | Successful deployment                                 |
+| `1`  | Error during deployment                               |
+| `1`  | Error during deployment (including user cancellation) |
 
 ### Examples
 
@@ -94,8 +93,8 @@ trinity deploy            # Will prompt to overwrite
 
 Deploying Trinity components...
 ✓ Creating directory structure (14 directories)
-✓ Deploying agents (19 files)
-✓ Deploying slash commands (20 files)
+✓ Deploying agents (18 files)
+✓ Deploying slash commands (21 files)
 ✓ Deploying knowledge base (9 files)
 ✓ Deploying templates (12 files)
 ✓ Deploying linting configs (4 files)
@@ -146,7 +145,7 @@ Updates Trinity components while preserving user-created content:
 
 1. **Deployment Check** - Verifies Trinity is deployed
 2. **Version Check** - Reads `.claude/trinity/VERSION`, compares with SDK version
-3. **Backup Creation** - Creates `.claude/trinity/backups/backup-{timestamp}.tar.gz`
+3. **Backup Creation** - Creates `.trinity-backup-{timestamp}` directory at project root
 4. **Content Preservation** - Saves user files (ARCHITECTURE.md, ISSUES.md, etc.)
 5. **Old Template Removal** - Removes outdated agent/command templates
 6. **New Template Deployment** - Deploys latest templates
@@ -157,28 +156,23 @@ Updates Trinity components while preserving user-created content:
 
 ### Preserved Files
 
-During update, these files are **preserved**:
+During update, these files are **preserved** (backed up and restored):
 
 - `.claude/trinity/knowledge-base/ARCHITECTURE.md`
-- `.claude/trinity/knowledge-base/ISSUES.md`
 - `.claude/trinity/knowledge-base/To-do.md`
+- `.claude/trinity/knowledge-base/ISSUES.md`
 - `.claude/trinity/knowledge-base/Technical-Debt.md`
-- `.claude/trinity/sessions/` (all session files)
-- `.claude/trinity/reports/` (all report files)
-- `.claude/trinity/backups/` (all backup files)
 
 ### Overwritten Files
 
 These files are **overwritten** with new versions:
 
-- `.claude/agents/*` (all 19 agents)
-- `.claude/commands/*` (all 20 commands)
+- `.claude/agents/*` (all 18 agents)
+- `.claude/commands/*` (all 21 commands)
 - `.claude/trinity/knowledge-base/Trinity.md`
 - `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md`
 - `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md`
 - `.claude/trinity/templates/*` (all templates)
-- Linting configs (eslint.config.js, pyproject.toml, etc.)
-- CI/CD workflows
 
 ### Exit Codes
 
@@ -186,9 +180,6 @@ These files are **overwritten** with new versions:
 | ---- | ---------------------------------------- |
 | `0`  | Successful update                        |
 | `1`  | Error during update (rollback triggered) |
-| `2`  | User canceled update                     |
-| `3`  | Trinity not deployed                     |
-| `4`  | Already up-to-date                       |
 
 ### Examples
 
@@ -217,7 +208,7 @@ ls -lh .claude/trinity/backups/
 📦 Latest Version: 2.1.0
 
 Creating backup...
-✓ Backup created: .claude/trinity/backups/backup-2025-12-28T12-30-00.tar.gz
+✓ Backup created: .trinity-backup-1735382400000
 
 Preserving user content...
 ✓ ARCHITECTURE.md preserved
@@ -227,15 +218,15 @@ Preserving user content...
 
 Updating Trinity components...
 ✓ Removing old templates
-✓ Deploying new agents (19 files)
-✓ Deploying new commands (20 files)
+✓ Deploying new agents (18 files)
+✓ Deploying new commands (21 files)
 ✓ Updating knowledge base
 ✓ Restoring user content
 
 ✅ Trinity updated successfully! (v2.0.9)
 
 Remove backup? (y/N): N
-Backup preserved: .claude/trinity/backups/backup-2025-12-28T12-30-00.tar.gz
+Backup preserved: .trinity-backup-1735382400000
 ```
 
 ### Rollback on Failure
@@ -246,7 +237,7 @@ If update fails, automatic rollback occurs:
 ❌ Update failed: Error deploying templates
 
 🔄 Rolling back to previous version...
-✓ Extracted backup: backup-2025-12-28T12-30-00.tar.gz
+✓ Restored from backup: .trinity-backup-1735382400000
 ✓ Rollback complete
 
 Trinity remains at version 1.5.0
@@ -258,17 +249,14 @@ Backup preserved for investigation
 To manually rollback:
 
 ```bash
-# Navigate to backups
-cd .claude/trinity/backups/
+# List backup directories at project root
+ls -d .trinity-backup-*
 
-# List backups
-ls -lh
-
-# Extract desired backup
-tar -xzf backup-2025-12-28T12-30-00.tar.gz -C ../../
+# Copy backup contents back
+cp -r .trinity-backup-1735382400000/.claude .
 
 # Verify version
-cat ../../.claude/trinity/VERSION
+cat .claude/trinity/VERSION
 ```
 
 ### Errors
@@ -290,7 +278,7 @@ Display Trinity Method SDK version.
 
 ```bash
 trinity --version
-trinity -V
+trinity -v
 ```
 
 ### Description
@@ -300,7 +288,7 @@ Shows the currently installed Trinity Method SDK version.
 ### Output
 
 ```
-Trinity Method SDK v2.0.9
+2.1.0 (Trinity Method SDK)
 ```
 
 ### Examples
@@ -310,7 +298,7 @@ Trinity Method SDK v2.0.9
 trinity --version
 
 # Check SDK version (short form)
-trinity -V
+trinity -v
 
 # Compare with deployed version
 trinity --version
@@ -342,7 +330,7 @@ Usage: trinity [options] [command]
 Investigation-first development methodology deployment tool
 
 Options:
-  -V, --version   output the version number
+  -v, --version   Output the current version
   -h, --help      display help for command
 
 Commands:
@@ -382,13 +370,10 @@ Trinity Method SDK currently does not use environment variables for configuratio
 
 ## Exit Code Summary
 
-| Code | Meaning                         | Commands       |
-| ---- | ------------------------------- | -------------- |
-| `0`  | Success                         | All            |
-| `1`  | General error                   | All            |
-| `2`  | User canceled                   | deploy, update |
-| `3`  | Already deployed / Not deployed | deploy, update |
-| `4`  | Already up-to-date              | update         |
+| Code | Meaning       | Commands |
+| ---- | ------------- | -------- |
+| `0`  | Success       | All      |
+| `1`  | General error | All      |
 
 ---
 

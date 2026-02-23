@@ -18,7 +18,7 @@
 
 | Job                  | Description                       | Trigger        | Duration |
 | -------------------- | --------------------------------- | -------------- | -------- |
-| `validate-templates` | Validate 19 agents, 19+ commands  | All pushes/PRs | ~1 min   |
+| `validate-templates` | Validate 18 agents, 19+ commands  | All pushes/PRs | ~1 min   |
 | `test`               | Multi-platform testing (9 combos) | All pushes/PRs | ~15 min  |
 | `coverage`           | Enforce ≥80% coverage             | All pushes/PRs | ~3 min   |
 | `quality`            | Linting, type checking            | All pushes/PRs | ~2 min   |

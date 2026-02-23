@@ -16,11 +16,10 @@ Display the Trinity Method Agent Directory with all 19 specialized agents.
 
 Agents are organized in 5 subdirectories by role:
 
-### 1. Leadership Team (3 agents)
+### 1. Leadership Team (2 agents)
 Located in: `.claude/agents/leadership/`
 - **ALY (Chief Technology Officer)** - Strategic planning and architecture decisions
 - **AJ MAESTRO (Orchestration Lead)** - Workflow planning and agent coordination
-- **AJ CC (Code Coordinator)** - Code quality and implementation oversight
 
 ### 2. Deployment Team (4 agents)
 Located in: `.claude/agents/deployment/`
@@ -105,7 +104,6 @@ Ask which agent you want to learn more about, and Claude will read that agent's 
 |-------|------|-------------|---------------|
 | **ALY** | CTO | Strategic decisions, stop point reviews | leadership/aly-cto.md |
 | **AJ MAESTRO** | Orchestrator | Coordinate Medium/Large workflows | leadership/aj-maestro.md |
-| **AJ CC** | Continuity | Session recovery, investigations | leadership/aj-cc.md |
 | **TAN** | Structure | Deploy Trinity folders (init only) | deployment/tan-structure.md |
 | **ZEN** | Knowledge | Populate knowledge base (init only) | deployment/zen-knowledge.md |
 | **INO** | Context | CLAUDE.md hierarchy (init only) | deployment/ino-context.md |
@@ -134,9 +132,9 @@ What do you need?
 │
 ├─ Start new work → ALY (determines scale) → AJ MAESTRO
 │
-├─ Resume interrupted work → AJ CC (session recovery)
+├─ Resume interrupted work → AJ MAESTRO (session recovery)
 │
-├─ Investigation only → AJ CC (read-only analysis)
+├─ Investigation only → ALY (read-only analysis)
 │
 └─ Specific task:
     │
@@ -165,7 +163,6 @@ What do you need?
 **Examples**:
 - **ALY** - Chief Technology Officer (CTO)
 - **AJ MAESTRO** - Implementation Orchestrator
-- **AJ CC** - Continuous Context Specialist
 - **MON** - Requirements Analyst
 - **KIL** - Task Executor
 

@@ -37,10 +37,9 @@ Main entry point for update command. Orchestrates 12-step update workflow.
 
 ```typescript
 interface UpdateOptions {
-  force?: boolean; // Force update even if up-to-date
+  all?: boolean; // Update all registered Trinity projects
   dryRun?: boolean; // Preview changes without applying
-  targetDir?: string; // Target directory (default: cwd)
-  skipBackup?: boolean; // Skip backup creation (dangerous)
+  force?: boolean; // Force update even if up-to-date
 }
 ```
 
@@ -190,7 +189,7 @@ Update cancelled
 
 ### Step 5-8: Update Components
 
-Updates performed in parallel for performance:
+Updates performed sequentially:
 
 #### Step 5: Update Agents
 
@@ -199,7 +198,7 @@ Updates performed in parallel for performance:
 
 **Updates:**
 
-- 19 Trinity agent templates
+- 18 Trinity agent templates
 - Preserves user customizations (if detected)
 
 **Stats Tracking:** `stats.agentsUpdated`
@@ -501,41 +500,6 @@ trinity update --dry-run
 
 ---
 
-### Target Directory (`--target-dir`)
-
-**Purpose:** Update Trinity deployment in specific directory
-
-**Example:**
-
-```bash
-trinity update --target-dir /path/to/project
-```
-
-**Behavior:**
-
-- Changes working directory to `targetDir`
-- All operations performed relative to `targetDir`
-
----
-
-### Skip Backup (`--skip-backup`)
-
-**Purpose:** Skip backup creation (faster but dangerous)
-
-**⚠️ DANGER:** Not recommended - no recovery if update fails
-
-**Example:**
-
-```bash
-trinity update --skip-backup
-```
-
-**Behavior:**
-
-- Skips Step 4 (backup creation)
-- No rollback possible on failure
-- Only for advanced users
-
 ---
 
 ## Integration with Other Commands
@@ -562,7 +526,7 @@ if (!fs.existsSync('.claude/trinity/VERSION')) {
 
 ```typescript
 if (options.audit) {
-  await audit({ targetDir: options.targetDir });
+  await audit();
 }
 ```
 
@@ -598,13 +562,6 @@ await update({ dryRun: true });
 ```
 
 ---
-
-### Update Specific Directory
-
-```typescript
-await update({ targetDir: '/path/to/project' });
-// Updates Trinity deployment in specific directory
-```
 
 ---
 

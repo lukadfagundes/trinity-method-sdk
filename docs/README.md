@@ -18,7 +18,7 @@ New to Trinity Method SDK? Start here:
 1. **[Getting Started Guide](guides/getting-started.md)** - Installation and setup
 2. **[Architecture Overview](architecture/overview.md)** - Understand the system design
 3. **[TypeDoc API Reference](index.html)** - Explore the SDK API
-4. **[Agent Directory](../.claude/EMPLOYEE-DIRECTORY.md)** - Meet the 19-agent team (after deployment)
+4. **[Agent Directory](../.claude/EMPLOYEE-DIRECTORY.md)** - Meet the 18-agent team (after deployment)
 
 ## Documentation Categories
 
@@ -27,7 +27,7 @@ New to Trinity Method SDK? Start here:
 How-to guides and tutorials for Trinity Method SDK:
 
 - **[Getting Started](guides/getting-started.md)** - Quick start for new users
-- **[Agent Guide](guides/agent-guide.md)** - Deep dive into the 19-agent Trinity team
+- **[Agent Guide](guides/agent-guide.md)** - Deep dive into the 18-agent Trinity team
 - **[Deployment Guide](guides/deployment-guide.md)** - Advanced deployment scenarios
 - **[Multi-Framework Guide](guides/multi-framework-guide.md)** - Trinity across Node.js, Python, Rust, Flutter, Go
 - **[Investigation Guide](guides/investigation-guide.md)** - Structured problem-solving
@@ -58,14 +58,14 @@ System design and architectural decisions:
   - Directory structure and key components
   - Data flow (deployment and update)
   - Performance and security considerations
-  - Quality metrics (405 tests, 16 suites)
+  - Quality metrics (464 tests, 16 suites)
 
 **Architecture Decision Records (ADRs):**
 
 - ADR-001: CLI Architecture (Commander.js selection)
 - ADR-002: Template System Design ({{VAR}} syntax)
 - ADR-003: ESLint Flat Config (Node.js ≥16.9.0)
-- ADR-004: Test Strategy (405 comprehensive tests)
+- ADR-004: Test Strategy (464 comprehensive tests)
 
 See [architecture/README.md](architecture/README.md) for architecture documentation index.
 
@@ -80,7 +80,7 @@ Quick references and command guides:
 
 **npm Scripts:**
 
-- `npm test` - Run all 405 tests
+- `npm test` - Run all 464 tests
 - `npm run build` - Compile TypeScript and copy templates
 - `npm run lint` - Run ESLint
 - `npm run docs:generate` - Generate TypeDoc documentation
@@ -93,14 +93,15 @@ Quick references and command guides:
 - Leadership: ALY, JUNO
 - Infrastructure: TAN, ZEN, INO, EIN, AJ MAESTRO
 
-**Slash Commands (20 total):**
+**Slash Commands (21 total):**
 
-- Session: start, continue, end
-- Planning: requirements, design, decompose, plan
-- Execution: orchestrate, audit, readme, docs, changelog
-- Investigation: create-investigation, plan-investigation, investigate-templates
-- Infrastructure: init
-- Utility: verify, agents, workorder
+- Session (3): start, continue, end
+- Planning (4): requirements, design, decompose, plan
+- Execution (3): orchestrate, audit, breakdown
+- Maintenance (4): readme, docs, docs-update, changelog
+- Investigation (3): create-investigation, plan-investigation, investigate-templates
+- Infrastructure (1): init
+- Utility (3): verify, agents, workorder
 
 See [reference/README.md](reference/README.md) for complete reference documentation.
 

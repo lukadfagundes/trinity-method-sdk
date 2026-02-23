@@ -14,7 +14,7 @@ This document provides detailed information about:
 - Data flow (deployment and update flows)
 - Configuration and build process
 - Performance and security considerations
-- Quality metrics (405 tests, 16 suites)
+- Quality metrics (464 tests, 16 suites)
 
 ## Key Architecture Documents
 

@@ -557,7 +557,7 @@ describe('updateVersionFile', () => {
 
 ### Planned Improvements
 
-- [ ] Per-agent file verification (check all 19 agent files)
+- [ ] Per-agent file verification (check all 18 agent files)
 - [ ] Checksum verification (SHA-256 hashes)
 - [ ] Content validation (validate VERSION format, Trinity.md structure)
 - [ ] Permission verification (check read/write permissions)

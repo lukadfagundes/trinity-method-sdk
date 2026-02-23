@@ -1,11 +1,11 @@
-# Agent Guide: The 19-Agent Trinity Team
+# Agent Guide: The 18-Agent Trinity Team
 
 **Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
 ## Overview
 
-Trinity Method deploys a specialized team of 19 AI agents to your project, each with distinct roles, tools, and responsibilities. This guide provides a comprehensive understanding of the agent system, when to use each agent, and how they work together.
+Trinity Method deploys a specialized team of 18 AI agents to your project, each with distinct roles, tools, and responsibilities. This guide provides a comprehensive understanding of the agent system, when to use each agent, and how they work together.
 
 ## Table of Contents
 
@@ -23,7 +23,7 @@ Trinity Method deploys a specialized team of 19 AI agents to your project, each 
 
 ## Agent Categories
 
-Trinity's 19 agents are organized into 5 functional categories:
+Trinity's 18 agents are organized into 5 functional categories:
 
 | Category           | Agent Count | Purpose                                                          |
 | ------------------ | ----------- | ---------------------------------------------------------------- |
@@ -31,7 +31,7 @@ Trinity's 19 agents are organized into 5 functional categories:
 | **Execution**      | 3 agents    | Implementation, quality gates, code review                       |
 | **Support**        | 4 agents    | Documentation, dependencies, configuration, refactoring          |
 | **Leadership**     | 2 agents    | Strategic oversight, quality audits                              |
-| **Infrastructure** | 6 agents    | Project structure, knowledge base, context, CI/CD, orchestration |
+| **Infrastructure** | 5 agents    | Project structure, knowledge base, context, CI/CD, orchestration |
 
 ---
 
@@ -965,7 +965,7 @@ Use specialist agents for focused tasks:
 ### Agent Not Responding?
 
 - Ensure Trinity is properly deployed (`/trinity-verify`)
-- Check `.claude/agents/` directory contains all 19 agent files
+- Check `.claude/agents/` directory contains all 18 agent files
 - Verify CLAUDE.md context hierarchy is intact
 
 ### BAS Quality Gate Failing?

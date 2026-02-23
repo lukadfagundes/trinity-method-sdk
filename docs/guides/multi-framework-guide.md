@@ -21,10 +21,10 @@ This guide shows framework-specific deployment, linting configuration, CI/CD set
 
 ### Adapting Trinity to Other Frameworks
 
-Trinity's 19-agent system and investigation-first methodology are framework-agnostic. For frameworks not listed above (Java, C#, PHP, Ruby, Kotlin, Swift, etc.), Trinity can still be deployed:
+Trinity's 18-agent system and investigation-first methodology are framework-agnostic. For frameworks not listed above (Java, C#, PHP, Ruby, Kotlin, Swift, etc.), Trinity can still be deployed:
 
 1. **Manual Deployment**: Select the closest framework during `trinity deploy`, then customize linting configs and CI/CD workflows post-deployment
-2. **Core Trinity Components**: The 19 agents, 20 slash commands, investigation templates, and knowledge base work with any language
+2. **Core Trinity Components**: The 18 agents, 21 slash commands, investigation templates, and knowledge base work with any language
 3. **Custom Configuration**: Edit deployed linting configs and CI/CD workflows to match your framework's tooling
 
 **Example**: For a Java project, you might select "Node.js" during deployment, then replace `eslint.config.js` with `checkstyle.xml` and modify `.github/workflows/` to use Maven/Gradle.
@@ -57,7 +57,7 @@ project/
 ├── .prettierignore            # Prettier ignore patterns
 ├── .pre-commit-config.yaml    # ESLint + Prettier hooks
 ├── .github/workflows/nodejs.yml  # CI/CD workflow
-└── .claude/                   # 19 agents + 20 commands + knowledge base
+└── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -149,7 +149,7 @@ project/
 ├── .isort.cfg                 # isort configuration
 ├── .pre-commit-config.yaml    # Black + Flake8 + isort hooks
 ├── .github/workflows/python.yml  # CI/CD workflow
-└── .claude/                   # 19 agents + 20 commands + knowledge base
+└── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -221,7 +221,7 @@ project/
 ├── rustfmt.toml               # Rustfmt configuration
 ├── .pre-commit-config.yaml    # Clippy + Rustfmt hooks
 ├── .github/workflows/rust.yml # CI/CD workflow
-└── .claude/                   # 19 agents + 20 commands + knowledge base
+└── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -289,7 +289,7 @@ project/
 ├── analysis_options.yaml      # Dart Analyzer config
 ├── .pre-commit-config.yaml    # Dart Analyzer hooks
 ├── .github/workflows/flutter.yml  # CI/CD workflow
-└── .claude/                   # 19 agents + 20 commands + knowledge base
+└── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -341,7 +341,7 @@ trinity deploy
 ```
 project/
 ├── .github/workflows/go.yml   # CI/CD workflow (includes gofmt)
-└── .claude/                   # 19 agents + 20 commands + knowledge base
+└── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -583,4 +583,4 @@ pre-commit run --all-files
 
 ---
 
-**Trinity Method SDK v2.0.9** - Investigation-first development for all frameworks
+**Trinity Method SDK v2.1.0** - Investigation-first development for all frameworks
