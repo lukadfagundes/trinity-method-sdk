@@ -63,6 +63,26 @@ async function deployESLint(
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
+  // Skip if ESLint config already exists
+  const eslintConfigs = [
+    '.eslintrc.json',
+    '.eslintrc.js',
+    '.eslintrc.cjs',
+    '.eslintrc.yml',
+    'eslint.config.js',
+    'eslint.config.mjs',
+  ];
+  for (const config of eslintConfigs) {
+    if (await fs.pathExists(config)) {
+      console.warn(
+        chalk.yellow(
+          `   Skipped: .eslintrc.json (${config} already exists, use --force to overwrite)`
+        )
+      );
+      return;
+    }
+  }
+
   let templateFile: string;
 
   if (stack.language === 'TypeScript') {
@@ -87,6 +107,26 @@ async function deployPrettier(
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
+  // Skip if Prettier config already exists
+  const prettierConfigs = [
+    '.prettierrc.json',
+    '.prettierrc',
+    '.prettierrc.js',
+    '.prettierrc.cjs',
+    '.prettierrc.yml',
+    'prettier.config.js',
+  ];
+  for (const config of prettierConfigs) {
+    if (await fs.pathExists(config)) {
+      console.warn(
+        chalk.yellow(
+          `   Skipped: .prettierrc.json (${config} already exists, use --force to overwrite)`
+        )
+      );
+      return;
+    }
+  }
+
   const templatePath = path.join(templateDir, '.prettierrc.json.template');
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);

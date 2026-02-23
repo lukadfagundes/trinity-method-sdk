@@ -27,7 +27,7 @@ const createMockSpinner = (): Spinner => {
   } as unknown as Spinner;
 };
 
-describe('Deploy CI/CD - Integration', () => {
+describe('Deploy CI - Integration', () => {
   // Mock console to reduce test noise
   mockConsole();
 
@@ -90,9 +90,9 @@ describe('Deploy CI/CD - Integration', () => {
       const result = await deployCICD(options, mockSpinner);
 
       expect(result).toBeGreaterThan(0);
-      expect(mockSpinner.start).toHaveBeenCalledWith('Deploying CI/CD workflow templates...');
+      expect(mockSpinner.start).toHaveBeenCalledWith('Deploying CI workflow templates...');
       expect(mockSpinner.succeed).toHaveBeenCalledWith(
-        expect.stringContaining('CI/CD templates deployed')
+        expect.stringContaining('CI templates deployed')
       );
     });
 
@@ -112,7 +112,7 @@ describe('Deploy CI/CD - Integration', () => {
       await deployCICD(options, mockSpinner);
 
       expect(mockSpinner.succeed).toHaveBeenCalledWith(
-        expect.stringMatching(/CI\/CD templates deployed \(\d+ files\)/)
+        expect.stringMatching(/CI templates deployed \(\d+ files\)/)
       );
     });
 
@@ -265,7 +265,7 @@ describe('Deploy CI/CD - Integration', () => {
 
       await deployCICD(options, mockSpinner);
 
-      expect(mockSpinner.start).toHaveBeenCalledWith('Deploying CI/CD workflow templates...');
+      expect(mockSpinner.start).toHaveBeenCalledWith('Deploying CI workflow templates...');
     });
 
     test('should succeed spinner on successful deployment', async () => {

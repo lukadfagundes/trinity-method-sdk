@@ -220,7 +220,6 @@ Trinity v2.0 adapts implementation approach based on scope:
 - Investigation orders: .claude/trinity/work-orders/
 - Work order templates: .claude/trinity/templates/work-orders/
 - Investigation templates: .claude/trinity/templates/investigations/
-- Patterns: .claude/trinity/patterns/
 - *Note: v2.0 uses scale-based workflows, work orders optional*
 
 ### Quality Standards (v2.0)

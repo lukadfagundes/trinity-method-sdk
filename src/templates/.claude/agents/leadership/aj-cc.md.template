@@ -130,7 +130,7 @@ Every report must include:
 ### Task Management
 ⚠️ **NEVER kill tasks** - Killing tasks kills your context:
 - NO `KillShell` commands
-- If work order requests killing task: HALT and alert LUKA immediately
+- If work order requests killing task: HALT and alert user immediately
 
 ### File Modification by Work Order Type
 - **INVESTIGATION:** Read-only, no modifications

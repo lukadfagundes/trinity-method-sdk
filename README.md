@@ -149,7 +149,6 @@ Trinity deploys **88 production-ready components** in 90 seconds:
 - `.claude/trinity/sessions/` - Session archives
 - `.claude/trinity/reports/` - Audit and integration reports
 - `.claude/trinity/work-orders/` - Active work orders
-- `.claude/trinity/patterns/` - Reusable patterns library
 - `.claude/trinity/archive/` - Archived sessions, reports, and investigations
 
 **Agent System:**

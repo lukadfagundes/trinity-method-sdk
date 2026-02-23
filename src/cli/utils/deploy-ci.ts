@@ -43,7 +43,7 @@ async function deployGitLabCI(
     const gitlabCIExists = await fs.pathExists('.gitlab-ci.yml');
 
     if (gitlabCIExists && !options.force) {
-      stats.skipped.push('.gitlab-ci.yml (already exists)');
+      stats.skipped.push('.gitlab-ci.yml (already exists, use --force to overwrite)');
       return;
     }
 
@@ -91,7 +91,9 @@ export async function deployCITemplates(
           const ciExists = await fs.pathExists('.github/workflows/ci.yml');
 
           if (ciExists && !options.force) {
-            stats.skipped.push('.github/workflows/ci.yml (already exists)');
+            stats.skipped.push(
+              '.github/workflows/ci.yml (already exists, use --force to overwrite)'
+            );
           } else {
             const content = await fs.readFile(ciTemplate, 'utf8');
             const processed = processTemplate(content, variables);

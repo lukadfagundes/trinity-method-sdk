@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All 50+ template files updated with new deployment target paths
   - All relative paths recalculated for new directory depth
   - 417 tests pass with restructured paths
+- **Updated `.gitignore` entries** - Trinity deployment now only ignores `.claude/trinity/archive/` and `.claude/trinity/templates/` instead of all `.claude/`, `*CLAUDE.md`, `TRINITY.md`, and `trinity/` allowing agents, commands, and context files to be tracked in version control
+- **Removed `.claude/trinity/patterns/` directory** - No longer deployed as an empty placeholder; directory structure reduced from 17 to 16 directories
 
 ### Added
 

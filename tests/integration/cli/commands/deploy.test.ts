@@ -62,14 +62,13 @@ describe('Deploy Command - Integration Tests', () => {
   });
 
   describe('Directory Structure Creation', () => {
-    it('should create all 14 Trinity core directories', async () => {
+    it('should create all 13 Trinity core directories', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       const trinityDirs = [
         '.claude/trinity/knowledge-base',
         '.claude/trinity/sessions',
         '.claude/trinity/investigations',
-        '.claude/trinity/patterns',
         '.claude/trinity/work-orders',
         '.claude/trinity/templates',
         '.claude/trinity/templates/work-orders',
@@ -399,6 +398,9 @@ describe('Deploy Command - Integration Tests', () => {
 
       const gitignoreContent = await fs.readFile('.gitignore', 'utf8');
       expect(gitignoreContent).toContain('# Trinity Method SDK');
+      expect(gitignoreContent).toContain('.claude/trinity/archive/');
+      expect(gitignoreContent).toContain('.claude/trinity/templates/');
+      expect(gitignoreContent).not.toContain('*CLAUDE.md');
     });
 
     it('should not duplicate Trinity exclusions if already present', async () => {

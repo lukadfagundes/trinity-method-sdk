@@ -378,16 +378,13 @@ resolveProjectVarName({ PROJECT_NAME: 'E-Commerce 2.0' });
 #### `TRINITY_HOME`
 
 **Variants:** `TRINITY_HOME`, `process.env.TRINITY_HOME`
-**Default:** `"C:/Users/lukaf/Desktop/Dev Work/trinity-method"`
+**Default:** `process.cwd()` (current working directory)
 
 ```typescript
-TRINITY_HOME: (v) =>
-  toString(v.TRINITY_HOME) ||
-  process.env.TRINITY_HOME ||
-  'C:/Users/lukaf/Desktop/Dev Work/trinity-method';
+TRINITY_HOME: (v) => toString(v.TRINITY_HOME) || process.env.TRINITY_HOME || process.cwd();
 ```
 
-**Note:** Used for Trinity SDK development/testing paths.
+**Note:** Falls back to the current working directory. Can be overridden via the `TRINITY_HOME` environment variable.
 
 ---
 

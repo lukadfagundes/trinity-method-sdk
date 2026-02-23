@@ -11,7 +11,7 @@
 The Directories module creates the complete Trinity Method directory structure in the target project. It ensures all necessary folders exist for agents, knowledge base, sessions, investigations, and archives.
 
 **Why This Exists:**
-Trinity's 19-agent system requires a well-organized directory structure to function effectively. This module creates 17 directories that serve as the foundation for agent collaboration, knowledge management, and workflow orchestration.
+Trinity's 19-agent system requires a well-organized directory structure to function effectively. This module creates 16 directories that serve as the foundation for agent collaboration, knowledge management, and workflow orchestration.
 
 ---
 
@@ -27,12 +27,12 @@ Creates complete Trinity directory structure.
 | --------- | --------------- | -------- | ------------------------------------- |
 | `spinner` | `Spinner` (Ora) | Yes      | Spinner instance for progress display |
 
-**Returns:** `Promise<number>` - Number of directories created (17)
+**Returns:** `Promise<number>` - Number of directories created (16)
 
 **Behavior:**
 
 - Uses `fs.ensureDir()` to create directories (idempotent - won't fail if exists)
-- Creates 12 Trinity core directories
+- Creates 11 Trinity core directories
 - Creates 5 Claude Code agent directories
 - Updates spinner with progress and success message
 
@@ -40,7 +40,7 @@ Creates complete Trinity directory structure.
 
 ## Directory Structure
 
-### Trinity Core Directories (12 total)
+### Trinity Core Directories (11 total)
 
 #### 1. Knowledge Base
 
@@ -104,21 +104,7 @@ Creates complete Trinity directory structure.
 
 ---
 
-#### 5. Patterns
-
-**Path:** `.claude/trinity/patterns/`
-**Purpose:** Stores reusable solution patterns
-**Contents:**
-
-- `[pattern-name].md` - Discovered patterns
-- Best practices
-- Reusable solutions
-
-**Usage:** Agents extract and generalize patterns from completed work
-
----
-
-#### 6. Work Orders
+#### 5. Work Orders
 
 **Path:** `.claude/trinity/work-orders/`
 **Purpose:** Stores active and completed work orders
@@ -132,7 +118,7 @@ Creates complete Trinity directory structure.
 
 ---
 
-#### 7. Templates
+#### 6. Templates
 
 **Path:** `.claude/trinity/templates/`
 **Purpose:** Stores template files for agents
@@ -146,7 +132,7 @@ Creates complete Trinity directory structure.
 
 ---
 
-#### 8. Reports
+#### 7. Reports
 
 **Path:** `.claude/trinity/reports/`
 **Purpose:** Stores agent-generated reports
@@ -160,7 +146,7 @@ Creates complete Trinity directory structure.
 
 ---
 
-#### 9-12. Archive Directories (4 total)
+#### 8-11. Archive Directories (4 total)
 
 **Paths:**
 
