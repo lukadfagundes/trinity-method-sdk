@@ -17,7 +17,7 @@ import type {
  */
 function displayStatistics(
   stats: DeploymentProgress,
-  stack: Stack,
+  _stack: Stack,
   claudeMdCount: number,
   claudeMdSummary: string
 ): void {

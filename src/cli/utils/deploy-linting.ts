@@ -58,7 +58,7 @@ function getFrameworkDirectory(framework: string): string {
 }
 
 async function deployESLint(
-  tool: LintingTool,
+  _tool: LintingTool,
   stack: Stack,
   templateDir: string,
   variables: Record<string, string | number>
@@ -103,7 +103,7 @@ async function deployESLint(
 }
 
 async function deployPrettier(
-  tool: LintingTool,
+  _tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
@@ -185,7 +185,7 @@ async function hasExistingPreCommitSetup(): Promise<boolean> {
 }
 
 async function deployHuskyPreCommit(
-  tool: LintingTool,
+  _tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
@@ -225,7 +225,7 @@ async function addLintStagedConfig(): Promise<void> {
 }
 
 async function deployPythonPreCommit(
-  tool: LintingTool,
+  _tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
@@ -287,7 +287,7 @@ async function deployPythonTool(
 }
 
 async function deployDartAnalyzer(
-  tool: LintingTool,
+  _tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {

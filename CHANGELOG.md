@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Enabled all TypeScript strict mode flags** - Turned on `strictNullChecks`, `strictPropertyInitialization`, `noUnusedLocals`, and `noUnusedParameters` in tsconfig.json (Issue #6)
+  - All four flags were previously disabled, weakening compile-time type safety
+  - Codebase required zero changes for `strictNullChecks` and `strictPropertyInitialization` (already null-safe)
+  - Prefixed 6 unused parameters with `_` to satisfy `noUnusedParameters` (5 in `deploy-linting.ts`, 1 in `summary.ts`)
+  - All 417 tests pass, 0 type errors, lint clean
 - **Restructured `trinity/` into `.claude/trinity/`** - Consolidated deployment footprint from two top-level directories to one (Issue #3)
   - `trinity deploy` now creates `.claude/trinity/` instead of a separate `trinity/` directory
   - `trinity update` manages `.claude/trinity/` with consolidated backup (single `.claude/` backup covers everything)
