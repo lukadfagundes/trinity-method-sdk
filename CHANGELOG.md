@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Restructured `trinity/` into `.claude/trinity/`** - Consolidated deployment footprint from two top-level directories to one (Issue #3)
   - `trinity deploy` now creates `.claude/trinity/` instead of a separate `trinity/` directory
   - `trinity update` manages `.claude/trinity/` with consolidated backup (single `.claude/` backup covers everything)
-  - `.gitignore` simplified from 4 entries to 2: `.claude/` and `*CLAUDE.md`
   - All 50+ template files updated with new deployment target paths
   - All relative paths recalculated for new directory depth
   - 417 tests pass with restructured paths
