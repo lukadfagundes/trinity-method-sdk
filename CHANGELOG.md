@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Codebase required zero changes for `strictNullChecks` and `strictPropertyInitialization` (already null-safe)
   - Prefixed 6 unused parameters with `_` to satisfy `noUnusedParameters` (5 in `deploy-linting.ts`, 1 in `summary.ts`)
   - All 417 tests pass, 0 type errors, lint clean
+- **Added metrics module test coverage** - Created comprehensive test suites for `dependency-parser.ts` and `framework-detector.ts` (Issue #6)
+  - `dependency-parser.ts` coverage: 9.37% → 100% (23 tests covering Node.js, Python, Rust, Flutter, Go, and error paths)
+  - `framework-detector.ts` coverage: 36.36% → 95.23% (24 tests covering all version detectors and package manager detection)
+  - Overall project coverage improved from 83% → 89% (464 tests total)
 - **Restructured `trinity/` into `.claude/trinity/`** - Consolidated deployment footprint from two top-level directories to one (Issue #3)
   - `trinity deploy` now creates `.claude/trinity/` instead of a separate `trinity/` directory
   - `trinity update` manages `.claude/trinity/` with consolidated backup (single `.claude/` backup covers everything)
