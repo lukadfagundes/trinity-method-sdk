@@ -1110,6 +1110,89 @@ Orchestration complete.
 
 ---
 
+### `/trinity-breakdown`
+
+**Location:** `.claude/commands/execution/trinity-breakdown.md`
+**Agents:** AJ MAESTRO (Orchestration Coordinator) — instructs, user implements
+
+**Purpose:** Guided step-by-step implementation where the user makes all edits
+
+**When to Use:**
+
+- Want to learn and understand every change
+- Prefer hands-on implementation with expert guidance
+- Want to review each change before applying it
+- Learning a new codebase through guided implementation
+
+**What It Does:**
+
+1. Analyzes task (work order, investigation, or description)
+2. AJ MAESTRO selects agent persona(s) for guidance
+3. Presents each change as structured step-by-step instructions
+4. Provides file paths, line numbers, code changes, and explanations
+5. Guides user through verification at each step
+6. Summarizes all changes on completion
+
+**Usage:**
+
+```
+/trinity-breakdown
+```
+
+**Expected Output:**
+
+- Step-by-step implementation instructions
+- File paths and exact code changes
+- Explanations for every change (WHY, not just WHAT)
+- Verification checkpoints (build, lint, test)
+- Completion summary
+
+**Key Difference from `/trinity-orchestrate`:**
+
+| Aspect         | `/trinity-orchestrate` | `/trinity-breakdown`      |
+| -------------- | ---------------------- | ------------------------- |
+| Who edits code | CC / KIL agents        | **You** (the user)        |
+| CC's role      | Execute changes        | Explain what to change    |
+| Output         | Commits and reports    | Step-by-step instructions |
+| Learning       | Minimal                | **Maximum**               |
+
+**Example:**
+
+```
+User: /trinity-breakdown @WO-042-jwt-refresh-implementation.md
+
+AJ MAESTRO: Reading work order WO-042...
+
+I'll walk you through implementing JWT token refresh step by step.
+You'll make all the edits — I'll tell you exactly what to change and why.
+
+OVERVIEW:
+- 4 files to create/modify
+- 8 steps total
+- You'll need: Your code editor and a terminal
+
+STEP 1 of 8: Create the token refresh service file
+
+FILE: src/services/token-refresh.service.ts
+LOCATION: New file
+
+WHAT TO DO:
+Create a new file with the following content:
+
+CODE:
+[Exact code provided]
+
+WHY:
+This service encapsulates token generation logic...
+
+VERIFY:
+Save the file and run: npm run build
+
+Ready for Step 2? (Say "next" to continue)
+```
+
+---
+
 ### `/trinity-audit`
 
 **Location:** `.claude/commands/execution/trinity-audit.md`
@@ -2101,11 +2184,11 @@ Next Steps:
 |----------|---------------|---------|
 | **Session Management** | 3 | Session lifecycle (start, continue, end) |
 | **Planning** | 4 | Requirements, design, decomposition, planning |
-| **Execution** | 5 | Orchestration, quality assurance, documentation |
+| **Execution** | 6 | Orchestration, guided implementation, quality assurance, documentation |
 | **Investigation** | 3 | Structured problem-solving and investigations |
 | **Infrastructure** | 1 | Complete Trinity initialization |
 | **Utility** | 3 | Verification, agent directory, work orders |
-| **Total** | **19** | Complete Trinity Method toolkit |
+| **Total** | **20** | Complete Trinity Method toolkit |
 
 ---
 

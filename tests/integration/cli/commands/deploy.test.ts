@@ -187,9 +187,10 @@ describe('Deploy Command - Integration Tests', () => {
       expect(await fs.pathExists('.claude/commands/planning/trinity-plan.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/planning/trinity-decompose.md')).toBe(true);
 
-      // Execution commands (2)
+      // Execution commands (3)
       expect(await fs.pathExists('.claude/commands/execution/trinity-orchestrate.md')).toBe(true);
       expect(await fs.pathExists('.claude/commands/execution/trinity-audit.md')).toBe(true);
+      expect(await fs.pathExists('.claude/commands/execution/trinity-breakdown.md')).toBe(true);
 
       // Maintenance commands (4)
       expect(await fs.pathExists('.claude/commands/maintenance/trinity-readme.md')).toBe(true);

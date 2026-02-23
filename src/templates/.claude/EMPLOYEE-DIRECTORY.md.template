@@ -429,6 +429,7 @@ npx trinity-method-sdk deploy --ci-deploy
 |------|-------|-------|---------------|
 | **Scale Determination** | ALY | Leadership | N/A (always first) |
 | **AI Orchestration** | AJ MAESTRO | Leadership | `/trinity-orchestrate` |
+| **Guided Implementation** | AJ MAESTRO | Leadership | `/trinity-breakdown` |
 | **Requirements** | MON | Planning | `/trinity-requirements` |
 | **Technical Design** | ROR | Planning | `/trinity-design` |
 | **Work Planning** | TRA | Planning | `/trinity-plan` |
