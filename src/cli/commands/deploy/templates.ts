@@ -35,7 +35,7 @@ export async function deployTemplates(
     'VERIFICATION-TEMPLATE.md.template',
   ];
 
-  await fs.ensureDir('trinity/templates/work-orders');
+  await fs.ensureDir('.claude/trinity/templates/work-orders');
 
   for (const template of woTemplates) {
     const templatePath = path.join(templatesPath, 'trinity/templates/work-orders', template);
@@ -46,7 +46,7 @@ export async function deployTemplates(
       const deployedName = template.replace('.template', '');
 
       // Validate destination path for security
-      const destPath = validatePath(`trinity/templates/work-orders/${deployedName}`);
+      const destPath = validatePath(`.claude/trinity/templates/work-orders/${deployedName}`);
       await fs.writeFile(destPath, processed);
       templatesDeployed++;
     }
@@ -65,7 +65,7 @@ export async function deployTemplates(
     'technical.md.template',
   ];
 
-  await fs.ensureDir('trinity/templates/investigations');
+  await fs.ensureDir('.claude/trinity/templates/investigations');
 
   for (const template of investigationTemplates) {
     const templatePath = path.join(templatesPath, 'trinity/templates/investigations', template);
@@ -76,7 +76,7 @@ export async function deployTemplates(
       const deployedName = template.replace('.template', '');
 
       // Validate destination path for security
-      const destPath = validatePath(`trinity/templates/investigations/${deployedName}`);
+      const destPath = validatePath(`.claude/trinity/templates/investigations/${deployedName}`);
       await fs.writeFile(destPath, processed);
       templatesDeployed++;
     }
@@ -88,7 +88,7 @@ export async function deployTemplates(
   spinner.start('Deploying documentation templates...');
 
   const docSourcePath = path.join(templatesPath, 'trinity/templates/documentation');
-  const docDestPath = 'trinity/templates/documentation';
+  const docDestPath = '.claude/trinity/templates/documentation';
 
   await fs.ensureDir(docDestPath);
 

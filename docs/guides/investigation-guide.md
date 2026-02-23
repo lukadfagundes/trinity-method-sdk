@@ -227,7 +227,7 @@ Use `/trinity-create-investigation` to launch the investigation wizard:
 3. Impact level (Low, Medium, High, Critical)
 4. Investigation type (Bug, Performance, System Analysis, Security, Incident)
 
-**Output:** Investigation document created in `trinity/investigations/INVESTIGATION-{slug}-{date}.md`
+**Output:** Investigation document created in `.claude/trinity/investigations/INVESTIGATION-{slug}-{date}.md`
 
 **Example:**
 
@@ -255,7 +255,7 @@ Investigation Type:
 [ ] Security Audit
 [ ] Incident Post-Mortem
 
-✅ Investigation Created: trinity/investigations/INVESTIGATION-memory-leak-api-2025-12-28.md
+✅ Investigation Created: .claude/trinity/investigations/INVESTIGATION-memory-leak-api-2025-12-28.md
 
 Open the investigation file to begin documenting your findings.
 
@@ -506,11 +506,11 @@ app.use((req, res, next) => {
    - Code review checklist items
 
 2. **Archive Investigation**
-   - Move to `trinity/archive/investigations/` if desired
-   - Or keep in `trinity/investigations/` for reference
+   - Move to `.claude/trinity/archive/investigations/` if desired
+   - Or keep in `.claude/trinity/investigations/` for reference
 
 3. **Update Knowledge Base**
-   - Add to `trinity/knowledge-base/ISSUES.md` as known pattern
+   - Add to `.claude/trinity/knowledge-base/ISSUES.md` as known pattern
    - Update `Technical-Debt.md` if technical debt identified
    - Document in `ARCHITECTURE.md` if architecture change made
 
@@ -528,7 +528,7 @@ Follow prompts to create investigation document.
 
 ### Manual Creation
 
-Create investigation manually in `trinity/investigations/`:
+Create investigation manually in `.claude/trinity/investigations/`:
 
 ```markdown
 # Investigation: [Title]
@@ -591,7 +591,7 @@ Create investigation manually in `trinity/investigations/`:
 
 ## Investigation Templates
 
-Trinity deploys investigation templates to `trinity/templates/investigations/`:
+Trinity deploys investigation templates to `.claude/trinity/templates/investigations/`:
 
 ### Available Templates
 
@@ -603,11 +603,11 @@ Trinity deploys investigation templates to `trinity/templates/investigations/`:
 
 ### Customizing Templates
 
-Edit templates in `trinity/templates/investigations/` to customize for your team:
+Edit templates in `.claude/trinity/templates/investigations/` to customize for your team:
 
 ```bash
 # Edit bug investigation template
-code trinity/templates/investigations/bug-investigation.md
+code .claude/trinity/templates/investigations/bug-investigation.md
 
 # Add team-specific sections
 ## Runbook Reference

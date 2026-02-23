@@ -8,7 +8,7 @@
 
 ## Overview
 
-The Templates Deployment module deploys Trinity Method's template library to `trinity/templates/`, including work orders, investigations, and comprehensive documentation templates.
+The Templates Deployment module deploys Trinity Method's template library to `.claude/trinity/templates/`, including work orders, investigations, and comprehensive documentation templates.
 
 **Key Features:**
 
@@ -40,7 +40,7 @@ Deploys all Trinity template categories.
 
 ### 1. Work Order Templates (6 templates)
 
-**Location:** `trinity/templates/work-orders/`
+**Location:** `.claude/trinity/templates/work-orders/`
 
 **Templates:**
 
@@ -61,7 +61,7 @@ Deploys all Trinity template categories.
 
 ### 2. Investigation Templates (5 templates)
 
-**Location:** `trinity/templates/investigations/`
+**Location:** `.claude/trinity/templates/investigations/`
 
 **Templates:**
 
@@ -81,7 +81,7 @@ Deploys all Trinity template categories.
 
 ### 3. Documentation Templates (28 templates)
 
-**Location:** `trinity/templates/documentation/`
+**Location:** `.claude/trinity/templates/documentation/`
 
 **Structure:** Hierarchical with subdirectories
 
@@ -107,7 +107,7 @@ async function copyDocTemplates(sourcePath, destPath) {
 ## Deployed Directory Structure
 
 ```
-trinity/templates/
+.claude/trinity/templates/
 ├── work-orders/
 │   ├── INVESTIGATION-TEMPLATE.md
 │   ├── IMPLEMENTATION-TEMPLATE.md
@@ -134,7 +134,7 @@ trinity/templates/
 
 ### Phase 1: Work Order Templates
 
-1. Create `trinity/templates/work-orders/`
+1. Create `.claude/trinity/templates/work-orders/`
 2. Deploy 6 work order templates
 3. Process variables, remove `.template` extension
 4. Report: "{count} templates"
@@ -143,7 +143,7 @@ trinity/templates/
 
 ### Phase 2: Investigation Templates
 
-1. Create `trinity/templates/investigations/`
+1. Create `.claude/trinity/templates/investigations/`
 2. Deploy 5 investigation templates
 3. Process variables, remove `.template` extension
 4. Report: "{count} templates"
@@ -152,7 +152,7 @@ trinity/templates/
 
 ### Phase 3: Documentation Templates
 
-1. Create `trinity/templates/documentation/`
+1. Create `.claude/trinity/templates/documentation/`
 2. Recursively scan source directory
 3. For each `.md.template`:
    - Process template variables

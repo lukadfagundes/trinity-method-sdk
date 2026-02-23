@@ -56,9 +56,8 @@ describe('Update Command - Integration Tests', () => {
     });
 
     it('should fail if .claude directory is missing', async () => {
-      // Create only trinity directory
-      await fs.ensureDir('trinity');
-      await fs.writeFile('trinity/VERSION', '1.0.0');
+      // Create .claude but not .claude/trinity, so the trinity check fails
+      await fs.ensureDir('.claude');
 
       await expect(update({ dryRun: false })).rejects.toThrow();
     });
@@ -94,7 +93,7 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '0.5.0');
 
       // Record file counts before dry run
-      const trinityFilesBefore = await fs.readdir('trinity', { recursive: true });
+      const trinityFilesBefore = await fs.readdir('.claude/trinity', { recursive: true });
 
       try {
         await update({ dryRun: true });
@@ -103,7 +102,7 @@ describe('Update Command - Integration Tests', () => {
       }
 
       // Verify no files were modified
-      const trinityFilesAfter = await fs.readdir('trinity', { recursive: true });
+      const trinityFilesAfter = await fs.readdir('.claude/trinity', { recursive: true });
       expect(trinityFilesAfter.length).toBe(trinityFilesBefore.length);
 
       // Verify version didn't change
@@ -117,10 +116,10 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '0.5.0');
 
       const expectedUserContent = {
-        'trinity/knowledge-base/ARCHITECTURE.md': 'User custom architecture content',
-        'trinity/knowledge-base/To-do.md': 'User task 1',
-        'trinity/knowledge-base/ISSUES.md': 'User custom issues',
-        'trinity/knowledge-base/Technical-Debt.md': 'User custom debt tracking',
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md': 'User custom architecture content',
+        '.claude/trinity/knowledge-base/To-do.md': 'User task 1',
+        '.claude/trinity/knowledge-base/ISSUES.md': 'User custom issues',
+        '.claude/trinity/knowledge-base/Technical-Debt.md': 'User custom debt tracking',
       };
 
       // Note: Actual update requires SDK templates to be present
@@ -143,9 +142,9 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '1.0.0');
 
       const requiredDirs = [
-        'trinity',
-        'trinity/knowledge-base',
-        'trinity/templates',
+        '.claude/trinity',
+        '.claude/trinity/knowledge-base',
+        '.claude/trinity/templates',
         '.claude',
         '.claude/agents',
         '.claude/agents/leadership',
@@ -164,7 +163,7 @@ describe('Update Command - Integration Tests', () => {
     it('should have VERSION file', async () => {
       await createMockTrinityDeployment(testDir, '1.0.0');
 
-      expect(await fs.pathExists('trinity/VERSION')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/VERSION')).toBe(true);
       const version = await readVersion(testDir);
       expect(version).toBeTruthy();
       expect(typeof version).toBe('string');
@@ -176,10 +175,10 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '1.0.0');
 
       const customContent = 'My custom architecture documentation';
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', customContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', customContent);
 
       // After update (if we could run it), this should still contain custom content
-      const content = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      const content = await fs.readFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
       expect(content).toContain(customContent);
     });
 
@@ -187,9 +186,9 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '1.0.0');
 
       const customContent = '- [ ] My custom task';
-      await fs.writeFile('trinity/knowledge-base/To-do.md', customContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/To-do.md', customContent);
 
-      const content = await fs.readFile('trinity/knowledge-base/To-do.md', 'utf8');
+      const content = await fs.readFile('.claude/trinity/knowledge-base/To-do.md', 'utf8');
       expect(content).toContain(customContent);
     });
 
@@ -197,9 +196,9 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '1.0.0');
 
       const customContent = 'My custom issue tracking';
-      await fs.writeFile('trinity/knowledge-base/ISSUES.md', customContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/ISSUES.md', customContent);
 
-      const content = await fs.readFile('trinity/knowledge-base/ISSUES.md', 'utf8');
+      const content = await fs.readFile('.claude/trinity/knowledge-base/ISSUES.md', 'utf8');
       expect(content).toContain(customContent);
     });
 
@@ -207,9 +206,9 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '1.0.0');
 
       const customContent = 'My custom tech debt notes';
-      await fs.writeFile('trinity/knowledge-base/Technical-Debt.md', customContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/Technical-Debt.md', customContent);
 
-      const content = await fs.readFile('trinity/knowledge-base/Technical-Debt.md', 'utf8');
+      const content = await fs.readFile('.claude/trinity/knowledge-base/Technical-Debt.md', 'utf8');
       expect(content).toContain(customContent);
     });
   });
@@ -228,8 +227,8 @@ describe('Update Command - Integration Tests', () => {
     });
 
     it('should handle missing VERSION file', async () => {
-      // Create trinity without VERSION
-      await fs.ensureDir('trinity');
+      // Create .claude/trinity without VERSION
+      await fs.ensureDir('.claude/trinity');
       await fs.ensureDir('.claude');
 
       // Should default to 0.0.0 and proceed
@@ -358,7 +357,7 @@ describe('Update Command - Integration Tests', () => {
       // Get checksums before
       const versionBefore = await readVersion(testDir);
       const architectureBefore = await fs.readFile(
-        'trinity/knowledge-base/ARCHITECTURE.md',
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md',
         'utf8'
       );
 
@@ -370,7 +369,10 @@ describe('Update Command - Integration Tests', () => {
 
       // Verify no changes
       const versionAfter = await readVersion(testDir);
-      const architectureAfter = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      const architectureAfter = await fs.readFile(
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+        'utf8'
+      );
 
       expect(versionAfter).toBe(versionBefore);
       expect(architectureAfter).toBe(architectureBefore);
@@ -427,7 +429,7 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '0.5.0');
 
       const customContent = 'My important notes';
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', customContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', customContent);
 
       promptSpy.mockResolvedValueOnce({ confirm: true });
 
@@ -438,7 +440,7 @@ describe('Update Command - Integration Tests', () => {
       }
 
       // User file should still exist even if update failed
-      const exists = await fs.pathExists('trinity/knowledge-base/ARCHITECTURE.md');
+      const exists = await fs.pathExists('.claude/trinity/knowledge-base/ARCHITECTURE.md');
       expect(exists).toBe(true);
     });
 
@@ -446,7 +448,7 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '0.5.0');
 
       // Verify current structure exists before update
-      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity')).toBe(true);
       expect(await fs.pathExists('.claude')).toBe(true);
 
       // Structure is ready for backup
@@ -484,7 +486,7 @@ describe('Update Command - Integration Tests', () => {
       }
 
       // Trinity structure should still exist
-      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity')).toBe(true);
       expect(await fs.pathExists('.claude')).toBe(true);
     });
 
@@ -510,10 +512,10 @@ describe('Update Command - Integration Tests', () => {
       await createMockTrinityDeployment(testDir, '0.5.0');
 
       const userFiles = {
-        'trinity/knowledge-base/ARCHITECTURE.md': 'Custom architecture',
-        'trinity/knowledge-base/To-do.md': 'Custom todos',
-        'trinity/knowledge-base/ISSUES.md': 'Custom issues',
-        'trinity/knowledge-base/Technical-Debt.md': 'Custom debt',
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md': 'Custom architecture',
+        '.claude/trinity/knowledge-base/To-do.md': 'Custom todos',
+        '.claude/trinity/knowledge-base/ISSUES.md': 'Custom issues',
+        '.claude/trinity/knowledge-base/Technical-Debt.md': 'Custom debt',
       };
 
       // Write custom content
@@ -536,12 +538,12 @@ describe('Update Command - Integration Tests', () => {
       await fs.writeFile('package.json', JSON.stringify({ version: '1.0.0' }));
 
       const userContent = 'Important user data';
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', userContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', userContent);
 
       await update({ dryRun: false });
 
       // Should remain unchanged (already up-to-date)
-      const content = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      const content = await fs.readFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
       expect(content).toBe(userContent);
     });
   });
@@ -550,9 +552,9 @@ describe('Update Command - Integration Tests', () => {
     it('should verify trinity directory exists', async () => {
       await createMockTrinityDeployment(testDir, '1.0.0');
 
-      expect(await fs.pathExists('trinity')).toBe(true);
-      expect(await fs.pathExists('trinity/knowledge-base')).toBe(true);
-      expect(await fs.pathExists('trinity/templates')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/knowledge-base')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/templates')).toBe(true);
     });
 
     it('should verify .claude directory exists', async () => {

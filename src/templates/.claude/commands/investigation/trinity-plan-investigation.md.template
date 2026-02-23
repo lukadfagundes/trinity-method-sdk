@@ -76,7 +76,7 @@ graph TD
 
 **Output:**
 Save investigation plan to:
-`trinity/investigations/plans/PLAN-{investigation-title}.md`
+`.claude/trinity/investigations/plans/PLAN-{investigation-title}.md`
 
 **Plan Includes:**
 - Executive summary

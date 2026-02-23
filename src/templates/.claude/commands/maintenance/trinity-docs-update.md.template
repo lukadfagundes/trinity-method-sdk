@@ -60,13 +60,13 @@ fi
 
 **Agent:** JUNO (Quality Auditor)
 **Mode:** AUDIT + REPORT (Creates audit report file only)
-**Output:** `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
+**Output:** `.claude/trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
 
 ### Step 1.1: Execute JUNO Audit
 
 1. **Read the audit checklist template:**
    ```
-   trinity/templates/documentation/reports/juno-docs-update-checklist.md
+   .claude/trinity/templates/documentation/reports/juno-docs-update-checklist.md
    ```
 
 2. **Follow all instructions in the checklist** to perform the comprehensive audit
@@ -75,7 +75,7 @@ fi
 
 4. **Save the report to:**
    ```
-   trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+   .claude/trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
    ```
 
 ---
@@ -95,7 +95,7 @@ Use the Task tool to launch all three APO agents simultaneously:
 3. **APO-3** - New business logic documentation (second half)
 
 Each APO will:
-1. Read the APO checklist template: `trinity/templates/documentation/reports/apo-docs-update-checklist.md`
+1. Read the APO checklist template: `.claude/trinity/templates/documentation/reports/apo-docs-update-checklist.md`
 2. Execute all instructions in the checklist
 3. Complete their assigned work from JUNO's audit report
 
@@ -141,9 +141,9 @@ Use the Task tool to launch JUNO with this prompt:
 **Instructions:**
 
 1. Read all three APO checklists:
-   - trinity/reports/apo-1-docs-update-checklist.md
-   - trinity/reports/apo-2-docs-update-checklist.md
-   - trinity/reports/apo-3-docs-update-checklist.md
+   - .claude/trinity/reports/apo-1-docs-update-checklist.md
+   - .claude/trinity/reports/apo-2-docs-update-checklist.md
+   - .claude/trinity/reports/apo-3-docs-update-checklist.md
 
 2. For each checklist, count:
    - Total tasks assigned
@@ -190,7 +190,7 @@ Use the Task tool to launch JUNO with this prompt:
 **Instructions:**
 
 1. Read your personal checklist:
-   - trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
+   - .claude/trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
 
 2. Find the FIRST task marked [ ] (unchecked)
 
@@ -225,7 +225,7 @@ Use the Task tool to launch JUNO with this prompt:
 **Instructions:**
 
 1. Read JUNO's original audit report:
-   - trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+   - .claude/trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
 
 2. For each item that was assigned to APOs, verify:
    - File was created/updated (check file exists)
@@ -240,7 +240,7 @@ Use the Task tool to launch JUNO with this prompt:
    - Check for outdated information
 
 4. Generate verification report:
-   - Save to: trinity/reports/DOCS-UPDATE-VERIFICATION-{{DATE}}.md
+   - Save to: .claude/trinity/reports/DOCS-UPDATE-VERIFICATION-{{DATE}}.md
    - Include: Coverage percentage, accuracy percentage, issues found
 
 5. Determine final status:

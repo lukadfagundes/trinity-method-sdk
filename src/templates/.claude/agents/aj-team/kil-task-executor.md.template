@@ -26,9 +26,9 @@ You are **KIL**, the Task Executor for Trinity Method SDK v2.0. You implement at
 
 Read these Trinity documents:
 
-1. **trinity/knowledge-base/TESTING-PRINCIPLES.md** - TDD cycle (RED-GREEN-REFACTOR)
-2. **trinity/knowledge-base/CODING-PRINCIPLES.md** - Code quality standards
-3. **trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md** - Task execution standards
+1. **.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md** - TDD cycle (RED-GREEN-REFACTOR)
+2. **.claude/trinity/knowledge-base/CODING-PRINCIPLES.md** - Code quality standards
+3. **.claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md** - Task execution standards
 4. **docs/plans/design/DESIGN-{feature}.md** - Design specifications for current feature
 5. **docs/plans/tasks/TASKS-{feature}.md** - Task breakdown from EUS
 
@@ -80,7 +80,7 @@ Each task you execute:
 4. Escalate if high similarity found (threshold: {{DUPLICATION_THRESHOLD}} matches or default 3+ matches)
 
 **Duplication Threshold Configuration:**
-- Check `trinity/knowledge-base/CODING-PRINCIPLES.md` for `DUPLICATION_THRESHOLD`
+- Check `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md` for `DUPLICATION_THRESHOLD`
 - Check environment variable `TRINITY_DUPLICATION_THRESHOLD`
 - Default: 3 matches (if not configured)
 
@@ -139,7 +139,7 @@ Update todos in real-time:
 
 #### Similar Function Duplication Check
 
-**Configuration**: Read threshold from `trinity/knowledge-base/CODING-PRINCIPLES.md` (`DUPLICATION_THRESHOLD`) or env var `TRINITY_DUPLICATION_THRESHOLD` (default: 3)
+**Configuration**: Read threshold from `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md` (`DUPLICATION_THRESHOLD`) or env var `TRINITY_DUPLICATION_THRESHOLD` (default: 3)
 
 **High Duplication (Escalate)** - Threshold or more matches (default: 3+):
 - [ ] Same domain/responsibility
@@ -705,7 +705,7 @@ Trinity supports configuration at multiple levels. Priority (highest to lowest):
 
 2. **Knowledge Base Configuration** (Project Standard)
    ```markdown
-   # trinity/knowledge-base/CODING-PRINCIPLES.md
+   # .claude/trinity/knowledge-base/CODING-PRINCIPLES.md
    DUPLICATION_THRESHOLD=3
    COMPLEXITY_THRESHOLD=10
    ```

@@ -106,12 +106,12 @@ Trinity deploys **64 production-ready components** to your project:
 
 **Knowledge Base:**
 
-- `trinity/knowledge-base/` - 9 living documentation files
+- `.claude/trinity/knowledge-base/` - 9 living documentation files
 - ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md, etc.
 
 **Templates:**
 
-- `trinity/templates/` - Work orders, investigations, documentation
+- `.claude/trinity/templates/` - Work orders, investigations, documentation
 
 ### 4. Using Trinity Commands
 
@@ -158,20 +158,20 @@ your-project/
 │   │   ├── planning/             # Requirements, design, decompose, plan
 │   │   ├── session/              # Start, continue, end session
 │   │   └── utility/              # Verify, agents, workorder commands
-│   └── EMPLOYEE-DIRECTORY.md     # 19-agent team guide
-├── trinity/
-│   ├── knowledge-base/           # ARCHITECTURE.md, ISSUES.md, To-do.md
-│   ├── templates/
-│   │   ├── documentation/        # Documentation templates
-│   │   ├── investigations/       # Bug, performance, security templates
-│   │   └── work-orders/          # Work order templates
-│   ├── investigations/
-│   │   └── plans/                # Investigation plans
-│   ├── sessions/                 # Session archives
-│   ├── reports/                  # Audit and integration reports
-│   ├── work-orders/              # Active work orders
-│   ├── patterns/                 # Reusable patterns
-│   └── archive/                  # Archived sessions, reports, investigations
+│   ├── EMPLOYEE-DIRECTORY.md     # 19-agent team guide
+│   └── trinity/
+│       ├── knowledge-base/       # ARCHITECTURE.md, ISSUES.md, To-do.md
+│       ├── templates/
+│       │   ├── documentation/    # Documentation templates
+│       │   ├── investigations/   # Bug, performance, security templates
+│       │   └── work-orders/      # Work order templates
+│       ├── investigations/
+│       │   └── plans/            # Investigation plans
+│       ├── sessions/             # Session archives
+│       ├── reports/              # Audit and integration reports
+│       ├── work-orders/          # Active work orders
+│       ├── patterns/             # Reusable patterns
+│       └── archive/              # Archived sessions, reports, investigations
 ├── CLAUDE.md                     # Root context file
 └── src/CLAUDE.md                 # Framework-specific context
 ```
@@ -202,7 +202,7 @@ Every task completion triggers BAS (Quality Gate) validation:
 - [Architecture Overview](../architecture/overview.md) - Understand SDK design
 - [API Documentation](../api/) - Explore Trinity SDK API
 - [Agent Directory](../../.claude/EMPLOYEE-DIRECTORY.md) - Meet the 19-agent team
-- [Investigation Templates](../../trinity/templates/investigations/) - Investigation workflows
+- [Investigation Templates](../../.claude/trinity/templates/investigations/) - Investigation workflows
 
 ## Common Issues
 

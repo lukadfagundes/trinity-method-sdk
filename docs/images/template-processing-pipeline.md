@@ -32,7 +32,7 @@ flowchart LR
     subgraph "Deployed Files"
         OUT1[.claude/agents/KIL.md<br/>19 agent files]
         OUT2[.claude/commands/trinity-start.md<br/>20 command files]
-        OUT3[trinity/knowledge-base/Trinity.md<br/>9 knowledge base files]
+        OUT3[.claude/trinity/knowledge-base/Trinity.md<br/>9 knowledge base files]
         OUT4[.eslintrc.js + .prettierrc<br/>Framework-specific configs]
     end
 
@@ -93,7 +93,7 @@ This project uses {{LINTING_TOOL}} for code quality.
 
 ````
 
-### After Processing → `trinity/knowledge-base/Trinity.md`
+### After Processing → `.claude/trinity/knowledge-base/Trinity.md`
 
 ```markdown
 # Trinity Method - my-app

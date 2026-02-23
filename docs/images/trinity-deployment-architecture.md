@@ -29,7 +29,7 @@ graph TB
             ED[EMPLOYEE-DIRECTORY.md]
         end
 
-        subgraph "trinity/"
+        subgraph ".claude/trinity/"
             KB1[Knowledge Base<br/>9 Files: Trinity.md, ARCHITECTURE.md<br/>ISSUES.md, To-do.md, etc.]
             TEMP[Templates<br/>Work Orders & Investigations]
             SESS[Sessions Directory]
@@ -84,7 +84,7 @@ graph TB
 2. **Framework Detection**: CLI detects project framework (Node.js, Python, Rust, Flutter, Go)
 3. **Interactive Configuration**: User selects linting tools and CI/CD platform
 4. **Template Processing**: Variable substitution ({{PROJECT_NAME}}, {{FRAMEWORK}}, etc.)
-5. **Component Deployment**: 64 components deployed to `.claude/` and `trinity/` directories
+5. **Component Deployment**: 64 components deployed to `.claude/` and `.claude/trinity/` directories
 6. **Validation**: Directory structure verified, .gitignore updated
 
 ## Components Deployed
@@ -92,7 +92,7 @@ graph TB
 - **19 Agents** → `.claude/agents/`
 - **20 Slash Commands** → `.claude/commands/`
 - **Employee Directory** → `.claude/EMPLOYEE-DIRECTORY.md`
-- **9 Knowledge Base Files** → `trinity/knowledge-base/`
-- **Investigation Templates** → `trinity/templates/`
+- **9 Knowledge Base Files** → `.claude/trinity/knowledge-base/`
+- **Investigation Templates** → `.claude/trinity/templates/`
 - **Framework-specific Linting** → Root directory (ESLint, Black, Clippy, etc.)
 - **CI/CD Workflows** → `.github/workflows/`, `.gitlab-ci.yml`, etc.

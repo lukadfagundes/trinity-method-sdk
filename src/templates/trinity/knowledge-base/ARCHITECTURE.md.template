@@ -27,7 +27,7 @@ const {{PROJECT_VAR_NAME}}Stack = {
 ```
 {{PROJECT_NAME}}/
 ├── {{SOURCE_DIR}}/              # Main source code
-├── trinity/                     # Trinity Method implementation
+├── .claude/trinity/                     # Trinity Method implementation
 │   ├── knowledge-base/         # Architecture & documentation
 ├── tests/                      # Test suites
 └── docs/                       # Additional documentation
@@ -308,9 +308,9 @@ graph LR
 
 ### Knowledge Capture
 - Architecture decisions recorded here
-- Patterns documented in trinity/patterns/
-- Issues tracked in trinity/knowledge-base/ISSUES.md
-- Sessions archived in trinity/sessions/
+- Patterns documented in .claude/trinity/patterns/
+- Issues tracked in .claude/trinity/knowledge-base/ISSUES.md
+- Sessions archived in .claude/trinity/sessions/
 
 ---
 

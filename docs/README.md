@@ -134,9 +134,9 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for documentation contribution guideli
 After deploying Trinity to your project, additional documentation is available:
 
 - `.claude/EMPLOYEE-DIRECTORY.md` - Complete agent reference
-- `trinity/knowledge-base/Trinity.md` - Project-specific Trinity guide
-- `trinity/knowledge-base/ARCHITECTURE.md` - System architecture with metrics
-- `trinity/templates/` - Work order and documentation templates
+- `.claude/trinity/knowledge-base/Trinity.md` - Project-specific Trinity guide
+- `.claude/trinity/knowledge-base/ARCHITECTURE.md` - System architecture with metrics
+- `.claude/trinity/templates/` - Work order and documentation templates
 
 ---
 

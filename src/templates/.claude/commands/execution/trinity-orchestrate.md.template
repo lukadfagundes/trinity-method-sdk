@@ -44,18 +44,18 @@
 
 **Workflow:**
 1. Create work order: `/trinity-workorder`
-2. Work order saved to: `trinity/work-orders/WO-XXX-{task-name}.md`
+2. Work order saved to: `.claude/trinity/work-orders/WO-XXX-{task-name}.md`
 3. Execute: `/trinity-orchestrate @WO-042-jwt-refresh.md`
 4. **AJ MAESTRO** selects agents and orchestrates execution
 5. **TWO DELIVERABLES CREATED:**
    a. **Implementation Report** (from work order template):
-      `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
+      `.claude/trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
    b. **JUNO Audit Report** (automatic verification):
-      `trinity/reports/AUDIT-WO-042-{date}.md`
-6. 🚨 **CRITICAL: MOVE completed work order** from `trinity/work-orders/` to `trinity/sessions/`
-   - **MANDATORY STEP** - Execute: `mv trinity/work-orders/WO-XXX-*.md trinity/sessions/`
-   - **Verify work order NO LONGER exists in trinity/work-orders/**
-7. **Reports remain** in `trinity/reports/` until session end
+      `.claude/trinity/reports/AUDIT-WO-042-{date}.md`
+6. 🚨 **CRITICAL: MOVE completed work order** from `.claude/trinity/work-orders/` to `.claude/trinity/sessions/`
+   - **MANDATORY STEP** - Execute: `mv .claude/trinity/work-orders/WO-XXX-*.md .claude/trinity/sessions/`
+   - **Verify work order NO LONGER exists in .claude/trinity/work-orders/**
+7. **Reports remain** in `.claude/trinity/reports/` until session end
 8. **Run `/trinity-end`** when session complete to archive all session files
 
 **Example:**
@@ -80,17 +80,17 @@
 
 **Workflow:**
 1. Create investigation: `/trinity-create-investigation`
-2. Investigation saved to: `trinity/investigations/INV-XXX-{title}.md`
+2. Investigation saved to: `.claude/trinity/investigations/INV-XXX-{title}.md`
 3. Execute: `/trinity-orchestrate @INV-015-performance-analysis.md`
 4. **AJ MAESTRO** coordinates READ-ONLY investigation
 5. Findings documented (no code changes)
 6. **Investigation Report Created:**
-   `trinity/reports/INV-015-findings-{date}.md`
+   `.claude/trinity/reports/INV-015-findings-{date}.md`
    (See investigation template for required sections)
-7. 🚨 **CRITICAL: MOVE completed investigation** from `trinity/investigations/` to `trinity/sessions/`
-   - **MANDATORY STEP** - Execute: `mv trinity/investigations/INV-XXX-*.md trinity/sessions/`
-   - **Verify investigation NO LONGER exists in trinity/investigations/**
-8. **Report remains** in `trinity/reports/` until session end
+7. 🚨 **CRITICAL: MOVE completed investigation** from `.claude/trinity/investigations/` to `.claude/trinity/sessions/`
+   - **MANDATORY STEP** - Execute: `mv .claude/trinity/investigations/INV-XXX-*.md .claude/trinity/sessions/`
+   - **Verify investigation NO LONGER exists in .claude/trinity/investigations/**
+8. **Report remains** in `.claude/trinity/reports/` until session end
 9. **Run `/trinity-end`** when session complete to archive all session files
 
 ⚠️ **CRITICAL:** Investigations are READ-ONLY operations. No code changes during investigation phase. Implementation happens separately after investigation is complete.
@@ -244,7 +244,7 @@ When you invoke `/trinity-orchestrate`, here's what happens:
    - Complexity within limits
 
 **JUNO's Audit Report:**
-- Saved to: `trinity/reports/AUDIT-{task-id}-{date}.md`
+- Saved to: `.claude/trinity/reports/AUDIT-{task-id}-{date}.md`
 - Pass/Fail status for each criterion
 - Overall assessment (APPROVED / REQUIRES FIXES)
 - Recommendations for improvements
@@ -337,23 +337,23 @@ Please address WO-043 before marking WO-042 complete.
 **Step 1: Verify Deliverables Created** ✅
 
 **Work Orders:**
-- [ ] Implementation report in `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
-- [ ] JUNO audit report in `trinity/reports/AUDIT-WO-XXX-{date}.md` (if applicable)
+- [ ] Implementation report in `.claude/trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-{timestamp}.md`
+- [ ] JUNO audit report in `.claude/trinity/reports/AUDIT-WO-XXX-{date}.md` (if applicable)
 
 **Investigations:**
-- [ ] Findings report in `trinity/reports/INV-XXX-findings-{date}.md`
+- [ ] Findings report in `.claude/trinity/reports/INV-XXX-findings-{date}.md`
 - [ ] All required sections completed (summary, findings, root cause, recommendations, evidence)
 
 **Step 2: 🚨 MOVE THE COMPLETED FILE TO SESSIONS/ 🚨** ✅
 
-**THIS STEP IS MANDATORY - Work orders left in trinity/work-orders/ are considered INCOMPLETE.**
+**THIS STEP IS MANDATORY - Work orders left in .claude/trinity/work-orders/ are considered INCOMPLETE.**
 
 ```bash
 # Work Order Example - EXECUTE THIS IMMEDIATELY AFTER CREATING DELIVERABLE
-mv trinity/work-orders/WO-042-jwt-refresh.md trinity/sessions/
+mv .claude/trinity/work-orders/WO-042-jwt-refresh.md .claude/trinity/sessions/
 
 # Investigation Example - EXECUTE THIS IMMEDIATELY AFTER CREATING FINDINGS REPORT
-mv trinity/investigations/INV-015-performance-analysis.md trinity/sessions/
+mv .claude/trinity/investigations/INV-015-performance-analysis.md .claude/trinity/sessions/
 ```
 
 **Step 3: Verify File Locations** ✅
@@ -361,22 +361,22 @@ mv trinity/investigations/INV-015-performance-analysis.md trinity/sessions/
 **CRITICAL VERIFICATION - If this fails, the task is NOT complete:**
 
 **For Work Orders:**
-- [ ] Work order file NOW EXISTS in: `trinity/sessions/WO-XXX-*.md`
-- [ ] Deliverable report exists in: `trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-*.md`
-- [ ] Work order file NO LONGER EXISTS in: `trinity/work-orders/`
+- [ ] Work order file NOW EXISTS in: `.claude/trinity/sessions/WO-XXX-*.md`
+- [ ] Deliverable report exists in: `.claude/trinity/reports/[COMPONENT]-IMPLEMENTATION-COMPLETE-*.md`
+- [ ] Work order file NO LONGER EXISTS in: `.claude/trinity/work-orders/`
 
 **For Investigations:**
-- [ ] Investigation file NOW EXISTS in: `trinity/sessions/INV-XXX-*.md`
-- [ ] Findings report exists in: `trinity/reports/INV-XXX-findings-*.md`
-- [ ] Investigation file NO LONGER EXISTS in: `trinity/investigations/`
+- [ ] Investigation file NOW EXISTS in: `.claude/trinity/sessions/INV-XXX-*.md`
+- [ ] Findings report exists in: `.claude/trinity/reports/INV-XXX-findings-*.md`
+- [ ] Investigation file NO LONGER EXISTS in: `.claude/trinity/investigations/`
 
 **If any verification fails, STOP and fix immediately before proceeding.**
 
 **Step 4: Continue Working or End Session**
 
 **If continuing work in same session:**
-- Reports remain in `trinity/reports/` (available for reference)
-- Completed WOs/INVs in `trinity/sessions/` (out of active work queue)
+- Reports remain in `.claude/trinity/reports/` (available for reference)
+- Completed WOs/INVs in `.claude/trinity/sessions/` (out of active work queue)
 - Proceed with next task
 
 **If session is complete:**
@@ -385,12 +385,12 @@ mv trinity/investigations/INV-015-performance-analysis.md trinity/sessions/
 ```
 
 This will:
-- Archive ALL files from `trinity/sessions/` → `trinity/archive/sessions/YYYY-MM-DD/`
-- Archive ALL files from `trinity/reports/` → `trinity/archive/reports/YYYY-MM-DD/`
-- Archive completed work orders → `trinity/archive/work-orders/YYYY-MM-DD/`
-- Archive completed investigations → `trinity/archive/investigations/YYYY-MM-DD/`
-- Create session summary in `trinity/archive/sessions/YYYY-MM-DD/`
-- **Result:** Clean `trinity/sessions/` and `trinity/reports/` folders for next session
+- Archive ALL files from `.claude/trinity/sessions/` → `.claude/trinity/archive/sessions/YYYY-MM-DD/`
+- Archive ALL files from `.claude/trinity/reports/` → `.claude/trinity/archive/reports/YYYY-MM-DD/`
+- Archive completed work orders → `.claude/trinity/archive/work-orders/YYYY-MM-DD/`
+- Archive completed investigations → `.claude/trinity/archive/investigations/YYYY-MM-DD/`
+- Create session summary in `.claude/trinity/archive/sessions/YYYY-MM-DD/`
+- **Result:** Clean `.claude/trinity/sessions/` and `.claude/trinity/reports/` folders for next session
 
 ---
 
@@ -398,7 +398,7 @@ This will:
 
 **Active Session:**
 ```
-trinity/
+.claude/trinity/
 ├── work-orders/          # Active work orders (not yet completed)
 ├── investigations/       # Active investigations (not yet completed)
 ├── sessions/            # Completed WOs/INVs (awaiting archival)
@@ -407,7 +407,7 @@ trinity/
 
 **After /trinity-end:**
 ```
-trinity/
+.claude/trinity/
 ├── work-orders/          # EMPTY (all active work complete or in-progress only)
 ├── investigations/       # EMPTY (all active investigations complete or in-progress only)
 ├── sessions/            # EMPTY (all archived)
@@ -433,14 +433,14 @@ trinity/
 **How Trinity Handles Context Loss:**
 
 1. **Documentation Persists:**
-   - Work orders: `trinity/work-orders/WO-XXX.md`
-   - Investigations: `trinity/investigations/INV-XXX.md`
-   - JUNO reports: `trinity/reports/AUDIT-*.md`
-   - Knowledge base: `trinity/knowledge-base/*.md`
+   - Work orders: `.claude/trinity/work-orders/WO-XXX.md`
+   - Investigations: `.claude/trinity/investigations/INV-XXX.md`
+   - JUNO reports: `.claude/trinity/reports/AUDIT-*.md`
+   - Knowledge base: `.claude/trinity/knowledge-base/*.md`
 
 2. **When Context Window Is Exceeded:**
    - Current work is automatically documented
-   - Session state saved to `trinity/sessions/SESSION-{timestamp}.md`
+   - Session state saved to `.claude/trinity/sessions/SESSION-{timestamp}.md`
    - Use `/trinity-continue` to resume
    - AJ MAESTRO reads files to understand current state
    - JUNO reports show what's been completed
@@ -678,7 +678,7 @@ JUNO: Performing comprehensive audit...
 **Overall Assessment: APPROVED ✅**
 
 Audit report saved to:
-`trinity/reports/AUDIT-WO-042-2025-12-19.md`
+`.claude/trinity/reports/AUDIT-WO-042-2025-12-19.md`
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -837,7 +837,7 @@ JUNO: Auditing investigation completeness...
 ✅ Recommendations: 3 actionable items with effort estimates
 
 **Findings Report:**
-`trinity/reports/INV-015-findings-2025-12-19.md`
+`.claude/trinity/reports/INV-015-findings-2025-12-19.md`
 
 **Follow-Up Work Orders Created:**
 - WO-043-database-index-optimization (HIGH priority, 2 hours)

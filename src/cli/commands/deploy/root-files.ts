@@ -10,24 +10,6 @@ import { validatePath } from '../../utils/validate-path.js';
 import type { Stack, Spinner } from './types.js';
 
 /**
- * Deploy TRINITY.md root file
- */
-async function deployTrinityMarkdown(
-  templatesPath: string,
-  variables: Record<string, string>
-): Promise<number> {
-  const trinityRootTemplate = path.join(templatesPath, 'root', 'TRINITY.md.template');
-  if (await fs.pathExists(trinityRootTemplate)) {
-    const content = await fs.readFile(trinityRootTemplate, 'utf8');
-    const processed = processTemplate(content, variables);
-    const destPath = validatePath('TRINITY.md');
-    await fs.writeFile(destPath, processed);
-    return 1;
-  }
-  return 0;
-}
-
-/**
  * Deploy root CLAUDE.md file
  */
 async function deployRootClaudeMarkdown(
@@ -49,7 +31,7 @@ async function deployRootClaudeMarkdown(
  * Deploy VERSION file
  */
 async function deployVersionFile(pkgVersion: string): Promise<number> {
-  const versionPath = validatePath('trinity/VERSION');
+  const versionPath = validatePath('.claude/trinity/VERSION');
   await fs.writeFile(versionPath, pkgVersion || '2.1.0');
   return 1;
 }
@@ -68,7 +50,7 @@ async function deployTrinityClaudeMarkdown(
   if (await fs.pathExists(trinityCLAUDETemplate)) {
     const content = await fs.readFile(trinityCLAUDETemplate, 'utf8');
     const processed = processTemplate(content, variables);
-    const destPath = validatePath('trinity/CLAUDE.md');
+    const destPath = validatePath('.claude/trinity/CLAUDE.md');
     await fs.writeFile(destPath, processed);
     spinner.succeed('Trinity CLAUDE.md deployed');
     return 1;
@@ -210,7 +192,6 @@ export async function deployRootFiles(
   // Deploy root files
   spinner.start('Creating root files...');
 
-  filesDeployed += await deployTrinityMarkdown(templatesPath, variables);
   filesDeployed += await deployRootClaudeMarkdown(templatesPath, variables);
   filesDeployed += await deployVersionFile(pkgVersion);
 

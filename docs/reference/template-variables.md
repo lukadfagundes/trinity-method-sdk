@@ -64,8 +64,8 @@ Trinity validates that all variables are resolved before deployment. Any remaini
 **Used In:**
 
 - `.claude/agents/*` - Agent prompts reference project name
-- `trinity/knowledge-base/Trinity.md` - Project-specific guide
-- `trinity/knowledge-base/ARCHITECTURE.md` - Architecture documentation
+- `.claude/trinity/knowledge-base/Trinity.md` - Project-specific guide
+- `.claude/trinity/knowledge-base/ARCHITECTURE.md` - Architecture documentation
 - Linting configs - ESLint/Prettier/Black configs reference project
 - CI/CD workflows - Workflow names include project name
 - Documentation templates
@@ -73,7 +73,7 @@ Trinity validates that all variables are resolved before deployment. Any remaini
 **Template Example:**
 
 ```markdown
-<!-- trinity/knowledge-base/Trinity.md.template -->
+<!-- .claude/trinity/knowledge-base/Trinity.md.template -->
 
 # Trinity Method - {{PROJECT_NAME}}
 
@@ -109,15 +109,15 @@ Welcome to the Trinity Method guide for my-app.
 
 **Used In:**
 
-- `trinity/knowledge-base/Trinity.md` - Framework-specific guidance
-- `trinity/knowledge-base/TESTING-PRINCIPLES.md` - Framework testing patterns
-- `trinity/knowledge-base/CODING-PRINCIPLES.md` - Framework best practices
+- `.claude/trinity/knowledge-base/Trinity.md` - Framework-specific guidance
+- `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md` - Framework testing patterns
+- `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md` - Framework best practices
 - `CLAUDE.md` hierarchy - Framework context
 
 **Template Example:**
 
 ```markdown
-<!-- trinity/knowledge-base/Trinity.md.template -->
+<!-- .claude/trinity/knowledge-base/Trinity.md.template -->
 
 **Framework:** {{FRAMEWORK}}
 **Tech Stack:** See ARCHITECTURE.md for {{FRAMEWORK}}-specific details
@@ -164,7 +164,7 @@ Welcome to the Trinity Method guide for my-app.
 
 **Used In:**
 
-- `trinity/knowledge-base/Trinity.md` - Installation commands
+- `.claude/trinity/knowledge-base/Trinity.md` - Installation commands
 - CI/CD workflows - Package installation steps
 - Pre-commit configs - Dependency installation
 
@@ -204,14 +204,14 @@ Welcome to the Trinity Method guide for my-app.
 
 **Used In:**
 
-- `trinity/knowledge-base/Trinity.md` - Linting setup instructions
+- `.claude/trinity/knowledge-base/Trinity.md` - Linting setup instructions
 - Pre-commit configs - Hook configuration
 - CI/CD workflows - Linting step commands
 
 **Template Example:**
 
 ````markdown
-<!-- trinity/knowledge-base/Trinity.md.template -->
+<!-- .claude/trinity/knowledge-base/Trinity.md.template -->
 
 ## Linting
 
@@ -255,12 +255,12 @@ npm run lint  # or appropriate command for Node.js
 - `None` (if skipped)
 
 **Used In:**
-- `trinity/knowledge-base/Trinity.md` - CI/CD setup documentation
+- `.claude/trinity/knowledge-base/Trinity.md` - CI/CD setup documentation
 - CI/CD workflow files - Platform-specific configs
 
 **Template Example:**
 ```markdown
-<!-- trinity/knowledge-base/Trinity.md.template -->
+<!-- .claude/trinity/knowledge-base/Trinity.md.template -->
 ## CI/CD
 
 This project uses {{CI_PLATFORM}} for continuous integration.
@@ -300,15 +300,15 @@ Workflows are located in:
 
 **Used In:**
 
-- `trinity/knowledge-base/Trinity.md` - Deployment timestamp
-- `trinity/knowledge-base/ARCHITECTURE.md` - Documentation date
+- `.claude/trinity/knowledge-base/Trinity.md` - Deployment timestamp
+- `.claude/trinity/knowledge-base/ARCHITECTURE.md` - Documentation date
 - `CLAUDE.md` files - Deployment tracking
-- `trinity/VERSION` - Version file
+- `.claude/trinity/VERSION` - Version file
 
 **Template Example:**
 
 ```markdown
-<!-- trinity/knowledge-base/Trinity.md.template -->
+<!-- .claude/trinity/knowledge-base/Trinity.md.template -->
 
 **Trinity Version:** {{VERSION}}
 **Deployed:** {{CURRENT_DATE}}
@@ -339,15 +339,15 @@ Workflows are located in:
 
 **Used In:**
 
-- `trinity/VERSION` - Version tracking file
-- `trinity/knowledge-base/Trinity.md` - Version documentation
+- `.claude/trinity/VERSION` - Version tracking file
+- `.claude/trinity/knowledge-base/Trinity.md` - Version documentation
 - `CLAUDE.md` files - Trinity version context
 - Agent prompts - Version awareness
 
 **Template Example:**
 
 ```markdown
-<!-- trinity/knowledge-base/Trinity.md.template -->
+<!-- .claude/trinity/knowledge-base/Trinity.md.template -->
 
 **Trinity Version:** {{VERSION}}
 ```
@@ -371,7 +371,7 @@ Workflows are located in:
 **Used In:**
 
 - CI/CD workflows (Node.js) - Node.js version matrix
-- `trinity/knowledge-base/Trinity.md` - Prerequisites
+- `.claude/trinity/knowledge-base/Trinity.md` - Prerequisites
 
 **Template Example:**
 
@@ -398,7 +398,7 @@ strategy:
 
 ### Markdown Files
 
-**Files:** `trinity/knowledge-base/*.md`, `.claude/agents/*.md`, `.claude/commands/*.md`
+**Files:** `.claude/trinity/knowledge-base/*.md`, `.claude/agents/*.md`, `.claude/commands/*.md`
 
 **Common Variables:**
 
@@ -509,7 +509,7 @@ If any `{{VAR}}` remains after substitution, deployment fails:
 ❌ Deployment Error
 
 Unresolved variables detected in:
-- trinity/knowledge-base/Trinity.md: {{UNKNOWN_VAR}}
+- .claude/trinity/knowledge-base/Trinity.md: {{UNKNOWN_VAR}}
 
 Please ensure all template variables have values.
 ```
@@ -609,14 +609,14 @@ await fs.writeFile(outputPath, content, 'utf-8');
 **Solution:**
 
 ```bash
-# Check trinity/VERSION to confirm deployment succeeded
-cat trinity/VERSION
+# Check .claude/trinity/VERSION to confirm deployment succeeded
+cat .claude/trinity/VERSION
 
 # Check for unresolved variables
-grep -r '{{' trinity/ .claude/
+grep -r '{{' .claude/
 
 # Redeploy if necessary
-rm -rf .claude/ trinity/
+rm -rf .claude/
 trinity deploy
 ```
 
@@ -638,7 +638,7 @@ trinity deploy
 code package.json
 
 # Redeploy
-rm -rf .claude/ trinity/
+rm -rf .claude/
 trinity deploy
 ```
 

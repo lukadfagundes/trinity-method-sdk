@@ -8,7 +8,7 @@
 
 ## Overview
 
-The Knowledge Base Deployment module deploys 9 Trinity knowledge base templates to `trinity/knowledge-base/` and enriches them with project-specific metrics and stack information.
+The Knowledge Base Deployment module deploys 9 Trinity knowledge base templates to `.claude/trinity/knowledge-base/` and enriches them with project-specific metrics and stack information.
 
 **Key Features:**
 
@@ -66,7 +66,7 @@ const kbTemplates = [
 2. Read template from SDK
 3. Process template variables
 4. Validate destination path
-5. Write to `trinity/knowledge-base/`
+5. Write to `.claude/trinity/knowledge-base/`
 
 **Example:**
 
@@ -74,7 +74,7 @@ const kbTemplates = [
 const templatePath = path.join(templatesPath, 'trinity/knowledge-base', 'ARCHITECTURE.md.template');
 const content = await fs.readFile(templatePath, 'utf8');
 const processed = processTemplate(content, variables);
-const destPath = validatePath('trinity/knowledge-base/ARCHITECTURE.md');
+const destPath = validatePath('.claude/trinity/knowledge-base/ARCHITECTURE.md');
 await fs.writeFile(destPath, processed);
 ```
 
@@ -112,7 +112,7 @@ archContent = archContent
 ## Deployed Directory Structure
 
 ```
-trinity/knowledge-base/
+.claude/trinity/knowledge-base/
 ├── ARCHITECTURE.md           # Project architecture (enriched)
 ├── Trinity.md                # Trinity Method guide
 ├── To-do.md                  # Task tracking

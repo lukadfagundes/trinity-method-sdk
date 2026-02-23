@@ -665,10 +665,10 @@ Tasks can run in parallel if:
 ## BEST PRACTICES REFERENCES
 
 All agents must follow:
-- **trinity/knowledge-base/CODING-PRINCIPLES.md** - Code quality standards
-- **trinity/knowledge-base/TESTING-PRINCIPLES.md** - TDD methodology
-- **trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md** - Scale workflows, task management
-- **trinity/knowledge-base/DOCUMENTATION-CRITERIA.md** - Documentation requirements
+- **.claude/trinity/knowledge-base/CODING-PRINCIPLES.md** - Code quality standards
+- **.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md** - TDD methodology
+- **.claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md** - Scale workflows, task management
+- **.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md** - Documentation requirements
 
 ---
 
@@ -703,7 +703,7 @@ If sub-agent fails:
 ```
 {{PROJECT_NAME}}/
 ├── {{SOURCE_DIR}}/              # Application code
-├── trinity/
+├── .claude/trinity/
 │   ├── knowledge-base/          # Best practices docs
 │   │   ├── CODING-PRINCIPLES.md
 │   │   ├── TESTING-PRINCIPLES.md

@@ -290,12 +290,12 @@ async function safeOperation(operation, context) {
 
 ## Reference to Parent Context
 
-This file extends the Trinity Method protocols defined in `../trinity/CLAUDE.md` and global requirements from `../CLAUDE.md`. Technology-specific implementations must comply with:
+This file extends the Trinity Method protocols defined in `../.claude/trinity/CLAUDE.md` and global requirements from `../CLAUDE.md`. Technology-specific implementations must comply with:
 
-- Trinity Method investigation requirements ([../trinity/CLAUDE.md](../trinity/CLAUDE.md))
-- Global performance baselines ([../trinity/knowledge-base/ARCHITECTURE.md](../trinity/knowledge-base/ARCHITECTURE.md#performance-baseline))
-- Quality gate standards (BAS 6-phase) ([../trinity/CLAUDE.md](../trinity/CLAUDE.md#quality-standards))
-- Crisis management protocols ([../trinity/CLAUDE.md](../trinity/CLAUDE.md#crisis-management))
+- Trinity Method investigation requirements ([../.claude/trinity/CLAUDE.md](../.claude/trinity/CLAUDE.md))
+- Global performance baselines ([../.claude/trinity/knowledge-base/ARCHITECTURE.md](../.claude/trinity/knowledge-base/ARCHITECTURE.md#performance-baseline))
+- Quality gate standards (BAS 6-phase) ([../.claude/trinity/CLAUDE.md](../.claude/trinity/CLAUDE.md#quality-standards))
+- Crisis management protocols ([../.claude/trinity/CLAUDE.md](../.claude/trinity/CLAUDE.md#crisis-management))
 
 All {{FRAMEWORK}} code must implement the debugging frameworks, error handling patterns, and performance monitoring specified in this document.
 
@@ -304,7 +304,7 @@ All {{FRAMEWORK}} code must implement the debugging frameworks, error handling p
 **Technology Context**: {{FRAMEWORK}} ({{TECH_STACK}}) Implementation
 **Parent References**:
 - `../CLAUDE.md` - Global project requirements
-- `../trinity/CLAUDE.md` - Trinity Method enforcement
+- `../.claude/trinity/CLAUDE.md` - Trinity Method enforcement
 
 **Last Updated**: {{CURRENT_DATE}}
 **Trinity Version**: {{TRINITY_VERSION}}

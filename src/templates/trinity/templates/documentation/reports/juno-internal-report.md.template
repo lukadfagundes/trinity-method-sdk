@@ -55,7 +55,7 @@
 **Priority:** {{MVC_PRIORITY}}
 **Estimated Time:** {{MVC_TIME}}
 
-**Template Path:** `trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/mermaid-diagrams/mvc-flow.md.template`
 
 **Variables to Replace:**
 - `{{DATABASE}}`: "{{DATABASE_VALUE}}"
@@ -77,7 +77,7 @@
 **Priority:** {{ER_PRIORITY}}
 **Estimated Time:** {{ER_TIME}}
 
-**Template Path:** `trinity/templates/documentation/mermaid-diagrams/database-er.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/mermaid-diagrams/database-er.md.template`
 
 **Variables to Replace:**
 - `{{DATABASE_TYPE}}`: "{{DATABASE_TYPE_VALUE}}"
@@ -96,7 +96,7 @@
 **Priority:** {{API_MAP_PRIORITY}}
 **Estimated Time:** {{API_MAP_TIME}}
 
-**Template Path:** `trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md.template`
 
 **Variables to Replace:**
 - `{{BASE_URL}}`: "{{BASE_URL_VALUE}}"
@@ -115,7 +115,7 @@
 **Priority:** {{COMPONENT_PRIORITY}}
 **Estimated Time:** {{COMPONENT_TIME}}
 
-**Template Path:** `trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md.template`
 
 **Variables to Replace:**
 - `{{FRAMEWORK}}`: "{{COMPONENT_FRAMEWORK_VALUE}}"
@@ -136,7 +136,7 @@
 **Priority:** {{API_DOCS_PRIORITY}}
 **Estimated Time:** {{API_DOCS_TIME}}
 
-**Template Path:** `trinity/templates/documentation/api-docs/README.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/api-docs/README.md.template`
 
 **Endpoints to Document:** {{ENDPOINT_COUNT}}
 
@@ -174,7 +174,7 @@
 **Priority:** {{GETTING_STARTED_PRIORITY}}
 **Estimated Time:** {{GETTING_STARTED_TIME}}
 
-**Template Path:** `trinity/templates/documentation/guides/getting-started.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/guides/getting-started.md.template`
 
 **Variables to Replace:**
 - `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
@@ -207,7 +207,7 @@
 **Priority:** {{API_DEV_PRIORITY}}
 **Estimated Time:** {{API_DEV_TIME}}
 
-**Template Path:** `trinity/templates/documentation/guides/api-development.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/guides/api-development.md.template`
 
 **Variables to Replace:**
 - `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
@@ -250,7 +250,7 @@
 **Priority:** {{DEPLOYMENT_PRIORITY}}
 **Estimated Time:** {{DEPLOYMENT_TIME}}
 
-**Template Path:** `trinity/templates/documentation/guides/deployment.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/guides/deployment.md.template`
 
 **Variables to Replace:**
 - `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
@@ -297,7 +297,7 @@
 **Priority:** {{CONTRIBUTING_PRIORITY}}
 **Estimated Time:** {{CONTRIBUTING_TIME}}
 
-**Template Path:** `trinity/templates/documentation/guides/contributing.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/guides/contributing.md.template`
 
 **Variables to Replace:**
 - `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"
@@ -342,7 +342,7 @@
 **Estimated Time:** {{ENV_TIME}}
 
 **Environment Variables Discovered ({{ENV_VAR_COUNT}}):**
-**Template Path:** `trinity/templates/documentation/config/env-example-generator.md.template`
+**Template Path:** `.claude/trinity/templates/documentation/config/env-example-generator.md.template`
 
 **Variables to Replace:**
 - `{{PROJECT_NAME}}`: "{{PROJECT_NAME}}"

@@ -72,8 +72,8 @@ describe('deploy-ci', () => {
 
       const stats = await deployCITemplates();
 
-      expect(stats.deployed).toContain('trinity/templates/ci/generic-ci.yml');
-      expect(await fs.pathExists('trinity/templates/ci/generic-ci.yml')).toBe(true);
+      expect(stats.deployed).toContain('.claude/trinity/templates/ci/generic-ci.yml');
+      expect(await fs.pathExists('.claude/trinity/templates/ci/generic-ci.yml')).toBe(true);
     });
   });
 
@@ -140,7 +140,7 @@ describe('deploy-ci', () => {
       const stats = await deployCITemplates();
 
       expect(stats.deployed).toContain('.github/workflows/ci.yml');
-      expect(stats.deployed).toContain('trinity/templates/ci/generic-ci.yml');
+      expect(stats.deployed).toContain('.claude/trinity/templates/ci/generic-ci.yml');
     });
 
     it('should deploy GitHub Actions when .git/config has no known remote', async () => {
@@ -212,7 +212,7 @@ describe('deploy-ci', () => {
       // Should have some errors but continue with other files
       expect(stats.errors.length).toBeGreaterThan(0);
       // Generic template should still be deployed
-      expect(stats.deployed).toContain('trinity/templates/ci/generic-ci.yml');
+      expect(stats.deployed).toContain('.claude/trinity/templates/ci/generic-ci.yml');
     });
   });
 
@@ -226,11 +226,11 @@ describe('deploy-ci', () => {
     });
 
     it('should create trinity/templates/ci directory if missing', async () => {
-      expect(await fs.pathExists('trinity/templates/ci')).toBe(false);
+      expect(await fs.pathExists('.claude/trinity/templates/ci')).toBe(false);
 
       await deployCITemplates();
 
-      expect(await fs.pathExists('trinity/templates/ci')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/templates/ci')).toBe(true);
     });
   });
 
@@ -245,7 +245,10 @@ describe('deploy-ci', () => {
     it('should deploy generic template with correct content', async () => {
       await deployCITemplates();
 
-      const genericContent = await fs.readFile('trinity/templates/ci/generic-ci.yml', 'utf8');
+      const genericContent = await fs.readFile(
+        '.claude/trinity/templates/ci/generic-ci.yml',
+        'utf8'
+      );
       expect(genericContent).toContain('test');
     });
   });

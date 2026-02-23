@@ -45,19 +45,15 @@ Updates .gitignore with Trinity exclusions.
 ```
 # Trinity Method SDK
 .claude/
-trinity/
 *CLAUDE.md
-TRINITY.md
 ```
 
 ### Pattern Breakdown
 
-| Pattern      | Matches                     | Rationale                                                               |
-| ------------ | --------------------------- | ----------------------------------------------------------------------- |
-| `.claude/`   | Entire `.claude/` directory | Agent templates and settings (deployed, not user-created)               |
-| `trinity/`   | Entire `trinity/` directory | All Trinity infrastructure (sessions, work orders, etc.)                |
-| `*CLAUDE.md` | All CLAUDE.md files         | Root, trinity/, src/, tests/ context files (deployed, not user-created) |
-| `TRINITY.md` | TRINITY.md in root          | Trinity Method project guide (deployed, not user-created)               |
+| Pattern      | Matches                     | Rationale                                                                       |
+| ------------ | --------------------------- | ------------------------------------------------------------------------------- |
+| `.claude/`   | Entire `.claude/` directory | All Trinity infrastructure (agents, commands, trinity/, etc.)                   |
+| `*CLAUDE.md` | All CLAUDE.md files         | Root, .claude/trinity/, src/, tests/ context files (deployed, not user-created) |
 
 ---
 
@@ -77,10 +73,10 @@ TRINITY.md
 
 ---
 
-### trinity/ Directory (Excluded)
+### .claude/trinity/ Directory (Excluded via .claude/)
 
 ```
-trinity/
+.claude/trinity/
 ├── sessions/         ❌ Session artifacts (temporary)
 ├── work-orders/      ❌ Active work orders (local workflow)
 ├── investigations/   ❌ Investigation documents (local workflow)
@@ -91,17 +87,17 @@ trinity/
 └── CLAUDE.md         ❌ Trinity context (deployed by SDK)
 ```
 
-**Reason:** Mix of temporary artifacts and deployed templates, neither should be version controlled
+**Reason:** All Trinity content is now inside `.claude/` and excluded by the `.claude/` pattern
 
-**Exception:** If you customize knowledge base or patterns, you may want to commit them. In that case, remove `trinity/` from .gitignore and add specific exclusions:
+**Exception:** If you customize knowledge base or patterns, you may want to commit them. In that case, use negation patterns in .gitignore:
 
 ```gitignore
 # Custom Trinity exclusions (if you want to commit knowledge base)
-trinity/sessions/
-trinity/work-orders/
-trinity/investigations/
-trinity/archive/
-trinity/reports/
+.claude/trinity/sessions/
+.claude/trinity/work-orders/
+.claude/trinity/investigations/
+.claude/trinity/archive/
+.claude/trinity/reports/
 ```
 
 ---
@@ -109,10 +105,10 @@ trinity/reports/
 ### CLAUDE.md Files (Excluded)
 
 ```
-CLAUDE.md             ❌ Root context (deployed by SDK)
-trinity/CLAUDE.md     ❌ Trinity context (deployed by SDK)
-src/CLAUDE.md         ❌ Source context (deployed by SDK)
-tests/CLAUDE.md       ❌ Tests context (deployed by SDK)
+CLAUDE.md                    ❌ Root context (deployed by SDK)
+.claude/trinity/CLAUDE.md    ❌ Trinity context (deployed by SDK)
+src/CLAUDE.md                ❌ Source context (deployed by SDK)
+tests/CLAUDE.md              ❌ Tests context (deployed by SDK)
 ```
 
 **Reason:** Context files are deployed by Trinity SDK and updated via `trinity update` command
@@ -160,14 +156,7 @@ if (!gitignoreContent.includes('# Trinity Method SDK')) {
 ### Step 3: Append Trinity Exclusions
 
 ```typescript
-const trinityIgnores = [
-  '',
-  '# Trinity Method SDK',
-  '.claude/',
-  'trinity/',
-  '*CLAUDE.md',
-  'TRINITY.md',
-];
+const trinityIgnores = ['', '# Trinity Method SDK', '.claude/', '*CLAUDE.md'];
 
 const newContent = `${gitignoreContent.trim()}\n${trinityIgnores.join('\n')}\n`;
 ```
@@ -190,9 +179,7 @@ node_modules/
 
 # Trinity Method SDK
 .claude/
-trinity/
 *CLAUDE.md
-TRINITY.md
 ```
 
 ---
@@ -302,9 +289,7 @@ npx trinity deploy
 ```gitignore
 # Trinity Method SDK
 .claude/
-trinity/
 *CLAUDE.md
-TRINITY.md
 ```
 
 **Output:**
@@ -338,9 +323,7 @@ dist/
 
 # Trinity Method SDK
 .claude/
-trinity/
 *CLAUDE.md
-TRINITY.md
 ```
 
 **Output:**
@@ -364,9 +347,7 @@ node_modules/
 
 # Trinity Method SDK
 .claude/
-trinity/
 *CLAUDE.md
-TRINITY.md
 ```
 
 **After:**
@@ -467,32 +448,33 @@ const gitignorePath = '../../../etc/passwd';
 
 ## Design Rationale
 
-### Why Exclude Entire trinity/ Directory?
+### Why Exclude Entire .claude/ Directory?
 
 **Options Considered:**
 
-1. ❌ Exclude only `trinity/sessions/` and `trinity/work-orders/`
-2. ✅ Exclude entire `trinity/` directory
+1. ❌ Exclude only `.claude/trinity/sessions/` and `.claude/trinity/work-orders/`
+2. ✅ Exclude entire `.claude/` directory
 
 **Chosen Approach:** Exclude entire directory
 
 - **Benefit:** Simpler pattern, no risk of missing files
 - **Benefit:** All Trinity content deployed by SDK (no need to commit)
+- **Benefit:** Single pattern covers agents, commands, and trinity subdirectory
 - **Trade-off:** Users can't commit customizations without modifying .gitignore
 
 **If You Want to Commit Knowledge Base:**
 
 ```gitignore
-# Option 1: Remove trinity/ from .gitignore and use specific exclusions
-trinity/sessions/
-trinity/work-orders/
-trinity/investigations/
-trinity/archive/
-trinity/reports/
+# Option 1: Use specific exclusions within .claude/
+.claude/trinity/sessions/
+.claude/trinity/work-orders/
+.claude/trinity/investigations/
+.claude/trinity/archive/
+.claude/trinity/reports/
 
 # Option 2: Use negation patterns (Git 2.x+)
-trinity/*
-!trinity/knowledge-base/
+.claude/trinity/*
+!.claude/trinity/knowledge-base/
 ```
 
 ---
@@ -552,7 +534,7 @@ Untracked files:
 nothing added to commit but untracked files present
 ```
 
-**Note:** Trinity files (.claude/, trinity/, CLAUDE.md) do NOT appear because .gitignore excludes them
+**Note:** Trinity files (.claude/, CLAUDE.md) do NOT appear because .gitignore excludes them
 
 ---
 

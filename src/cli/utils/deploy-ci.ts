@@ -116,23 +116,23 @@ export async function deployCITemplates(
       await deployGitLabCI(templatesPath, options, stats);
     }
 
-    // Generic template (always deploy to trinity/templates/ci)
+    // Generic template (always deploy to .claude/trinity/templates/ci)
     try {
-      await fs.ensureDir('trinity/templates/ci');
+      await fs.ensureDir('.claude/trinity/templates/ci');
       const genericTemplate = path.join(templatesPath, 'generic-ci.yml');
 
       if (await fs.pathExists(genericTemplate)) {
         const content = await fs.readFile(genericTemplate, 'utf8');
 
         // Validate destination path for security
-        const destPath = validatePath('trinity/templates/ci/generic-ci.yml');
+        const destPath = validatePath('.claude/trinity/templates/ci/generic-ci.yml');
         await fs.writeFile(destPath, content);
-        stats.deployed.push('trinity/templates/ci/generic-ci.yml');
+        stats.deployed.push('.claude/trinity/templates/ci/generic-ci.yml');
       }
     } catch (error: unknown) {
       const { getErrorMessage } = await import('./errors.js');
       stats.errors.push({
-        file: 'trinity/templates/ci/generic-ci.yml',
+        file: '.claude/trinity/templates/ci/generic-ci.yml',
         error: getErrorMessage(error),
       });
     }

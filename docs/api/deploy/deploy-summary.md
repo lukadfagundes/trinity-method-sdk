@@ -241,8 +241,8 @@ Provides actionable next steps based on deployment configuration.
    2. Setup pre-commit hooks (one-time):
       npx husky install
 
-   3. Review trinity/knowledge-base/ARCHITECTURE.md
-   4. Update trinity/knowledge-base/To-do.md
+   3. Review .claude/trinity/knowledge-base/ARCHITECTURE.md
+   4. Update .claude/trinity/knowledge-base/To-do.md
    5. Open Claude Code and start your first Trinity session
    6. Agents will be automatically invoked as needed
 
@@ -258,8 +258,8 @@ Provides actionable next steps based on deployment configuration.
 ```
 📚 Next Steps:
 
-   1. Review trinity/knowledge-base/ARCHITECTURE.md
-   2. Update trinity/knowledge-base/To-do.md
+   1. Review .claude/trinity/knowledge-base/ARCHITECTURE.md
+   2. Update .claude/trinity/knowledge-base/To-do.md
    3. Open Claude Code and start your first Trinity session
    4. Agents will be automatically invoked as needed
 ```
@@ -390,8 +390,8 @@ npx trinity deploy
    1. Install linting dependencies:
       npm install
 
-   2. Review trinity/knowledge-base/ARCHITECTURE.md
-   3. Update trinity/knowledge-base/To-do.md
+   2. Review .claude/trinity/knowledge-base/ARCHITECTURE.md
+   3. Update .claude/trinity/knowledge-base/To-do.md
    4. Open Claude Code and start your first Trinity session
    5. Agents will be automatically invoked as needed
 
@@ -453,8 +453,8 @@ npx trinity deploy --yes --skipAudit
 
 📚 Next Steps:
 
-   1. Review trinity/knowledge-base/ARCHITECTURE.md
-   2. Update trinity/knowledge-base/To-do.md
+   1. Review .claude/trinity/knowledge-base/ARCHITECTURE.md
+   2. Update .claude/trinity/knowledge-base/To-do.md
    3. Open Claude Code and start your first Trinity session
    4. Agents will be automatically invoked as needed
 ```

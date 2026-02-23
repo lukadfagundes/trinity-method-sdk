@@ -11,14 +11,14 @@
 
 ```
 Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
-- File path: trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
+- File path: .claude/trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md
 - Content: Copy of this template
 ```
 
 **Example file paths:**
-- APO-1: `trinity/reports/apo-1-docs-update-checklist.md`
-- APO-2: `trinity/reports/apo-2-docs-update-checklist.md`
-- APO-3: `trinity/reports/apo-3-docs-update-checklist.md`
+- APO-1: `.claude/trinity/reports/apo-1-docs-update-checklist.md`
+- APO-2: `.claude/trinity/reports/apo-2-docs-update-checklist.md`
+- APO-3: `.claude/trinity/reports/apo-3-docs-update-checklist.md`
 
 **You MUST use Task skill Write to create your checklist file before proceeding.**
 
@@ -29,7 +29,7 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
 1. **Use Task skill Read to read JUNO's audit report:**
    ```
    Use Task tool with subagent_type="APO (Documentation Specialist)" to read:
-   - File path: trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+   - File path: .claude/trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
    ```
 
 2. **Find your section:**
@@ -68,7 +68,7 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
 1. **Start with the first unchecked task** on your list
 2. **Complete the task** (create or update the documentation file using Task skill)
 3. **Update your checklist** - Mark the task as complete: `- [x]`
-4. **Use Task skill Edit to save your updated checklist** to `trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md`
+4. **Use Task skill Edit to save your updated checklist** to `.claude/trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md`
 5. **Move to the next task** and repeat
 
 **DO NOT:**
@@ -298,7 +298,7 @@ import ComponentName from './ComponentName';
 1.  All tasks on your checklist are marked `- [x]`
 2.  All documentation files created/updated
 3.  All files saved to correct locations
-4.  Your checklist saved to `trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md`
+4.  Your checklist saved to `.claude/trinity/reports/apo-{{DESIGNATION}}-docs-update-checklist.md`
 
 **Once all tasks complete:**
 - Report completion

@@ -12,7 +12,7 @@ The Version Management module detects the currently installed Trinity Method SDK
 
 **Key Features:**
 
-- Current version detection from `trinity/VERSION` file
+- Current version detection from `.claude/trinity/VERSION` file
 - Latest version detection from SDK `package.json`
 - Version comparison logic
 - Update necessity determination
@@ -52,12 +52,12 @@ Detects current and latest SDK versions, performs comparison.
 
 #### Step 1: Read Current Version
 
-**Source:** `trinity/VERSION` file
+**Source:** `.claude/trinity/VERSION` file
 
 **Logic:**
 
 ```typescript
-const versionPath = 'trinity/VERSION';
+const versionPath = '.claude/trinity/VERSION';
 let currentVersion = '0.0.0';
 
 if (await fs.pathExists(versionPath)) {
@@ -203,7 +203,7 @@ if (!versionInfo.isUpToDate) {
 
 ### Scenario 3: No Deployment (First Run)
 
-**Condition:** `trinity/VERSION` doesn't exist
+**Condition:** `.claude/trinity/VERSION` doesn't exist
 
 **Example:**
 
@@ -251,7 +251,7 @@ Run: trinity deploy
 ### File Location
 
 ```
-trinity/VERSION
+.claude/trinity/VERSION
 ```
 
 ### File Content
@@ -470,7 +470,7 @@ const sdkPkg = JSON.parse(await fs.readFile(sdkPkgPath, 'utf8'));
 
 **File I/O Operations:**
 
-- Read `trinity/VERSION` (1 file read, ~10 bytes)
+- Read `.claude/trinity/VERSION` (1 file read, ~10 bytes)
 - Read SDK `package.json` (1 file read, ~500 bytes)
 
 **Typical Performance:** <10ms
@@ -486,13 +486,13 @@ const sdkPkg = JSON.parse(await fs.readFile(sdkPkgPath, 'utf8'));
 ```typescript
 describe('detectInstalledSDKVersion', () => {
   it('should detect current version from VERSION file', async () => {
-    fs.writeFileSync('trinity/VERSION', '2.0.0');
+    fs.writeFileSync('.claude/trinity/VERSION', '2.0.0');
     const versionInfo = await detectInstalledSDKVersion(ora());
     expect(versionInfo.currentVersion).toBe('2.0.0');
   });
 
   it('should fallback to 0.0.0 if VERSION missing', async () => {
-    fs.removeSync('trinity/VERSION');
+    fs.removeSync('.claude/trinity/VERSION');
     const versionInfo = await detectInstalledSDKVersion(ora());
     expect(versionInfo.currentVersion).toBe('0.0.0');
   });
@@ -503,14 +503,14 @@ describe('detectInstalledSDKVersion', () => {
   });
 
   it('should determine if up-to-date', async () => {
-    fs.writeFileSync('trinity/VERSION', '2.1.0');
+    fs.writeFileSync('.claude/trinity/VERSION', '2.1.0');
     // Assume SDK version is 2.1.0
     const versionInfo = await detectInstalledSDKVersion(ora());
     expect(versionInfo.isUpToDate).toBe(true);
   });
 
   it('should determine if update needed', async () => {
-    fs.writeFileSync('trinity/VERSION', '2.0.0');
+    fs.writeFileSync('.claude/trinity/VERSION', '2.0.0');
     // Assume SDK version is 2.1.0
     const versionInfo = await detectInstalledSDKVersion(ora());
     expect(versionInfo.isUpToDate).toBe(false);
@@ -549,7 +549,7 @@ describe('detectInstalledSDKVersion', () => {
 
 - [ ] Semantic version comparison (use `semver` package)
 - [ ] Online version check (npm registry API)
-- [ ] Version history tracking (`trinity/versions/history.json`)
+- [ ] Version history tracking (`.claude/trinity/versions/history.json`)
 - [ ] Pre-release version support
 - [ ] Breaking change detection and warnings
 - [ ] Rollback to previous version support

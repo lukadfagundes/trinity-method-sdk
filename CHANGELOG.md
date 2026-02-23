@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Restructured `trinity/` into `.claude/trinity/`** - Consolidated deployment footprint from two top-level directories to one (Issue #3)
+  - `trinity deploy` now creates `.claude/trinity/` instead of a separate `trinity/` directory
+  - `trinity update` manages `.claude/trinity/` with consolidated backup (single `.claude/` backup covers everything)
+  - All 50+ template files updated with new deployment target paths
+  - All relative paths recalculated for new directory depth
+  - 417 tests pass with restructured paths
+
 ### Added
 
 - **GitHub Releases workflow** - Automated draft release creation on version tags (`v*.*.*`) via `.github/workflows/release.yml` (Issue #5)
@@ -46,6 +55,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **`TRINITY.md` root file** - No longer deployed; Trinity context is now at `.claude/trinity/CLAUDE.md`
+  - Deleted `src/templates/root/TRINITY.md.template`
+  - Removed `deployTrinityMarkdown()` function from deploy pipeline
 - **Dead template files** - Deleted `cd.yml.template` (used undefined `{{DOMAIN}}` variable) and `github-actions.yml` (orphaned, never referenced)
 - **CD workflow references** - Removed all Continuous Deployment workflow references from source code, templates (EIN, TAN, init, verify), CI workflow, tests, and documentation
 

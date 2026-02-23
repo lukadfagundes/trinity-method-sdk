@@ -25,14 +25,7 @@ export async function updateGitignore(spinner: Spinner): Promise<boolean> {
     }
 
     // Trinity files to ignore
-    const trinityIgnores = [
-      '',
-      '# Trinity Method SDK',
-      '.claude/',
-      'trinity/',
-      '*CLAUDE.md',
-      'TRINITY.md',
-    ];
+    const trinityIgnores = ['', '# Trinity Method SDK', '.claude/', '*CLAUDE.md'];
 
     // Check if Trinity section already exists
     if (!gitignoreContent.includes('# Trinity Method SDK')) {

@@ -542,7 +542,7 @@ async function deploy(options) {
   // Process knowledge base templates
   const architectureTemplate = await fs.readFile('templates/ARCHITECTURE.md', 'utf8');
   const architectureContent = processTemplate(architectureTemplate, variables);
-  await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', architectureContent);
+  await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', architectureContent);
 }
 ```
 
@@ -560,9 +560,9 @@ async function update(options) {
   const formattedMetrics = formatMetrics(metrics);
 
   // Update ARCHITECTURE.md with real metrics
-  const template = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+  const template = await fs.readFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
   const updated = processTemplate(template, formattedMetrics);
-  await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', updated);
+  await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', updated);
 }
 ```
 

@@ -8,7 +8,7 @@
 
 **Use Case:** Create missing READMEs, update existing READMEs with current codebase reality, fix inaccuracies.
 
-**Deliverable:** README audit report in `trinity/reports/README-AUDIT-{date}.md`
+**Deliverable:** README audit report in `.claude/trinity/reports/README-AUDIT-{date}.md`
 
 ---
 
@@ -79,7 +79,7 @@ The `/trinity-readme` command invokes APO (Documentation Specialist) to manage R
 
 Before finalizing any README, verify:
 
-- [ ] No trinity/ directory in file tree
+- [ ] No .claude/trinity/ directory in file tree
 - [ ] No .claude/ directory in file tree
 - [ ] No Trinity commands documented (unless project IS Trinity Method)
 - [ ] No references to Trinity agents (MON, ROR, KIL, etc.)
@@ -89,7 +89,7 @@ Before finalizing any README, verify:
 **Verification Command:**
 ```bash
 # Check for forbidden Trinity references in README
-grep -i "trinity/" README.md && echo "❌ VIOLATION: Documents trinity/ directory"
+grep -i ".claude/trinity/" README.md && echo "❌ VIOLATION: Documents .claude/trinity/ directory"
 grep -i "\.claude/" README.md && echo "❌ VIOLATION: Documents .claude/ directory"
 grep -i "/trinity-" README.md && echo "❌ VIOLATION: Documents Trinity commands"
 ```
@@ -333,7 +333,7 @@ filtered_directories = []
 
 for each directory in all_directories:
   # ALWAYS skip Trinity infrastructure
-  if directory.includes("trinity/") or directory.includes(".claude/"):
+  if directory.includes(".claude/trinity/") or directory.includes(".claude/"):
     echo "SKIP: $directory (Trinity infrastructure - never document)"
     continue
 
@@ -351,23 +351,23 @@ done
 
 **Trinity Detection Warning:**
 
-If you detect trinity/ or .claude/ directories during Phase 1:
+If you detect .claude/trinity/ or .claude/ directories during Phase 1:
 
-1. **Acknowledge detection:** "Detected Trinity Method infrastructure (trinity/ directory found)"
-2. **Skip documentation:** Do NOT include trinity/ in file tree or README content
+1. **Acknowledge detection:** "Detected Trinity Method infrastructure (.claude/trinity/ directory found)"
+2. **Skip documentation:** Do NOT include .claude/trinity/ in file tree or README content
 3. **Skip template:** Do NOT use Trinity-specific templates
 4. **Continue normally:** Process other directories (backend/, frontend/, etc.)
 
 **Example Output:**
 ```
-✓ Detected directories: backend/, frontend/, docs/, trinity/
+✓ Detected directories: backend/, frontend/, docs/, .claude/trinity/
 ✓ Filtering Trinity infrastructure and gitignored directories...
-  - trinity/ (Trinity infrastructure) → SKIP
+  - .claude/trinity/ (Trinity infrastructure) → SKIP
   - .claude/ (Trinity infrastructure) → SKIP
 ✓ Final directories to document: backend/, frontend/, docs/
 ```
 
-**Rule:** Trinity infrastructure (trinity/, .claude/) is ALWAYS excluded from user-facing READMEs, even if not gitignored.
+**Rule:** Trinity infrastructure (.claude/trinity/, .claude/) is ALWAYS excluded from user-facing READMEs, even if not gitignored.
 
 **Step 5: Report Complete Inventory (Using Validated Count)**
 
@@ -424,7 +424,7 @@ APO MUST answer ALL checklist items:
 
 6. **Project Structure Sanity:**
    - For project with backend/, frontend/, database/, do I expect nested CLAUDE.md files? ✅ YES | ❌ NO
-   - Do I see trinity/ or .claude/ directories? ⚠️ IGNORE (methodology infrastructure, not project code)
+   - Do I see .claude/trinity/ or .claude/ directories? ⚠️ IGNORE (methodology infrastructure, not project code)
    - If YES but none found: Re-run Glob with explicit paths
 
 **Self-Verification Action:**
@@ -438,7 +438,7 @@ IF any critical item = ❌ NO:
     - lib/**/CLAUDE.md
   Merge results and re-validate
 
-**Note:** Do NOT include trinity/ or .claude/ patterns - these are methodology infrastructure.
+**Note:** Do NOT include .claude/trinity/ or .claude/ patterns - these are methodology infrastructure.
 
 **Checklist Completion:** ✅ 6/6 items verified
 ```
@@ -625,7 +625,7 @@ Check all documentation links in root README.md work:
 
 If JUNO audit report exists, cross-reference root README.md claims:
 
-1. Read `trinity/reports/CODEBASE-AUDIT-{latest}.md`
+1. Read `.claude/trinity/reports/CODEBASE-AUDIT-{latest}.md`
 2. Extract actual counts (files, components, tests, etc.)
 3. Use audit findings as source of truth for root README.md
 4. Identify inaccuracies in root README.md for Phase 2.5 commitment
@@ -1839,7 +1839,7 @@ All directories with CLAUDE.md have README.md files.
 
 ### Phase 7: README Audit Report
 
-**APO Generates:** `trinity/reports/README-AUDIT-{date}.md`
+**APO Generates:** `.claude/trinity/reports/README-AUDIT-{date}.md`
 
 **CRITICAL: Report MUST document COMPLETED work, not future recommendations.**
 
@@ -2027,7 +2027,7 @@ OR
 ---
 
 **Report Generated:** {timestamp}
-**Report Location:** trinity/reports/README-AUDIT-{date}.md
+**Report Location:** .claude/trinity/reports/README-AUDIT-{date}.md
 ```
 
 ---
@@ -2090,7 +2090,7 @@ If Phase 6 validation shows coverage < 100%, status = ❌ FAILED even if Phase 4
 
 **After `/trinity-readme` completes, verify:**
 
-1. ✅ Check final report in `trinity/reports/README-AUDIT-{date}.md`
+1. ✅ Check final report in `.claude/trinity/reports/README-AUDIT-{date}.md`
 2. ✅ Verify coverage = 100% in report
 3. ✅ Verify all Phase 2.5 fixes show "✅ FIXED" status
 4. ✅ Verify all checkpoints show "✅ PASSED"

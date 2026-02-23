@@ -2,7 +2,7 @@
 
 **Purpose:** Comprehensive audit checklist for trinity-docs-update command
 **Agent:** JUNO (Quality Auditor)
-**Output:** Audit report saved to `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
+**Output:** Audit report saved to `.claude/trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md`
 
 ---
 
@@ -835,7 +835,7 @@ When assigning frontend modules to APO-3:
 
 ## Step 1.4: Generate 3-Part Audit Report
 
-**Use template:** `trinity/templates/documentation/reports/docs-update-audit.md`
+**Use template:** `.claude/trinity/templates/documentation/reports/docs-update-audit.md`
 
 ### Part 1: Base Documentation Updates Needed
 
@@ -1308,7 +1308,7 @@ Aborting documentation update.
 
 ```
 Use Task tool with subagent_type="APO (Documentation Specialist)" to write the file:
-- File path: trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
+- File path: .claude/trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md
 - Content: Complete audit report with all sections above
 ```
 
@@ -1328,7 +1328,7 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to write the f
 Once audit is complete:
 1. ✅ Audit report generated with three unchecked checklists
 2. ✅ Each checklist has clear, actionable work items
-3. ✅ Report saved to `trinity/reports/` using Task skill Write
+3. ✅ Report saved to `.claude/trinity/reports/` using Task skill Write
 4. ✅ **Phase 1 complete**
 
 **DO NOT execute any documentation updates.**

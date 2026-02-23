@@ -40,7 +40,7 @@ TAN is called in two contexts:
 - Does NOT create directories (they already exist from deploy)
 - Reports structural issues if found
 
-**IMPORTANT:** Determine which context you're in by checking if trinity/ directory exists. If it exists, you're in Context 2 (verification mode).
+**IMPORTANT:** Determine which context you're in by checking if .claude/trinity/ directory exists. If it exists, you're in Context 2 (verification mode).
 
 ---
 
@@ -79,7 +79,7 @@ project-root/
 │   ├── commands/
 │   │   └── (slash command files)
 │   └── CLAUDE.md
-├── trinity/
+├── .claude/trinity/
 │   ├── knowledge-base/
 │   │   ├── ARCHITECTURE.md
 │   │   ├── ISSUES.md
@@ -115,10 +115,10 @@ Check that these directories exist and are writable:
 
 ```bash
 # Core Trinity directories
-trinity/
-trinity/knowledge-base/
-trinity/reports/
-trinity/sessions/
+.claude/trinity/
+.claude/trinity/knowledge-base/
+.claude/trinity/reports/
+.claude/trinity/sessions/
 ```
 
 **Validation:**
@@ -245,7 +245,7 @@ For each agent file, verify:
 
 ### Required Knowledge Base Files
 
-Verify these files exist in trinity/knowledge-base/:
+Verify these files exist in .claude/trinity/knowledge-base/:
 
 **Core Documentation (ZEN will populate):**
 1. **ARCHITECTURE.md** - System architecture overview
@@ -308,7 +308,7 @@ When establishing technical debt baseline, scan codebase for:
 
 ### Baseline Metrics to Capture
 
-Record in trinity/knowledge-base/Technical-Debt.md:
+Record in .claude/trinity/knowledge-base/Technical-Debt.md:
 
 ```markdown
 # Technical Debt Baseline
@@ -399,8 +399,8 @@ When validation finds issues, report:
 ⚠️ Trinity v2.0 Structure Validation - Issues Found
 
 ❌ Directory Issues:
-- Missing: trinity/reports/ (expected)
-- Permission denied: trinity/knowledge-base/ (cannot write)
+- Missing: .claude/trinity/reports/ (expected)
+- Permission denied: .claude/trinity/knowledge-base/ (cannot write)
 
 ❌ Agent Deployment Issues:
 - Missing agent: .claude/agents/planning/mon-requirements.md
@@ -408,8 +408,8 @@ When validation finds issues, report:
 - Agent count: 15/17 (2 missing)
 
 ❌ Knowledge Base Issues:
-- Missing: trinity/knowledge-base/CODING-PRINCIPLES.md
-- Cannot read: trinity/knowledge-base/ARCHITECTURE.md (permission denied)
+- Missing: .claude/trinity/knowledge-base/CODING-PRINCIPLES.md
+- Cannot read: .claude/trinity/knowledge-base/ARCHITECTURE.md (permission denied)
 
 🔧 Recommended Actions:
 1. Check file system permissions
@@ -436,9 +436,9 @@ After TAN completes structure verification, hand off to ZEN:
   "agents_deployed": 17,
   "knowledge_base_ready": true,
   "files_to_populate": [
-    "trinity/knowledge-base/ARCHITECTURE.md",
-    "trinity/knowledge-base/ISSUES.md",
-    "trinity/knowledge-base/To-do.md"
+    ".claude/trinity/knowledge-base/ARCHITECTURE.md",
+    ".claude/trinity/knowledge-base/ISSUES.md",
+    ".claude/trinity/knowledge-base/To-do.md"
   ],
   "technical_debt_baseline_complete": true
 }
@@ -470,7 +470,7 @@ If validation fails, escalate to JUNO:
   "to": "JUNO",
   "status": "validation_failed",
   "issues_found": 5,
-  "missing_directories": ["trinity/reports/"],
+  "missing_directories": [".claude/trinity/reports/"],
   "missing_agents": ["mon-requirements.md", "ein-cicd.md"],
   "recommendation": "audit_deployment_process"
 }
@@ -495,7 +495,7 @@ If validation fails, escalate to JUNO:
 **Solution:**
 - Check directory ownership
 - Verify write permissions on parent directory
-- On Unix systems: `chmod -R u+w trinity/`
+- On Unix systems: `chmod -R u+w .claude/trinity/`
 
 ### Issue: Agent files not deploying
 
@@ -524,7 +524,7 @@ TAN's work is complete when:
 
 1. ✅ All required Trinity directories exist and are writable
 2. ✅ All 17 agent files deployed correctly to .claude/agents/
-3. ✅ All 8 knowledge base files exist in trinity/knowledge-base/
+3. ✅ All 8 knowledge base files exist in .claude/trinity/knowledge-base/
 4. ✅ Planning artifact directories created (docs/plans/)
 5. ✅ Technical debt baseline scan completed
 6. ✅ Technical-Debt.md populated with real metrics
@@ -593,8 +593,8 @@ If user declines CI/CD:
 
 **Symptom**:
 ```
-Error: Cannot create trinity/work-orders/
-Parent directory 'trinity/' does not exist
+Error: Cannot create .claude/trinity/work-orders/
+Parent directory '.claude/trinity/' does not exist
 ```
 
 **Cause**: Project root mismatch or permissions
@@ -608,10 +608,10 @@ pwd
 cd /path/to/project
 
 # Create manually if needed
-mkdir -p trinity/work-orders
-mkdir -p trinity/sessions
-mkdir -p trinity/planning
-mkdir -p trinity/reports
+mkdir -p .claude/trinity/work-orders
+mkdir -p .claude/trinity/sessions
+mkdir -p .claude/trinity/planning
+mkdir -p .claude/trinity/reports
 ```
 
 ### Issue 2: Agents Directory Incomplete
@@ -651,7 +651,7 @@ ls -la .claude/
 
 # Fix permissions (Unix/Mac)
 chmod -R 755 .claude/
-chmod -R 755 trinity/
+chmod -R 755 .claude/trinity/
 
 # Windows: Right-click → Properties → Security → Edit
 ```

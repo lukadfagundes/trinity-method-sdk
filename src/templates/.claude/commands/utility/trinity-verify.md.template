@@ -12,24 +12,24 @@ Verify that Trinity Method is properly installed in this project.
 
 Check for:
 1. **Trinity Core Structure (14 directories):**
-   - trinity/knowledge-base/
-   - trinity/reports/
-   - trinity/sessions/
-   - trinity/investigations/
-   - trinity/investigations/plans/
-   - trinity/patterns/
-   - trinity/work-orders/
-   - trinity/templates/
-   - trinity/templates/work-orders/
-   - trinity/templates/investigations/
-   - trinity/archive/work-orders/
-   - trinity/archive/investigations/
-   - trinity/archive/reports/
-   - trinity/archive/sessions/
+   - .claude/trinity/knowledge-base/
+   - .claude/trinity/reports/
+   - .claude/trinity/sessions/
+   - .claude/trinity/investigations/
+   - .claude/trinity/investigations/plans/
+   - .claude/trinity/patterns/
+   - .claude/trinity/work-orders/
+   - .claude/trinity/templates/
+   - .claude/trinity/templates/work-orders/
+   - .claude/trinity/templates/investigations/
+   - .claude/trinity/archive/work-orders/
+   - .claude/trinity/archive/investigations/
+   - .claude/trinity/archive/reports/
+   - .claude/trinity/archive/sessions/
 
 2. **CLAUDE.md Context Files:**
    - Root CLAUDE.md (behavioral hierarchy)
-   - trinity/CLAUDE.md (Trinity-specific context)
+   - .claude/trinity/CLAUDE.md (Trinity-specific context)
 
 3. **Agent Organization (19 agents in 5 subdirectories):**
    - .claude/agents/leadership/ (3 agents: ALY, AJ MAESTRO, AJ CC)
@@ -48,9 +48,9 @@ Check for:
    - Utility: verify, agents, workorder
 
 5. **Templates (13 total):**
-   - Work Orders: 6 templates in trinity/templates/work-orders/
-   - Investigations: 5 templates in trinity/templates/investigations/
-   - Documentation: 2 templates in trinity/templates/documentation/
+   - Work Orders: 6 templates in .claude/trinity/templates/work-orders/
+   - Investigations: 5 templates in .claude/trinity/templates/investigations/
+   - Documentation: 2 templates in .claude/trinity/templates/documentation/
 
 6. **Knowledge Base Files (9 files):**
    - ARCHITECTURE.md, Trinity.md, To-do.md, ISSUES.md, Technical-Debt.md
@@ -85,11 +85,11 @@ Report:
 - ✅ .claude/
 - ✅ .claude/agents/ (5 subdirectories)
 - ✅ .claude/commands/
-- ✅ trinity/knowledge-base/
-- ✅ trinity/work-orders/
-- ✅ trinity/sessions/
-- ✅ trinity/planning/
-- ✅ trinity/reports/
+- ✅ .claude/trinity/knowledge-base/
+- ✅ .claude/trinity/work-orders/
+- ✅ .claude/trinity/sessions/
+- ✅ .claude/trinity/planning/
+- ✅ .claude/trinity/reports/
 
 ### 2. Agent Deployment ✅ (19/19)
 **Leadership** (3/3):
@@ -175,11 +175,11 @@ Report:
 - ✅ .claude/
 - ✅ .claude/agents/ (5 subdirectories)
 - ✅ .claude/commands/
-- ✅ trinity/knowledge-base/
-- ❌ trinity/work-orders/ (MISSING)
-- ✅ trinity/sessions/
-- ✅ trinity/planning/
-- ❌ trinity/reports/ (MISSING)
+- ✅ .claude/trinity/knowledge-base/
+- ❌ .claude/trinity/work-orders/ (MISSING)
+- ✅ .claude/trinity/sessions/
+- ✅ .claude/trinity/planning/
+- ❌ .claude/trinity/reports/ (MISSING)
 
 ### 2. Agent Deployment ⚠️ (17/19)
 **Leadership** (3/3):
@@ -248,8 +248,8 @@ Report:
 
 **Symptom**:
 ```
-❌ trinity/work-orders/ not found
-❌ trinity/reports/ not found
+❌ .claude/trinity/work-orders/ not found
+❌ .claude/trinity/reports/ not found
 ```
 
 **Cause**: Incomplete `trinity deploy` or TAN agent failure
@@ -257,19 +257,19 @@ Report:
 **Fix**:
 ```bash
 # Manually create missing directories
-mkdir -p trinity/work-orders
-mkdir -p trinity/reports
-mkdir -p trinity/sessions
-mkdir -p trinity/planning
+mkdir -p .claude/trinity/work-orders
+mkdir -p .claude/trinity/reports
+mkdir -p .claude/trinity/sessions
+mkdir -p .claude/trinity/planning
 
 # Verify creation
-ls -la trinity/
+ls -la .claude/trinity/
 ```
 
 **Verification**:
 ```bash
 # Should show all directories
-trinity/
+.claude/trinity/
 ├── work-orders/
 ├── reports/
 ├── sessions/
@@ -329,20 +329,20 @@ find .claude/agents -name "*.md" -type f
 
 # OR manually populate files
 # ISSUES.md should contain:
-echo "# Known Issues\n\nNo issues currently tracked." > trinity/knowledge-base/ISSUES.md
+echo "# Known Issues\n\nNo issues currently tracked." > .claude/trinity/knowledge-base/ISSUES.md
 
 # To-do.md should contain:
-echo "# Project To-Do List\n\nNo tasks currently tracked." > trinity/knowledge-base/To-do.md
+echo "# Project To-Do List\n\nNo tasks currently tracked." > .claude/trinity/knowledge-base/To-do.md
 ```
 
 **Verification**:
 ```bash
 # Check file sizes (should be >0 bytes)
-ls -lh trinity/knowledge-base/*.md
+ls -lh .claude/trinity/knowledge-base/*.md
 
 # Verify content
-cat trinity/knowledge-base/ISSUES.md
-cat trinity/knowledge-base/To-do.md
+cat .claude/trinity/knowledge-base/ISSUES.md
+cat .claude/trinity/knowledge-base/To-do.md
 ```
 
 ---

@@ -104,7 +104,7 @@ The deploy command executes a 12-step orchestrated workflow:
 .claude/
   agents/
   commands/
-trinity/
+.claude/trinity/
   investigations/
   knowledge-base/
   patterns/
@@ -124,14 +124,14 @@ docs/
 **Purpose:** Deploy knowledge base templates with project-specific context
 **Deploys:**
 
-- `trinity/knowledge-base/ARCHITECTURE.md` (with metrics baseline)
-- `trinity/knowledge-base/To-do.md`
-- `trinity/knowledge-base/ISSUES.md`
-- `trinity/knowledge-base/Technical-Debt.md`
-- `trinity/knowledge-base/Trinity.md`
-- `trinity/knowledge-base/TESTING-PRINCIPLES.md`
-- `trinity/knowledge-base/CODING-PRINCIPLES.md`
-- `trinity/knowledge-base/DOCUMENTATION-CRITERIA.md`
+- `.claude/trinity/knowledge-base/ARCHITECTURE.md` (with metrics baseline)
+- `.claude/trinity/knowledge-base/To-do.md`
+- `.claude/trinity/knowledge-base/ISSUES.md`
+- `.claude/trinity/knowledge-base/Technical-Debt.md`
+- `.claude/trinity/knowledge-base/Trinity.md`
+- `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md`
+- `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md`
+- `.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md`
 
 ### Step 6: Root Files Deployment
 
@@ -140,7 +140,7 @@ docs/
 **Deploys:**
 
 - `CLAUDE.md` (root context with project-specific variables)
-- `trinity/CLAUDE.md` (Trinity Method enforcement)
+- `.claude/trinity/CLAUDE.md` (Trinity Method enforcement)
 - `src/CLAUDE.md` (framework-specific context)
 - `VERSION` (Trinity SDK version tracking)
 
@@ -178,9 +178,9 @@ docs/
 **Purpose:** Deploy work order and investigation templates
 **Deploys:**
 
-- `trinity/templates/work-order/WORKORDER-TEMPLATE.md`
-- `trinity/templates/investigation/INVESTIGATION-TEMPLATE.md`
-- `trinity/templates/documentation/` (README templates, report templates)
+- `.claude/trinity/templates/work-order/WORKORDER-TEMPLATE.md`
+- `.claude/trinity/templates/investigation/INVESTIGATION-TEMPLATE.md`
+- `.claude/trinity/templates/documentation/` (README templates, report templates)
 
 ### Step 11: CI/CD Workflow Deployment (Conditional)
 
@@ -195,9 +195,8 @@ docs/
 **Purpose:** Add Trinity-specific entries to .gitignore
 **Adds:**
 
-- `trinity/sessions/`
-- `trinity/work-orders/WORKORDER-*.md` (except template)
-- `trinity/investigations/*/` (except template)
+- `.claude/` (entire .claude directory including trinity/)
+- `*CLAUDE.md` (all CLAUDE.md context files)
 
 ### Step 12: SDK Installation
 
@@ -434,15 +433,15 @@ project-root/
 │   ├── agents/           (19 agent templates)
 │   ├── commands/         (20 slash command templates)
 │   ├── settings.json
-│   └── EMPLOYEE-DIRECTORY.md
-├── trinity/
-│   ├── knowledge-base/   (8 knowledge base files)
-│   ├── templates/
-│   │   ├── work-order/
-│   │   ├── investigation/
-│   │   └── documentation/
-│   ├── VERSION
-│   └── CLAUDE.md
+│   ├── EMPLOYEE-DIRECTORY.md
+│   └── trinity/
+│       ├── knowledge-base/   (8 knowledge base files)
+│       ├── templates/
+│       │   ├── work-order/
+│       │   ├── investigation/
+│       │   └── documentation/
+│       ├── VERSION
+│       └── CLAUDE.md
 ├── docs/                 (if documentation enabled)
 ├── CLAUDE.md
 ├── src/

@@ -39,7 +39,7 @@
 ### Session Initialization
 ```markdown
 ## Required Steps at Session Start:
-1. Load project context from ../CLAUDE.md
+1. Load project context from ../../CLAUDE.md
 2. Review outstanding tasks in knowledge-base/To-do.md
 3. Check system health and performance metrics
 4. Update dependencies if needed
@@ -63,7 +63,7 @@
 ### Session Artifacts Management
 ```yaml
 Session Artifacts:
-  Location: trinity/sessions/[YYYY-MM-DD]-[HHMMSS]/
+  Location: .claude/trinity/sessions/[YYYY-MM-DD]-[HHMMSS]/
   Required Files:
     - SESSION-SUMMARY.md         # Session overview and accomplishments
     - investigation-summary.md   # What was investigated
@@ -94,7 +94,7 @@ Session Artifacts:
 ```markdown
 ## Response for Performance Degradation:
 1. Measure current performance metrics
-2. Compare against established baselines in ../CLAUDE.md
+2. Compare against established baselines in ../../CLAUDE.md
 3. Identify performance bottlenecks
 4. Investigate using Trinity methodology
 5. Implement targeted optimizations
@@ -237,14 +237,14 @@ const trinityMetrics = {
 ### Knowledge Persistence Framework
 ```yaml
 Knowledge Base Structure:
-  trinity/knowledge-base/
+  .claude/trinity/knowledge-base/
     - ISSUES.md              # Common problems and solutions
     - Trinity.md             # Trinity Method project guide
     - ARCHITECTURE.md        # System architecture documentation
     - Technical-Debt.md      # Technical debt tracking
     - To-do.md               # Task tracking and planning
 
-  trinity/sessions/
+  .claude/trinity/sessions/
     - [YYYY-MM-DD]-[HHMMSS]/  # Session artifacts
       - SESSION-SUMMARY.md
       - investigation-summary.md
@@ -252,13 +252,13 @@ Knowledge Base Structure:
       - issues-resolved.md
       - performance-report.md
 
-  trinity/investigations/
+  .claude/trinity/investigations/
     - [investigation-name]/    # Investigation work products
 
-  trinity/patterns/
+  .claude/trinity/patterns/
     - [pattern-name].md        # Reusable solution patterns
 
-  trinity/work-orders/
+  .claude/trinity/work-orders/
     - WORKORDER-XXX.md         # Active work orders
 ```
 
@@ -326,9 +326,9 @@ Execute Framework Crisis Protocol
 
 ### Hierarchical Context Loading
 ```
-1. ../CLAUDE.md              → Global project context (load FIRST)
-2. trinity/CLAUDE.md (this file) → Trinity Method enforcement (load SECOND)
-3. ../{{SOURCE_DIR}}/CLAUDE.md   → Technology-specific rules (load THIRD)
+1. ../../CLAUDE.md              → Global project context (load FIRST)
+2. .claude/trinity/CLAUDE.md (this file) → Trinity Method enforcement (load SECOND)
+3. ../../{{SOURCE_DIR}}/CLAUDE.md   → Technology-specific rules (load THIRD)
 ```
 
 ### Context Priority Rules
@@ -341,7 +341,7 @@ Execute Framework Crisis Protocol
 
 ## Reference to Parent Context
 
-This file extends and enforces the global requirements defined in `../CLAUDE.md`. All Trinity Method protocols must comply with:
+This file extends and enforces the global requirements defined in `../../CLAUDE.md`. All Trinity Method protocols must comply with:
 - Global performance baselines
 - Project-wide behavioral requirements
 - Technology stack specifications
@@ -355,10 +355,10 @@ For technology-specific implementation details, see: `../src/CLAUDE.md`
 
 This file enforces Trinity Method protocols for all development work.
 
-**Parent Context**: [../CLAUDE.md](../CLAUDE.md) - Project overview and global requirements
+**Parent Context**: [../../CLAUDE.md](../../CLAUDE.md) - Project overview and global requirements
 **Child Context**: [../src/CLAUDE.md](../src/CLAUDE.md) - Framework-specific implementation rules
 **Related Resources**:
-- [Agent Directory](../.claude/EMPLOYEE-DIRECTORY.md) - 19-agent Trinity team guide
+- [Agent Directory](../EMPLOYEE-DIRECTORY.md) - 19-agent Trinity team guide
 - [Architecture Documentation](knowledge-base/ARCHITECTURE.md) - System architecture and patterns
 - [Known Issues](knowledge-base/ISSUES.md) - Issue patterns and resolutions
 - [Technical Debt](knowledge-base/Technical-Debt.md) - Debt tracking and reduction plans

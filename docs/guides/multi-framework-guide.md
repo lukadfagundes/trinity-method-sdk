@@ -57,8 +57,7 @@ project/
 ├── .prettierignore            # Prettier ignore patterns
 ├── .pre-commit-config.yaml    # ESLint + Prettier hooks
 ├── .github/workflows/nodejs.yml  # CI/CD workflow
-├── .claude/                   # 19 agents + 20 commands
-└── trinity/                   # Knowledge base
+└── .claude/                   # 19 agents + 20 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -150,8 +149,7 @@ project/
 ├── .isort.cfg                 # isort configuration
 ├── .pre-commit-config.yaml    # Black + Flake8 + isort hooks
 ├── .github/workflows/python.yml  # CI/CD workflow
-├── .claude/                   # 19 agents + 20 commands
-└── trinity/                   # Knowledge base
+└── .claude/                   # 19 agents + 20 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -223,8 +221,7 @@ project/
 ├── rustfmt.toml               # Rustfmt configuration
 ├── .pre-commit-config.yaml    # Clippy + Rustfmt hooks
 ├── .github/workflows/rust.yml # CI/CD workflow
-├── .claude/                   # 19 agents + 20 commands
-└── trinity/                   # Knowledge base
+└── .claude/                   # 19 agents + 20 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -292,8 +289,7 @@ project/
 ├── analysis_options.yaml      # Dart Analyzer config
 ├── .pre-commit-config.yaml    # Dart Analyzer hooks
 ├── .github/workflows/flutter.yml  # CI/CD workflow
-├── .claude/                   # 19 agents + 20 commands
-└── trinity/                   # Knowledge base
+└── .claude/                   # 19 agents + 20 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -345,8 +341,7 @@ trinity deploy
 ```
 project/
 ├── .github/workflows/go.yml   # CI/CD workflow (includes gofmt)
-├── .claude/                   # 19 agents + 20 commands
-└── trinity/                   # Knowledge base
+└── .claude/                   # 19 agents + 20 commands + knowledge base
 ```
 
 ### Post-Deployment Setup
@@ -382,7 +377,7 @@ go 1.21                          // Version detected
 
 ```bash
 # Backup customizations
-cp -r trinity/knowledge-base/ trinity-backup/
+cp -r .claude/trinity/knowledge-base/ trinity-backup/
 
 # Remove framework-specific files
 rm eslint.config.js .prettierrc .pre-commit-config.yaml
@@ -409,8 +404,8 @@ trinity deploy
 
 ```bash
 # Restore preserved knowledge base content
-cp trinity-backup/ARCHITECTURE.md trinity/knowledge-base/
-cp trinity-backup/ISSUES.md trinity/knowledge-base/
+cp trinity-backup/ARCHITECTURE.md .claude/trinity/knowledge-base/
+cp trinity-backup/ISSUES.md .claude/trinity/knowledge-base/
 ```
 
 ### Scenario: Adding Trinity to Existing Multi-Language Project

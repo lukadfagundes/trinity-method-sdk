@@ -51,7 +51,7 @@ Define completion criteria:
 
 **Step 6: Template Selection**
 Offer templates based on investigation type:
-- Standard templates (from trinity/templates/investigations/)
+- Standard templates (from .claude/trinity/templates/investigations/)
 - Custom templates (from user's template library)
 - Generate new template
 
@@ -60,7 +60,7 @@ Show investigation summary and confirm creation.
 
 **Output:**
 Create investigation file at:
-`trinity/investigations/INV-XXX-{title}.md`
+`.claude/trinity/investigations/INV-XXX-{title}.md`
 
 **Post-Creation:**
 Ask if user wants to:
@@ -69,13 +69,13 @@ Ask if user wants to:
 - Schedule for later
 
 **Orchestration:**
-Once investigation is created in `trinity/investigations/`, execute it:
+Once investigation is created in `.claude/trinity/investigations/`, execute it:
 
 ```bash
 /trinity-orchestrate @INV-001-example-investigation.md
 ```
 
-**AJ MAESTRO** picks up the investigation from `trinity/investigations/` and orchestrates the investigation, leaving findings in `trinity/reports/`.
+**AJ MAESTRO** picks up the investigation from `.claude/trinity/investigations/` and orchestrates the investigation, leaving findings in `.claude/trinity/reports/`.
 
 **CRITICAL: Investigation Protocol**
 ⚠️ **INVESTIGATIONS ARE READ-ONLY OPERATIONS**
@@ -112,7 +112,7 @@ INV-012-authentication-flow-review.md
 INV-025-database-query-optimization.md
 ```
 
-**Auto-Numbering**: System scans `trinity/investigations/` and assigns next number
+**Auto-Numbering**: System scans `.claude/trinity/investigations/` and assigns next number
 
 ---
 

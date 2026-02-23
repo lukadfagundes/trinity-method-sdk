@@ -42,7 +42,7 @@ When `/trinity-workorder` is invoked, the agent will:
    - Deliverables and acceptance criteria
    - Priority and estimated effort
 
-2. **Select appropriate template** from `trinity/templates/work-orders/`:
+2. **Select appropriate template** from `.claude/trinity/templates/work-orders/`:
    - **Investigation:** Research and analysis tasks
    - **Implementation:** Feature development tasks
    - **Analysis:** Code analysis and review tasks
@@ -50,7 +50,7 @@ When `/trinity-workorder` is invoked, the agent will:
    - **Pattern:** Pattern detection and analysis
    - **Verification:** Verification and validation tasks
 
-3. **Create work order file** in `trinity/work-orders/WO-XXX-{task-name}.md`
+3. **Create work order file** in `.claude/trinity/work-orders/WO-XXX-{task-name}.md`
 
 4. **Populate template** with:
    - Clear mission objective
@@ -78,13 +78,13 @@ When `/trinity-workorder` is invoked, the agent will:
 
 ## Orchestration
 
-Once work order is created in `trinity/work-orders/`, execute it:
+Once work order is created in `.claude/trinity/work-orders/`, execute it:
 
 ```bash
 /trinity-orchestrate @WO-001-example-task.md
 ```
 
-**AJ MAESTRO** picks up the work order from `trinity/work-orders/` and orchestrates the 19-agent team to complete the task following Trinity Method workflows.
+**AJ MAESTRO** picks up the work order from `.claude/trinity/work-orders/` and orchestrates the 19-agent team to complete the task following Trinity Method workflows.
 
 ---
 
@@ -96,7 +96,7 @@ See WO-042 example in work order files showing full structure with objectives, i
 
 ## Available Templates
 
-Work order templates are located in `trinity/templates/work-orders/`:
+Work order templates are located in `.claude/trinity/templates/work-orders/`:
 - **INVESTIGATION-TEMPLATE.md** - Research and analysis tasks
 - **IMPLEMENTATION-TEMPLATE.md** - Feature development tasks
 - **ANALYSIS-TEMPLATE.md** - Code analysis and review tasks
