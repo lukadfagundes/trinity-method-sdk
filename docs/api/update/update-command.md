@@ -59,7 +59,7 @@ interface UpdateOptions {
 
 **Checks:**
 
-- Trinity directory (`trinity/`) exists
+- Trinity directory (`.claude/trinity/`) exists
 - VERSION file exists
 - `.git/` directory exists (recommended)
 
@@ -121,15 +121,15 @@ Latest Version: 2.1.0
 
 The following would be updated:
 ✓ Agents (.claude/agents/)
-✓ Commands (trinity/commands/)
-✓ Templates (trinity/templates/)
-✓ Knowledge Base (trinity/knowledge-base/)
+✓ Commands (.claude/trinity/commands/)
+✓ Templates (.claude/trinity/templates/)
+✓ Knowledge Base (.claude/trinity/knowledge-base/)
 ✓ VERSION file
 
 User content would be preserved:
-✓ Sessions (trinity/sessions/)
-✓ Investigations (trinity/investigations/)
-✓ Work Orders (trinity/work-orders/)
+✓ Sessions (.claude/trinity/sessions/)
+✓ Investigations (.claude/trinity/investigations/)
+✓ Work Orders (.claude/trinity/work-orders/)
 
 To apply this update, run: trinity update
 ```
@@ -165,13 +165,13 @@ Update cancelled
 **Backup Location:**
 
 ```
-trinity/backups/update-YYYY-MM-DD-HHMMSS/
+.claude/trinity/backups/update-YYYY-MM-DD-HHMMSS/
 ```
 
 **Backed Up Directories:**
 
 - `.claude/` (agents, prompts)
-- `trinity/` (entire Trinity directory)
+- `.claude/trinity/` (entire Trinity directory)
 
 **Returns:** `string` - Backup directory path
 
@@ -183,7 +183,7 @@ trinity/backups/update-YYYY-MM-DD-HHMMSS/
 **User Message:**
 
 ```
-✓ Created backup: trinity/backups/update-2026-01-21-103000
+✓ Created backup: .claude/trinity/backups/update-2026-01-21-103000
 ```
 
 ---
@@ -209,7 +209,7 @@ Updates performed in parallel for performance:
 #### Step 6: Update Commands
 
 **Function:** `updateCommands(spinner, stats)`
-**Purpose:** Update command templates in `trinity/commands/`
+**Purpose:** Update command templates in `.claude/trinity/commands/`
 
 **Updates:**
 
@@ -224,7 +224,7 @@ Updates performed in parallel for performance:
 #### Step 7: Update Templates
 
 **Function:** `updateTemplates(spinner, stats)`
-**Purpose:** Update deployment templates in `trinity/templates/`
+**Purpose:** Update deployment templates in `.claude/trinity/templates/`
 
 **Updates:**
 
@@ -239,7 +239,7 @@ Updates performed in parallel for performance:
 #### Step 8: Update Knowledge Base
 
 **Function:** `updateKnowledgeBase(spinner, stats)`
-**Purpose:** Update Trinity knowledge base in `trinity/knowledge-base/`
+**Purpose:** Update Trinity knowledge base in `.claude/trinity/knowledge-base/`
 
 **Updates:**
 
@@ -266,9 +266,9 @@ Updates performed in parallel for performance:
 
 **Restored Directories:**
 
-- `trinity/sessions/` - User session artifacts
-- `trinity/investigations/` - User investigations
-- `trinity/work-orders/` - User work orders
+- `.claude/trinity/sessions/` - User session artifacts
+- `.claude/trinity/investigations/` - User investigations
+- `.claude/trinity/work-orders/` - User work orders
 - Custom agent configurations (if any)
 
 **Behavior:**
@@ -287,7 +287,7 @@ Updates performed in parallel for performance:
 ### Step 10: Update VERSION File
 
 **Function:** `updateVersionFile(spinner, latestVersion)`
-**Purpose:** Update `trinity/VERSION` file with new version
+**Purpose:** Update `.claude/trinity/VERSION` file with new version
 
 **File Content:**
 
@@ -370,7 +370,7 @@ User content preserved:
 
 Next Steps:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Review changelog: trinity/knowledge-base/CHANGELOG.md
+1. Review changelog: .claude/trinity/knowledge-base/CHANGELOG.md
 2. Check for breaking changes in Trinity.md
 3. Test your workflow with updated agents
 ```
@@ -400,13 +400,13 @@ Any error in Steps 4-11 triggers automatic rollback.
 ```
 ❌ Update failed - Rolling back changes...
 
-🔄 Rolling back from backup: trinity/backups/update-2026-01-21-103000
+🔄 Rolling back from backup: .claude/trinity/backups/update-2026-01-21-103000
 
 ✓ Restored Trinity directory
 ✓ Restored agent directory
 
 Rollback complete. Your deployment is restored to its previous state.
-Backup preserved at: trinity/backups/update-2026-01-21-103000
+Backup preserved at: .claude/trinity/backups/update-2026-01-21-103000
 
 Try running: trinity deploy --force for a clean reinstall
 ```
@@ -547,7 +547,7 @@ trinity update --skip-backup
 **Check:**
 
 ```typescript
-if (!fs.existsSync('trinity/VERSION')) {
+if (!fs.existsSync('.claude/trinity/VERSION')) {
   throw new Error('Trinity not deployed. Run: trinity deploy');
 }
 ```
@@ -639,7 +639,7 @@ If automatic rollback fails:
 1. **Locate Backup:**
 
    ```bash
-   cd trinity/backups/
+   cd .claude/trinity/backups/
    ls -la
    # Find update-YYYY-MM-DD-HHMMSS directory
    ```
@@ -647,15 +647,14 @@ If automatic rollback fails:
 2. **Manual Restore:**
 
    ```bash
-   rm -rf trinity/.claude
-   cp -r trinity/backups/update-2026-01-21-103000/.claude .claude/
-   cp -r trinity/backups/update-2026-01-21-103000/trinity/* trinity/
+   rm -rf .claude
+   cp -r .claude/trinity/backups/update-2026-01-21-103000/.claude .claude/
    ```
 
 3. **Verify Restoration:**
 
    ```bash
-   cat trinity/VERSION
+   cat .claude/trinity/VERSION
    # Should show previous version
    ```
 
@@ -708,17 +707,17 @@ describe('update integration', () => {
   it('should update all components', async () => {
     await update({});
     expect(fs.existsSync('.claude/agents/mon.md')).toBe(true);
-    expect(fs.existsSync('trinity/knowledge-base/ARCHITECTURE.md')).toBe(true);
+    expect(fs.existsSync('.claude/trinity/knowledge-base/ARCHITECTURE.md')).toBe(true);
   });
 
   it('should preserve user content', async () => {
     // Create user session
-    fs.writeFileSync('trinity/sessions/test-session/summary.md', 'Test');
+    fs.writeFileSync('.claude/trinity/sessions/test-session/summary.md', 'Test');
 
     await update({});
 
     // Verify session preserved
-    expect(fs.existsSync('trinity/sessions/test-session/summary.md')).toBe(true);
+    expect(fs.existsSync('.claude/trinity/sessions/test-session/summary.md')).toBe(true);
   });
 });
 ```
@@ -790,7 +789,7 @@ update(options)
     └→ Prompt user → Confirm?
     ↓
 [4] Create Backup
-    ├→ Backup trinity/ directory
+    ├→ Backup .claude/trinity/ directory
     ├→ Backup .claude/ directory
     └→ Register cleanup handler
     ↓
@@ -801,12 +800,12 @@ update(options)
     └→ [8] Update Knowledge Base
     ↓
 [9] Restore User Content
-    ├→ Restore trinity/sessions/
-    ├→ Restore trinity/investigations/
-    └→ Restore trinity/work-orders/
+    ├→ Restore .claude/trinity/sessions/
+    ├→ Restore .claude/trinity/investigations/
+    └→ Restore .claude/trinity/work-orders/
     ↓
 [10] Update VERSION File
-    └→ Write new version to trinity/VERSION
+    └→ Write new version to .claude/trinity/VERSION
     ↓
 [11] Verification
     ├→ Verify VERSION file

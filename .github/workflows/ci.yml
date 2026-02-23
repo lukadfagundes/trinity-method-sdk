@@ -236,11 +236,6 @@ jobs:
             exit 1
           fi
 
-          if [ ! -f "src/templates/root/TRINITY.md.template" ]; then
-            echo "ERROR: Root TRINITY.md template missing"
-            exit 1
-          fi
-
           echo "✅ Root templates validated"
 
       - name: Validate source templates (CLAUDE.md variants)

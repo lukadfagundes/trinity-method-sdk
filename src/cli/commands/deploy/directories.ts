@@ -16,19 +16,19 @@ export async function createDirectories(spinner: Spinner): Promise<number> {
 
   let directoriesCreated = 0;
 
-  // Trinity core directories
-  await fs.ensureDir('trinity/knowledge-base');
-  await fs.ensureDir('trinity/sessions');
-  await fs.ensureDir('trinity/investigations');
-  await fs.ensureDir('trinity/patterns');
-  await fs.ensureDir('trinity/work-orders');
-  await fs.ensureDir('trinity/templates');
-  await fs.ensureDir('trinity/reports');
-  await fs.ensureDir('trinity/investigations/plans');
-  await fs.ensureDir('trinity/archive/work-orders');
-  await fs.ensureDir('trinity/archive/investigations');
-  await fs.ensureDir('trinity/archive/reports');
-  await fs.ensureDir('trinity/archive/sessions');
+  // Trinity core directories (inside .claude/)
+  await fs.ensureDir('.claude/trinity/knowledge-base');
+  await fs.ensureDir('.claude/trinity/sessions');
+  await fs.ensureDir('.claude/trinity/investigations');
+  await fs.ensureDir('.claude/trinity/patterns');
+  await fs.ensureDir('.claude/trinity/work-orders');
+  await fs.ensureDir('.claude/trinity/templates');
+  await fs.ensureDir('.claude/trinity/reports');
+  await fs.ensureDir('.claude/trinity/investigations/plans');
+  await fs.ensureDir('.claude/trinity/archive/work-orders');
+  await fs.ensureDir('.claude/trinity/archive/investigations');
+  await fs.ensureDir('.claude/trinity/archive/reports');
+  await fs.ensureDir('.claude/trinity/archive/sessions');
   directoriesCreated += 12;
 
   // Claude Code directories

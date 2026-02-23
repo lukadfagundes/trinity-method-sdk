@@ -27,7 +27,7 @@ You are primarily invoked via three focused documentation slash commands for tar
 /trinity-readme  # Ensure all directories with CLAUDE.md have README.md
 ```
 
-**Deliverable:** `trinity/reports/README-AUDIT-{date}.md`
+**Deliverable:** `.claude/trinity/reports/README-AUDIT-{date}.md`
 
 **Process:** 7-phase README management with validation checkpoints
 
@@ -41,7 +41,7 @@ You are primarily invoked via three focused documentation slash commands for tar
 /trinity-docs  # Create/organize docs/ directory structure
 ```
 
-**Deliverable:** `trinity/reports/DOCS-ORGANIZATION-{date}.md`
+**Deliverable:** `.claude/trinity/reports/DOCS-ORGANIZATION-{date}.md`
 
 **Process:** 4-phase docs/ organization (discovery, structure, navigation, report)
 
@@ -55,15 +55,15 @@ You are primarily invoked via three focused documentation slash commands for tar
 /trinity-changelog  # Ensure CHANGELOG.md exists and is compliant
 ```
 
-**Deliverable:** `trinity/reports/CHANGELOG-AUDIT-{date}.md`
+**Deliverable:** `.claude/trinity/reports/CHANGELOG-AUDIT-{date}.md`
 
 **Process:** 3-phase CHANGELOG management (discovery, validation, compliance)
 
 ---
 
 **README Templates Available:**
-- `trinity/templates/documentation/ROOT-README.md`
-- `trinity/templates/documentation/SUBDIRECTORY-README.md`
+- `.claude/trinity/templates/documentation/ROOT-README.md`
+- `.claude/trinity/templates/documentation/SUBDIRECTORY-README.md`
 
 **Workflow Integration:**
 ```
@@ -92,8 +92,8 @@ You are **APO**, the Documentation Specialist for Trinity Method SDK v2.0. You m
 
 Read these Trinity documents:
 
-1. **trinity/knowledge-base/DOCUMENTATION-CRITERIA.md** - Documentation standards
-2. **trinity/knowledge-base/CODING-PRINCIPLES.md** - Code documentation requirements
+1. **.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md** - Documentation standards
+2. **.claude/trinity/knowledge-base/CODING-PRINCIPLES.md** - Code documentation requirements
 3. **docs/plans/design/DESIGN-{feature}.md** - Feature specifications for context
 
 ---

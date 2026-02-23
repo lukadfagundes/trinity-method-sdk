@@ -9,7 +9,7 @@
 
 ## Overview
 
-The Knowledge Base Updates module synchronizes SDK-managed knowledge base files from the Trinity Method SDK to the project's `trinity/knowledge-base/` directory. It updates **only SDK-managed files** (5 templates), preserving user-created content like ARCHITECTURE.md, ISSUES.md, and To-do.md.
+The Knowledge Base Updates module synchronizes SDK-managed knowledge base files from the Trinity Method SDK to the project's `.claude/trinity/knowledge-base/` directory. It updates **only SDK-managed files** (5 templates), preserving user-created content like ARCHITECTURE.md, ISSUES.md, and To-do.md.
 
 ### Key Features
 
@@ -25,7 +25,7 @@ The Knowledge Base Updates module synchronizes SDK-managed knowledge base files 
 
 ### `updateKnowledgeBase(spinner, stats)`
 
-Updates SDK-managed knowledge base files to `trinity/knowledge-base/`.
+Updates SDK-managed knowledge base files to `.claude/trinity/knowledge-base/`.
 
 **Signature:**
 
@@ -45,7 +45,7 @@ async function updateKnowledgeBase(spinner: Ora, stats: UpdateStats): Promise<vo
 **Side Effects:**
 
 - Reads from SDK template directory
-- Overwrites SDK-managed files in `trinity/knowledge-base/`
+- Overwrites SDK-managed files in `.claude/trinity/knowledge-base/`
 - **Preserves** user-created files (ARCHITECTURE.md, ISSUES.md, To-do.md, etc.)
 - Updates `stats.knowledgeBaseUpdated` counter
 
@@ -58,7 +58,7 @@ async function updateKnowledgeBase(spinner: Ora, stats: UpdateStats): Promise<vo
 These 5 files are **overwritten** during updates:
 
 ```
-trinity/knowledge-base/
+.claude/trinity/knowledge-base/
 ├── Trinity.md                    ← SDK-managed (updated)
 ├── CODING-PRINCIPLES.md          ← SDK-managed (updated)
 ├── TESTING-PRINCIPLES.md         ← SDK-managed (updated)
@@ -88,7 +88,7 @@ trinity/knowledge-base/
 These files are **never touched** by updates:
 
 ```
-trinity/knowledge-base/
+.claude/trinity/knowledge-base/
 ├── ARCHITECTURE.md       ← User content (PRESERVED)
 ├── ISSUES.md             ← User content (PRESERVED)
 ├── To-do.md              ← User content (PRESERVED)
@@ -144,7 +144,7 @@ For each file:
   1. Construct source path
   2. Check if file exists in SDK
   3. Strip .template extension
-  4. Copy to trinity/knowledge-base/ with overwrite
+  4. Copy to .claude/trinity/knowledge-base/ with overwrite
   5. Increment stats.knowledgeBaseUpdated
 ```
 
@@ -204,13 +204,16 @@ console.log('Update summary:', stats);
 
 ```typescript
 // Before update
-const userContent = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf-8');
+const userContent = await fs.readFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'utf-8');
 
 // Run update
 await updateKnowledgeBase(spinner, stats);
 
 // After update - verify content unchanged
-const postUpdateContent = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf-8');
+const postUpdateContent = await fs.readFile(
+  '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+  'utf-8'
+);
 
 console.log(userContent === postUpdateContent); // true (preserved)
 ```
@@ -230,7 +233,7 @@ dist/templates/trinity/knowledge-base/Trinity.md.template
 **Target File (Project):**
 
 ```
-trinity/knowledge-base/Trinity.md
+.claude/trinity/knowledge-base/Trinity.md
 ```
 
 **Operation:**
@@ -244,7 +247,7 @@ const targetFile = 'Trinity.md.template'.replace('.template', '');
 // Result: 'Trinity.md'
 
 // Target
-const targetPath = 'trinity/knowledge-base/Trinity.md';
+const targetPath = '.claude/trinity/knowledge-base/Trinity.md';
 
 // Copy with overwrite
 await fs.copy(sourcePath, targetPath, { overwrite: true });
@@ -255,7 +258,7 @@ await fs.copy(sourcePath, targetPath, { overwrite: true });
 **Before Update:**
 
 ```
-trinity/knowledge-base/
+.claude/trinity/knowledge-base/
 ├── Trinity.md (v2.0.0 - outdated)
 ├── CODING-PRINCIPLES.md (v2.0.0 - outdated)
 ├── ARCHITECTURE.md (user content - v1.2.3)
@@ -266,7 +269,7 @@ trinity/knowledge-base/
 **After Update:**
 
 ```
-trinity/knowledge-base/
+.claude/trinity/knowledge-base/
 ├── Trinity.md (v2.1.0 - UPDATED)
 ├── CODING-PRINCIPLES.md (v2.1.0 - UPDATED)
 ├── TESTING-PRINCIPLES.md (v2.1.0 - UPDATED, new)
@@ -465,7 +468,7 @@ if (await fs.pathExists(sourcePath)) {
 **1. Permission Denied**
 
 ```
-Error: EACCES: permission denied, open 'trinity/knowledge-base/Trinity.md'
+Error: EACCES: permission denied, open '.claude/trinity/knowledge-base/Trinity.md'
 Solution: Fix file permissions or run with appropriate privileges
 ```
 
@@ -479,7 +482,7 @@ Solution: Install Trinity Method SDK (npm install trinity-method-sdk)
 **3. Target Directory Missing**
 
 ```
-Error: ENOENT: no such file or directory 'trinity/knowledge-base'
+Error: ENOENT: no such file or directory '.claude/trinity/knowledge-base'
 Solution: Ensure Trinity structure exists (run trinity-deploy first)
 ```
 
@@ -508,7 +511,7 @@ const SDK_MANAGED_KB_FILES = [
 
 ```typescript
 // Does NOT do this:
-await fs.copy(kbTemplatePath, 'trinity/knowledge-base', { overwrite: true });
+await fs.copy(kbTemplatePath, '.claude/trinity/knowledge-base', { overwrite: true });
 
 // Does this instead (file-by-file):
 for (const file of SDK_MANAGED_KB_FILES) {
@@ -548,27 +551,27 @@ describe('updateKnowledgeBase', () => {
   });
 
   afterEach(async () => {
-    await fs.remove('trinity/knowledge-base');
+    await fs.remove('.claude/trinity/knowledge-base');
   });
 
   it('should update SDK-managed files', async () => {
     await updateKnowledgeBase(spinner, stats);
 
     expect(stats.knowledgeBaseUpdated).toBe(5);
-    expect(await fs.pathExists('trinity/knowledge-base/Trinity.md')).toBe(true);
+    expect(await fs.pathExists('.claude/trinity/knowledge-base/Trinity.md')).toBe(true);
   });
 
   it('should preserve user files', async () => {
     // Create user files
-    await fs.ensureDir('trinity/knowledge-base');
+    await fs.ensureDir('.claude/trinity/knowledge-base');
     const userContent = 'User architecture documentation';
-    await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', userContent);
+    await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', userContent);
 
     // Run update
     await updateKnowledgeBase(spinner, stats);
 
     // Verify user content preserved
-    const content = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf-8');
+    const content = await fs.readFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'utf-8');
     expect(content).toBe(userContent);
   });
 
@@ -576,19 +579,19 @@ describe('updateKnowledgeBase', () => {
     await updateKnowledgeBase(spinner, stats);
 
     // Should NOT have .template extension
-    expect(await fs.pathExists('trinity/knowledge-base/Trinity.md.template')).toBe(false);
+    expect(await fs.pathExists('.claude/trinity/knowledge-base/Trinity.md.template')).toBe(false);
     // Should have clean .md extension
-    expect(await fs.pathExists('trinity/knowledge-base/Trinity.md')).toBe(true);
+    expect(await fs.pathExists('.claude/trinity/knowledge-base/Trinity.md')).toBe(true);
   });
 
   it('should overwrite existing SDK-managed files', async () => {
     // Create old version
-    await fs.ensureDir('trinity/knowledge-base');
-    await fs.writeFile('trinity/knowledge-base/Trinity.md', 'Old SDK content');
+    await fs.ensureDir('.claude/trinity/knowledge-base');
+    await fs.writeFile('.claude/trinity/knowledge-base/Trinity.md', 'Old SDK content');
 
     await updateKnowledgeBase(spinner, stats);
 
-    const content = await fs.readFile('trinity/knowledge-base/Trinity.md', 'utf-8');
+    const content = await fs.readFile('.claude/trinity/knowledge-base/Trinity.md', 'utf-8');
     expect(content).not.toBe('Old SDK content');
   });
 });
@@ -611,7 +614,7 @@ describe('updateKnowledgeBase', () => {
 
 ### Updates
 
-- `trinity/knowledge-base/` - SDK-managed files only
+- `.claude/trinity/knowledge-base/` - SDK-managed files only
 - `stats.knowledgeBaseUpdated` - Progress tracking counter
 
 ---
@@ -660,7 +663,7 @@ await Promise.all(
 ### File System Safety
 
 - Only reads from SDK template directory (trusted source)
-- Only writes to `trinity/knowledge-base/` (isolated directory)
+- Only writes to `.claude/trinity/knowledge-base/` (isolated directory)
 - Explicit file whitelist (no wildcards)
 - No arbitrary path traversal
 
@@ -679,7 +682,7 @@ await Promise.all(
 - **Agent Updates**: [docs/api/update-agents.md](docs/api/update-agents.md)
 - **Command Updates**: [docs/api/update-commands.md](docs/api/update-commands.md)
 - **SDK Path Resolution**: [docs/api/get-sdk-path.md](docs/api/get-sdk-path.md) (pending)
-- **Knowledge Base**: [trinity/knowledge-base/](../../trinity/knowledge-base/)
+- **Knowledge Base**: [.claude/trinity/knowledge-base/](../../.claude/trinity/knowledge-base/)
 
 ---
 

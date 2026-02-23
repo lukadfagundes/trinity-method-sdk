@@ -101,11 +101,11 @@ Quality isn't aspirational—it's systematically enforced through automated gate
 <h3 id="what-gets-deployed" class="tsd-anchor-link">What Gets Deployed<a href="#what-gets-deployed" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Trinity deploys <strong>75+ production-ready components</strong> in 90 seconds:</p>
 <p><strong>Methodology Infrastructure:</strong></p>
 <ul>
-<li><code>trinity/</code> - Complete Trinity Method structure</li>
-<li><code>trinity/work-orders/</code> - 6 work order templates (Investigation, Implementation, Analysis, Audit, Pattern, Verification)</li>
-<li><code>trinity/knowledge-base/</code> - 5 documentation files (ARCHITECTURE, ISSUES, To-do, Technical-Debt, Trinity)</li>
-<li><code>trinity/investigations/</code> - Investigation artifacts with guided questions</li>
-<li><code>trinity/archive/</code> - Session history and crisis reports</li>
+<li><code>.claude/trinity/</code> - Complete Trinity Method structure</li>
+<li><code>.claude/trinity/work-orders/</code> - 6 work order templates (Investigation, Implementation, Analysis, Audit, Pattern, Verification)</li>
+<li><code>.claude/trinity/knowledge-base/</code> - 5 documentation files (ARCHITECTURE, ISSUES, To-do, Technical-Debt, Trinity)</li>
+<li><code>.claude/trinity/investigations/</code> - Investigation artifacts with guided questions</li>
+<li><code>.claude/trinity/archive/</code> - Session history and crisis reports</li>
 </ul>
 <p><strong>Agent System:</strong></p>
 <ul>
@@ -116,7 +116,7 @@ Quality isn't aspirational—it's systematically enforced through automated gate
 <p><strong>Context Hierarchy:</strong></p>
 <ul>
 <li>Root <code>CLAUDE.md</code> - Global project context</li>
-<li><code>trinity/CLAUDE.md</code> - Trinity Method enforcement</li>
+<li><code>.claude/trinity/CLAUDE.md</code> - Trinity Method enforcement</li>
 <li><code>src/CLAUDE.md</code> - Technology-specific rules</li>
 </ul>
 <p><strong>Quality Automation:</strong></p>
@@ -155,7 +155,7 @@ Quality isn't aspirational—it's systematically enforced through automated gate
 
 <p>Each template includes Trinity-guided questions ensuring comprehensive investigation.</p>
 <h4 id="2-crisis-management-system" class="tsd-anchor-link">2. Crisis Management System<a href="#2-crisis-management-system" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>Automated detection and guided recovery for 5 crisis types:</p>
-<pre><code class="bash"><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">crisis</span><br/><br/><span class="hl-5"># Detects: BUILD_FAILURE, TEST_FAILURE, ERROR_PATTERN,</span><br/><span class="hl-5">#          PERFORMANCE_DEGRADATION, SECURITY_VULNERABILITY</span><br/><span class="hl-5"># Guides: Step-by-step recovery with validation</span><br/><span class="hl-5"># Archives: Crisis reports to trinity/archive/crisis/</span>
+<pre><code class="bash"><span class="hl-6">npx</span><span class="hl-1"> </span><span class="hl-2">trinity</span><span class="hl-1"> </span><span class="hl-2">crisis</span><br/><br/><span class="hl-5"># Detects: BUILD_FAILURE, TEST_FAILURE, ERROR_PATTERN,</span><br/><span class="hl-5">#          PERFORMANCE_DEGRADATION, SECURITY_VULNERABILITY</span><br/><span class="hl-5"># Guides: Step-by-step recovery with validation</span><br/><span class="hl-5"># Archives: Crisis reports to .claude/trinity/archive/crisis/</span>
 </code><button type="button">Copy</button></pre>
 
 <h4 id="3-learning-system-visibility" class="tsd-anchor-link">3. Learning System Visibility<a href="#3-learning-system-visibility" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>Monitor institutional knowledge growth:</p>
@@ -224,9 +224,9 @@ Quality isn't aspirational—it's systematically enforced through automated gate
 <h3 id="after-deployment" class="tsd-anchor-link">After Deployment<a href="#after-deployment" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Your project contains:</p>
 <ul>
 <li><code>.claude/EMPLOYEE-DIRECTORY.md</code> - Complete agent reference</li>
-<li><code>trinity/knowledge-base/Trinity.md</code> - Project-specific Trinity guide</li>
-<li><code>trinity/knowledge-base/ARCHITECTURE.md</code> - System architecture with metrics</li>
-<li><code>trinity/templates/</code> - 6 work order templates for complex tasks</li>
+<li><code>.claude/trinity/knowledge-base/Trinity.md</code> - Project-specific Trinity guide</li>
+<li><code>.claude/trinity/knowledge-base/ARCHITECTURE.md</code> - System architecture with metrics</li>
+<li><code>.claude/trinity/templates/</code> - 6 work order templates for complex tasks</li>
 </ul>
 <hr>
 <h2 id="contributing" class="tsd-anchor-link">Contributing<a href="#contributing" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Trinity Method SDK is open source and welcomes contributions!</p>

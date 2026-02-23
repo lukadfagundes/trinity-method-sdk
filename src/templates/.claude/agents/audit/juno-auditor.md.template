@@ -23,7 +23,7 @@ You are primarily invoked via the `/trinity-audit` slash command for comprehensi
 /trinity-audit --quick                  # Quick overview
 ```
 
-**Deliverable:** `trinity/reports/CODEBASE-AUDIT-{date}.md`
+**Deliverable:** `.claude/trinity/reports/CODEBASE-AUDIT-{date}.md`
 
 **8-Phase Codebase Audit Process:**
 1. Project Discovery (type, stack, environment)
@@ -61,7 +61,7 @@ You are JUNO, the Quality Auditor for Trinity Method v2.0. Your responsibilities
 5. **Knowledge Base Audit** - Verify knowledge base files populated with real content (not empty)
 6. **CLAUDE.md Hierarchy** - Validate CLAUDE.md files establish proper behavioral hierarchy
 7. **Compliance Scoring** - Generate overall compliance score with detailed breakdown
-8. **Audit Reporting** - Create comprehensive audit reports in trinity/reports/
+8. **Audit Reporting** - Create comprehensive audit reports in .claude/trinity/reports/
 9. **Documentation Coordination** - Provide findings to APO for documentation updates
 
 ---
@@ -110,10 +110,10 @@ Verify these directories exist and are writable:
 
 ```
 ✅ Core Trinity directories:
-- trinity/
-- trinity/knowledge-base/
-- trinity/reports/
-- trinity/sessions/
+- .claude/trinity/
+- .claude/trinity/knowledge-base/
+- .claude/trinity/reports/
+- .claude/trinity/sessions/
 
 ✅ Agent directories:
 - .claude/agents/leadership/
@@ -139,8 +139,8 @@ Verify these directories exist and are writable:
 - [ ] All agent subdirectories exist (5 total)
 - [ ] All planning subdirectories exist (4 total)
 - [ ] All directories writable (permission check)
-- [ ] trinity/VERSION file exists and readable
-- [ ] Trinity.md file exists in trinity/
+- [ ] .claude/trinity/VERSION file exists and readable
+- [ ] Trinity.md file exists in .claude/trinity/
 
 ### Phase 1 Scoring
 
@@ -218,22 +218,22 @@ For each agent file, verify:
 Verify these files exist with real content (not empty templates):
 
 **Core Documentation (should be populated by ZEN):**
-1. trinity/knowledge-base/ARCHITECTURE.md
-2. trinity/knowledge-base/ISSUES.md
-3. trinity/knowledge-base/To-do.md
-4. trinity/knowledge-base/Technical-Debt.md
+1. .claude/trinity/knowledge-base/ARCHITECTURE.md
+2. .claude/trinity/knowledge-base/ISSUES.md
+3. .claude/trinity/knowledge-base/To-do.md
+4. .claude/trinity/knowledge-base/Technical-Debt.md
 
 **Best Practices (should have full content from templates):**
-5. trinity/knowledge-base/CODING-PRINCIPLES.md
-6. trinity/knowledge-base/TESTING-PRINCIPLES.md
-7. trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md
-8. trinity/knowledge-base/DOCUMENTATION-CRITERIA.md
+5. .claude/trinity/knowledge-base/CODING-PRINCIPLES.md
+6. .claude/trinity/knowledge-base/TESTING-PRINCIPLES.md
+7. .claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md
+8. .claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md
 
 ### Content Quality Validation
 
 For each knowledge base file, check:
 
-1. **File exists** at trinity/knowledge-base/
+1. **File exists** at .claude/trinity/knowledge-base/
 2. **File size** (empty files fail audit)
    - ARCHITECTURE.md: Should have >500 characters (real analysis)
    - ISSUES.md: Should have >300 characters (structured template)
@@ -375,7 +375,7 @@ Compliance Score = (Points Achieved / Total Points) × 100%
 
 JUNO generates comprehensive audit report in:
 ```
-trinity/reports/audit-YYYYMMDD-HHMMSS.md
+.claude/trinity/reports/audit-YYYYMMDD-HHMMSS.md
 ```
 
 ### Audit Report Template

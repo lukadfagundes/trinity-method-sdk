@@ -163,15 +163,15 @@ displayDryRunPreview('2.0.0', '2.1.0');
    Would update:
    • 18 agent files in .claude/agents/
    • 16 slash commands in .claude/commands/
-   • 6 work order templates in trinity/templates/
+   • 6 work order templates in .claude/trinity/templates/
    • Knowledge base files (Trinity.md, CODING-PRINCIPLES.md, etc.)
    • Version file: 2.0.0 → 2.1.0
 
    Would preserve:
-   • trinity/knowledge-base/ARCHITECTURE.md
-   • trinity/knowledge-base/To-do.md
-   • trinity/knowledge-base/ISSUES.md
-   • trinity/knowledge-base/Technical-Debt.md
+   • .claude/trinity/knowledge-base/ARCHITECTURE.md
+   • .claude/trinity/knowledge-base/To-do.md
+   • .claude/trinity/knowledge-base/ISSUES.md
+   • .claude/trinity/knowledge-base/Technical-Debt.md
 
 💡 Run without --dry-run to perform update
 ```
@@ -293,7 +293,7 @@ Total Files Updated: 66
 ```typescript
 console.log(chalk.gray(`   • 18 agent files in .claude/agents/`));
 console.log(chalk.gray(`   • 16 slash commands in .claude/commands/`));
-console.log(chalk.gray(`   • 6 work order templates in trinity/templates/`));
+console.log(chalk.gray(`   • 6 work order templates in .claude/trinity/templates/`));
 ```
 
 **Note:** These are estimates and may differ from actual counts (current SDK has 19 agents, 25 commands, 17 templates).
@@ -306,10 +306,10 @@ console.log(chalk.gray(`   • 6 work order templates in trinity/templates/`));
 
 ```
 Would preserve:
-• trinity/knowledge-base/ARCHITECTURE.md
-• trinity/knowledge-base/To-do.md
-• trinity/knowledge-base/ISSUES.md
-• trinity/knowledge-base/Technical-Debt.md
+• .claude/trinity/knowledge-base/ARCHITECTURE.md
+• .claude/trinity/knowledge-base/To-do.md
+• .claude/trinity/knowledge-base/ISSUES.md
+• .claude/trinity/knowledge-base/Technical-Debt.md
 ```
 
 **Why Important?**

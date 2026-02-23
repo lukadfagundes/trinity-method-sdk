@@ -30,12 +30,12 @@ Every feature/fix in {{PROJECT_NAME}} requires investigation:
    - Security considerations
 
 3. **Pattern Discovery** (5 minutes)
-   - Check trinity/patterns/ for existing solutions
+   - Check .claude/trinity/patterns/ for existing solutions
    - Document new patterns if discovered
    - Update pattern library
 
 4. **Documentation** (5 minutes)
-   - Save to trinity/investigations/[date]-[feature].md
+   - Save to .claude/trinity/investigations/[date]-[feature].md
    - Update relevant knowledge base files
    - Link to issues if applicable
 
@@ -103,7 +103,7 @@ Debug_Levels:
 
 ### Pre-Implementation Checklist
 - [ ] Investigation completed
-- [ ] Existing patterns reviewed (trinity/patterns/)
+- [ ] Existing patterns reviewed (.claude/trinity/patterns/)
 - [ ] Performance impact assessed
 - [ ] Security implications considered
 - [ ] Test plan created
@@ -233,7 +233,7 @@ Session_End:
     - Update metrics
 
   3_Archive:
-    - Move to trinity/sessions/[date]/
+    - Move to .claude/trinity/sessions/[date]/
     - Create session summary
     - Update project metrics
     - Plan next session
@@ -245,7 +245,7 @@ Session_End:
 
 ### Pattern Discovery Process
 1. **Identify**: Recognize recurring solutions
-2. **Document**: Create pattern file in trinity/patterns/
+2. **Document**: Create pattern file in .claude/trinity/patterns/
 3. **Validate**: Test pattern effectiveness
 4. **Share**: Update pattern index
 5. **Reuse**: Apply in future implementations

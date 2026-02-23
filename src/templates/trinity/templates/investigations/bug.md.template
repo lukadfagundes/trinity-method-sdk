@@ -399,7 +399,7 @@ describe('Regression: {{title}}', () => {
 
 ### Investigation Report Format
 **Filename:** `INV-{{investigationId}}-findings-[TIMESTAMP].md`
-**Location:** `trinity/reports/`
+**Location:** `.claude/trinity/reports/`
 
 ### Required Sections
 1. **Investigation Summary** - Brief overview of what was investigated
@@ -422,22 +422,22 @@ describe('Regression: {{title}}', () => {
 
 When investigation is complete:
 1. **Create Investigation Report:**
-   - [ ] Save findings report to `trinity/reports/INV-{{investigationId}}-findings-[TIMESTAMP].md`
+   - [ ] Save findings report to `.claude/trinity/reports/INV-{{investigationId}}-findings-[TIMESTAMP].md`
    - [ ] Include all required sections listed above
    - [ ] Attach all evidence and supporting documentation
 
 2. **Move Investigation File:**
-   - [ ] Move this investigation file (INV-{{investigationId}}.md) to `trinity/sessions/`
-   - [ ] Keep report in `trinity/reports/` until end of session
+   - [ ] Move this investigation file (INV-{{investigationId}}.md) to `.claude/trinity/sessions/`
+   - [ ] Keep report in `.claude/trinity/reports/` until end of session
 
 3. **Session Cleanup:**
    - [ ] Run `/trinity-end` to archive both investigation and report
-   - [ ] Investigation will be archived to `trinity/archive/investigations/YYYY-MM-DD/`
-   - [ ] Report will be archived to `trinity/archive/reports/YYYY-MM-DD/`
+   - [ ] Investigation will be archived to `.claude/trinity/archive/investigations/YYYY-MM-DD/`
+   - [ ] Report will be archived to `.claude/trinity/archive/reports/YYYY-MM-DD/`
 
 4. **Clean Slate:**
-   - [ ] Verify `trinity/sessions/` is empty (ready for next session)
-   - [ ] Verify `trinity/reports/` is empty (ready for next session)
+   - [ ] Verify `.claude/trinity/sessions/` is empty (ready for next session)
+   - [ ] Verify `.claude/trinity/reports/` is empty (ready for next session)
 
 ---
 
@@ -445,15 +445,15 @@ When investigation is complete:
 
 **Trinity Method Core:**
 - [Trinity Method Protocols](../../CLAUDE.md) - Root Trinity guidance
-- [Investigation Requirements](../../trinity/CLAUDE.md#investigation-protocols) - Investigation-first methodology
+- [Investigation Requirements](../../.claude/trinity/CLAUDE.md#investigation-protocols) - Investigation-first methodology
 - [Agent Directory](../../.claude/EMPLOYEE-DIRECTORY.md) - 19-agent Trinity team
 
 **Knowledge Base:**
-- [Architecture](../../trinity/knowledge-base/ARCHITECTURE.md) - System architecture and patterns
-- [Known Issues](../../trinity/knowledge-base/ISSUES.md) - Issue patterns database
-- [Technical Debt](../../trinity/knowledge-base/Technical-Debt.md) - Debt tracking
-- [Testing Standards](../../trinity/knowledge-base/TESTING-PRINCIPLES.md) - Test requirements
-- [Coding Standards](../../trinity/knowledge-base/CODING-PRINCIPLES.md) - Code quality
+- [Architecture](../../.claude/trinity/knowledge-base/ARCHITECTURE.md) - System architecture and patterns
+- [Known Issues](../../.claude/trinity/knowledge-base/ISSUES.md) - Issue patterns database
+- [Technical Debt](../../.claude/trinity/knowledge-base/Technical-Debt.md) - Debt tracking
+- [Testing Standards](../../.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md) - Test requirements
+- [Coding Standards](../../.claude/trinity/knowledge-base/CODING-PRINCIPLES.md) - Code quality
 
 **Investigation Protocols:**
 - READ-ONLY: No file modifications during investigation

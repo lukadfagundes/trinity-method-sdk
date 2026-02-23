@@ -53,8 +53,7 @@ describe('Update Backup - Integration', () => {
   describe('createUpdateBackup', () => {
     test('should create backup directory with timestamp', async () => {
       // Setup minimal trinity structure
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
@@ -65,15 +64,14 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should backup all user-managed files', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       // Create user files
       const userFiles = {
-        'trinity/knowledge-base/ARCHITECTURE.md': 'Custom architecture',
-        'trinity/knowledge-base/To-do.md': 'Custom todos',
-        'trinity/knowledge-base/ISSUES.md': 'Custom issues',
-        'trinity/knowledge-base/Technical-Debt.md': 'Custom debt',
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md': 'Custom architecture',
+        '.claude/trinity/knowledge-base/To-do.md': 'Custom todos',
+        '.claude/trinity/knowledge-base/ISSUES.md': 'Custom issues',
+        '.claude/trinity/knowledge-base/Technical-Debt.md': 'Custom debt',
       };
 
       for (const [file, content] of Object.entries(userFiles)) {
@@ -90,24 +88,23 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should backup entire trinity directory', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('trinity/templates');
-      await fs.ensureDir('.claude');
-      await fs.writeFile('trinity/VERSION', '1.0.0');
-      await fs.writeFile('trinity/knowledge-base/test.md', 'test content');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
+      await fs.ensureDir('.claude/trinity/templates');
+      await fs.writeFile('.claude/trinity/VERSION', '1.0.0');
+      await fs.writeFile('.claude/trinity/knowledge-base/test.md', 'test content');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // Verify trinity directory was backed up completely
-      expect(await fs.pathExists(path.join(backupDir, 'trinity'))).toBe(true);
-      expect(await fs.pathExists(path.join(backupDir, 'trinity/VERSION'))).toBe(true);
-      expect(await fs.pathExists(path.join(backupDir, 'trinity/knowledge-base/test.md'))).toBe(
-        true
-      );
+      expect(await fs.pathExists(path.join(backupDir, '.claude/trinity'))).toBe(true);
+      expect(await fs.pathExists(path.join(backupDir, '.claude/trinity/VERSION'))).toBe(true);
+      expect(
+        await fs.pathExists(path.join(backupDir, '.claude/trinity/knowledge-base/test.md'))
+      ).toBe(true);
     });
 
     test('should backup entire .claude directory', async () => {
-      await fs.ensureDir('trinity');
+      await fs.ensureDir('.claude/trinity');
       await fs.ensureDir('.claude/agents');
       await fs.ensureDir('.claude/commands');
       await fs.writeFile('.claude/agents/test-agent.md', 'agent content');
@@ -120,8 +117,7 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should handle missing user files gracefully', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       // Don't create any user files
       const backupDir = await createUpdateBackup(mockSpinner);
@@ -132,11 +128,10 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should preserve file content exactly', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       const content = 'Very important user data\nLine 2\nLine 3';
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', content);
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', content);
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
@@ -147,15 +142,14 @@ describe('Update Backup - Integration', () => {
 
   describe('restoreUserContent', () => {
     test('should restore all user-managed files from backup', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       // Create and backup original content
       const originalContent = {
-        'trinity/knowledge-base/ARCHITECTURE.md': 'Original architecture',
-        'trinity/knowledge-base/To-do.md': 'Original todos',
-        'trinity/knowledge-base/ISSUES.md': 'Original issues',
-        'trinity/knowledge-base/Technical-Debt.md': 'Original debt',
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md': 'Original architecture',
+        '.claude/trinity/knowledge-base/To-do.md': 'Original todos',
+        '.claude/trinity/knowledge-base/ISSUES.md': 'Original issues',
+        '.claude/trinity/knowledge-base/Technical-Debt.md': 'Original debt',
       };
 
       for (const [file, content] of Object.entries(originalContent)) {
@@ -183,25 +177,23 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should overwrite existing files during restore', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Original');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Original');
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // Overwrite with new content
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Modified by update');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Modified by update');
 
       // Restore
       await restoreUserContent(backupDir, mockSpinner);
 
-      const content = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      const content = await fs.readFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
       expect(content).toBe('Original');
     });
 
     test('should handle missing backup files gracefully', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
@@ -213,58 +205,62 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should only restore user-managed files, not entire structure', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('trinity/templates');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
+      await fs.ensureDir('.claude/trinity/templates');
 
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'User content');
-      await fs.writeFile('trinity/templates/template.md', 'System template');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'User content');
+      await fs.writeFile('.claude/trinity/templates/template.md', 'System template');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // Modify system template
-      await fs.writeFile('trinity/templates/template.md', 'Updated system template');
+      await fs.writeFile('.claude/trinity/templates/template.md', 'Updated system template');
 
       // Restore user content
       await restoreUserContent(backupDir, mockSpinner);
 
       // System template should remain modified (not restored)
-      const systemContent = await fs.readFile('trinity/templates/template.md', 'utf8');
+      const systemContent = await fs.readFile('.claude/trinity/templates/template.md', 'utf8');
       expect(systemContent).toBe('Updated system template');
 
       // User content should be restored
-      const userContent = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      const userContent = await fs.readFile(
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+        'utf8'
+      );
       expect(userContent).toBe('User content');
     });
   });
 
   describe('rollbackFromBackup', () => {
     test('should restore entire trinity directory on rollback', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('trinity/templates');
-      await fs.ensureDir('.claude');
-      await fs.writeFile('trinity/VERSION', '1.0.0');
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Original');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
+      await fs.ensureDir('.claude/trinity/templates');
+      await fs.writeFile('.claude/trinity/VERSION', '1.0.0');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Original');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // Simulate failed update corrupting trinity
-      await fs.writeFile('trinity/VERSION', '2.1.0-corrupted');
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Corrupted');
+      await fs.writeFile('.claude/trinity/VERSION', '2.1.0-corrupted');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Corrupted');
 
       // Rollback
       await rollbackFromBackup(backupDir);
 
       // Verify original state restored
-      const version = await fs.readFile('trinity/VERSION', 'utf8');
-      const architecture = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      const version = await fs.readFile('.claude/trinity/VERSION', 'utf8');
+      const architecture = await fs.readFile(
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+        'utf8'
+      );
 
       expect(version).toBe('1.0.0');
       expect(architecture).toBe('Original');
     });
 
     test('should restore entire .claude directory on rollback', async () => {
-      await fs.ensureDir('trinity');
+      await fs.ensureDir('.claude/trinity');
       await fs.ensureDir('.claude/agents');
       await fs.ensureDir('.claude/commands');
       await fs.writeFile('.claude/agents/test.md', 'Original agent');
@@ -287,8 +283,7 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should cleanup backup directory after successful rollback', async () => {
-      await fs.ensureDir('trinity');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
@@ -306,8 +301,7 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should handle rollback errors gracefully', async () => {
-      await fs.ensureDir('trinity');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
@@ -324,29 +318,27 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should completely replace corrupted directories', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
-      await fs.writeFile('trinity/knowledge-base/good.md', 'Good file');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
+      await fs.writeFile('.claude/trinity/knowledge-base/good.md', 'Good file');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // Add corrupt file to trinity
-      await fs.writeFile('trinity/knowledge-base/corrupt.md', 'Corrupt');
+      await fs.writeFile('.claude/trinity/knowledge-base/corrupt.md', 'Corrupt');
 
       // Rollback
       await rollbackFromBackup(backupDir);
 
       // Corrupt file should be gone
-      expect(await fs.pathExists('trinity/knowledge-base/corrupt.md')).toBe(false);
+      expect(await fs.pathExists('.claude/trinity/knowledge-base/corrupt.md')).toBe(false);
       // Good file should remain
-      expect(await fs.pathExists('trinity/knowledge-base/good.md')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/knowledge-base/good.md')).toBe(true);
     });
   });
 
   describe('cleanupBackup', () => {
     test('should remove backup directory', async () => {
-      await fs.ensureDir('trinity');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
@@ -360,14 +352,13 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should remove all backup contents', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Content');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Content');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // Verify backup has content
-      expect(await fs.pathExists(path.join(backupDir, 'trinity'))).toBe(true);
+      expect(await fs.pathExists(path.join(backupDir, '.claude/trinity'))).toBe(true);
       expect(await fs.pathExists(path.join(backupDir, '.claude'))).toBe(true);
 
       await cleanupBackup(backupDir, mockSpinner);
@@ -386,22 +377,24 @@ describe('Update Backup - Integration', () => {
 
   describe('Backup workflow integration', () => {
     test('should support complete backup-restore-cleanup workflow', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       const originalContent = 'Original user data';
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', originalContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', originalContent);
 
       // 1. Backup
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // 2. Simulate update modifying file
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Updated content');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Updated content');
 
       // 3. Restore user content
       await restoreUserContent(backupDir, mockSpinner);
 
-      const restoredContent = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      const restoredContent = await fs.readFile(
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+        'utf8'
+      );
       expect(restoredContent).toBe(originalContent);
 
       // 4. Cleanup
@@ -411,57 +404,55 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should support backup-rollback workflow on failure', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
-      await fs.writeFile('trinity/VERSION', '1.0.0');
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Original');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
+      await fs.writeFile('.claude/trinity/VERSION', '1.0.0');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Original');
 
       // 1. Backup
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // 2. Simulate catastrophic update failure
-      await fs.remove('trinity');
-      await fs.ensureDir('trinity/broken');
-      await fs.writeFile('trinity/broken/corrupt.txt', 'broken');
+      await fs.remove('.claude');
+      await fs.ensureDir('.claude/trinity/broken');
+      await fs.writeFile('.claude/trinity/broken/corrupt.txt', 'broken');
 
       // 3. Rollback
       await rollbackFromBackup(backupDir);
 
       // Verify complete restoration
-      expect(await fs.pathExists('trinity/VERSION')).toBe(true);
-      expect(await fs.pathExists('trinity/knowledge-base/ARCHITECTURE.md')).toBe(true);
-      expect(await fs.pathExists('trinity/broken')).toBe(false);
+      expect(await fs.pathExists('.claude/trinity/VERSION')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/knowledge-base/ARCHITECTURE.md')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/broken')).toBe(false);
 
-      const version = await fs.readFile('trinity/VERSION', 'utf8');
+      const version = await fs.readFile('.claude/trinity/VERSION', 'utf8');
       expect(version).toBe('1.0.0');
     });
 
     test('should preserve user content across multiple operations', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       const userContent = 'Important user data that must never be lost';
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', userContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', userContent);
 
       // Backup
       const backupDir = await createUpdateBackup(mockSpinner);
 
       // Modify
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Modified 1');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Modified 1');
 
       // Restore
       await restoreUserContent(backupDir, mockSpinner);
 
-      let content = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      let content = await fs.readFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
       expect(content).toBe(userContent);
 
       // Modify again
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', 'Modified 2');
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'Modified 2');
 
       // Restore again
       await restoreUserContent(backupDir, mockSpinner);
 
-      content = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      content = await fs.readFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
       expect(content).toBe(userContent);
 
       // Cleanup
@@ -471,31 +462,31 @@ describe('Update Backup - Integration', () => {
 
   describe('Edge cases and error handling', () => {
     test('should handle empty trinity directory', async () => {
-      await fs.ensureDir('trinity');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
       expect(await fs.pathExists(backupDir)).toBe(true);
-      expect(await fs.pathExists(path.join(backupDir, 'trinity'))).toBe(true);
+      expect(await fs.pathExists(path.join(backupDir, '.claude/trinity'))).toBe(true);
     });
 
     test('should handle deeply nested directory structures', async () => {
-      await fs.ensureDir('trinity/a/b/c/d');
+      await fs.ensureDir('.claude/trinity/a/b/c/d');
       await fs.ensureDir('.claude/x/y/z');
-      await fs.writeFile('trinity/a/b/c/d/deep.txt', 'deep content');
+      await fs.writeFile('.claude/trinity/a/b/c/d/deep.txt', 'deep content');
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
-      expect(await fs.pathExists(path.join(backupDir, 'trinity/a/b/c/d/deep.txt'))).toBe(true);
+      expect(await fs.pathExists(path.join(backupDir, '.claude/trinity/a/b/c/d/deep.txt'))).toBe(
+        true
+      );
     });
 
     test('should handle large files', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       const largeContent = 'x'.repeat(1000000); // 1MB of data
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', largeContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', largeContent);
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
@@ -505,11 +496,10 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should handle special characters in file content', async () => {
-      await fs.ensureDir('trinity/knowledge-base');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity/knowledge-base');
 
       const specialContent = 'Content with émojis 🚀 and speçial çhars: <>&"\'\n\t';
-      await fs.writeFile('trinity/knowledge-base/ARCHITECTURE.md', specialContent);
+      await fs.writeFile('.claude/trinity/knowledge-base/ARCHITECTURE.md', specialContent);
 
       const backupDir = await createUpdateBackup(mockSpinner);
 
@@ -518,8 +508,7 @@ describe('Update Backup - Integration', () => {
     });
 
     test('should create unique backup directories with timestamps', async () => {
-      await fs.ensureDir('trinity');
-      await fs.ensureDir('.claude');
+      await fs.ensureDir('.claude/trinity');
 
       const backupDir1 = await createUpdateBackup(mockSpinner);
 

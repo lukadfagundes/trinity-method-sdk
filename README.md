@@ -131,7 +131,7 @@ Trinity deploys **88 production-ready components** in 90 seconds:
 
 **Methodology Infrastructure:**
 
-- `trinity/knowledge-base/` - 9 living documentation files
+- `.claude/trinity/knowledge-base/` - 9 living documentation files
   - ARCHITECTURE.md (codebase metrics, architecture documentation)
   - ISSUES.md (known issues and bug tracking)
   - To-do.md (task management and priorities)
@@ -141,16 +141,16 @@ Trinity deploys **88 production-ready components** in 90 seconds:
   - CODING-PRINCIPLES.md (code quality standards)
   - DOCUMENTATION-CRITERIA.md (documentation standards)
   - AI-DEVELOPMENT-GUIDE.md (AI-assisted development best practices)
-- `trinity/templates/` - Reusable templates
+- `.claude/trinity/templates/` - Reusable templates
   - `documentation/` - Documentation templates (2 README templates + 23 report templates)
   - `investigations/` - 5 investigation templates (bug, feature, performance, security, technical)
   - `work-orders/` - 6 work order templates
-- `trinity/investigations/` - Active investigations with execution plans
-- `trinity/sessions/` - Session archives
-- `trinity/reports/` - Audit and integration reports
-- `trinity/work-orders/` - Active work orders
-- `trinity/patterns/` - Reusable patterns library
-- `trinity/archive/` - Archived sessions, reports, and investigations
+- `.claude/trinity/investigations/` - Active investigations with execution plans
+- `.claude/trinity/sessions/` - Session archives
+- `.claude/trinity/reports/` - Audit and integration reports
+- `.claude/trinity/work-orders/` - Active work orders
+- `.claude/trinity/patterns/` - Reusable patterns library
+- `.claude/trinity/archive/` - Archived sessions, reports, and investigations
 
 **Agent System:**
 
@@ -173,7 +173,7 @@ Trinity deploys **88 production-ready components** in 90 seconds:
 **Context Hierarchy:**
 
 - Root `CLAUDE.md` - Global project context
-- `trinity/CLAUDE.md` - Trinity Method enforcement
+- `.claude/trinity/CLAUDE.md` - Trinity Method enforcement
 - `src/CLAUDE.md` - Technology-specific rules
 
 **Quality Automation:**
@@ -344,13 +344,13 @@ After deploying Trinity to your project, comprehensive documentation is availabl
 
 **Trinity Knowledge Base:**
 
-- `trinity/knowledge-base/ARCHITECTURE.md` - System architecture with codebase metrics
-- `trinity/knowledge-base/ISSUES.md` - Known issues and bug tracking
-- `trinity/knowledge-base/To-do.md` - Task management and priorities
-- `trinity/knowledge-base/Technical-Debt.md` - Technical debt tracking
-- `trinity/knowledge-base/Trinity.md` - Project-specific Trinity guide
-- `trinity/knowledge-base/TESTING-PRINCIPLES.md` - Testing standards
-- `trinity/knowledge-base/CODING-PRINCIPLES.md` - Code quality standards
+- `.claude/trinity/knowledge-base/ARCHITECTURE.md` - System architecture with codebase metrics
+- `.claude/trinity/knowledge-base/ISSUES.md` - Known issues and bug tracking
+- `.claude/trinity/knowledge-base/To-do.md` - Task management and priorities
+- `.claude/trinity/knowledge-base/Technical-Debt.md` - Technical debt tracking
+- `.claude/trinity/knowledge-base/Trinity.md` - Project-specific Trinity guide
+- `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md` - Testing standards
+- `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md` - Code quality standards
 
 **Agent System:**
 
@@ -370,11 +370,11 @@ Your project contains:
 - **88 production-ready components** deployed in 90 seconds
 - **19 specialized agents** in `.claude/agents/` (7 execution + 1 audit + 4 infrastructure + 3 leadership + 4 planning)
 - **20 slash commands** in `.claude/commands/` (2 execution + 1 infrastructure + 3 investigation + 4 maintenance + 4 planning + 3 session + 3 utility)
-- **Complete knowledge base** in `trinity/knowledge-base/` (ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md)
-- **Investigation templates** in `trinity/templates/investigations/` (bug, feature, performance, security, technical)
-- **Work order templates** in `trinity/templates/work-orders/`
-- **Session archives** in `trinity/sessions/`
-- **Audit reports** in `trinity/reports/`
+- **Complete knowledge base** in `.claude/trinity/knowledge-base/` (ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md)
+- **Investigation templates** in `.claude/trinity/templates/investigations/` (bug, feature, performance, security, technical)
+- **Work order templates** in `.claude/trinity/templates/work-orders/`
+- **Session archives** in `.claude/trinity/sessions/`
+- **Audit reports** in `.claude/trinity/reports/`
 - **Linting tools** configured for your framework
 
 **Complete Deployed Structure:**
@@ -396,20 +396,20 @@ your-project/
 │   │   ├── planning/             # trinity-requirements, trinity-design, trinity-decompose, trinity-plan
 │   │   ├── session/              # trinity-start, trinity-continue, trinity-end
 │   │   └── utility/              # trinity-verify, trinity-agents, trinity-workorder
+│   ├── trinity/
+│   │   ├── knowledge-base/       # ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md, Trinity.md
+│   │   ├── templates/
+│   │   │   ├── documentation/    # 2 README templates + 23 report templates
+│   │   │   ├── investigations/   # 5 investigation templates (bug, feature, performance, security, technical)
+│   │   │   └── work-orders/      # 6 work order templates
+│   │   ├── investigations/       # Active investigations
+│   │   │   └── plans/            # Investigation execution plans
+│   │   ├── sessions/             # Session archives
+│   │   ├── reports/              # Audit and integration reports
+│   │   ├── work-orders/          # Active work orders
+│   │   ├── patterns/             # Reusable patterns library
+│   │   └── archive/              # Archived sessions, reports, investigations
 │   └── EMPLOYEE-DIRECTORY.md     # 19-agent team guide
-├── trinity/
-│   ├── knowledge-base/           # ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md, Trinity.md
-│   ├── templates/
-│   │   ├── documentation/        # 2 README templates + 23 report templates
-│   │   ├── investigations/       # 5 investigation templates (bug, feature, performance, security, technical)
-│   │   └── work-orders/          # 6 work order templates
-│   ├── investigations/           # Active investigations
-│   │   └── plans/                # Investigation execution plans
-│   ├── sessions/                 # Session archives
-│   ├── reports/                  # Audit and integration reports
-│   ├── work-orders/              # Active work orders
-│   ├── patterns/                 # Reusable patterns library
-│   └── archive/                  # Archived sessions, reports, investigations
 ├── CLAUDE.md                     # Root context file
 └── src/CLAUDE.md                 # Framework-specific context
 ```

@@ -37,7 +37,7 @@ Validates project state before update execution.
 
 #### Check 1: Trinity Directory Exists
 
-**Path Checked:** `trinity/`
+**Path Checked:** `.claude/trinity/`
 
 **Validation:**
 
@@ -189,7 +189,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 **State:**
 
-- No `trinity/` directory
+- No `.claude/trinity/` directory
 - No `.claude/` directory
 
 **Pre-flight Result:**
@@ -209,7 +209,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 **State:**
 
-- `trinity/` directory exists
+- `.claude/trinity/` directory exists
 - `.claude/` directory missing
 
 **Pre-flight Result:**
@@ -231,7 +231,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 **State:**
 
-- `trinity/` directory exists
+- `.claude/trinity/` directory exists
 - `.claude/` directory exists
 
 **Pre-flight Result:**
@@ -249,7 +249,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 **State:**
 
-- No `trinity/` directory
+- No `.claude/trinity/` directory
 - `.claude/` directory exists (from other project)
 
 **Pre-flight Result:**
@@ -272,7 +272,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 ### Trinity Directory Structure Expected
 
 ```
-trinity/
+.claude/trinity/
 ├── agents/
 ├── commands/
 ├── knowledge-base/
@@ -283,7 +283,7 @@ trinity/
 └── VERSION
 ```
 
-**Pre-flight Check:** Only verifies `trinity/` directory exists, not contents
+**Pre-flight Check:** Only verifies `.claude/trinity/` directory exists, not contents
 
 **Rationale:** Contents validated during update verification (post-update)
 
@@ -402,7 +402,7 @@ describe('update pre-flight integration', () => {
   it('should allow update with complete deployment', async () => {
     await fs.ensureDir('trinity');
     await fs.ensureDir('.claude');
-    await fs.writeFile('trinity/VERSION', '2.0.0');
+    await fs.writeFile('.claude/trinity/VERSION', '2.0.0');
 
     await expect(update({})).resolves.toBeUndefined();
   });
@@ -431,7 +431,7 @@ describe('update pre-flight integration', () => {
    - Empty directories pass pre-flight checks
 
 2. **No VERSION File Check:**
-   - Doesn't verify `trinity/VERSION` exists
+   - Doesn't verify `.claude/trinity/VERSION` exists
    - VERSION check performed in version detection step
 
 3. **No Permission Check:**
@@ -488,7 +488,7 @@ describe('update pre-flight integration', () => {
 ```
 runUpdatePreflightChecks(spinner)
     ↓
-[Check 1] trinity/ directory exists?
+[Check 1] .claude/trinity/ directory exists?
     ├→ No → Fail
     │       ├→ Display: "Trinity Method not deployed"
     │       ├→ Display: "Use: trinity deploy to install"

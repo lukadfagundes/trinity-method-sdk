@@ -125,10 +125,10 @@ Transform technical designs into executable implementation plans with optimal ta
 ## TRINITY V2.0 BEST PRACTICES
 
 ### Reference Documents
-- **Coding Standards:** [trinity/knowledge-base/CODING-PRINCIPLES.md](trinity/knowledge-base/CODING-PRINCIPLES.md)
-- **Testing Standards:** [trinity/knowledge-base/TESTING-PRINCIPLES.md](trinity/knowledge-base/TESTING-PRINCIPLES.md)
-- **AI Development Guide:** [trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md](trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md)
-- **Documentation Standards:** [trinity/knowledge-base/DOCUMENTATION-CRITERIA.md](trinity/knowledge-base/DOCUMENTATION-CRITERIA.md)
+- **Coding Standards:** [.claude/trinity/knowledge-base/CODING-PRINCIPLES.md](.claude/trinity/knowledge-base/CODING-PRINCIPLES.md)
+- **Testing Standards:** [.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md](.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md)
+- **AI Development Guide:** [.claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md](.claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md)
+- **Documentation Standards:** [.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md](.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md)
 
 ### Planning Principles
 

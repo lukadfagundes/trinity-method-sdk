@@ -225,8 +225,8 @@ Pattern_Prevention_Rate: {{PERCENTAGE}}%
    - Dependencies: {{DEPENDENCIES}}
 
 ### Completed Investigations (This Session)
-- [x] {{COMPLETED_1}} - See: trinity/investigations/{{DATE}}-{{INVESTIGATION}}.md
-- [x] {{COMPLETED_2}} - See: trinity/investigations/{{DATE}}-{{INVESTIGATION}}.md
+- [x] {{COMPLETED_1}} - See: .claude/trinity/investigations/{{DATE}}-{{INVESTIGATION}}.md
+- [x] {{COMPLETED_2}} - See: .claude/trinity/investigations/{{DATE}}-{{INVESTIGATION}}.md
 
 ---
 
@@ -285,7 +285,7 @@ Solution:
 
 Prevention:
   Pattern_Created: {{YES/NO}}
-  Pattern_Location: trinity/patterns/{{PATTERN_FILE}}
+  Pattern_Location: .claude/trinity/patterns/{{PATTERN_FILE}}
   Guidelines_Updated: {{YES/NO}}
 
 Metrics:
@@ -346,7 +346,7 @@ Metrics:
 - **ARCHITECTURE.md**: System design and components
 - **Trinity.md**: Methodology implementation
 - **To-do.md**: Pending fixes and improvements
-- **Pattern Library**: trinity/patterns/
+- **Pattern Library**: .claude/trinity/patterns/
 
 ---
 
@@ -417,7 +417,7 @@ Updates_Required:
   - Active_Issues: Add new issue with P0/P1/P2/P3 priority
   - Issue_Template: Fill with symptoms, root cause, solution
   - Pattern_Check: Is this a recurring issue? Create pattern if yes
-  - Investigation_Link: Link to trinity/investigations/ file if investigation done
+  - Investigation_Link: Link to .claude/trinity/investigations/ file if investigation done
   - Cross_References:
     - To-do.md: Add fix task with priority
     - Technical-Debt.md: Add debt if issue reveals shortcuts
@@ -442,7 +442,7 @@ Updates_Required:
   - Pattern_Frequency: Update occurrence count
   - Related_Issues: Link all issue IDs that match this pattern
   - Prevention_Measures: Document how to prevent this pattern
-  - Pattern_Library: Create pattern file in trinity/patterns/
+  - Pattern_Library: Create pattern file in .claude/trinity/patterns/
   - Cross_References:
     - Technical-Debt.md: Link pattern to debt if applicable
     - CODING-PRINCIPLES.md: Add principle if pattern reveals standard gap
@@ -481,7 +481,7 @@ Updates_Required:
 4. **Link Investigation**: If investigation file exists, link it
 5. **Update Metrics**: Increment counts, update averages
 6. **Cross-Reference**: Update related documents (To-do, Technical-Debt, etc.)
-7. **Pattern Library**: Create trinity/patterns/ file if reusable solution
+7. **Pattern Library**: Create .claude/trinity/patterns/ file if reusable solution
 8. **Update Timestamp**: Set `**Last Updated**: {{CURRENT_DATE}}` to actual date
 
 **Quality Checklist:**
@@ -530,7 +530,7 @@ Updates_Required:
 **Update Frequency**: Real-time (as issues discovered) + session-based
 **Maintained By**: Development team using Trinity Method
 **Referenced By**: `/trinity-end` command for session updates
-**Pattern Library**: Creates trinity/patterns/ files
+**Pattern Library**: Creates .claude/trinity/patterns/ files
 **Last Updated**: {{CURRENT_DATE}}
 
 ---

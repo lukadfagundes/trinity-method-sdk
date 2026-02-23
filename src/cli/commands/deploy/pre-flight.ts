@@ -17,7 +17,7 @@ export async function checkPreFlight(options: DeployOptions, spinner: Spinner): 
   spinner.start('Running pre-flight checks...');
 
   // Check if Trinity is already deployed
-  const trinityExists = await fs.pathExists('trinity');
+  const trinityExists = await fs.pathExists('.claude/trinity');
 
   if (trinityExists && !options.force) {
     spinner.fail();

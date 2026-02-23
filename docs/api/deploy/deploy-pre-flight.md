@@ -50,7 +50,7 @@ Validates environment and deployment state before proceeding.
 const trinityExists = await fs.pathExists('trinity');
 ```
 
-**Checks for:** Existence of `trinity/` directory in current working directory
+**Checks for:** Existence of `.claude/trinity/` directory in current working directory
 
 ---
 
@@ -69,7 +69,7 @@ const trinityExists = await fs.pathExists('trinity');
 
 ### Scenario 1: Trinity Already Deployed (No --force)
 
-**Condition:** `trinity/` directory exists, `--force` flag not provided
+**Condition:** `.claude/trinity/` directory exists, `--force` flag not provided
 
 **Output:**
 
@@ -90,7 +90,7 @@ Use --force flag to redeploy (this will overwrite existing files):
 
 ### Scenario 2: Force Redeployment
 
-**Condition:** `trinity/` directory exists, `--force` flag provided
+**Condition:** `.claude/trinity/` directory exists, `--force` flag provided
 
 **Output:**
 
@@ -103,15 +103,15 @@ Use --force flag to redeploy (this will overwrite existing files):
 
 **Note:** User-created content in the following directories is preserved:
 
-- `trinity/sessions/` (not overwritten)
-- `trinity/work-orders/WORKORDER-*.md` (user work orders preserved)
-- `trinity/investigations/*/` (user investigations preserved)
+- `.claude/trinity/sessions/` (not overwritten)
+- `.claude/trinity/work-orders/WORKORDER-*.md` (user work orders preserved)
+- `.claude/trinity/investigations/*/` (user investigations preserved)
 
 ---
 
 ### Scenario 3: Fresh Installation
 
-**Condition:** `trinity/` directory does not exist
+**Condition:** `.claude/trinity/` directory does not exist
 
 **Output:**
 
@@ -248,19 +248,19 @@ npx trinity deploy --yes --force
 - ✅ `.claude/commands/*.md` (20 slash command templates)
 - ✅ `.claude/settings.json` (Claude Code configuration)
 - ✅ `.claude/EMPLOYEE-DIRECTORY.md` (agent directory)
-- ✅ `trinity/knowledge-base/*.md` (8 knowledge base templates)
-- ✅ `trinity/templates/**/*` (all template files)
-- ✅ `trinity/CLAUDE.md` (Trinity context)
+- ✅ `.claude/trinity/knowledge-base/*.md` (8 knowledge base templates)
+- ✅ `.claude/trinity/templates/**/*` (all template files)
+- ✅ `.claude/trinity/CLAUDE.md` (Trinity context)
 - ✅ `CLAUDE.md` (root context)
 - ✅ `src/CLAUDE.md` (source context)
 - ✅ `VERSION` (Trinity version tracking)
 
 ### Files/Directories That Are Preserved:
 
-- ❌ `trinity/sessions/**/*` (user session data)
-- ❌ `trinity/work-orders/WORKORDER-*.md` (user work orders, except template)
-- ❌ `trinity/investigations/*/` (user investigations, except template)
-- ❌ `trinity/reports/**/*` (user-generated reports)
+- ❌ `.claude/trinity/sessions/**/*` (user session data)
+- ❌ `.claude/trinity/work-orders/WORKORDER-*.md` (user work orders, except template)
+- ❌ `.claude/trinity/investigations/*/` (user investigations, except template)
+- ❌ `.claude/trinity/reports/**/*` (user-generated reports)
 - ❌ Project files outside Trinity structure (package.json, src/, etc.)
 
 ---
@@ -294,7 +294,7 @@ const stack = await detectStack();
 
 ### File System Operations
 
-- **Read operations:** 1 (check if `trinity/` exists)
+- **Read operations:** 1 (check if `.claude/trinity/` exists)
 - **Write operations:** 0 (validation only)
 
 ---
@@ -326,15 +326,15 @@ try {
 
 ## Design Rationale
 
-### Why Check for trinity/ Directory?
+### Why Check for .claude/trinity/ Directory?
 
 **Options Considered:**
 
 1. ❌ Check for `VERSION` file - Can be deleted accidentally
 2. ❌ Check for `.claude/` directory - May exist from other tools
-3. ✅ Check for `trinity/` directory - Unique to Trinity Method SDK
+3. ✅ Check for `.claude/trinity/` directory - Unique to Trinity Method SDK
 
-**Chosen Approach:** Check for `trinity/` directory existence
+**Chosen Approach:** Check for `.claude/trinity/` directory existence
 
 - Most reliable indicator of Trinity deployment
 - Least likely to have false positives

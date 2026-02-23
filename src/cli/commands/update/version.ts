@@ -24,7 +24,7 @@ export async function detectInstalledSDKVersion(spinner: Ora): Promise<VersionIn
   spinner.start('Checking versions...');
 
   // Read current version from trinity/VERSION
-  const versionPath = 'trinity/VERSION';
+  const versionPath = '.claude/trinity/VERSION';
   let currentVersion = '0.0.0';
   if (await fs.pathExists(versionPath)) {
     currentVersion = (await fs.readFile(versionPath, 'utf8')).trim();

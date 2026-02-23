@@ -66,8 +66,8 @@ Validates that a user-provided path is safe and within the project directory.
 import { validatePath } from './utils/validate-path.js';
 
 // ✅ Valid - relative path within project
-const valid1 = validatePath('trinity/agents');
-// Returns: "/project/trinity/agents"
+const valid1 = validatePath('.claude/trinity/agents');
+// Returns: "/project/.claude/trinity/agents"
 
 const valid2 = validatePath('./src/utils');
 // Returns: "/project/src/utils"
@@ -175,7 +175,7 @@ if (stats.isSymbolicLink()) {
 import { validatePath, validateNotSymlink } from './utils/validate-path.js';
 
 // ✅ Valid - regular file
-const validPath = validatePath('trinity/agents/mon.md');
+const validPath = validatePath('.claude/trinity/agents/mon.md');
 await validateNotSymlink(validPath);
 // OK - no error
 
@@ -246,10 +246,10 @@ Safely copies files or directories with comprehensive security validation.
 import { safeCopy } from './utils/validate-path.js';
 
 // ✅ Safe copy - file
-await safeCopy('templates/agent.md', 'trinity/agents/new-agent.md');
+await safeCopy('templates/agent.md', '.claude/trinity/agents/new-agent.md');
 
 // ✅ Safe copy - directory
-await safeCopy('templates/agents/', 'trinity/agents/');
+await safeCopy('templates/agents/', '.claude/trinity/agents/');
 
 // ❌ Blocked - path traversal in destination
 try {
@@ -485,16 +485,19 @@ import { validatePath, validateNotSymlink, safeCopy } from '../utils/validate-pa
 
 async function updateKnowledgeBase() {
   // Validate knowledge base directory
-  const kbDir = validatePath('trinity/knowledge-base');
+  const kbDir = validatePath('.claude/trinity/knowledge-base');
   await validateNotSymlink(kbDir);
 
   // Safe backup
-  await safeCopy('trinity/knowledge-base', 'trinity/backups/knowledge-base-2026-01-21');
+  await safeCopy(
+    '.claude/trinity/knowledge-base',
+    '.claude/trinity/backups/knowledge-base-2026-01-21'
+  );
 
   // Update files
   await safeCopy(
     'templates/knowledge-base/ARCHITECTURE.md',
-    'trinity/knowledge-base/ARCHITECTURE.md'
+    '.claude/trinity/knowledge-base/ARCHITECTURE.md'
   );
 }
 ```
@@ -557,11 +560,11 @@ Resolved to: /home/user/project/nonexistent.txt
 ```typescript
 // Windows input
 validatePath('trinity\\agents\\mon.md');
-// Normalized to: "trinity/agents/mon.md"
+// Normalized to: ".claude/trinity/agents/mon.md"
 
 // Unix input
-validatePath('trinity/agents/mon.md');
-// Normalized to: "trinity/agents/mon.md"
+validatePath('.claude/trinity/agents/mon.md');
+// Normalized to: ".claude/trinity/agents/mon.md"
 ```
 
 **Implementation:** Uses `path.normalize()` which handles platform-specific separators.
@@ -618,7 +621,7 @@ validatePath('trinity/agents/mon.md');
 ```typescript
 describe('validatePath', () => {
   it('should allow relative paths', () => {
-    expect(() => validatePath('trinity/agents')).not.toThrow();
+    expect(() => validatePath('.claude/trinity/agents')).not.toThrow();
   });
 
   it('should reject path traversal', () => {
@@ -635,7 +638,7 @@ describe('validatePath', () => {
 
   it('should normalize path separators', () => {
     const result = validatePath('trinity\\agents');
-    expect(result).toContain('trinity/agents');
+    expect(result).toContain('.claude/trinity/agents');
   });
 });
 

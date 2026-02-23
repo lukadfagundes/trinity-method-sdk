@@ -217,14 +217,14 @@ Add or update these sections in ./CLAUDE.md:
 - **File Naming:** [Project-specific convention]
 - **Import Order:** [Project-specific order]
 - **Error Handling:** [Project-specific patterns]
-- **Documentation:** Reference trinity/knowledge-base/DOCUMENTATION-CRITERIA.md
+- **Documentation:** Reference .claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md
 
 ### Testing Standards
 
 - **Test Framework:** [Detected framework]
 - **Coverage Target:** ≥80% (enforced by BAS quality gates)
 - **Test Naming:** [Project-specific convention]
-- **Test Principles:** See trinity/knowledge-base/TESTING-PRINCIPLES.md
+- **Test Principles:** See .claude/trinity/knowledge-base/TESTING-PRINCIPLES.md
 
 ---
 
@@ -243,15 +243,15 @@ When working on this project, follow Trinity Method v2.0:
    - Code review by DRA before completion
 
 3. **Best Practices:**
-   - Coding: trinity/knowledge-base/CODING-PRINCIPLES.md
-   - Testing: trinity/knowledge-base/TESTING-PRINCIPLES.md
-   - AI Development: trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md
-   - Documentation: trinity/knowledge-base/DOCUMENTATION-CRITERIA.md
+   - Coding: .claude/trinity/knowledge-base/CODING-PRINCIPLES.md
+   - Testing: .claude/trinity/knowledge-base/TESTING-PRINCIPLES.md
+   - AI Development: .claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md
+   - Documentation: .claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md
 
 4. **Issue Tracking:**
-   - All issues tracked in trinity/knowledge-base/ISSUES.md
-   - Technical debt tracked in trinity/knowledge-base/Technical-Debt.md
-   - Tasks tracked in trinity/knowledge-base/To-do.md
+   - All issues tracked in .claude/trinity/knowledge-base/ISSUES.md
+   - Technical debt tracked in .claude/trinity/knowledge-base/Technical-Debt.md
+   - Tasks tracked in .claude/trinity/knowledge-base/To-do.md
 
 ---
 
@@ -293,7 +293,7 @@ The .claude/CLAUDE.md should already exist. INO verifies it contains:
 
 ### What is ISSUES.md?
 
-trinity/knowledge-base/ISSUES.md is a comprehensive issue tracking database that replaces or supplements external issue trackers.
+.claude/trinity/knowledge-base/ISSUES.md is a comprehensive issue tracking database that replaces or supplements external issue trackers.
 
 **Purpose:**
 - Track all project issues, bugs, and feature requests
@@ -303,7 +303,7 @@ trinity/knowledge-base/ISSUES.md is a comprehensive issue tracking database that
 
 ### ISSUES.md Template Structure
 
-INO must UPDATE trinity/knowledge-base/ISSUES.md with this structure:
+INO must UPDATE .claude/trinity/knowledge-base/ISSUES.md with this structure:
 
 ```markdown
 # Issues Database
@@ -457,7 +457,7 @@ Documentation gaps, outdated docs, documentation improvements.
 ---
 
 **Maintained by Trinity Method v2.0**
-**For issue tracking guidelines, see:** trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md
+**For issue tracking guidelines, see:** .claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md
 ```
 
 ---
@@ -543,7 +543,7 @@ TAN verifies structure, then hands off to INO:
   "knowledge_base_ready": true,
   "files_to_update": [
     "./CLAUDE.md",
-    "trinity/knowledge-base/ISSUES.md"
+    ".claude/trinity/knowledge-base/ISSUES.md"
   ]
 }
 ```
@@ -561,9 +561,9 @@ After INO completes context setup, hand off to ZEN:
   "issues_structure_created": true,
   "patterns_analyzed": true,
   "files_to_populate": [
-    "trinity/knowledge-base/ARCHITECTURE.md",
-    "trinity/knowledge-base/To-do.md",
-    "trinity/knowledge-base/Technical-Debt.md"
+    ".claude/trinity/knowledge-base/ARCHITECTURE.md",
+    ".claude/trinity/knowledge-base/To-do.md",
+    ".claude/trinity/knowledge-base/Technical-Debt.md"
   ]
 }
 ```
@@ -595,7 +595,7 @@ INO's work is complete when:
 2. ✅ CLAUDE.md file count and locations reported to user
 3. ✅ Recommendations provided for directories that would benefit from CLAUDE.md
 4. ✅ Root CLAUDE.md updated with project-specific rules and Trinity v2.0 integration
-5. ✅ trinity/knowledge-base/ISSUES.md structured with comprehensive template
+5. ✅ .claude/trinity/knowledge-base/ISSUES.md structured with comprehensive template
 6. ✅ Codebase patterns analyzed and documented
 7. ✅ Pattern analysis results added to CLAUDE.md
 8. ✅ Handoff to ZEN with context established
@@ -689,10 +689,10 @@ After completing context establishment, report:
 
 When updating CLAUDE.md, reference these Trinity v2.0 best practices:
 
-1. **Coding Principles:** trinity/knowledge-base/CODING-PRINCIPLES.md
-2. **Testing Principles:** trinity/knowledge-base/TESTING-PRINCIPLES.md
-3. **AI Development Guide:** trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md
-4. **Documentation Criteria:** trinity/knowledge-base/DOCUMENTATION-CRITERIA.md
+1. **Coding Principles:** .claude/trinity/knowledge-base/CODING-PRINCIPLES.md
+2. **Testing Principles:** .claude/trinity/knowledge-base/TESTING-PRINCIPLES.md
+3. **AI Development Guide:** .claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md
+4. **Documentation Criteria:** .claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md
 
 **Integration Method:**
 Add references in CLAUDE.md rather than duplicating content. This keeps CLAUDE.md concise and ensures single source of truth.

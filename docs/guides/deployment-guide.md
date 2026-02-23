@@ -45,8 +45,8 @@ trinity deploy
 
 - 19 agents → `.claude/agents/`
 - 20 slash commands → `.claude/commands/`
-- Knowledge base → `trinity/knowledge-base/`
-- Investigation templates → `trinity/templates/`
+- Knowledge base → `.claude/trinity/knowledge-base/`
+- Investigation templates → `.claude/trinity/templates/`
 - Linting configs → Root directory
 - CI/CD workflows → `.github/workflows/`, `.gitlab-ci.yml`, etc.
 
@@ -259,26 +259,26 @@ code .claude/commands/execution/trinity-orchestrate.md
 
 ```bash
 # Customize Trinity.md for your project
-code trinity/knowledge-base/Trinity.md
+code .claude/trinity/knowledge-base/Trinity.md
 
 # Add project-specific guidelines
 # Update ARCHITECTURE.md with your architecture
-code trinity/knowledge-base/ARCHITECTURE.md
+code .claude/trinity/knowledge-base/ARCHITECTURE.md
 ```
 
 **Safe to Customize:**
 
-- `trinity/knowledge-base/ARCHITECTURE.md` - Preserved on update
-- `trinity/knowledge-base/ISSUES.md` - Preserved on update
-- `trinity/knowledge-base/To-do.md` - Preserved on update
-- `trinity/knowledge-base/Technical-Debt.md` - Preserved on update
+- `.claude/trinity/knowledge-base/ARCHITECTURE.md` - Preserved on update
+- `.claude/trinity/knowledge-base/ISSUES.md` - Preserved on update
+- `.claude/trinity/knowledge-base/To-do.md` - Preserved on update
+- `.claude/trinity/knowledge-base/Technical-Debt.md` - Preserved on update
 
 **Not Safe (Overwritten on Update):**
 
 - `.claude/agents/*` - Agent prompts
 - `.claude/commands/*` - Slash commands
-- `trinity/knowledge-base/Trinity.md` - Base template
-- `trinity/knowledge-base/TESTING-PRINCIPLES.md` - Base template
+- `.claude/trinity/knowledge-base/Trinity.md` - Base template
+- `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md` - Base template
 
 ### Custom Template Variables
 
@@ -518,7 +518,7 @@ variables:
 trinity update
 
 # Option 2: Remove and redeploy
-rm -rf .claude/ trinity/
+rm -rf .claude/
 trinity deploy
 ```
 
@@ -628,8 +628,8 @@ trinity update
 
 **Update Process:**
 
-1. Version check (reads `trinity/VERSION`)
-2. Backup creation (`trinity/backups/backup-{timestamp}.tar.gz`)
+1. Version check (reads `.claude/trinity/VERSION`)
+2. Backup creation (`.claude/trinity/backups/backup-{timestamp}.tar.gz`)
 3. User content preservation (ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md)
 4. New template deployment
 5. User content restoration
@@ -643,7 +643,7 @@ trinity update
 # When prompted: "Remove backup?" → Select "No"
 ```
 
-**Backups Location:** `trinity/backups/`
+**Backups Location:** `.claude/trinity/backups/`
 
 **Backup Naming:** `backup-2025-12-28T12-30-00.tar.gz`
 
@@ -653,7 +653,7 @@ If update fails or introduces issues:
 
 ```bash
 # Navigate to backups
-cd trinity/backups/
+cd .claude/trinity/backups/
 
 # List available backups
 ls -lh
@@ -662,7 +662,7 @@ ls -lh
 tar -xzf backup-2025-12-28T12-30-00.tar.gz -C ../../
 
 # Verify rollback
-cat trinity/VERSION
+cat .claude/trinity/VERSION
 ```
 
 ### Selective Update
@@ -693,21 +693,21 @@ cp .claude.backup/agents/kil-task-executor.md .claude/agents/
 
 ### 1. Always Deploy to Clean Directory
 
-Deploy Trinity to projects without existing `.claude/` or `trinity/` directories for cleanest setup.
+Deploy Trinity to projects without existing `.claude/` or `.claude/trinity/` directories for cleanest setup.
 
 ### 2. Use Version Control
 
 Commit Trinity deployment to git for team collaboration:
 
 ```bash
-git add .claude/ trinity/ .eslintrc.js .github/workflows/
+git add .claude/ .eslintrc.js .github/workflows/
 git commit -m "Deploy Trinity Method v2.0.0"
 git push
 ```
 
 ### 3. Document Customizations
 
-If you customize Trinity components, document changes in `trinity/knowledge-base/ARCHITECTURE.md`.
+If you customize Trinity components, document changes in `.claude/trinity/knowledge-base/ARCHITECTURE.md`.
 
 ### 4. Keep Trinity Updated
 
@@ -808,7 +808,7 @@ jobs:
         run: |
           git config user.name "Trinity Bot"
           git config user.email "bot@trinity.dev"
-          git add .claude/ trinity/
+          git add .claude/
           git commit -m "chore: Deploy Trinity Method"
           git push
 ```

@@ -50,7 +50,7 @@ You are **ZEN**, Trinity Method v2.0 Knowledge Base Specialist for {{PROJECT_NAM
 
 ### Phase 1: Create ARCHITECTURE.md
 
-Location: `trinity/knowledge-base/ARCHITECTURE.md`
+Location: `.claude/trinity/knowledge-base/ARCHITECTURE.md`
 
 ```markdown
 # {{PROJECT_NAME}} - Architecture
@@ -89,7 +89,7 @@ Location: `trinity/knowledge-base/ARCHITECTURE.md`
 ```
 {{PROJECT_NAME}}/
 ├── {{SOURCE_DIR}}/              # Application source
-├── trinity/
+├── .claude/trinity/
 │   ├── knowledge-base/          # Documentation + Best Practices (v2.0)
 │   │   ├── ARCHITECTURE.md (this file)
 │   │   ├── ISSUES.md
@@ -149,7 +149,7 @@ See: `docs/plans/adrs/` for Architecture Decision Records created by ROR agent d
 
 ### Phase 2: Create Trinity.md
 
-Location: `trinity/knowledge-base/Trinity.md`
+Location: `.claude/trinity/knowledge-base/Trinity.md`
 
 ```markdown
 # {{PROJECT_NAME}} - Trinity Method v2.0
@@ -217,10 +217,10 @@ Trinity v2.0 adapts implementation approach based on scope:
 5. Update knowledge base documentation
 
 **Work Order System (Legacy):**
-- Investigation orders: trinity/work-orders/
-- Work order templates: trinity/templates/work-orders/
-- Investigation templates: trinity/templates/investigations/
-- Patterns: trinity/patterns/
+- Investigation orders: .claude/trinity/work-orders/
+- Work order templates: .claude/trinity/templates/work-orders/
+- Investigation templates: .claude/trinity/templates/investigations/
+- Patterns: .claude/trinity/patterns/
 - *Note: v2.0 uses scale-based workflows, work orders optional*
 
 ### Quality Standards (v2.0)
@@ -232,7 +232,7 @@ Trinity v2.0 adapts implementation approach based on scope:
 - Try-catch wraps all async operations
 - No code duplication (DRY principle)
 
-**See:** `trinity/knowledge-base/CODING-PRINCIPLES.md`
+**See:** `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md`
 
 **Testing Quality (enforced by BAS Phase 4-5):**
 - TDD cycle: RED-GREEN-REFACTOR mandatory
@@ -240,14 +240,14 @@ Trinity v2.0 adapts implementation approach based on scope:
 - Independent tests (no interdependencies)
 - Test names descriptive and clear
 
-**See:** `trinity/knowledge-base/TESTING-PRINCIPLES.md`
+**See:** `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md`
 
 **AI Development (scale workflows):**
 - Small scale: Direct implementation, 0 stops
 - Medium scale: Design + tasks, 2 stops
 - Large scale: Full planning (PRD + ADR + design + plan + tasks), 4 stops
 
-**See:** `trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md`
+**See:** `.claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md`
 
 **Documentation Quality:**
 - Architecture: Always current
@@ -256,13 +256,13 @@ Trinity v2.0 adapts implementation approach based on scope:
 - Issues: Catalogued with patterns
 - Scale-based requirements
 
-**See:** `trinity/knowledge-base/DOCUMENTATION-CRITERIA.md`
+**See:** `.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md`
 
 ## Trinity v2.0 Structure
 
 ```
 {{PROJECT_NAME}}/
-├── trinity/
+├── .claude/trinity/
 │   ├── knowledge-base/
 │   │   ├── ARCHITECTURE.md
 │   │   ├── Trinity.md (this file)
@@ -300,7 +300,7 @@ Trinity v2.0 adapts implementation approach based on scope:
 
 ### Phase 3: Create To-do.md
 
-Location: `trinity/knowledge-base/To-do.md`
+Location: `.claude/trinity/knowledge-base/To-do.md`
 
 ```markdown
 # {{PROJECT_NAME}} - Tasks
@@ -345,19 +345,19 @@ When adding new tasks, estimate scale:
 
 ## Technical Debt
 
-See: `trinity/knowledge-base/Technical-Debt.md` for comprehensive debt tracking with v2.0 compliance checks.
+See: `.claude/trinity/knowledge-base/Technical-Debt.md` for comprehensive debt tracking with v2.0 compliance checks.
 
 ## Best Practices Documents (v2.0)
 
 Reference these for all implementations:
-- `trinity/knowledge-base/CODING-PRINCIPLES.md` - Code quality standards
-- `trinity/knowledge-base/TESTING-PRINCIPLES.md` - TDD methodology
-- `trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md` - Scale workflows
-- `trinity/knowledge-base/DOCUMENTATION-CRITERIA.md` - Doc requirements
+- `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md` - Code quality standards
+- `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md` - TDD methodology
+- `.claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md` - Scale workflows
+- `.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md` - Doc requirements
 
 ## Session Archive
 
-Completed sessions archived to `trinity/sessions/[DATE]-[SESSION]/`
+Completed sessions archived to `.claude/trinity/sessions/[DATE]-[SESSION]/`
 ```
 
 ---
@@ -365,9 +365,9 @@ Completed sessions archived to `trinity/sessions/[DATE]-[SESSION]/`
 ## DELIVERABLES (v2.0)
 
 ### Required Outputs:
-1. ✅ trinity/knowledge-base/ARCHITECTURE.md (comprehensive, v2.0 structure reference)
-2. ✅ trinity/knowledge-base/Trinity.md (v2.0 adapted with scale workflows)
-3. ✅ trinity/knowledge-base/To-do.md (initialized with v2.0 tasks)
+1. ✅ .claude/trinity/knowledge-base/ARCHITECTURE.md (comprehensive, v2.0 structure reference)
+2. ✅ .claude/trinity/knowledge-base/Trinity.md (v2.0 adapted with scale workflows)
+3. ✅ .claude/trinity/knowledge-base/To-do.md (initialized with v2.0 tasks)
 
 ### Success Criteria:
 - ARCHITECTURE.md: >500 lines, complete system documentation, v2.0 structure included

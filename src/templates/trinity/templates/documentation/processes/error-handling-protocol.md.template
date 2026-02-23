@@ -107,7 +107,7 @@ Details: [ADDITIONAL_INFO]
 
 **Tier 1 (ABORT):**
 - Cannot read JUNO report from global state
-- Cannot read guide templates from trinity/templates/documentation/
+- Cannot read guide templates from .claude/trinity/templates/documentation/
 - Cannot write guide files (permission denied)
 
 **Tier 2 (WARN):**
@@ -149,7 +149,7 @@ if (juno_incomplete || data_missing) {
   LOG: `Reason: ${fallback_reason}`;
 
   // Use discovery templates directly
-  // See trinity/templates/discovery/ for patterns
+  // See .claude/trinity/templates/discovery/ for patterns
 
   // Mark fallback usage
   fallback_used = true;

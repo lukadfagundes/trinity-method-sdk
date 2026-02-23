@@ -53,11 +53,10 @@ settings.local.json
 # Trinity Method SDK
 node_modules/
 .claude/
-trinity/
 !src/templates/trinity/
 !src/templates/.claude/
 *CLAUDE.md
-TRINITY.md
+trinity/
 
 # Projects Area
 projects/

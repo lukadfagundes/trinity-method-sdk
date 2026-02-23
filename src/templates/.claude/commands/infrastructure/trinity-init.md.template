@@ -19,9 +19,9 @@
 **What You Get**:
 - 19 specialized agents in `.claude/agents/`
 - 20 slash commands in `.claude/commands/` (6 categories)
-- Knowledge base in `trinity/knowledge-base/`
-- Work order system in `trinity/work-orders/`
-- Documentation templates in `trinity/templates/documentation/`
+- Knowledge base in `.claude/trinity/knowledge-base/`
+- Work order system in `.claude/trinity/work-orders/`
+- Documentation templates in `.claude/trinity/templates/documentation/`
 
 **Next Steps**: Run `/session:trinity-start` to begin your first workflow
 
@@ -36,7 +36,7 @@ Trinity initialization populates the Trinity Method infrastructure with:
 
 **Context:** User has run `trinity deploy` and basic Trinity structure exists. Deployment team will now populate and verify all Trinity documents.
 
-**IMPORTANT:** All folders and basic files already exist from deployment. DO NOT attempt to create folders that already exist (trinity/, .claude/, etc.). Focus on POPULATING and VERIFYING content.
+**IMPORTANT:** All folders and basic files already exist from deployment. DO NOT attempt to create folders that already exist (.claude/trinity/, .claude/, etc.). Focus on POPULATING and VERIFYING content.
 
 ## Trinity Method Capabilities
 
@@ -268,7 +268,7 @@ Trinity creates additional CLAUDE.md files when it detects:
 
 ### Configuration Override
 
-You can manually specify CLAUDE.md locations in `trinity/config.json`:
+You can manually specify CLAUDE.md locations in `.claude/trinity/config.json`:
 
 ```json
 {
@@ -373,16 +373,16 @@ Suggestions:
 
 ### Phase 2: ZEN (Knowledge Base Specialist) - Populate Trinity documentation
 - Analyze existing codebase
-- POPULATE trinity/knowledge-base/ARCHITECTURE.md with detailed architecture analysis
-- POPULATE trinity/knowledge-base/ISSUES.md with discovered issues
-- POPULATE trinity/knowledge-base/To-do.md with identified tasks
-- POPULATE trinity/knowledge-base/Technical-Debt.md with technical debt assessment
+- POPULATE .claude/trinity/knowledge-base/ARCHITECTURE.md with detailed architecture analysis
+- POPULATE .claude/trinity/knowledge-base/ISSUES.md with discovered issues
+- POPULATE .claude/trinity/knowledge-base/To-do.md with identified tasks
+- POPULATE .claude/trinity/knowledge-base/Technical-Debt.md with technical debt assessment
 - Update existing Trinity.md if needed
 
 ### Phase 3: INO (Context Specialist) - Establish context hierarchy
 - Analyze codebase context and complexity
 - UPDATE existing CLAUDE.md files with project-specific instructions
-- POPULATE trinity/knowledge-base/ISSUES.md database structure
+- POPULATE .claude/trinity/knowledge-base/ISSUES.md database structure
 - Verify CLAUDE.md hierarchy is complete
 
 ### Phase 4: JUNO (Quality Auditor) - Perform comprehensive audit
@@ -390,7 +390,7 @@ Suggestions:
 - Verify all documentation files are populated (not empty)
 - Validate CLAUDE.md hierarchy completeness
 - Check that knowledge base documents have real content
-- Generate audit report in trinity/reports/
+- Generate audit report in .claude/trinity/reports/
 - Report findings to user with compliance score
 
 ### Phase 5: EIN (CI/CD Specialist) - Review CI/CD and Pre-commit Configuration

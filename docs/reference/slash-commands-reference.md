@@ -37,7 +37,7 @@ Trinity Method deploys 19 slash commands to `.claude/commands/` organized by cat
 
 1. Verifies Trinity deployment (agents, commands, knowledge base)
 2. Reviews project context (CLAUDE.md hierarchy)
-3. Checks for existing sessions in `trinity/sessions/`
+3. Checks for existing sessions in `.claude/trinity/sessions/`
 4. Initializes new session with timestamp
 5. Sets up session tracking
 6. Provides strategic guidance on next steps
@@ -99,7 +99,7 @@ How can I assist you today?
 
 **What It Does:**
 
-1. Scans `trinity/sessions/` for recent sessions
+1. Scans `.claude/trinity/sessions/` for recent sessions
 2. Reads session context and work products
 3. Reviews knowledge base updates (ARCHITECTURE.md, ISSUES.md, To-do.md)
 4. Restores work context
@@ -136,7 +136,7 @@ Progress Summary:
 Current State:
 - 12 atomic tasks defined
 - 8 remaining to decompose
-- Design Doc: trinity/knowledge-base/design-doc-feature-x.md
+- Design Doc: .claude/trinity/knowledge-base/design-doc-feature-x.md
 
 Next Steps:
 1. Complete task decomposition (EUS)
@@ -166,7 +166,7 @@ Ready to continue. What would you like to work on?
 
 1. Reviews session work products
 2. Summarizes accomplishments
-3. Archives session to `trinity/archive/session-{timestamp}/`
+3. Archives session to `.claude/trinity/archive/session-{timestamp}/`
 4. Updates knowledge base with final state
 5. Creates session report
 6. Provides recommendations for next session
@@ -203,11 +203,11 @@ Accomplishments:
 ✅ Documentation updated (APO)
 
 Work Products:
-- trinity/knowledge-base/requirements-feature-x.md
-- trinity/knowledge-base/design-doc-feature-x.md
-- trinity/knowledge-base/implementation-plan-feature-x.md
+- .claude/trinity/knowledge-base/requirements-feature-x.md
+- .claude/trinity/knowledge-base/design-doc-feature-x.md
+- .claude/trinity/knowledge-base/implementation-plan-feature-x.md
 
-📦 Session Archived: trinity/archive/session-2025-12-28T10-30-00/
+📦 Session Archived: .claude/trinity/archive/session-2025-12-28T10-30-00/
 
 Next Session Recommendations:
 1. Continue implementation (16 tasks remaining)
@@ -502,7 +502,7 @@ Performance Targets:
 - Token refresh: < 100ms
 - 2FA verification: < 200ms
 
-Design Doc saved: trinity/knowledge-base/design-doc-authentication.md
+Design Doc saved: .claude/trinity/knowledge-base/design-doc-authentication.md
 
 Next Step: Task decomposition with /trinity-decompose (EUS)
 ```
@@ -554,7 +554,7 @@ User: /trinity-decompose
 
 EUS: ⚙️ Task Decomposition
 
-Reviewing Design Doc: trinity/knowledge-base/design-doc-authentication.md
+Reviewing Design Doc: .claude/trinity/knowledge-base/design-doc-authentication.md
 
 Atomic Task Breakdown (25 tasks):
 
@@ -756,7 +756,7 @@ Task Dependencies:
 Recommended Implementation Order:
 Database (1-5) → Core Auth (6-13) → OAuth (14-17) → 2FA (18-21) → API (22-24) → Integration (25)
 
-Task breakdown saved: trinity/knowledge-base/task-breakdown-authentication.md
+Task breakdown saved: .claude/trinity/knowledge-base/task-breakdown-authentication.md
 
 Next Step: Implementation planning with /trinity-plan (TRA)
 ```
@@ -922,7 +922,7 @@ Risk Mitigation:
 - Security review before production
 - Load testing before launch
 
-Work Plan saved: trinity/knowledge-base/implementation-plan-authentication.md
+Work Plan saved: .claude/trinity/knowledge-base/implementation-plan-authentication.md
 
 Next Step: Begin execution with /trinity-orchestrate (AJ MAESTRO + KIL)
 
@@ -1094,10 +1094,10 @@ Summary:
 - Production-ready
 
 Work Products:
-- trinity/knowledge-base/requirements-authentication.md
-- trinity/knowledge-base/design-doc-authentication.md
-- trinity/knowledge-base/task-breakdown-authentication.md
-- trinity/knowledge-base/implementation-plan-authentication.md
+- .claude/trinity/knowledge-base/requirements-authentication.md
+- .claude/trinity/knowledge-base/design-doc-authentication.md
+- .claude/trinity/knowledge-base/task-breakdown-authentication.md
+- .claude/trinity/knowledge-base/implementation-plan-authentication.md
 
 Next Steps:
 1. Deploy to staging environment
@@ -1167,12 +1167,12 @@ Auditing Trinity deployment...
 │ ✓ .claude/commands/investigation/                 │
 │ ✓ .claude/commands/infrastructure/                │
 │ ✓ .claude/commands/utility/                       │
-│ ✓ trinity/                                         │
-│ ✓ trinity/knowledge-base/                         │
-│ ✓ trinity/templates/                              │
-│ ✓ trinity/sessions/                               │
-│ ✓ trinity/reports/                                │
-│ ✓ trinity/backups/                                │
+│ ✓ .claude/trinity/                                         │
+│ ✓ .claude/trinity/knowledge-base/                         │
+│ ✓ .claude/trinity/templates/                              │
+│ ✓ .claude/trinity/sessions/                               │
+│ ✓ .claude/trinity/reports/                                │
+│ ✓ .claude/trinity/backups/                                │
 │ ✅ 14/14 directories present                      │
 └──────────────────────────────────────────────────┘
 
@@ -1260,13 +1260,13 @@ Auditing Trinity deployment...
 │ ✓ .prettierrc (Code formatting)                   │
 │ ✓ .pre-commit-config.yaml (Git hooks)             │
 │ ✓ .github/workflows/nodejs.yml (CI/CD)            │
-│ ✓ trinity/VERSION (v2.0.9)                        │
+│ ✓ .claude/trinity/VERSION (v2.0.9)                        │
 │ ✅ All framework configs present                  │
 └──────────────────────────────────────────────────┘
 
 ┌─ CLAUDE.md Hierarchy ────────────────────────────┐
 │ ✓ CLAUDE.md (root)                                │
-│ ✓ trinity/CLAUDE.md                               │
+│ ✓ .claude/trinity/CLAUDE.md                               │
 │ ✓ src/CLAUDE.md                                   │
 │ ✅ Context hierarchy complete                     │
 └──────────────────────────────────────────────────┘
@@ -1408,7 +1408,7 @@ README.md is now comprehensive and production-ready.
 - Migrated scattered docs
 - Fixed links
 - Navigation README
-- Organization report in trinity/reports/
+- Organization report in .claude/trinity/reports/
 
 **Example:**
 
@@ -1444,7 +1444,7 @@ Phase 4: Link Validation & Navigation
   ✓ Updated category READMEs (4 files)
 
 Phase 5: Organization Report
-  ✓ Report generated: trinity/reports/DOCS-ORGANIZATION-2025-12-28.md
+  ✓ Report generated: .claude/trinity/reports/DOCS-ORGANIZATION-2025-12-28.md
 
 ✅ Documentation organization complete!
 
@@ -1611,7 +1611,7 @@ Investigation Type:
 [ ] System Analysis
 [ ] Security Audit
 
-✅ Investigation Created: trinity/investigations/INVESTIGATION-memory-leak-2025-12-28.md
+✅ Investigation Created: .claude/trinity/investigations/INVESTIGATION-memory-leak-2025-12-28.md
 
 Template Structure:
 - Problem Statement
@@ -1832,7 +1832,7 @@ Trinity Initialization Workflow
 
 ┌─ TAN: Structure Verification ────────────────────┐
 │ ✓ .claude/ structure valid │
-│ ✓ trinity/ structure valid │
+│ ✓ .claude/trinity/ structure valid │
 │ ✓ 14 directories present │
 │ ✅ Structure verification complete │
 └──────────────────────────────────────────────────┘
@@ -1849,7 +1849,7 @@ Trinity Initialization Workflow
 ┌─ INO: Context Management ────────────────────────┐
 │ Setting up CLAUDE.md hierarchy... │
 │ ✓ CLAUDE.md (root) created │
-│ ✓ trinity/CLAUDE.md linked │
+│ ✓ .claude/trinity/CLAUDE.md linked │
 │ ✓ src/CLAUDE.md linked │
 │ ✓ ISSUES.md database created │
 │ ✅ Context hierarchy established │
@@ -1928,12 +1928,12 @@ Directory Structure:
 ✓ .claude/
 ✓ .claude/agents/ (19 files)
 ✓ .claude/commands/ (19 files)
-✓ trinity/
-✓ trinity/knowledge-base/ (9 files)
-✓ trinity/templates/
-✓ trinity/sessions/
-✓ trinity/reports/
-✓ trinity/backups/
+✓ .claude/trinity/
+✓ .claude/trinity/knowledge-base/ (9 files)
+✓ .claude/trinity/templates/
+✓ .claude/trinity/sessions/
+✓ .claude/trinity/reports/
+✓ .claude/trinity/backups/
 
 ✅ Structure: VALID
 ✅ Components: 64/64
@@ -2033,7 +2033,7 @@ For quick reference: See docs/reference/agents-quick-reference.md
 1. Launches work order wizard
 2. Prompts for work order details
 3. Creates structured work order document
-4. Saves to trinity/templates/work-orders/
+4. Saves to .claude/trinity/templates/work-orders/
 
 **Usage:**
 ```
@@ -2083,7 +2083,7 @@ Acceptance Criteria:
 - [ ] Smooth transition between themes
 - [ ] All UI components support both themes
 
-✅ Work Order Created: trinity/templates/work-orders/WO-dark-mode-2025-12-28.md
+✅ Work Order Created: .claude/trinity/templates/work-orders/WO-dark-mode-2025-12-28.md
 
 Next Steps:
 

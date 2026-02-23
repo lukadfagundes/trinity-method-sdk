@@ -45,14 +45,14 @@ describe('Deploy Command - Integration Tests', () => {
   describe('Pre-flight Checks', () => {
     it('should fail if Trinity already exists without --force', async () => {
       // Create existing trinity directory
-      await fs.ensureDir('trinity');
+      await fs.ensureDir('.claude/trinity');
 
       await expect(deploy({ yes: true, force: false })).rejects.toThrow('Trinity already deployed');
     });
 
     it('should proceed with --force flag even if Trinity exists', async () => {
       // Create existing trinity directory
-      await fs.ensureDir('trinity');
+      await fs.ensureDir('.claude/trinity');
 
       // Should not throw with force flag
       await expect(
@@ -66,21 +66,21 @@ describe('Deploy Command - Integration Tests', () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       const trinityDirs = [
-        'trinity/knowledge-base',
-        'trinity/sessions',
-        'trinity/investigations',
-        'trinity/patterns',
-        'trinity/work-orders',
-        'trinity/templates',
-        'trinity/templates/work-orders',
-        'trinity/templates/investigations',
-        'trinity/templates/documentation',
-        'trinity/reports',
-        'trinity/investigations/plans',
-        'trinity/archive/work-orders',
-        'trinity/archive/investigations',
-        'trinity/archive/reports',
-        'trinity/archive/sessions',
+        '.claude/trinity/knowledge-base',
+        '.claude/trinity/sessions',
+        '.claude/trinity/investigations',
+        '.claude/trinity/patterns',
+        '.claude/trinity/work-orders',
+        '.claude/trinity/templates',
+        '.claude/trinity/templates/work-orders',
+        '.claude/trinity/templates/investigations',
+        '.claude/trinity/templates/documentation',
+        '.claude/trinity/reports',
+        '.claude/trinity/investigations/plans',
+        '.claude/trinity/archive/work-orders',
+        '.claude/trinity/archive/investigations',
+        '.claude/trinity/archive/reports',
+        '.claude/trinity/archive/sessions',
       ];
 
       for (const dir of trinityDirs) {
@@ -245,14 +245,17 @@ describe('Deploy Command - Integration Tests', () => {
       ];
 
       for (const file of kbFiles) {
-        expect(await fs.pathExists(`trinity/knowledge-base/${file}`)).toBe(true);
+        expect(await fs.pathExists(`.claude/trinity/knowledge-base/${file}`)).toBe(true);
       }
     });
 
     it('should process knowledge base templates with variable substitution', async () => {
       await deploy({ yes: true, name: 'my-awesome-project', skipAudit: true });
 
-      const archContent = await fs.readFile('trinity/knowledge-base/ARCHITECTURE.md', 'utf8');
+      const archContent = await fs.readFile(
+        '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+        'utf8'
+      );
 
       // Should contain the project name
       expect(archContent).toContain('my-awesome-project');
@@ -273,7 +276,7 @@ describe('Deploy Command - Integration Tests', () => {
       ];
 
       for (const template of workOrderTemplates) {
-        expect(await fs.pathExists(`trinity/templates/work-orders/${template}`)).toBe(true);
+        expect(await fs.pathExists(`.claude/trinity/templates/work-orders/${template}`)).toBe(true);
       }
     });
 
@@ -289,7 +292,9 @@ describe('Deploy Command - Integration Tests', () => {
       ];
 
       for (const template of investigationTemplates) {
-        expect(await fs.pathExists(`trinity/templates/investigations/${template}`)).toBe(true);
+        expect(await fs.pathExists(`.claude/trinity/templates/investigations/${template}`)).toBe(
+          true
+        );
       }
     });
 
@@ -297,30 +302,38 @@ describe('Deploy Command - Integration Tests', () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // README templates
-      expect(await fs.pathExists('trinity/templates/documentation/ROOT-README.md')).toBe(true);
-      expect(await fs.pathExists('trinity/templates/documentation/SUBDIRECTORY-README.md')).toBe(
+      expect(await fs.pathExists('.claude/trinity/templates/documentation/ROOT-README.md')).toBe(
         true
       );
+      expect(
+        await fs.pathExists('.claude/trinity/templates/documentation/SUBDIRECTORY-README.md')
+      ).toBe(true);
 
       // Report templates (for trinity-docs and trinity-docs-update commands)
       expect(
-        await fs.pathExists('trinity/templates/documentation/reports/juno-internal-report.md')
+        await fs.pathExists(
+          '.claude/trinity/templates/documentation/reports/juno-internal-report.md'
+        )
       ).toBe(true);
       expect(
-        await fs.pathExists('trinity/templates/documentation/reports/juno-final-report.md')
+        await fs.pathExists('.claude/trinity/templates/documentation/reports/juno-final-report.md')
       ).toBe(true);
       expect(
-        await fs.pathExists('trinity/templates/documentation/reports/juno-docs-update-checklist.md')
+        await fs.pathExists(
+          '.claude/trinity/templates/documentation/reports/juno-docs-update-checklist.md'
+        )
       ).toBe(true);
       expect(
-        await fs.pathExists('trinity/templates/documentation/reports/apo-docs-update-checklist.md')
+        await fs.pathExists(
+          '.claude/trinity/templates/documentation/reports/apo-docs-update-checklist.md'
+        )
       ).toBe(true);
     });
 
     it('should not include .template extension in deployed templates', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
-      const woFiles = await fs.readdir('trinity/templates/work-orders');
+      const woFiles = await fs.readdir('.claude/trinity/templates/work-orders');
       for (const file of woFiles) {
         expect(file).not.toContain('.template');
       }
@@ -331,15 +344,9 @@ describe('Deploy Command - Integration Tests', () => {
     it('should create VERSION file with correct version', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
-      expect(await fs.pathExists('trinity/VERSION')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/VERSION')).toBe(true);
       const version = await readVersion(testDir);
       expect(version).toMatch(/^\d+\.\d+\.\d+$/); // Semver format
-    });
-
-    it('should create root TRINITY.md file', async () => {
-      await deploy({ yes: true, name: 'test-project', skipAudit: true });
-
-      expect(await fs.pathExists('TRINITY.md')).toBe(true);
     });
 
     it('should create root CLAUDE.md file', async () => {
@@ -351,7 +358,7 @@ describe('Deploy Command - Integration Tests', () => {
     it('should create trinity/CLAUDE.md file', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
-      expect(await fs.pathExists('trinity/CLAUDE.md')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity/CLAUDE.md')).toBe(true);
     });
   });
 
@@ -368,14 +375,14 @@ describe('Deploy Command - Integration Tests', () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // Should successfully deploy (framework detection works)
-      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity')).toBe(true);
     });
 
     it('should handle projects without package.json', async () => {
       // No package.json - should still deploy
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
-      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity')).toBe(true);
     });
   });
 
@@ -391,7 +398,6 @@ describe('Deploy Command - Integration Tests', () => {
 
       const gitignoreContent = await fs.readFile('.gitignore', 'utf8');
       expect(gitignoreContent).toContain('# Trinity Method SDK');
-      expect(gitignoreContent).toContain('trinity/');
     });
 
     it('should not duplicate Trinity exclusions if already present', async () => {
@@ -419,7 +425,7 @@ describe('Deploy Command - Integration Tests', () => {
       // This should complete quickly without scanning codebase
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
-      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity')).toBe(true);
     });
 
     it('should collect codebase metrics without --skipAudit', async () => {
@@ -430,7 +436,7 @@ describe('Deploy Command - Integration Tests', () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: false });
 
       // Should complete successfully with metrics
-      expect(await fs.pathExists('trinity')).toBe(true);
+      expect(await fs.pathExists('.claude/trinity')).toBe(true);
     });
   });
 
@@ -452,14 +458,13 @@ describe('Deploy Command - Integration Tests', () => {
       // - 6 work order templates
       // - 5 investigation templates
       // - 8 documentation templates (2 README + 6 reports for trinity-docs-update)
-      // - 3 root files (TRINITY.md, CLAUDE.md, trinity/VERSION)
-      // - 1 trinity/CLAUDE.md
+      // - 2 root files (CLAUDE.md, .claude/trinity/VERSION)
+      // - 1 .claude/trinity/CLAUDE.md
       // - 1 EMPLOYEE-DIRECTORY.md
-      // = 73 minimum files
+      // = 72 minimum files
 
-      const trinityFileCount = await countFiles('trinity');
       const claudeFileCount = await countFiles('.claude');
-      const totalFiles = trinityFileCount + claudeFileCount + 2; // +2 for root files
+      const totalFiles = claudeFileCount + 1; // +1 for root CLAUDE.md
 
       expect(totalFiles).toBeGreaterThanOrEqual(60); // Allow some flexibility
     });

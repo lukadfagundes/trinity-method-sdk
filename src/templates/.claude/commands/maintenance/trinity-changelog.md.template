@@ -8,7 +8,7 @@
 
 **Use Case:** Ensure CHANGELOG.md exists, follows Keep-a-Changelog format, and documents project changes.
 
-**Deliverable:** CHANGELOG audit report in `trinity/reports/CHANGELOG-AUDIT-{date}.md`
+**Deliverable:** CHANGELOG audit report in `.claude/trinity/reports/CHANGELOG-AUDIT-{date}.md`
 
 ---
 
@@ -431,7 +431,7 @@ if (missing_categories.length > 0) {
 
 ### Phase 3: CHANGELOG Audit Report
 
-**APO Generates:** `trinity/reports/CHANGELOG-AUDIT-{date}.md`
+**APO Generates:** `.claude/trinity/reports/CHANGELOG-AUDIT-{date}.md`
 
 **Required Report Structure:**
 
@@ -557,7 +557,7 @@ if (missing_categories.length > 0) {
 ---
 
 **Report Generated:** {timestamp}
-**Report Location:** trinity/reports/CHANGELOG-AUDIT-{date}.md
+**Report Location:** .claude/trinity/reports/CHANGELOG-AUDIT-{date}.md
 ```
 
 ---
@@ -583,7 +583,7 @@ if (missing_categories.length > 0) {
 
 **After `/trinity-changelog` completes, verify:**
 
-1. ✅ Check `trinity/reports/CHANGELOG-AUDIT-{date}.md`
+1. ✅ Check `.claude/trinity/reports/CHANGELOG-AUDIT-{date}.md`
 2. ✅ Verify CHANGELOG.md exists in root
 3. ✅ Check [Unreleased] section present
 4. ✅ Verify format score ≥ 60/100

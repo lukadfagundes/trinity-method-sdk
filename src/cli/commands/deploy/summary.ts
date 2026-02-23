@@ -129,8 +129,8 @@ function displayNextSteps(options: DeployOptions, stack: Stack): void {
   }
 
   // Standard next steps
-  console.log(chalk.white(`   ${step}. Review trinity/knowledge-base/ARCHITECTURE.md`));
-  console.log(chalk.white(`   ${step + 1}. Update trinity/knowledge-base/To-do.md`));
+  console.log(chalk.white(`   ${step}. Review .claude/trinity/knowledge-base/ARCHITECTURE.md`));
+  console.log(chalk.white(`   ${step + 1}. Update .claude/trinity/knowledge-base/To-do.md`));
   console.log(chalk.white(`   ${step + 2}. Open Claude Code and start your first Trinity session`));
   console.log(chalk.white(`   ${step + 3}. Agents will be automatically invoked as needed\n`));
 

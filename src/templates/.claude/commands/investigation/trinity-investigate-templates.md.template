@@ -450,11 +450,11 @@ Is it new functionality?
 
 ```bash
 # Copy template to investigations folder
-cp trinity/templates/investigations/[type].md \
-   trinity/investigations/INV-XXX-[title].md
+cp .claude/trinity/templates/investigations/[type].md \
+   .claude/trinity/investigations/INV-XXX-[title].md
 
 # Fill out investigation
-# Edit: trinity/investigations/INV-XXX-[title].md
+# Edit: .claude/trinity/investigations/INV-XXX-[title].md
 ```
 
 ### 2. Link to Design Doc
@@ -462,7 +462,7 @@ cp trinity/templates/investigations/[type].md \
 Every investigation should reference the Design Doc:
 
 ```markdown
-**Design Doc:** [Link to trinity/design-docs/[name].md]
+**Design Doc:** [Link to .claude/trinity/design-docs/[name].md]
 ```
 
 ### 3. Complete Investigation Thoroughly
@@ -483,10 +483,10 @@ Every investigation should reference the Design Doc:
 ```
 
 This command will:
-- Archive all completed investigations to `trinity/archive/investigations/`
-- Archive work orders to `trinity/archive/work-orders/`
-- Archive reports to `trinity/archive/reports/`
-- Archive session logs to `trinity/archive/sessions/`
+- Archive all completed investigations to `.claude/trinity/archive/investigations/`
+- Archive work orders to `.claude/trinity/archive/work-orders/`
+- Archive reports to `.claude/trinity/archive/reports/`
+- Archive session logs to `.claude/trinity/archive/sessions/`
 - Organize archives by date (YYYY-MM format)
 
 ## Integration with Workflow Orchestration
@@ -573,7 +573,7 @@ Templates work seamlessly with `/trinity-orchestrate`:
 
 After deployment, templates are located in:
 ```
-trinity/templates/investigations/
+.claude/trinity/templates/investigations/
 ├── bug.md
 ├── performance.md
 ├── security.md

@@ -49,7 +49,7 @@ export async function deployKnowledgeBase(
       const processed = processTemplate(content, variables);
 
       // Validate destination path for security
-      const destPath = validatePath(`trinity/knowledge-base/${template}`);
+      const destPath = validatePath(`.claude/trinity/knowledge-base/${template}`);
       await fs.writeFile(destPath, processed);
       filesDeployed++;
     }
@@ -61,7 +61,7 @@ export async function deployKnowledgeBase(
   try {
     spinner.start('Enriching knowledge base with project metrics...');
 
-    const archPath = 'trinity/knowledge-base/ARCHITECTURE.md';
+    const archPath = '.claude/trinity/knowledge-base/ARCHITECTURE.md';
     if (await fs.pathExists(archPath)) {
       let archContent = await fs.readFile(archPath, 'utf8');
 

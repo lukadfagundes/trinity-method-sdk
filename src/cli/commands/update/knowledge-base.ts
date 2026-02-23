@@ -35,7 +35,7 @@ export async function updateKnowledgeBase(spinner: Ora, stats: UpdateStats): Pro
     if (await fs.pathExists(sourcePath)) {
       // Remove .template extension for target
       const targetFile = templateFile.replace('.template', '');
-      const targetPath = path.join('trinity/knowledge-base', targetFile);
+      const targetPath = path.join('.claude/trinity/knowledge-base', targetFile);
       await fs.copy(sourcePath, targetPath, { overwrite: true });
       stats.knowledgeBaseUpdated++;
     }
