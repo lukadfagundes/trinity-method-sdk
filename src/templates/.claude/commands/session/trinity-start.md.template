@@ -65,7 +65,7 @@ For complex or long-running tasks, suggest creating a work order:
 /trinity-workorder
 ```
 
-This creates a structured investigation in `trinity/work-orders/` with:
+This creates a structured investigation in `.claude/trinity/work-orders/` with:
 - Problem statement
 - Requirements and acceptance criteria
 - Design decisions

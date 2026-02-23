@@ -43,13 +43,13 @@ Verifies update deployment success with comprehensive checks.
 
 ```typescript
 const VERIFICATION_CHECKS = [
-  { path: 'trinity/VERSION', desc: 'Version file' },
+  { path: '.claude/trinity/VERSION', desc: 'Version file' },
   { path: '.claude/agents/leadership', desc: 'Leadership agents' },
   { path: '.claude/agents/planning', desc: 'Planning agents' },
   { path: '.claude/agents/aj-team', desc: 'AJ team agents' },
   { path: '.claude/commands', desc: 'Slash commands' },
-  { path: 'trinity/templates', desc: 'Work order templates' },
-  { path: 'trinity/knowledge-base/Trinity.md', desc: 'Trinity knowledge base' },
+  { path: '.claude/trinity/templates', desc: 'Work order templates' },
+  { path: '.claude/trinity/knowledge-base/Trinity.md', desc: 'Trinity knowledge base' },
 ];
 ```
 
@@ -73,7 +73,7 @@ for (const check of VERIFICATION_CHECKS) {
 **Check Logic:**
 
 ```typescript
-const versionPath = 'trinity/VERSION';
+const versionPath = '.claude/trinity/VERSION';
 const updatedVersion = (await fs.readFile(versionPath, 'utf8')).trim();
 
 if (updatedVersion !== expectedVersion) {
@@ -137,13 +137,14 @@ Updates VERSION file with new version string.
 1. **Path Validation**
 
    ```typescript
-   const destPath = validatePath('trinity/VERSION');
+   const destPath = validatePath('.claude/trinity/VERSION');
    ```
 
    - Uses `validatePath()` for security
    - Prevents path traversal attacks
 
 2. **Write VERSION File**
+
    ```typescript
    await fs.writeFile(destPath, version);
    ```
@@ -157,7 +158,7 @@ Updates VERSION file with new version string.
 import { updateVersionFile } from './verification.js';
 
 await updateVersionFile(spinner, '2.1.0');
-// trinity/VERSION now contains "2.1.0"
+// .claude/trinity/VERSION now contains "2.1.0"
 ```
 
 **Spinner Messages:**
@@ -173,7 +174,7 @@ await updateVersionFile(spinner, '2.1.0');
 
 ### Check 1: Version File
 
-**Path:** `trinity/VERSION`
+**Path:** `.claude/trinity/VERSION`
 **Description:** Version file
 **Criticality:** HIGH
 
@@ -257,7 +258,7 @@ await updateVersionFile(spinner, '2.1.0');
 
 ### Check 6: Work Order Templates
 
-**Path:** `trinity/templates`
+**Path:** `.claude/trinity/templates`
 **Description:** Work order templates
 **Criticality:** MEDIUM
 
@@ -275,7 +276,7 @@ await updateVersionFile(spinner, '2.1.0');
 
 ### Check 7: Trinity Knowledge Base
 
-**Path:** `trinity/knowledge-base/Trinity.md`
+**Path:** `.claude/trinity/knowledge-base/Trinity.md`
 **Description:** Trinity knowledge base
 **Criticality:** HIGH
 
@@ -353,7 +354,7 @@ if (!(await fs.pathExists('.claude/agents/leadership'))) {
 **Verification Check:**
 
 ```typescript
-const updatedVersion = (await fs.readFile('trinity/VERSION', 'utf8')).trim();
+const updatedVersion = (await fs.readFile('.claude/trinity/VERSION', 'utf8')).trim();
 if (updatedVersion !== expectedVersion) {
   throw new Error(`Version verification failed: expected 2.1.0, got 2.0.0`);
 }
@@ -377,7 +378,7 @@ if (updatedVersion !== expectedVersion) {
 **Verification Check:**
 
 ```typescript
-const updatedVersion = (await fs.readFile('trinity/VERSION', 'utf8')).trim();
+const updatedVersion = (await fs.readFile('.claude/trinity/VERSION', 'utf8')).trim();
 // updatedVersion is empty or garbled
 if (updatedVersion !== expectedVersion) {
   throw new Error(`Version verification failed: expected 2.1.0, got `);
@@ -417,12 +418,12 @@ if (updatedVersion !== expectedVersion) {
 - `.claude/agents/planning`
 - `.claude/agents/aj-team`
 - `.claude/commands`
-- `trinity/templates`
+- `.claude/trinity/templates`
 
 ✅ **Critical Files:**
 
-- `trinity/VERSION`
-- `trinity/knowledge-base/Trinity.md`
+- `.claude/trinity/VERSION`
+- `.claude/trinity/knowledge-base/Trinity.md`
 
 ✅ **VERSION Content:**
 
@@ -484,9 +485,9 @@ describe('verifyUpdateDeployment', () => {
     await fs.ensureDir('.claude/agents/planning');
     await fs.ensureDir('.claude/agents/aj-team');
     await fs.ensureDir('.claude/commands');
-    await fs.ensureDir('trinity/templates');
-    await fs.writeFile('trinity/VERSION', '2.1.0');
-    await fs.writeFile('trinity/knowledge-base/Trinity.md', '# Trinity');
+    await fs.ensureDir('.claude/trinity/templates');
+    await fs.writeFile('.claude/trinity/VERSION', '2.1.0');
+    await fs.writeFile('.claude/trinity/knowledge-base/Trinity.md', '# Trinity');
 
     await expect(verifyUpdateDeployment(ora(), '2.1.0')).resolves.toBeUndefined();
   });
@@ -500,7 +501,7 @@ describe('verifyUpdateDeployment', () => {
   });
 
   it('should fail if VERSION file incorrect', async () => {
-    await fs.writeFile('trinity/VERSION', '2.0.0');
+    await fs.writeFile('.claude/trinity/VERSION', '2.0.0');
 
     await expect(verifyUpdateDeployment(ora(), '2.1.0')).rejects.toThrow(
       'Version verification failed: expected 2.1.0, got 2.0.0'
@@ -512,15 +513,15 @@ describe('updateVersionFile', () => {
   it('should write version to VERSION file', async () => {
     await updateVersionFile(ora(), '2.1.0');
 
-    const content = await fs.readFile('trinity/VERSION', 'utf8');
+    const content = await fs.readFile('.claude/trinity/VERSION', 'utf8');
     expect(content).toBe('2.1.0');
   });
 
   it('should overwrite existing VERSION file', async () => {
-    await fs.writeFile('trinity/VERSION', '2.0.0');
+    await fs.writeFile('.claude/trinity/VERSION', '2.0.0');
     await updateVersionFile(ora(), '2.1.0');
 
-    const content = await fs.readFile('trinity/VERSION', 'utf8');
+    const content = await fs.readFile('.claude/trinity/VERSION', 'utf8');
     expect(content).toBe('2.1.0');
   });
 });
@@ -578,7 +579,7 @@ describe('updateVersionFile', () => {
 
 ```typescript
 // Safe: Validates path is within project directory
-const destPath = validatePath('trinity/VERSION');
+const destPath = validatePath('.claude/trinity/VERSION');
 
 // Blocked: Path traversal attempt
 const maliciousPath = validatePath('../../../etc/passwd');
@@ -601,7 +602,7 @@ const maliciousPath = validatePath('../../../etc/passwd');
 ```
 verifyUpdateDeployment(spinner, expectedVersion)
     ↓
-[Check 1] trinity/VERSION exists?
+[Check 1] .claude/trinity/VERSION exists?
     ├→ No → Fail: "Version file missing"
     └→ Yes → Continue
     ↓
@@ -621,11 +622,11 @@ verifyUpdateDeployment(spinner, expectedVersion)
     ├→ No → Fail: "Slash commands missing"
     └→ Yes → Continue
     ↓
-[Check 6] trinity/templates exists?
+[Check 6] .claude/trinity/templates exists?
     ├→ No → Fail: "Work order templates missing"
     └→ Yes → Continue
     ↓
-[Check 7] trinity/knowledge-base/Trinity.md exists?
+[Check 7] .claude/trinity/knowledge-base/Trinity.md exists?
     ├→ No → Fail: "Trinity knowledge base missing"
     └→ Yes → Continue
     ↓

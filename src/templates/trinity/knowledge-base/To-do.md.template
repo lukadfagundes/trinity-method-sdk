@@ -29,7 +29,7 @@
 ### Feature Development
 - [ ] **{{FEATURE_1}}**
   - Investigation Required: YES
-  - Pattern Check: trinity/patterns/
+  - Pattern Check: .claude/trinity/patterns/
   - Tests Required: Unit + Integration
   - Documentation: Update ARCHITECTURE.md
   - Estimated: {{TIME_ESTIMATE}}

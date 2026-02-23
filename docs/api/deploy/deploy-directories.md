@@ -44,7 +44,7 @@ Creates complete Trinity directory structure.
 
 #### 1. Knowledge Base
 
-**Path:** `trinity/knowledge-base/`
+**Path:** `.claude/trinity/knowledge-base/`
 **Purpose:** Stores project knowledge and documentation
 **Contents:**
 
@@ -61,7 +61,7 @@ Creates complete Trinity directory structure.
 
 #### 2. Sessions
 
-**Path:** `trinity/sessions/`
+**Path:** `.claude/trinity/sessions/`
 **Purpose:** Stores session artifacts and logs
 **Contents:**
 
@@ -78,7 +78,7 @@ Creates complete Trinity directory structure.
 
 #### 3. Investigations
 
-**Path:** `trinity/investigations/`
+**Path:** `.claude/trinity/investigations/`
 **Purpose:** Stores investigation work products
 **Contents:**
 
@@ -93,7 +93,7 @@ Creates complete Trinity directory structure.
 
 #### 4. Investigation Plans
 
-**Path:** `trinity/investigations/plans/`
+**Path:** `.claude/trinity/investigations/plans/`
 **Purpose:** Stores investigation planning documents
 **Contents:**
 
@@ -106,7 +106,7 @@ Creates complete Trinity directory structure.
 
 #### 5. Patterns
 
-**Path:** `trinity/patterns/`
+**Path:** `.claude/trinity/patterns/`
 **Purpose:** Stores reusable solution patterns
 **Contents:**
 
@@ -120,7 +120,7 @@ Creates complete Trinity directory structure.
 
 #### 6. Work Orders
 
-**Path:** `trinity/work-orders/`
+**Path:** `.claude/trinity/work-orders/`
 **Purpose:** Stores active and completed work orders
 **Contents:**
 
@@ -134,7 +134,7 @@ Creates complete Trinity directory structure.
 
 #### 7. Templates
 
-**Path:** `trinity/templates/`
+**Path:** `.claude/trinity/templates/`
 **Purpose:** Stores template files for agents
 **Contents:**
 
@@ -148,7 +148,7 @@ Creates complete Trinity directory structure.
 
 #### 8. Reports
 
-**Path:** `trinity/reports/`
+**Path:** `.claude/trinity/reports/`
 **Purpose:** Stores agent-generated reports
 **Contents:**
 
@@ -164,10 +164,10 @@ Creates complete Trinity directory structure.
 
 **Paths:**
 
-- `trinity/archive/work-orders/` - Archived work orders
-- `trinity/archive/investigations/` - Archived investigations
-- `trinity/archive/reports/` - Archived reports
-- `trinity/archive/sessions/` - Archived session artifacts
+- `.claude/trinity/archive/work-orders/` - Archived work orders
+- `.claude/trinity/archive/investigations/` - Archived investigations
+- `.claude/trinity/archive/reports/` - Archived reports
+- `.claude/trinity/archive/sessions/` - Archived session artifacts
 
 **Purpose:** Long-term storage of completed work
 **Usage:** Agents move completed items to archives to keep active directories clean
@@ -243,28 +243,28 @@ Creates complete Trinity directory structure.
 
 ```
 project-root/
-├── .claude/
-│   └── agents/
-│       ├── leadership/       (AJ MAESTRO, JUNO)
-│       ├── deployment/       (CAP, EMP, ALF, DAT)
-│       ├── audit/            (JUNO symlink)
-│       ├── planning/         (MON, ROR, TRA, EUS)
-│       └── aj-team/          (KIL, APO, ZEN, INO, EIN, VER, TAN)
-│
-└── trinity/
-    ├── knowledge-base/       (8 knowledge files)
-    ├── sessions/             (Session artifacts)
-    ├── investigations/       (Investigation work)
-    │   └── plans/            (Investigation planning)
-    ├── patterns/             (Reusable patterns)
-    ├── work-orders/          (Active work orders)
-    ├── templates/            (Template files)
-    ├── reports/              (Agent reports)
-    └── archive/
-        ├── work-orders/      (Archived work orders)
-        ├── investigations/   (Archived investigations)
-        ├── reports/          (Archived reports)
-        └── sessions/         (Archived sessions)
+└── .claude/
+    ├── agents/
+    │   ├── leadership/       (AJ MAESTRO, JUNO)
+    │   ├── deployment/       (CAP, EMP, ALF, DAT)
+    │   ├── audit/            (JUNO symlink)
+    │   ├── planning/         (MON, ROR, TRA, EUS)
+    │   └── aj-team/          (KIL, APO, ZEN, INO, EIN, VER, TAN)
+    │
+    └── trinity/
+        ├── knowledge-base/   (8 knowledge files)
+        ├── sessions/         (Session artifacts)
+        ├── investigations/   (Investigation work)
+        │   └── plans/        (Investigation planning)
+        ├── patterns/         (Reusable patterns)
+        ├── work-orders/      (Active work orders)
+        ├── templates/        (Template files)
+        ├── reports/          (Agent reports)
+        └── archive/
+            ├── work-orders/      (Archived work orders)
+            ├── investigations/   (Archived investigations)
+            ├── reports/          (Archived reports)
+            └── sessions/         (Archived sessions)
 ```
 
 ---
@@ -301,7 +301,7 @@ progress.directories = directoriesCreated;
 ### fs.ensureDir() Behavior
 
 ```typescript
-await fs.ensureDir('trinity/knowledge-base');
+await fs.ensureDir('.claude/trinity/knowledge-base');
 ```
 
 **Behavior:**
@@ -315,10 +315,10 @@ await fs.ensureDir('trinity/knowledge-base');
 
 ```typescript
 // First call: Creates directory
-await fs.ensureDir('trinity/sessions'); // ✅ Created
+await fs.ensureDir('.claude/trinity/sessions'); // ✅ Created
 
 // Second call: No-op
-await fs.ensureDir('trinity/sessions'); // ✅ Already exists, no error
+await fs.ensureDir('.claude/trinity/sessions'); // ✅ Already exists, no error
 ```
 
 ---
@@ -329,7 +329,7 @@ await fs.ensureDir('trinity/sessions'); // ✅ Already exists, no error
 let directoriesCreated = 0;
 
 // Trinity core directories
-await fs.ensureDir('trinity/knowledge-base');
+await fs.ensureDir('.claude/trinity/knowledge-base');
 // ... (12 total)
 directoriesCreated += 12;
 
@@ -457,11 +457,11 @@ Deployment failed: EACCES: permission denied, mkdir 'trinity'
 
 After directories are created, subsequent steps populate them:
 
-**Step 5:** Deploy knowledge base files to `trinity/knowledge-base/`
+**Step 5:** Deploy knowledge base files to `.claude/trinity/knowledge-base/`
 **Step 6:** Deploy root files to project root
 **Step 7:** Deploy agent templates to `.claude/agents/*/`
 **Step 9:** Deploy Claude setup to `.claude/`
-**Step 10:** Deploy templates to `trinity/templates/`
+**Step 10:** Deploy templates to `.claude/trinity/templates/`
 
 ---
 

@@ -16,7 +16,6 @@ The Root Files Deployment module creates the Trinity Method CLAUDE.md context hi
 - Framework-specific source templates
 - Test framework detection
 - VERSION file creation
-- TRINITY.md root file
 
 ---
 
@@ -40,13 +39,7 @@ Deploys root files and complete CLAUDE.md hierarchy.
 
 ## Deployed Files
 
-### 1. Root Files (3 files)
-
-**TRINITY.md**
-
-- Location: Project root
-- Purpose: Trinity Method project overview
-- Template: `root/TRINITY.md.template`
+### 1. Root Files (2 files)
 
 **CLAUDE.md**
 
@@ -54,9 +47,9 @@ Deploys root files and complete CLAUDE.md hierarchy.
 - Purpose: Global project context (top-level)
 - Template: `root/CLAUDE.md.template`
 
-**trinity/VERSION**
+**.claude/trinity/VERSION**
 
-- Location: `trinity/VERSION`
+- Location: `.claude/trinity/VERSION`
 - Purpose: Trinity SDK version tracking
 - Content: SDK version string (e.g., "2.1.0")
 
@@ -64,9 +57,9 @@ Deploys root files and complete CLAUDE.md hierarchy.
 
 ### 2. Trinity CLAUDE.md (1 file)
 
-**trinity/CLAUDE.md**
+**.claude/trinity/CLAUDE.md**
 
-- Location: `trinity/CLAUDE.md`
+- Location: `.claude/trinity/CLAUDE.md`
 - Purpose: Trinity Method enforcement context
 - Template: `trinity/CLAUDE.md.template`
 
@@ -114,10 +107,10 @@ const frameworkMap = {
 ```
 Project/
 ├── CLAUDE.md                    # Global context (top-level)
-├── TRINITY.md                   # Trinity Method overview
-├── trinity/
-│   ├── VERSION                  # SDK version
-│   └── CLAUDE.md                # Trinity enforcement
+├── .claude/
+│   └── trinity/
+│       ├── VERSION              # SDK version
+│       └── CLAUDE.md            # Trinity enforcement
 ├── src/                         # Source directories (framework-specific)
 │   └── CLAUDE.md
 ├── backend/src/
@@ -129,7 +122,7 @@ Project/
 **Context Loading Order:**
 
 1. Root CLAUDE.md (global project context)
-2. trinity/CLAUDE.md (Trinity Method enforcement)
+2. .claude/trinity/CLAUDE.md (Trinity Method enforcement)
 3. {sourceDir}/CLAUDE.md (framework-specific rules)
 4. tests/CLAUDE.md (testing standards)
 
@@ -162,11 +155,10 @@ Project/
 deployRootFiles()
     ↓
 [1] Deploy Root Files
-    ├→ TRINITY.md
     ├→ CLAUDE.md
-    └→ trinity/VERSION
+    └→ .claude/trinity/VERSION
     ↓
-[2] Deploy trinity/CLAUDE.md
+[2] Deploy .claude/trinity/CLAUDE.md
     ↓
 [3] Deploy Source CLAUDE.md (per source directory)
     ├→ Detect framework template

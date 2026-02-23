@@ -9,7 +9,7 @@
 
 ## Overview
 
-The Template Updates module synchronizes template files from the Trinity Method SDK to the project's `trinity/templates/` directory. It recursively updates 3 template categories: work orders, documentation templates, and investigation templates, ensuring projects have the latest scaffolding tools.
+The Template Updates module synchronizes template files from the Trinity Method SDK to the project's `.claude/trinity/templates/` directory. It recursively updates 3 template categories: work orders, documentation templates, and investigation templates, ensuring projects have the latest scaffolding tools.
 
 ### Key Features
 
@@ -25,7 +25,7 @@ The Template Updates module synchronizes template files from the Trinity Method 
 
 ### `updateTemplates(spinner, stats)`
 
-Updates template files from SDK to `trinity/templates/`.
+Updates template files from SDK to `.claude/trinity/templates/`.
 
 **Signature:**
 
@@ -45,8 +45,8 @@ async function updateTemplates(spinner: Ora, stats: UpdateStats): Promise<void>;
 **Side Effects:**
 
 - Reads from SDK template directory
-- Creates `trinity/templates/` subdirectories if missing
-- Overwrites existing template files in `trinity/templates/`
+- Creates `.claude/trinity/templates/` subdirectories if missing
+- Overwrites existing template files in `.claude/trinity/templates/`
 - Updates `stats.templatesUpdated` counter
 
 ---
@@ -91,7 +91,7 @@ async function copyTemplatesRecursively(
 #### 1. Work Orders
 
 ```
-trinity/templates/work-orders/
+.claude/trinity/templates/work-orders/
 ├── WORKORDER-TEMPLATE.md - Standard work order template
 ├── BUGFIX-WORKORDER.md - Bug fix work order
 ├── FEATURE-WORKORDER.md - Feature implementation work order
@@ -106,7 +106,7 @@ trinity/templates/work-orders/
 #### 2. Documentation
 
 ```
-trinity/templates/documentation/
+.claude/trinity/templates/documentation/
 ├── API-DOCUMENTATION-TEMPLATE.md - API documentation structure
 ├── README-TEMPLATE.md - README file template
 ├── CHANGELOG-TEMPLATE.md - CHANGELOG structure
@@ -124,7 +124,7 @@ trinity/templates/documentation/
 #### 3. Investigations
 
 ```
-trinity/templates/investigations/
+.claude/trinity/templates/investigations/
 ├── INVESTIGATION-TEMPLATE.md - Generic investigation template
 ├── BUG-INVESTIGATION.md - Bug investigation structure
 ├── PERFORMANCE-INVESTIGATION.md - Performance analysis template
@@ -156,7 +156,7 @@ For each template category:
    ${SDK_PATH}/dist/templates/trinity/templates/${category}
 
 2. Construct target path:
-   trinity/templates/${category}
+   .claude/trinity/templates/${category}
 
 3. Check if source directory exists
 4. Ensure target directory exists (create if missing)
@@ -238,7 +238,7 @@ console.log('Update summary:', stats);
 ```typescript
 // Process only work order templates
 const sourcePath = path.join(sdkPath, 'dist/templates/trinity/templates/work-orders');
-const targetPath = 'trinity/templates/work-orders';
+const targetPath = '.claude/trinity/templates/work-orders';
 
 if (await fs.pathExists(sourcePath)) {
   await fs.ensureDir(targetPath);
@@ -261,7 +261,7 @@ dist/templates/trinity/templates/work-orders/WORKORDER-TEMPLATE.md.template
 **Target File (Project):**
 
 ```
-trinity/templates/work-orders/WORKORDER-TEMPLATE.md
+.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md
 ```
 
 **Operation:**
@@ -273,7 +273,7 @@ if (entry.name.endsWith('.md.template')) {
   // Result: 'WORKORDER-TEMPLATE.md'
 
   const targetFilePath = path.join(targetPath, deployedFileName);
-  // Result: 'trinity/templates/work-orders/WORKORDER-TEMPLATE.md'
+  // Result: '.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md'
 
   await fs.copy(sourceFile, targetFilePath, { overwrite: true });
   stats.templatesUpdated++;
@@ -293,7 +293,7 @@ dist/templates/trinity/templates/documentation/diagrams/sequence-diagram.md
 **Target File (Project):**
 
 ```
-trinity/templates/documentation/diagrams/sequence-diagram.md
+.claude/trinity/templates/documentation/diagrams/sequence-diagram.md
 ```
 
 **Operation:**
@@ -359,7 +359,7 @@ dist/templates/trinity/templates/
 **Before Update:**
 
 ```
-trinity/templates/
+.claude/trinity/templates/
 ├── work-orders/
 │   └── WORKORDER-TEMPLATE.md (v2.0.0 - outdated)
 └── investigations/
@@ -369,7 +369,7 @@ trinity/templates/
 **After Update:**
 
 ```
-trinity/templates/
+.claude/trinity/templates/
 ├── work-orders/
 │   ├── WORKORDER-TEMPLATE.md (v2.1.0 - updated)
 │   ├── BUGFIX-WORKORDER.md (new)
@@ -462,7 +462,7 @@ try {
 **1. Permission Denied**
 
 ```
-Error: EACCES: permission denied, open 'trinity/templates/work-orders/WORKORDER-TEMPLATE.md'
+Error: EACCES: permission denied, open '.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md'
 Solution: Fix file permissions or run with appropriate privileges
 ```
 
@@ -476,7 +476,7 @@ Solution: Install Trinity Method SDK (npm install trinity-method-sdk)
 **3. Target Directory Missing**
 
 ```
-Error: ENOENT: no such file or directory 'trinity/templates'
+Error: ENOENT: no such file or directory '.claude/trinity/templates'
 Solution: Ensure Trinity structure exists (run trinity-deploy first)
 ```
 
@@ -500,7 +500,7 @@ Solution: Ensure Trinity structure exists (run trinity-deploy first)
 
 ### Updates
 
-- `trinity/templates/` - Target directory for all template files
+- `.claude/trinity/templates/` - Target directory for all template files
 - `stats.templatesUpdated` - Progress tracking counter
 
 ---
@@ -524,14 +524,16 @@ describe('updateTemplates', () => {
   });
 
   afterEach(async () => {
-    await fs.remove('trinity/templates');
+    await fs.remove('.claude/trinity/templates');
   });
 
   it('should update all template files', async () => {
     await updateTemplates(spinner, stats);
 
     expect(stats.templatesUpdated).toBeGreaterThan(0);
-    expect(await fs.pathExists('trinity/templates/work-orders/WORKORDER-TEMPLATE.md')).toBe(true);
+    expect(await fs.pathExists('.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md')).toBe(
+      true
+    );
   });
 
   it('should strip .template extension', async () => {
@@ -539,10 +541,12 @@ describe('updateTemplates', () => {
 
     // Should NOT have .template extension
     expect(
-      await fs.pathExists('trinity/templates/work-orders/WORKORDER-TEMPLATE.md.template')
+      await fs.pathExists('.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md.template')
     ).toBe(false);
     // Should have clean .md extension
-    expect(await fs.pathExists('trinity/templates/work-orders/WORKORDER-TEMPLATE.md')).toBe(true);
+    expect(await fs.pathExists('.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md')).toBe(
+      true
+    );
   });
 
   it('should handle nested directories', async () => {
@@ -550,7 +554,7 @@ describe('updateTemplates', () => {
 
     // Check nested diagrams directory
     expect(
-      await fs.pathExists('trinity/templates/documentation/diagrams/sequence-diagram.md')
+      await fs.pathExists('.claude/trinity/templates/documentation/diagrams/sequence-diagram.md')
     ).toBe(true);
   });
 
@@ -559,20 +563,23 @@ describe('updateTemplates', () => {
 
     // Mermaid diagram should be copied without extension change
     const exists = await fs.pathExists(
-      'trinity/templates/documentation/diagrams/sequence-diagram.md'
+      '.claude/trinity/templates/documentation/diagrams/sequence-diagram.md'
     );
     expect(exists).toBe(true);
   });
 
   it('should overwrite existing files', async () => {
     // Create old version
-    await fs.ensureDir('trinity/templates/work-orders');
-    await fs.writeFile('trinity/templates/work-orders/WORKORDER-TEMPLATE.md', 'Old content');
+    await fs.ensureDir('.claude/trinity/templates/work-orders');
+    await fs.writeFile(
+      '.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md',
+      'Old content'
+    );
 
     await updateTemplates(spinner, stats);
 
     const content = await fs.readFile(
-      'trinity/templates/work-orders/WORKORDER-TEMPLATE.md',
+      '.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md',
       'utf-8'
     );
     expect(content).not.toBe('Old content');
@@ -642,7 +649,7 @@ for (const dir of dirEntries) {
 ### File System Safety
 
 - Only reads from SDK template directory (trusted source)
-- Only writes to `trinity/templates/` (isolated directory)
+- Only writes to `.claude/trinity/templates/` (isolated directory)
 - No arbitrary path traversal
 - Recursive depth controlled by SDK structure
 
@@ -662,7 +669,7 @@ for (const dir of dirEntries) {
 - **Command Updates**: [docs/api/update-commands.md](docs/api/update-commands.md)
 - **Knowledge Base Updates**: [docs/api/update-knowledge-base.md](docs/api/update-knowledge-base.md)
 - **SDK Path Resolution**: [docs/api/get-sdk-path.md](docs/api/get-sdk-path.md) (pending)
-- **Templates Directory**: [trinity/templates/](../../trinity/templates/)
+- **Templates Directory**: [.claude/trinity/templates/](../../.claude/trinity/templates/)
 
 ---
 

@@ -507,7 +507,7 @@ Technical debt reduced → Documentation updated
 
 - Session initialization
 - Context restoration
-- Work archival to trinity/archive/
+- Work archival to .claude/trinity/archive/
 - Strategic guidance
 - Session management
 
@@ -604,7 +604,7 @@ Report generated
 - Creating knowledge base documentation
 - Capturing project architecture
 - Documenting methodology
-- Maintaining trinity/knowledge-base/
+- Maintaining .claude/trinity/knowledge-base/
 
 **Tools Available:**
 
@@ -614,13 +614,13 @@ Report generated
 
 ```
 Knowledge base need → ZEN creates documentation →
-trinity/knowledge-base/ updated → Architecture captured →
+.claude/trinity/knowledge-base/ updated → Architecture captured →
 Best practices integrated
 ```
 
 **Key Outputs:**
 
-- trinity/knowledge-base/ documentation
+- .claude/trinity/knowledge-base/ documentation
 - ARCHITECTURE.md
 - Trinity.md (project-specific)
 - Methodology documentation
@@ -654,7 +654,7 @@ Issues tracked
 
 **Key Outputs:**
 
-- CLAUDE.md hierarchy (root, trinity/, src/)
+- CLAUDE.md hierarchy (root, .claude/trinity/, src/)
 - ISSUES.md database
 - Context organization
 - Issue tracking system
@@ -918,7 +918,7 @@ Is this a NEW feature or complex task?
 **Outputs:**
 
 - Session initialization/restoration
-- Work archival to trinity/archive/
+- Work archival to .claude/trinity/archive/
 - Context management
 
 ---
@@ -977,7 +977,7 @@ Use specialist agents for focused tasks:
 ### Agent Handoff Not Working?
 
 - Ensure previous agent completed successfully
-- Check work products are in expected locations (trinity/knowledge-base/, etc.)
+- Check work products are in expected locations (.claude/trinity/knowledge-base/, etc.)
 - Verify agent outputs match expected format
 
 ---

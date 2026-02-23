@@ -51,7 +51,7 @@ async function deployCITemplates(
 
 - Creates `.github/workflows/` directory (GitHub)
 - Creates `.gitlab-ci.yml` file (GitLab)
-- Creates `trinity/templates/ci/` directory (always)
+- Creates `.claude/trinity/templates/ci/` directory (always)
 - Writes workflow files to file system
 
 ---
@@ -159,8 +159,8 @@ type GitPlatform = 'github' | 'gitlab' | 'unknown';
    └─ If !exists or force → Deploy gitlab-ci.yml
 
 4. Generic Template Deployment (always)
-   ├─ Create trinity/templates/ci/ directory
-   └─ Deploy generic-ci.yml → trinity/templates/ci/generic-ci.yml
+   ├─ Create .claude/trinity/templates/ci/ directory
+   └─ Deploy generic-ci.yml → .claude/trinity/templates/ci/generic-ci.yml
 ```
 
 ---
@@ -364,7 +364,7 @@ Platform-agnostic CI template for reference or manual customization.
 ### File Deployed
 
 ```
-trinity/templates/ci/generic-ci.yml
+.claude/trinity/templates/ci/generic-ci.yml
 ```
 
 **Always Deployed:**
@@ -377,7 +377,7 @@ trinity/templates/ci/generic-ci.yml
 
 ```
 src/cli/templates/ci/
-└── generic-ci.yml → trinity/templates/ci/generic-ci.yml
+└── generic-ci.yml → .claude/trinity/templates/ci/generic-ci.yml
 ```
 
 ---
@@ -416,7 +416,7 @@ await fs.writeFile(destPath, content);
 {
   deployed: [
     '.github/workflows/ci.yml',
-    'trinity/templates/ci/generic-ci.yml'
+    '.claude/trinity/templates/ci/generic-ci.yml'
   ],
   skipped: [],
   errors: []
@@ -428,7 +428,7 @@ await fs.writeFile(destPath, content);
 ```typescript
 {
   deployed: [
-    'trinity/templates/ci/generic-ci.yml'
+    '.claude/trinity/templates/ci/generic-ci.yml'
   ],
   skipped: [
     '.gitlab-ci.yml (already exists)'
@@ -442,7 +442,7 @@ await fs.writeFile(destPath, content);
 ```typescript
 {
   deployed: [
-    'trinity/templates/ci/generic-ci.yml'
+    '.claude/trinity/templates/ci/generic-ci.yml'
   ],
   skipped: [],
   errors: [
@@ -534,7 +534,7 @@ describe('deployCITemplates', () => {
   afterEach(async () => {
     await fs.remove('.github');
     await fs.remove('.gitlab-ci.yml');
-    await fs.remove('trinity/templates/ci');
+    await fs.remove('.claude/trinity/templates/ci');
   });
 
   it('should deploy GitHub Actions for GitHub repo', async () => {
@@ -548,7 +548,7 @@ describe('deployCITemplates', () => {
     const stats = await deployCITemplates();
 
     expect(stats.deployed).toContain('.github/workflows/ci.yml');
-    expect(stats.deployed).toContain('trinity/templates/ci/generic-ci.yml');
+    expect(stats.deployed).toContain('.claude/trinity/templates/ci/generic-ci.yml');
   });
 
   it('should deploy GitLab CI for GitLab repo', async () => {
@@ -561,7 +561,7 @@ describe('deployCITemplates', () => {
     const stats = await deployCITemplates();
 
     expect(stats.deployed).toContain('.gitlab-ci.yml');
-    expect(stats.deployed).toContain('trinity/templates/ci/generic-ci.yml');
+    expect(stats.deployed).toContain('.claude/trinity/templates/ci/generic-ci.yml');
   });
 
   it('should skip existing GitLab CI file', async () => {

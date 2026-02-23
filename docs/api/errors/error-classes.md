@@ -107,7 +107,7 @@ Trinity update errors.
 
 ```typescript
 throw new UpdateError('Update verification failed', {
-  missingFiles: ['trinity/VERSION'],
+  missingFiles: ['.claude/trinity/VERSION'],
 });
 ```
 

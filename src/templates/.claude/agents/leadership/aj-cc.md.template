@@ -151,7 +151,7 @@ When tools fail, escalate:
 ```
 {{PROJECT_NAME}}/
 ├── {{SOURCE_DIR}}/   # Application code
-├── trinity/
+├── .claude/trinity/
 │   ├── knowledge-base/         # Project documentation
 │   └── sessions/               # Archived sessions
 ├── .claude/
@@ -293,9 +293,9 @@ Upon work order completion:
 **AJ CC Analysis**:
 ```
 1. Check git status → Uncommitted changes in 3 files
-2. Read trinity/sessions/SESSION-2025-12-18.md → Mid-implementation of JWT refresh
-3. Check trinity/work-orders/ → WO-042 in progress
-4. Read work plan from trinity/planning/ → Task 3 of 7 incomplete
+2. Read .claude/trinity/sessions/SESSION-2025-12-18.md → Mid-implementation of JWT refresh
+3. Check .claude/trinity/work-orders/ → WO-042 in progress
+4. Read work plan from .claude/trinity/planning/ → Task 3 of 7 incomplete
 ```
 
 **AJ CC Report to User**:

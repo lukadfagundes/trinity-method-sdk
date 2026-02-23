@@ -237,7 +237,7 @@ describe('Deploy CI/CD - Integration', () => {
       };
 
       // Create read-only directory to cause failures
-      const templatesDir = path.join(tempDir, 'trinity/templates/ci');
+      const templatesDir = path.join(tempDir, '.claude/trinity/templates/ci');
       await fs.ensureDir(templatesDir);
 
       try {
@@ -331,7 +331,7 @@ describe('Deploy CI/CD - Integration', () => {
       expect(exists).toBe(true);
     });
 
-    test('should create trinity/templates/ci directory', async () => {
+    test('should create .claude/trinity/templates/ci directory', async () => {
       const options: DeployOptions = {
         yes: true,
         ciDeploy: true,
@@ -339,7 +339,7 @@ describe('Deploy CI/CD - Integration', () => {
 
       await deployCICD(options, mockSpinner);
 
-      const ciTemplatesDir = path.join(tempDir, 'trinity/templates/ci');
+      const ciTemplatesDir = path.join(tempDir, '.claude/trinity/templates/ci');
       const exists = await fs.pathExists(ciTemplatesDir);
       expect(exists).toBe(true);
     });
@@ -361,7 +361,7 @@ describe('Deploy CI/CD - Integration', () => {
 
       // Check for expected files
       const ciFile = path.join(tempDir, '.github/workflows/ci.yml');
-      const genericFile = path.join(tempDir, 'trinity/templates/ci/generic-ci.yml');
+      const genericFile = path.join(tempDir, '.claude/trinity/templates/ci/generic-ci.yml');
 
       const ciExists = await fs.pathExists(ciFile);
       const genericExists = await fs.pathExists(genericFile);
@@ -439,7 +439,7 @@ describe('Deploy CI/CD - Integration', () => {
 
       await deployCICD(options, mockSpinner);
 
-      const genericFile = path.join(tempDir, 'trinity/templates/ci/generic-ci.yml');
+      const genericFile = path.join(tempDir, '.claude/trinity/templates/ci/generic-ci.yml');
       expect(await fs.pathExists(genericFile)).toBe(true);
     });
   });

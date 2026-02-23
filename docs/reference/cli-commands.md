@@ -32,8 +32,8 @@ Deploys 64 Trinity components to your project:
 
 - 19 agents (`.claude/agents/`)
 - 20 slash commands (`.claude/commands/`)
-- Knowledge base (`trinity/knowledge-base/`)
-- Investigation templates (`trinity/templates/`)
+- Knowledge base (`.claude/trinity/knowledge-base/`)
+- Investigation templates (`.claude/trinity/templates/`)
 - Linting configurations (framework-specific)
 - CI/CD workflows (platform-specific)
 
@@ -53,7 +53,7 @@ Deploys 64 Trinity components to your project:
 3. **Framework Detection** - Auto-detects or prompts for framework
 4. **User Configuration** - Interactive prompts for linting, CI/CD, project name
 5. **Template Processing** - Variable substitution ({{PROJECT_NAME}}, {{FRAMEWORK}}, etc.)
-6. **Directory Creation** - Creates `.claude/`, `trinity/`, and subdirectories
+6. **Directory Creation** - Creates `.claude/`, `.claude/trinity/`, and subdirectories
 7. **Component Deployment** - Deploys all 64 components
 8. **.gitignore Update** - Adds Trinity entries
 9. **Verification** - Confirms all components deployed
@@ -78,7 +78,7 @@ trinity deploy
 trinity deploy
 
 # Check if deployed before deploying
-ls -la .claude/ trinity/  # If exists, Trinity deployed
+ls -la .claude/  # If exists, Trinity deployed
 trinity deploy            # Will prompt to overwrite
 ```
 
@@ -112,12 +112,12 @@ Next steps:
 
 ### Errors
 
-| Error                      | Cause                           | Solution                            |
-| -------------------------- | ------------------------------- | ----------------------------------- |
-| `Node.js version too old`  | Node.js < 16.9.0                | Update Node.js: `nvm install 20`    |
-| `Permission denied`        | No write access                 | Fix permissions: `chmod -R u+w .`   |
-| `Trinity already deployed` | `.claude/` or `trinity/` exists | Run `trinity update` or remove dirs |
-| `No framework detected`    | Missing manifest file           | Add package.json/Cargo.toml/etc.    |
+| Error                      | Cause                                   | Solution                            |
+| -------------------------- | --------------------------------------- | ----------------------------------- |
+| `Node.js version too old`  | Node.js < 16.9.0                        | Update Node.js: `nvm install 20`    |
+| `Permission denied`        | No write access                         | Fix permissions: `chmod -R u+w .`   |
+| `Trinity already deployed` | `.claude/` or `.claude/trinity/` exists | Run `trinity update` or remove dirs |
+| `No framework detected`    | Missing manifest file                   | Add package.json/Cargo.toml/etc.    |
 
 ---
 
@@ -145,13 +145,13 @@ Updates Trinity components while preserving user-created content:
 ### Update Process
 
 1. **Deployment Check** - Verifies Trinity is deployed
-2. **Version Check** - Reads `trinity/VERSION`, compares with SDK version
-3. **Backup Creation** - Creates `trinity/backups/backup-{timestamp}.tar.gz`
+2. **Version Check** - Reads `.claude/trinity/VERSION`, compares with SDK version
+3. **Backup Creation** - Creates `.claude/trinity/backups/backup-{timestamp}.tar.gz`
 4. **Content Preservation** - Saves user files (ARCHITECTURE.md, ISSUES.md, etc.)
 5. **Old Template Removal** - Removes outdated agent/command templates
 6. **New Template Deployment** - Deploys latest templates
 7. **Content Restoration** - Restores preserved user files
-8. **Version Update** - Writes new version to `trinity/VERSION`
+8. **Version Update** - Writes new version to `.claude/trinity/VERSION`
 9. **Verification** - Confirms update success
 10. **Backup Cleanup** - Optional removal of backup file
 
@@ -159,13 +159,13 @@ Updates Trinity components while preserving user-created content:
 
 During update, these files are **preserved**:
 
-- `trinity/knowledge-base/ARCHITECTURE.md`
-- `trinity/knowledge-base/ISSUES.md`
-- `trinity/knowledge-base/To-do.md`
-- `trinity/knowledge-base/Technical-Debt.md`
-- `trinity/sessions/` (all session files)
-- `trinity/reports/` (all report files)
-- `trinity/backups/` (all backup files)
+- `.claude/trinity/knowledge-base/ARCHITECTURE.md`
+- `.claude/trinity/knowledge-base/ISSUES.md`
+- `.claude/trinity/knowledge-base/To-do.md`
+- `.claude/trinity/knowledge-base/Technical-Debt.md`
+- `.claude/trinity/sessions/` (all session files)
+- `.claude/trinity/reports/` (all report files)
+- `.claude/trinity/backups/` (all backup files)
 
 ### Overwritten Files
 
@@ -173,10 +173,10 @@ These files are **overwritten** with new versions:
 
 - `.claude/agents/*` (all 19 agents)
 - `.claude/commands/*` (all 20 commands)
-- `trinity/knowledge-base/Trinity.md`
-- `trinity/knowledge-base/TESTING-PRINCIPLES.md`
-- `trinity/knowledge-base/CODING-PRINCIPLES.md`
-- `trinity/templates/*` (all templates)
+- `.claude/trinity/knowledge-base/Trinity.md`
+- `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md`
+- `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md`
+- `.claude/trinity/templates/*` (all templates)
 - Linting configs (eslint.config.js, pyproject.toml, etc.)
 - CI/CD workflows
 
@@ -198,14 +198,14 @@ cd my-project
 trinity update
 
 # Check version before update
-cat trinity/VERSION
+cat .claude/trinity/VERSION
 
 # Update and keep backup
 trinity update
 # When prompted: "Remove backup?" → Select "No"
 
 # List backups
-ls -lh trinity/backups/
+ls -lh .claude/trinity/backups/
 ```
 
 ### Update Output
@@ -217,7 +217,7 @@ ls -lh trinity/backups/
 📦 Latest Version: 2.1.0
 
 Creating backup...
-✓ Backup created: trinity/backups/backup-2025-12-28T12-30-00.tar.gz
+✓ Backup created: .claude/trinity/backups/backup-2025-12-28T12-30-00.tar.gz
 
 Preserving user content...
 ✓ ARCHITECTURE.md preserved
@@ -235,7 +235,7 @@ Updating Trinity components...
 ✅ Trinity updated successfully! (v2.0.9)
 
 Remove backup? (y/N): N
-Backup preserved: trinity/backups/backup-2025-12-28T12-30-00.tar.gz
+Backup preserved: .claude/trinity/backups/backup-2025-12-28T12-30-00.tar.gz
 ```
 
 ### Rollback on Failure
@@ -259,7 +259,7 @@ To manually rollback:
 
 ```bash
 # Navigate to backups
-cd trinity/backups/
+cd .claude/trinity/backups/
 
 # List backups
 ls -lh
@@ -268,17 +268,17 @@ ls -lh
 tar -xzf backup-2025-12-28T12-30-00.tar.gz -C ../../
 
 # Verify version
-cat ../../trinity/VERSION
+cat ../../.claude/trinity/VERSION
 ```
 
 ### Errors
 
-| Error                    | Cause                       | Solution                                       |
-| ------------------------ | --------------------------- | ---------------------------------------------- |
-| `Trinity not deployed`   | No `.claude/` or `trinity/` | Run `trinity deploy` first                     |
-| `Already up-to-date`     | Current version matches SDK | No action needed                               |
-| `Update failed`          | Deployment error            | Check error message, manual rollback if needed |
-| `Backup creation failed` | Disk space / permissions    | Free space, fix permissions                    |
+| Error                    | Cause                               | Solution                                       |
+| ------------------------ | ----------------------------------- | ---------------------------------------------- |
+| `Trinity not deployed`   | No `.claude/` or `.claude/trinity/` | Run `trinity deploy` first                     |
+| `Already up-to-date`     | Current version matches SDK         | No action needed                               |
+| `Update failed`          | Deployment error                    | Check error message, manual rollback if needed |
+| `Backup creation failed` | Disk space / permissions            | Free space, fix permissions                    |
 
 ---
 
@@ -314,7 +314,7 @@ trinity -V
 
 # Compare with deployed version
 trinity --version
-cat trinity/VERSION
+cat .claude/trinity/VERSION
 ```
 
 ---

@@ -457,14 +457,14 @@ npx trinity-method-sdk deploy --ci-deploy
 ## 📚 ADDITIONAL RESOURCES
 
 ### Trinity Method Documentation
-- [Trinity Methodology](../trinity/knowledge-base/Trinity.md)
-- [Project Architecture](../trinity/knowledge-base/ARCHITECTURE.md)
-- [Current Tasks](../trinity/knowledge-base/To-do.md)
-- [Known Issues](../trinity/knowledge-base/ISSUES.md)
-- [Technical Debt](../trinity/knowledge-base/Technical-Debt.md)
+- [Trinity Methodology](trinity/knowledge-base/Trinity.md)
+- [Project Architecture](trinity/knowledge-base/ARCHITECTURE.md)
+- [Current Tasks](trinity/knowledge-base/To-do.md)
+- [Known Issues](trinity/knowledge-base/ISSUES.md)
+- [Technical Debt](trinity/knowledge-base/Technical-Debt.md)
 
 ### Work Order Templates
-Located in `trinity/templates/work-orders/`:
+Located in `.claude/trinity/templates/work-orders/`:
 - INVESTIGATION-TEMPLATE.md
 - IMPLEMENTATION-TEMPLATE.md
 - ANALYSIS-TEMPLATE.md
@@ -473,7 +473,7 @@ Located in `trinity/templates/work-orders/`:
 - VERIFICATION-TEMPLATE.md
 
 ### Investigation Templates
-Located in `trinity/templates/investigations/`:
+Located in `.claude/trinity/templates/investigations/`:
 - bug.md - Bug investigation with Five Whys analysis
 - feature.md - Feature analysis with epic breakdown
 - technical.md - Technical investigation with ADR format
@@ -531,13 +531,13 @@ pre-commit install
 
 **Trinity Method Context Files**:
 - [../CLAUDE.md](../CLAUDE.md) - Project overview and global requirements
-- [../trinity/CLAUDE.md](../trinity/CLAUDE.md) - Trinity Method enforcement and protocols
+- [trinity/CLAUDE.md](trinity/CLAUDE.md) - Trinity Method enforcement and protocols
 - [../src/CLAUDE.md](../src/CLAUDE.md) - Framework-specific implementation rules
 
 **Knowledge Base**:
-- [Investigation Protocols](../trinity/CLAUDE.md#investigation-protocols) - Investigation-first methodology
-- [Quality Gates](../trinity/CLAUDE.md#quality-standards) - BAS 6-phase quality gates
-- [Crisis Management](../trinity/CLAUDE.md#crisis-management) - Emergency escalation protocols
+- [Investigation Protocols](trinity/CLAUDE.md#investigation-protocols) - Investigation-first methodology
+- [Quality Gates](trinity/CLAUDE.md#quality-standards) - BAS 6-phase quality gates
+- [Crisis Management](trinity/CLAUDE.md#crisis-management) - Emergency escalation protocols
 
 ---
 

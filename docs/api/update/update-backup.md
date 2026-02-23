@@ -12,7 +12,7 @@ The Update Backup module ensures data safety during Trinity Method SDK updates. 
 
 **Key Features:**
 
-- Complete Trinity deployment backup (trinity/ + .claude/)
+- Complete Trinity deployment backup (.claude/ directory)
 - User-managed file identification and restoration
 - Automatic rollback on update failure
 - Manual recovery support
@@ -40,17 +40,15 @@ Creates a complete backup of Trinity deployment before update.
 ├── To-do.md                  # User-managed file
 ├── ISSUES.md                 # User-managed file
 ├── Technical-Debt.md         # User-managed file
-├── trinity/                  # Complete Trinity directory
-│   ├── agents/
-│   ├── commands/
-│   ├── knowledge-base/
-│   ├── sessions/
-│   ├── investigations/
-│   ├── work-orders/
-│   └── VERSION
-└── .claude/                  # Complete agent directory
-    ├── agents/
-    └── prompts/
+└── .claude/                  # Complete .claude directory
+    ├── agents/               # Agent templates
+    ├── commands/             # Slash commands
+    └── trinity/              # Trinity infrastructure
+        ├── knowledge-base/
+        ├── sessions/
+        ├── investigations/
+        ├── work-orders/
+        └── VERSION
 ```
 
 **Backup Process:**
@@ -65,23 +63,19 @@ Creates a complete backup of Trinity deployment before update.
    - Preserves user customizations
    - Only copies if files exist
 
-3. **Backup Trinity Directory**
-   - Complete recursive copy of `trinity/`
-   - Includes all subdirectories
-   - Preserves file permissions
-
-4. **Backup Agent Directory**
+3. **Backup .claude Directory**
    - Complete recursive copy of `.claude/`
-   - Includes agent templates and prompts
+   - Includes agents, commands, and trinity subdirectory
+   - Preserves file permissions
 
 **User-Managed Files:**
 
 ```typescript
 const USER_FILES = [
-  'trinity/knowledge-base/ARCHITECTURE.md',
-  'trinity/knowledge-base/To-do.md',
-  'trinity/knowledge-base/ISSUES.md',
-  'trinity/knowledge-base/Technical-Debt.md',
+  '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+  '.claude/trinity/knowledge-base/To-do.md',
+  '.claude/trinity/knowledge-base/ISSUES.md',
+  '.claude/trinity/knowledge-base/Technical-Debt.md',
 ];
 ```
 
@@ -198,8 +192,8 @@ Performs full rollback to pre-update state on failure.
    - Independent spinner (original may be in error state)
 
 3. **Restore Trinity Directory**
-   - Delete current `trinity/` directory
-   - Copy backup `trinity/` directory to project root
+   - Delete current `.claude/trinity/` directory
+   - Copy backup `.claude/trinity/` directory to project root
 
 4. **Restore Agent Directory**
    - Delete current `.claude/` directory
@@ -261,14 +255,13 @@ If automatic rollback fails, user can manually restore:
 
 ```bash
 # Remove corrupted deployment
-rm -rf trinity .claude
+rm -rf .claude
 
 # Restore from backup
-cp -r .trinity-backup-1737456000123/trinity trinity
 cp -r .trinity-backup-1737456000123/.claude .claude
 
 # Verify restoration
-cat trinity/VERSION
+cat .claude/trinity/VERSION
 ```
 
 ---
@@ -327,10 +320,10 @@ await fs.remove(backupDir);
 
 ```typescript
 const USER_FILES = [
-  'trinity/knowledge-base/ARCHITECTURE.md',
-  'trinity/knowledge-base/To-do.md',
-  'trinity/knowledge-base/ISSUES.md',
-  'trinity/knowledge-base/Technical-Debt.md',
+  '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+  '.claude/trinity/knowledge-base/To-do.md',
+  '.claude/trinity/knowledge-base/ISSUES.md',
+  '.claude/trinity/knowledge-base/Technical-Debt.md',
 ];
 ```
 
@@ -364,10 +357,10 @@ const USER_FILES = [
 
 **Trinity Templates:**
 
-- `trinity/knowledge-base/Trinity.md` (Trinity methodology)
-- `trinity/knowledge-base/CODING-PRINCIPLES.md` (Trinity standards)
-- `trinity/knowledge-base/DOCUMENTATION-CRITERIA.md` (Documentation rules)
-- `trinity/knowledge-base/TESTING-PRINCIPLES.md` (Testing standards)
+- `.claude/trinity/knowledge-base/Trinity.md` (Trinity methodology)
+- `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md` (Trinity standards)
+- `.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md` (Documentation rules)
+- `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md` (Testing standards)
 
 **Rationale:** These are Trinity-provided templates that should be updated, not preserved.
 
@@ -383,8 +376,6 @@ createUpdateBackup()
 Create .trinity-backup-{timestamp}/
     ↓
 Copy USER_FILES (4 files)
-    ↓
-Copy trinity/ (full directory)
     ↓
 Copy .claude/ (full directory)
     ↓
@@ -431,9 +422,7 @@ Free disk space
 ```
 rollbackFromBackup(backupDir)
     ↓
-Delete trinity/ and .claude/
-    ↓
-Copy backup/trinity/ to trinity/
+Delete .claude/
     ↓
 Copy backup/.claude/ to .claude/
     ↓
@@ -506,51 +495,43 @@ export async function update(options) {
 ├── ISSUES.md                    # User-managed (3.4 KB)
 ├── Technical-Debt.md            # User-managed (2.1 KB)
 │
-├── trinity/                     # Complete Trinity directory (~5 MB)
-│   ├── agents/
-│   │   ├── mon.md
-│   │   ├── juno.md
-│   │   └── ... (19 agents)
-│   │
-│   ├── commands/
-│   │   ├── INVESTIGATION-TEMPLATE.md
-│   │   └── WORKORDER-TEMPLATE.md
-│   │
-│   ├── knowledge-base/
-│   │   ├── ARCHITECTURE.md      # Backup copy
-│   │   ├── To-do.md             # Backup copy
-│   │   ├── ISSUES.md            # Backup copy
-│   │   ├── Technical-Debt.md    # Backup copy
-│   │   ├── Trinity.md
-│   │   ├── CODING-PRINCIPLES.md
-│   │   ├── DOCUMENTATION-CRITERIA.md
-│   │   └── TESTING-PRINCIPLES.md
-│   │
-│   ├── sessions/                # User session artifacts
-│   │   └── 2026-01-20-103000/
-│   │       ├── SESSION-SUMMARY.md
-│   │       └── investigation-summary.md
-│   │
-│   ├── investigations/          # User investigations
-│   │   └── auth-bug-fix/
-│   │       └── findings.md
-│   │
-│   ├── work-orders/             # User work orders
-│   │   └── WORKORDER-042.md
-│   │
-│   ├── templates/
-│   │   └── documentation/
-│   │
-│   └── VERSION                  # Current version
-│
-└── .claude/                     # Complete agent directory (~500 KB)
+└── .claude/                             # Complete .claude directory (~5 MB)
     ├── agents/
     │   ├── mon.md
     │   ├── juno.md
     │   └── ... (19 agents)
     │
-    └── prompts/
-        └── custom-prompts.md
+    ├── commands/
+    │   ├── INVESTIGATION-TEMPLATE.md
+    │   └── WORKORDER-TEMPLATE.md
+    │
+    └── trinity/                         # Trinity infrastructure
+        ├── knowledge-base/
+        │   ├── ARCHITECTURE.md      # Backup copy
+        │   ├── To-do.md             # Backup copy
+        │   ├── ISSUES.md            # Backup copy
+        │   ├── Technical-Debt.md    # Backup copy
+        │   ├── Trinity.md
+        │   ├── CODING-PRINCIPLES.md
+        │   ├── DOCUMENTATION-CRITERIA.md
+        │   └── TESTING-PRINCIPLES.md
+        │
+        ├── sessions/                # User session artifacts
+        │   └── 2026-01-20-103000/
+        │       ├── SESSION-SUMMARY.md
+        │       └── investigation-summary.md
+        │
+        ├── investigations/          # User investigations
+        │   └── auth-bug-fix/
+        │       └── findings.md
+        │
+        ├── work-orders/             # User work orders
+        │   └── WORKORDER-042.md
+        │
+        ├── templates/
+        │   └── documentation/
+        │
+        └── VERSION                  # Current version
 ```
 
 **Total Backup Size:** ~5-10 MB (depends on user content)
@@ -715,9 +696,9 @@ describe('backup', () => {
 
   it('should restore user content', async () => {
     const backupDir = await createUpdateBackup(ora());
-    fs.writeFileSync('trinity/knowledge-base/To-do.md', 'Modified');
+    fs.writeFileSync('.claude/trinity/knowledge-base/To-do.md', 'Modified');
     await restoreUserContent(backupDir, ora());
-    const content = fs.readFileSync('trinity/knowledge-base/To-do.md', 'utf8');
+    const content = fs.readFileSync('.claude/trinity/knowledge-base/To-do.md', 'utf8');
     expect(content).toBe('Original'); // Restored from backup
   });
 
@@ -725,7 +706,7 @@ describe('backup', () => {
     const backupDir = await createUpdateBackup(ora());
     fs.removeSync('trinity');
     await rollbackFromBackup(backupDir);
-    expect(fs.existsSync('trinity/VERSION')).toBe(true);
+    expect(fs.existsSync('.claude/trinity/VERSION')).toBe(true);
   });
 
   it('should cleanup backup', async () => {

@@ -10,13 +10,13 @@ import { validatePath } from '../../utils/validate-path.js';
 
 /** Verification checks to run after update */
 const VERIFICATION_CHECKS = [
-  { path: 'trinity/VERSION', desc: 'Version file' },
+  { path: '.claude/trinity/VERSION', desc: 'Version file' },
   { path: '.claude/agents/leadership', desc: 'Leadership agents' },
   { path: '.claude/agents/planning', desc: 'Planning agents' },
   { path: '.claude/agents/aj-team', desc: 'AJ team agents' },
   { path: '.claude/commands', desc: 'Slash commands' },
-  { path: 'trinity/templates', desc: 'Work order templates' },
-  { path: 'trinity/knowledge-base/Trinity.md', desc: 'Trinity knowledge base' },
+  { path: '.claude/trinity/templates', desc: 'Work order templates' },
+  { path: '.claude/trinity/knowledge-base/Trinity.md', desc: 'Trinity knowledge base' },
 ];
 
 /**
@@ -37,7 +37,7 @@ export async function verifyUpdateDeployment(spinner: Ora, expectedVersion: stri
   }
 
   // Verify version was actually updated
-  const versionPath = 'trinity/VERSION';
+  const versionPath = '.claude/trinity/VERSION';
   const updatedVersion = (await fs.readFile(versionPath, 'utf8')).trim();
   if (updatedVersion !== expectedVersion) {
     spinner.fail('Version file not updated correctly');
@@ -58,7 +58,7 @@ export async function updateVersionFile(spinner: Ora, version: string): Promise<
   spinner.start('Updating version file...');
 
   // Validate destination path for security
-  const destPath = validatePath('trinity/VERSION');
+  const destPath = validatePath('.claude/trinity/VERSION');
   await fs.writeFile(destPath, version);
   spinner.succeed('Version file updated');
 }

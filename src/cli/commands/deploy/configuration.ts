@@ -148,11 +148,11 @@ function displayCICDConfig(platform: string): void {
     } else if (platform === 'GitLab CI') {
       console.log(chalk.white('  ✓ .gitlab-ci.yml'));
     }
-    console.log(chalk.white('  ✓ trinity/templates/ci/generic-ci.yml (reference)'));
+    console.log(chalk.white('  ✓ .claude/trinity/templates/ci/generic-ci.yml (reference)'));
   } else {
     console.log(chalk.cyan('\n📦 Will configure:\n'));
     console.log(chalk.white('  ✓ .github/workflows/ci.yml (GitHub Actions)'));
-    console.log(chalk.white('  ✓ trinity/templates/ci/generic-ci.yml (reference)'));
+    console.log(chalk.white('  ✓ .claude/trinity/templates/ci/generic-ci.yml (reference)'));
   }
 }
 

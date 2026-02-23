@@ -16,25 +16,25 @@ import { UpdateError } from '../../utils/error-classes.js';
 export async function runUpdatePreflightChecks(spinner: Ora): Promise<void> {
   spinner.start('Running pre-flight checks...');
 
-  // Check trinity directory exists
-  const trinityExists = await fs.pathExists('trinity');
-  if (!trinityExists) {
-    spinner.fail('Trinity Method not deployed');
-    const { displayInfo } = await import('../../utils/errors.js');
-    displayInfo('Use: trinity deploy to install');
-    throw new UpdateError('Trinity Method not deployed in this project', {
-      reason: 'trinity_directory_missing',
-    });
-  }
-
   // Check .claude directory exists
   const claudeExists = await fs.pathExists('.claude');
   if (!claudeExists) {
     spinner.fail('.claude directory not found');
     const { displayInfo } = await import('../../utils/errors.js');
-    displayInfo('Trinity deployment appears incomplete');
+    displayInfo('Use: trinity deploy to install');
     throw new UpdateError('.claude directory not found', {
       reason: 'claude_directory_missing',
+    });
+  }
+
+  // Check .claude/trinity directory exists
+  const trinityExists = await fs.pathExists('.claude/trinity');
+  if (!trinityExists) {
+    spinner.fail('Trinity Method not deployed');
+    const { displayInfo } = await import('../../utils/errors.js');
+    displayInfo('Trinity deployment appears incomplete');
+    throw new UpdateError('Trinity Method not deployed in this project', {
+      reason: 'trinity_directory_missing',
     });
   }
 

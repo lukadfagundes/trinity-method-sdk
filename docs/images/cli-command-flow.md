@@ -9,7 +9,7 @@ flowchart TD
 
     CHECK_EXISTING -->|Yes| PROMPT_OVERWRITE{Prompt:<br/>Overwrite?}
     PROMPT_OVERWRITE -->|No| ABORT([Abort Deployment])
-    PROMPT_OVERWRITE -->|Yes| BACKUP[Create Backup<br/>trinity/backups/]
+    PROMPT_OVERWRITE -->|Yes| BACKUP[Create Backup<br/>.claude/trinity/backups/]
 
     CHECK_EXISTING -->|No| DETECT_FRAMEWORK[Detect Framework<br/>package.json/requirements.txt<br/>Cargo.toml/pubspec.yaml/go.mod]
     BACKUP --> DETECT_FRAMEWORK
@@ -26,13 +26,13 @@ flowchart TD
     PROMPT_NAME --> CREATE_DIRS[Create Directory Structure<br/>14 directories]
     CREATE_DIRS --> DEPLOY_AGENTS[Deploy 19 Agents<br/>.claude/agents/]
     DEPLOY_AGENTS --> DEPLOY_COMMANDS[Deploy 20 Slash Commands<br/>.claude/commands/]
-    DEPLOY_COMMANDS --> DEPLOY_KB[Deploy Knowledge Base<br/>trinity/knowledge-base/]
-    DEPLOY_KB --> DEPLOY_TEMPLATES[Deploy Templates<br/>trinity/templates/]
+    DEPLOY_COMMANDS --> DEPLOY_KB[Deploy Knowledge Base<br/>.claude/trinity/knowledge-base/]
+    DEPLOY_KB --> DEPLOY_TEMPLATES[Deploy Templates<br/>.claude/trinity/templates/]
     DEPLOY_TEMPLATES --> DEPLOY_LINT[Deploy Linting Config<br/>ESLint/Black/Clippy/etc.]
     DEPLOY_LINT --> DEPLOY_CI[Deploy CI/CD Workflows<br/>.github/workflows/etc.]
 
     DEPLOY_CI --> UPDATE_GITIGNORE[Update .gitignore<br/>Add Trinity entries]
-    UPDATE_GITIGNORE --> CREATE_VERSION[Create VERSION File<br/>trinity/VERSION]
+    UPDATE_GITIGNORE --> CREATE_VERSION[Create VERSION File<br/>.claude/trinity/VERSION]
     CREATE_VERSION --> VERIFY[Verify Deployment<br/>Check all 64 components]
 
     VERIFY --> VERIFY_RESULT{All Components<br/>Present?}
@@ -55,14 +55,14 @@ flowchart TD
     START([User: trinity update]) --> CHECK_DEPLOYED{Trinity<br/>Deployed?}
 
     CHECK_DEPLOYED -->|No| ERROR_NOT_DEPLOYED([❌ Error:<br/>Trinity not deployed])
-    CHECK_DEPLOYED -->|Yes| READ_VERSION[Read Current Version<br/>trinity/VERSION]
+    CHECK_DEPLOYED -->|Yes| READ_VERSION[Read Current Version<br/>.claude/trinity/VERSION]
 
     READ_VERSION --> COMPARE_VERSION{Version Check:<br/>Update Available?}
     COMPARE_VERSION -->|No| UP_TO_DATE([ℹ️ Already up-to-date])
     COMPARE_VERSION -->|Yes| PROMPT_UPDATE{Prompt:<br/>Update to latest?}
 
     PROMPT_UPDATE -->|No| CANCEL([Update Cancelled])
-    PROMPT_UPDATE -->|Yes| CREATE_BACKUP[Create Timestamped Backup<br/>trinity/backups/backup-YYYY-MM-DD.tar.gz]
+    PROMPT_UPDATE -->|Yes| CREATE_BACKUP[Create Timestamped Backup<br/>.claude/trinity/backups/backup-YYYY-MM-DD.tar.gz]
 
     CREATE_BACKUP --> PRESERVE_USER[Preserve User Content<br/>ARCHITECTURE.md, ISSUES.md<br/>To-do.md, Technical-Debt.md]
     PRESERVE_USER --> REMOVE_OLD[Remove Old Templates<br/>Keep user content + backups]
@@ -108,6 +108,6 @@ flowchart TD
 - **Entry Point**: `src/cli/commands/update.ts`
 - **Average Execution Time**: 3-5 seconds (includes backup creation)
 - **User Prompts**: 2 prompts (confirm update, cleanup backup)
-- **Backup Strategy**: Timestamped tar.gz in `trinity/backups/`
+- **Backup Strategy**: Timestamped tar.gz in `.claude/trinity/backups/`
 - **Preservation**: User-created content always preserved
 - **Rollback**: Automatic rollback on any failure

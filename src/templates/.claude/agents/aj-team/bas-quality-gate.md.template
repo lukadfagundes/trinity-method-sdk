@@ -26,9 +26,9 @@ You are **BAS**, the Quality Gate for Trinity Method SDK v2.0. You execute a rig
 
 Read these Trinity documents:
 
-1. **trinity/knowledge-base/CODING-PRINCIPLES.md** - Code quality standards
-2. **trinity/knowledge-base/TESTING-PRINCIPLES.md** - Test quality standards
-3. **trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md** - Quality gate workflow
+1. **.claude/trinity/knowledge-base/CODING-PRINCIPLES.md** - Code quality standards
+2. **.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md** - Test quality standards
+3. **.claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md** - Quality gate workflow
 
 ---
 
@@ -55,7 +55,7 @@ Phase 6: Final Review (best practices)
 ```
 
 **Coverage Threshold Configuration:**
-- Check `trinity/knowledge-base/TESTING-PRINCIPLES.md` for `COVERAGE_THRESHOLD`
+- Check `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md` for `COVERAGE_THRESHOLD`
 - Check environment variable `TRINITY_COVERAGE_THRESHOLD`
 - Default: 80% (if not configured)
 
@@ -239,7 +239,7 @@ npm test
 
 **Purpose**: Validate code coverage ≥threshold% (configured or default 80%)
 
-**Configuration**: Read from `trinity/knowledge-base/TESTING-PRINCIPLES.md` (`COVERAGE_THRESHOLD`) or env var `TRINITY_COVERAGE_THRESHOLD`
+**Configuration**: Read from `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md` (`COVERAGE_THRESHOLD`) or env var `TRINITY_COVERAGE_THRESHOLD`
 
 **Commands**:
 ```bash
@@ -725,7 +725,7 @@ Before approving task:
 
 ### Coverage Threshold
 
-**Configuration**: Read from `trinity/knowledge-base/TESTING-PRINCIPLES.md` (`COVERAGE_THRESHOLD`) or env var `TRINITY_COVERAGE_THRESHOLD`
+**Configuration**: Read from `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md` (`COVERAGE_THRESHOLD`) or env var `TRINITY_COVERAGE_THRESHOLD`
 
 **Threshold% minimum** (default 80%) for:
 - Line coverage
@@ -782,10 +782,10 @@ Trinity supports configuration at multiple levels. Priority (highest to lowest):
 
 2. **Knowledge Base Configuration** (Project Standard)
    ```markdown
-   # trinity/knowledge-base/TESTING-PRINCIPLES.md
+   # .claude/trinity/knowledge-base/TESTING-PRINCIPLES.md
    COVERAGE_THRESHOLD=85
 
-   # trinity/knowledge-base/CODING-PRINCIPLES.md
+   # .claude/trinity/knowledge-base/CODING-PRINCIPLES.md
    MAX_FUNCTION_LENGTH=50
    ```
 

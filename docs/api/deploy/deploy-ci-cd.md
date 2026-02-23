@@ -135,7 +135,7 @@ console.log(`Deployed ${filesDeployed} CI files`);
 **Files Deployed:**
 
 1. `.github/workflows/ci.yml` - Continuous Integration workflow
-2. `trinity/templates/ci/generic-ci.yml` - Generic template for reference
+2. `.claude/trinity/templates/ci/generic-ci.yml` - Generic template for reference
 
 **Process:**
 
@@ -145,14 +145,14 @@ console.log(`Deployed ${filesDeployed} CI files`);
 4. Checks if `.github/workflows/ci.yml` already exists (skips unless `--force`)
 5. Validates destination path for security
 6. Writes to `.github/workflows/ci.yml`
-7. Always deploys generic template to `trinity/templates/ci/`
+7. Always deploys generic template to `.claude/trinity/templates/ci/`
 
 **Typical Output:**
 
 ```
 ✔ CI/CD templates deployed (2 files)
   ✓ .github/workflows/ci.yml
-  ✓ trinity/templates/ci/generic-ci.yml
+  ✓ .claude/trinity/templates/ci/generic-ci.yml
 ```
 
 ---
@@ -162,7 +162,7 @@ console.log(`Deployed ${filesDeployed} CI files`);
 **Files Deployed:**
 
 1. `.gitlab-ci.yml` - GitLab CI/CD configuration
-2. `trinity/templates/ci/generic-ci.yml` - Generic template for reference
+2. `.claude/trinity/templates/ci/generic-ci.yml` - Generic template for reference
 
 **Process:**
 
@@ -170,21 +170,21 @@ console.log(`Deployed ${filesDeployed} CI files`);
 2. Checks if `.gitlab-ci.yml` already exists
 3. If exists and `options.force` is false → skips deployment
 4. If force enabled or doesn't exist → deploys to `.gitlab-ci.yml`
-5. Always deploys generic template to `trinity/templates/ci/`
+5. Always deploys generic template to `.claude/trinity/templates/ci/`
 
 **Typical Output:**
 
 ```
 ✔ CI/CD templates deployed (2 files)
   ✓ .gitlab-ci.yml
-  ✓ trinity/templates/ci/generic-ci.yml
+  ✓ .claude/trinity/templates/ci/generic-ci.yml
 ```
 
 **Skipped Case:**
 
 ```
 ℹ CI/CD templates deployed (1 file)
-  ✓ trinity/templates/ci/generic-ci.yml
+  ✓ .claude/trinity/templates/ci/generic-ci.yml
   Skipped:
   - .gitlab-ci.yml (already exists)
 ```
@@ -347,7 +347,7 @@ deploy:
 
 ### Generic CI Template
 
-**File:** `trinity/templates/ci/generic-ci.yml`
+**File:** `.claude/trinity/templates/ci/generic-ci.yml`
 
 **Purpose:** Reference template for custom CI/CD setup (BitBucket, Azure DevOps, Jenkins, etc.)
 
@@ -355,7 +355,7 @@ deploy:
 
 - Provides boilerplate configuration
 - Users can copy and customize for their CI/CD platform
-- Always deployed to `trinity/templates/ci/` for reference
+- Always deployed to `.claude/trinity/templates/ci/` for reference
 
 ---
 
@@ -428,7 +428,7 @@ if (ciDeploy) {
 ```
 ⚠ Some CI/CD templates failed to deploy
   ✗ .github/workflows/ci.yml: EACCES: permission denied
-  ✓ trinity/templates/ci/generic-ci.yml
+  ✓ .claude/trinity/templates/ci/generic-ci.yml
 ```
 
 ---
@@ -448,7 +448,7 @@ if (ciDeploy) {
 
 ```
 ✔ CI/CD templates deployed (1 file)
-  ✓ trinity/templates/ci/generic-ci.yml
+  ✓ .claude/trinity/templates/ci/generic-ci.yml
   Skipped:
   - .github/workflows/ci.yml (already exists)
 ```
@@ -467,7 +467,7 @@ if (ciDeploy) {
 
 - `detectGitPlatform()` returns `'unknown'`
 - Defaults to GitHub Actions deployment
-- Generic template deployed to `trinity/templates/ci/`
+- Generic template deployed to `.claude/trinity/templates/ci/`
 
 ---
 
@@ -663,12 +663,12 @@ env:
 
 ### Generic Template
 
-| Aspect            | Details                                       |
-| ----------------- | --------------------------------------------- |
-| **Configuration** | Reference template in `trinity/templates/ci/` |
-| **Strengths**     | Platform-agnostic, fully customizable         |
-| **Pricing**       | Depends on target platform                    |
-| **Deployment**    | 1 file (reference only)                       |
+| Aspect            | Details                                               |
+| ----------------- | ----------------------------------------------------- |
+| **Configuration** | Reference template in `.claude/trinity/templates/ci/` |
+| **Strengths**     | Platform-agnostic, fully customizable                 |
+| **Pricing**       | Depends on target platform                            |
+| **Deployment**    | 1 file (reference only)                               |
 
 ---
 

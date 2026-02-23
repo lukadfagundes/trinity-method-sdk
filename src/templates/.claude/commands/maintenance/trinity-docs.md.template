@@ -86,8 +86,8 @@ if (VALIDATE_TEMPLATES) {
   LOG: "Validating template files for correct variable syntax...";
   LOG: "";
 
-  // Template paths - See trinity/templates/documentation/configuration/documentation-structure.md
-  const template_base = "trinity/templates/documentation";
+  // Template paths - See .claude/trinity/templates/documentation/configuration/documentation-structure.md
+  const template_base = ".claude/trinity/templates/documentation";
   const template_paths = [
     `${template_base}/mermaid-diagrams/*.md`,
     `${template_base}/guides/*.md`,
@@ -236,7 +236,7 @@ function retry_operation(operation_name, operation_func, max_attempts = 3, delay
 // Pattern 1: File read with retry (handles filesystem delays)
 const file_read_result = retry_operation(
   "Read JUNO report",
-  () => Read("trinity/reports/DOCS-AUDIT-*.md"),
+  () => Read(".claude/trinity/reports/DOCS-AUDIT-*.md"),
   3,
   500
 );
@@ -404,25 +404,25 @@ LOG: "";
 
 const required_templates = [
   // Mermaid diagrams (WO-1.8) - deployed without .template suffix
-  "trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
-  "trinity/templates/documentation/mermaid-diagrams/database-er.md",
-  "trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md",
-  "trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
+  ".claude/trinity/templates/documentation/mermaid-diagrams/mvc-flow.md",
+  ".claude/trinity/templates/documentation/mermaid-diagrams/database-er.md",
+  ".claude/trinity/templates/documentation/mermaid-diagrams/api-endpoint-map.md",
+  ".claude/trinity/templates/documentation/mermaid-diagrams/component-hierarchy.md",
 
   // Guides (WO-002) - deployed without .template suffix
-  "trinity/templates/documentation/guides/getting-started.md",
-  "trinity/templates/documentation/guides/api-development.md",
-  "trinity/templates/documentation/guides/deployment.md",
-  "trinity/templates/documentation/guides/contributing.md",
+  ".claude/trinity/templates/documentation/guides/getting-started.md",
+  ".claude/trinity/templates/documentation/guides/api-development.md",
+  ".claude/trinity/templates/documentation/guides/deployment.md",
+  ".claude/trinity/templates/documentation/guides/contributing.md",
 
   // API docs (WO-002) - deployed without .template suffix
-  "trinity/templates/documentation/api-docs/README.md",
+  ".claude/trinity/templates/documentation/api-docs/README.md",
 
   // Configuration (WO-003) - deployed without .template suffix
-  "trinity/templates/documentation/configuration/env-example-generator.md",
+  ".claude/trinity/templates/documentation/configuration/env-example-generator.md",
 
   // JUNO internal report (WO-1.8) - deployed without .template suffix
-  "trinity/templates/documentation/reports/juno-internal-report.md"
+  ".claude/trinity/templates/documentation/reports/juno-internal-report.md"
 ];
 
 const missing_templates = [];
@@ -446,7 +446,7 @@ if (missing_templates.length > 0) {
   ERROR: "";
   ERROR: "REQUIRED ACTIONS:";
   ERROR: "  1. Run: trinity update";
-  ERROR: "  2. Verify templates exist in trinity/templates/documentation/";
+  ERROR: "  2. Verify templates exist in .claude/trinity/templates/documentation/";
   ERROR: "  3. Re-run this command";
   ERROR: "";
 
@@ -492,13 +492,13 @@ You are JUNO, the Quality Auditor. Your task is to audit this codebase and gener
 
 ## Report Template to Use
 
-**Template File:** \`trinity/templates/documentation/reports/juno-internal-report.md\`
+**Template File:** \`.claude/trinity/templates/documentation/reports/juno-internal-report.md\`
 
 **Instructions:**
 1. **Read the template** to understand the complete structure required
 2. **Analyze the codebase** to gather all data for every {{VARIABLE}}
 3. **Replace ALL placeholders** with actual discovered values (no placeholders like "[Database detected]")
-4. **Output the completed report** to: \`trinity/reports/DOCS-AUDIT-{timestamp}.md\`
+4. **Output the completed report** to: \`.claude/trinity/reports/DOCS-AUDIT-{timestamp}.md\`
 
 **Timestamp Format:** YYYY-MM-DD-HHmm (e.g., 2026-01-15-1530)
 
@@ -526,10 +526,10 @@ You are JUNO, the Quality Auditor. Your task is to audit this codebase and gener
 
 **Use discovery templates for codebase analysis:**
 
-- **Framework Detection:** See `trinity/templates/documentation/discovery/framework-detection.md` for package.json analysis patterns
-- **Component Discovery:** See `trinity/templates/documentation/discovery/component-discovery.md` for React/Vue/Angular/Svelte component patterns (CRITICAL: Zero tolerance for fake components)
-- **API Endpoints:** See `trinity/templates/documentation/discovery/api-endpoint-scanner.md` for Express/Fastify/NestJS/Koa route patterns
-- **Environment Variables:** See `trinity/templates/documentation/discovery/env-variable-extraction.md` for .env and process.env usage patterns
+- **Framework Detection:** See `.claude/trinity/templates/documentation/discovery/framework-detection.md` for package.json analysis patterns
+- **Component Discovery:** See `.claude/trinity/templates/documentation/discovery/component-discovery.md` for React/Vue/Angular/Svelte component patterns (CRITICAL: Zero tolerance for fake components)
+- **API Endpoints:** See `.claude/trinity/templates/documentation/discovery/api-endpoint-scanner.md` for Express/Fastify/NestJS/Koa route patterns
+- **Environment Variables:** See `.claude/trinity/templates/documentation/discovery/env-variable-extraction.md` for .env and process.env usage patterns
 
 **Database Schema Analysis:**
 - Prisma: Parse `prisma/schema.prisma` for models and relationships
@@ -542,7 +542,7 @@ You are JUNO, the Quality Auditor. Your task is to audit this codebase and gener
 
 **Read the template first:**
 \`\`\`javascript
-const template_content = Read("trinity/templates/documentation/reports/juno-internal-report.md");
+const template_content = Read(".claude/trinity/templates/documentation/reports/juno-internal-report.md");
 // Study the structure to understand ALL {{VARIABLES}} you need to fill
 \`\`\`
 
@@ -557,7 +557,7 @@ const template_content = Read("trinity/templates/documentation/reports/juno-inte
 **Output the completed report:**
 \`\`\`javascript
 const completed_report = /* filled template with all variables replaced */;
-Write("trinity/reports/DOCS-AUDIT-{timestamp}.md", completed_report);
+Write(".claude/trinity/reports/DOCS-AUDIT-{timestamp}.md", completed_report);
 \`\`\`
 
 ---
@@ -567,7 +567,7 @@ Write("trinity/reports/DOCS-AUDIT-{timestamp}.md", completed_report);
 Before returning, verify report completeness:
 
 \`\`\`javascript
-const report_path = "trinity/reports/DOCS-AUDIT-{timestamp}.md";
+const report_path = ".claude/trinity/reports/DOCS-AUDIT-{timestamp}.md";
 const report_content = Read(report_path);
 
 const validation_checks = {
@@ -597,7 +597,7 @@ Return concise summary after validation passes:
 
 \`\`\`
 JUNO Audit Complete
-Report: trinity/reports/DOCS-AUDIT-{timestamp}.md
+Report: .claude/trinity/reports/DOCS-AUDIT-{timestamp}.md
 
 Architecture: [type]
 Backend: [framework] [version]
@@ -633,7 +633,7 @@ const report_path_match = juno_response.match(/trinity\/reports\/DOCS-AUDIT-[\d-
 if (!report_path_match) {
   ERROR: "";
   ERROR: "❌ CRITICAL ERROR: JUNO did not create audit report";
-  ERROR: "Expected report at: trinity/reports/DOCS-AUDIT-{timestamp}.md";
+  ERROR: "Expected report at: .claude/trinity/reports/DOCS-AUDIT-{timestamp}.md";
   ERROR: "";
   ERROR: "Cannot proceed without audit report.";
   ERROR: "";
@@ -765,7 +765,7 @@ if (component_section) {
 LOG: `Documented components in report: ${documented_components.length}`;
 
 // Re-discover components from actual codebase
-// See trinity/templates/documentation/configuration/documentation-structure.md for full patterns
+// See .claude/trinity/templates/documentation/configuration/documentation-structure.md for full patterns
 const component_patterns = [
   "client/**/*.{tsx,jsx,vue}",
   "src/**/*.{tsx,jsx,vue}"
@@ -956,26 +956,26 @@ if (global.trinity_docs_session.juno_incomplete) {
 **Use discovery templates for fallback analysis:**
 
 **APO-1 (Diagrams):**
-- If diagram variables missing: Use `trinity/templates/documentation/discovery/api-endpoint-scanner.md` and `trinity/templates/documentation/discovery/component-discovery.md` patterns
+- If diagram variables missing: Use `.claude/trinity/templates/documentation/discovery/api-endpoint-scanner.md` and `.claude/trinity/templates/documentation/discovery/component-discovery.md` patterns
 - If database schema empty: Parse database schema files directly (Prisma, TypeORM, Mongoose)
 - Generate Mermaid syntax from discovered data
 
 **APO-2 (Guides & Docs):**
-- If framework not specified: Use `trinity/templates/documentation/discovery/framework-detection.md` for package.json analysis
-- If environment variables missing: Use `trinity/templates/documentation/discovery/env-variable-extraction.md` for .env and process.env patterns
+- If framework not specified: Use `.claude/trinity/templates/documentation/discovery/framework-detection.md` for package.json analysis
+- If environment variables missing: Use `.claude/trinity/templates/documentation/discovery/env-variable-extraction.md` for .env and process.env patterns
 - Fill template variables from direct detection
 
 **APO-3 (Config Files):**
-- If .env keys missing: Use `trinity/templates/documentation/discovery/env-variable-extraction.md` for process.env.KEY patterns
+- If .env keys missing: Use `.claude/trinity/templates/documentation/discovery/env-variable-extraction.md` for process.env.KEY patterns
 - If README links undefined: Build links from expected file locations
 - Validate all file references before writing
 
 When JUNO report doesn't specify templates:
-- Use default template paths: `trinity/templates/documentation/`
+- Use default template paths: `.claude/trinity/templates/documentation/`
 - Read template structure to determine required variables
 - Extract variables from codebase analysis
 
-**See trinity/templates/documentation/processes/fallback-mechanism.md for:**
+**See .claude/trinity/templates/documentation/processes/fallback-mechanism.md for:**
 - Framework detection fallback
 - Component discovery fallback
 - Database schema fallback
@@ -1072,7 +1072,7 @@ if (TIER_2_ERROR) {
 ## Workflow Overview
 
 Follow the **5-Phase APO Workflow** defined in:
-📄 **[trinity/templates/documentation/processes/apo-workflow-common.md](trinity/templates/documentation/processes/apo-workflow-common.md)**
+📄 **[.claude/trinity/templates/documentation/processes/apo-workflow-common.md](.claude/trinity/templates/documentation/processes/apo-workflow-common.md)**
 
 1. **Phase 1:** Read JUNO Report (`global.trinity_docs_session.audit_report`)
 2. **Phase 2:** Extract Template Variables (from Section A)
@@ -1085,7 +1085,7 @@ Follow the **5-Phase APO Workflow** defined in:
 ## Error Handling
 
 **Use 3-Tier Error System** defined in:
-📄 **[trinity/templates/documentation/processes/error-handling-protocol.md](trinity/templates/documentation/processes/error-handling-protocol.md)**
+📄 **[.claude/trinity/templates/documentation/processes/error-handling-protocol.md](.claude/trinity/templates/documentation/processes/error-handling-protocol.md)**
 
 - **Tier 1 (ABORT):** JUNO report missing, component verification failed, write permission denied
 - **Tier 2 (WARN):** JUNO incomplete, database schema missing, API endpoints not found
@@ -1096,7 +1096,7 @@ Follow the **5-Phase APO Workflow** defined in:
 ## APO-1 Specific Tasks
 
 **See detailed instructions in:**
-📄 **[trinity/templates/documentation/processes/apo-diagram-specific.md](trinity/templates/documentation/processes/apo-diagram-specific.md)**
+📄 **[.claude/trinity/templates/documentation/processes/apo-diagram-specific.md](.claude/trinity/templates/documentation/processes/apo-diagram-specific.md)**
 
 ### Diagrams to Generate:
 
@@ -1119,9 +1119,9 @@ Follow the **5-Phase APO Workflow** defined in:
 **If JUNO report incomplete** (`global.trinity_docs_session.juno_incomplete === true`):
 
 **Use discovery templates for direct codebase analysis:**
-- 📄 **Framework Detection:** [trinity/templates/documentation/discovery/framework-detection.md](trinity/templates/documentation/discovery/framework-detection.md)
-- 📄 **Component Discovery:** [trinity/templates/documentation/discovery/component-discovery.md](trinity/templates/documentation/discovery/component-discovery.md)
-- 📄 **API Endpoint Scanner:** [trinity/templates/documentation/discovery/api-endpoint-scanner.md](trinity/templates/documentation/discovery/api-endpoint-scanner.md)
+- 📄 **Framework Detection:** [.claude/trinity/templates/documentation/discovery/framework-detection.md](.claude/trinity/templates/documentation/discovery/framework-detection.md)
+- 📄 **Component Discovery:** [.claude/trinity/templates/documentation/discovery/component-discovery.md](.claude/trinity/templates/documentation/discovery/component-discovery.md)
+- 📄 **API Endpoint Scanner:** [.claude/trinity/templates/documentation/discovery/api-endpoint-scanner.md](.claude/trinity/templates/documentation/discovery/api-endpoint-scanner.md)
 
 **Example Fallback:**
 \`\`\`javascript
@@ -1130,7 +1130,7 @@ if (global.trinity_docs_session.juno_incomplete) {
   LOG: "JUNO report incomplete - using direct codebase analysis";
 
   // Use discovery templates to extract missing data
-  // See trinity/templates/documentation/processes/apo-diagram-specific.md for patterns
+  // See .claude/trinity/templates/documentation/processes/apo-diagram-specific.md for patterns
 }
 \`\`\`
 
@@ -1171,7 +1171,7 @@ LOG: \`✅ All $\{juno_components.length} components verified in codebase\`;
 \`\`\`
 
 **See full verification logic in:**
-📄 **[trinity/templates/documentation/processes/apo-diagram-specific.md](trinity/templates/documentation/processes/apo-diagram-specific.md)** (lines 277-315)
+📄 **[.claude/trinity/templates/documentation/processes/apo-diagram-specific.md](.claude/trinity/templates/documentation/processes/apo-diagram-specific.md)** (lines 277-315)
 
 ---
 
@@ -1179,7 +1179,7 @@ LOG: \`✅ All $\{juno_components.length} components verified in codebase\`;
 
 **Run comprehensive self-validation** after generating diagrams:
 
-📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** - APO-1 Checklist
+📄 **[.claude/trinity/templates/documentation/validation/apo-self-validation.md](.claude/trinity/templates/documentation/validation/apo-self-validation.md)** - APO-1 Checklist
 
 **Key Checks:**
 - [ ] All expected diagrams created (2-4 files depending on project type)
@@ -1191,7 +1191,7 @@ LOG: \`✅ All $\{juno_components.length} components verified in codebase\`;
 - [ ] Mermaid syntax valid
 
 **See validation template for implementation:**
-📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** (APO-1 validation code)
+📄 **[.claude/trinity/templates/documentation/validation/apo-self-validation.md](.claude/trinity/templates/documentation/validation/apo-self-validation.md)** (APO-1 validation code)
 
 ---
 
@@ -1235,7 +1235,7 @@ Task({
 ## Workflow Overview
 
 Follow the **5-Phase APO Workflow** defined in:
-📄 **[trinity/templates/documentation/processes/apo-workflow-common.md](trinity/templates/documentation/processes/apo-workflow-common.md)**
+📄 **[.claude/trinity/templates/documentation/processes/apo-workflow-common.md](.claude/trinity/templates/documentation/processes/apo-workflow-common.md)**
 
 1. **Phase 1:** Read JUNO Report (\`global.trinity_docs_session.audit_report\`)
 2. **Phase 2:** Extract Template Variables (from Section B)
@@ -1248,7 +1248,7 @@ Follow the **5-Phase APO Workflow** defined in:
 ## Error Handling
 
 **Use 3-Tier Error System** defined in:
-📄 **[trinity/templates/documentation/processes/error-handling-protocol.md](trinity/templates/documentation/processes/error-handling-protocol.md)**
+📄 **[.claude/trinity/templates/documentation/processes/error-handling-protocol.md](.claude/trinity/templates/documentation/processes/error-handling-protocol.md)**
 
 - **Tier 1 (ABORT):** JUNO report missing, cannot read templates, write permission denied
 - **Tier 2 (WARN):** JUNO incomplete, test framework unknown, deployment platform uncertain
@@ -1259,7 +1259,7 @@ Follow the **5-Phase APO Workflow** defined in:
 ## APO-2 Specific Tasks
 
 **See detailed instructions in:**
-📄 **[trinity/templates/documentation/processes/apo-guide-specific.md](trinity/templates/documentation/processes/apo-guide-specific.md)**
+📄 **[.claude/trinity/templates/documentation/processes/apo-guide-specific.md](.claude/trinity/templates/documentation/processes/apo-guide-specific.md)**
 
 ### Guides to Generate:
 
@@ -1286,8 +1286,8 @@ Follow the **5-Phase APO Workflow** defined in:
 **If JUNO report incomplete** (\`global.trinity_docs_session.juno_incomplete === true\`):
 
 **Use discovery templates for direct analysis:**
-- 📄 **Framework Detection:** [trinity/templates/documentation/discovery/framework-detection.md](trinity/templates/documentation/discovery/framework-detection.md)
-- 📄 **API Endpoint Scanner:** [trinity/templates/documentation/discovery/api-endpoint-scanner.md](trinity/templates/documentation/discovery/api-endpoint-scanner.md)
+- 📄 **Framework Detection:** [.claude/trinity/templates/documentation/discovery/framework-detection.md](.claude/trinity/templates/documentation/discovery/framework-detection.md)
+- 📄 **API Endpoint Scanner:** [.claude/trinity/templates/documentation/discovery/api-endpoint-scanner.md](.claude/trinity/templates/documentation/discovery/api-endpoint-scanner.md)
 
 **Example Fallback:**
 \\\`\\\`\\\`javascript
@@ -1305,13 +1305,13 @@ if (global.trinity_docs_session.juno_incomplete) {
 \\\`\\\`\\\`
 
 **See full fallback patterns in:**
-📄 **[trinity/templates/documentation/processes/apo-guide-specific.md](trinity/templates/documentation/processes/apo-guide-specific.md)** (lines 150-237)
+📄 **[.claude/trinity/templates/documentation/processes/apo-guide-specific.md](.claude/trinity/templates/documentation/processes/apo-guide-specific.md)** (lines 150-237)
 
 ---
 
 ## Template Processing
 
-**Read templates from:** \`trinity/templates/documentation/guides/\`
+**Read templates from:** \`.claude/trinity/templates/documentation/guides/\`
 
 **Process each template:**
 1. Read template content
@@ -1321,7 +1321,7 @@ if (global.trinity_docs_session.juno_incomplete) {
 
 **Example:**
 \\\`\\\`\\\`javascript
-const template = Read('trinity/templates/documentation/guides/getting-started.md');
+const template = Read('.claude/trinity/templates/documentation/guides/getting-started.md');
 
 let output = template
   .replace(/{{PROJECT_NAME}}/g, variables.PROJECT_NAME)
@@ -1343,7 +1343,7 @@ Write('docs/guides/getting-started.md', output);
 
 **Run comprehensive self-validation** after generating guides:
 
-📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** - APO-2 Checklist
+📄 **[.claude/trinity/templates/documentation/validation/apo-self-validation.md](.claude/trinity/templates/documentation/validation/apo-self-validation.md)** - APO-2 Checklist
 
 **Key Checks:**
 - [ ] All expected guides created (4-5 files depending on project type)
@@ -1355,7 +1355,7 @@ Write('docs/guides/getting-started.md', output);
 - [ ] Framework-specific examples accurate
 
 **See validation template for implementation:**
-📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** (APO-2 validation code)
+📄 **[.claude/trinity/templates/documentation/validation/apo-self-validation.md](.claude/trinity/templates/documentation/validation/apo-self-validation.md)** (APO-2 validation code)
 
 ---
 
@@ -1400,7 +1400,7 @@ Task({
 ## Workflow Overview
 
 Follow the **5-Phase APO Workflow** defined in:
-📄 **[trinity/templates/documentation/processes/apo-workflow-common.md](trinity/templates/documentation/processes/apo-workflow-common.md)**
+📄 **[.claude/trinity/templates/documentation/processes/apo-workflow-common.md](.claude/trinity/templates/documentation/processes/apo-workflow-common.md)**
 
 1. **Phase 1:** Read JUNO Report (\`global.trinity_docs_session.audit_report\`)
 2. **Phase 2:** Extract Template Variables (from Section C)
@@ -1413,7 +1413,7 @@ Follow the **5-Phase APO Workflow** defined in:
 ## Error Handling
 
 **Use 3-Tier Error System** defined in:
-📄 **[trinity/templates/documentation/processes/error-handling-protocol.md](trinity/templates/documentation/processes/error-handling-protocol.md)**
+📄 **[.claude/trinity/templates/documentation/processes/error-handling-protocol.md](.claude/trinity/templates/documentation/processes/error-handling-protocol.md)**
 
 - **Tier 1 (ABORT):** JUNO report missing, write permission denied, **SECURITY VIOLATION** (real secrets detected)
 - **Tier 2 (WARN):** No environment variables discovered, README.md doesn't exist
@@ -1424,7 +1424,7 @@ Follow the **5-Phase APO Workflow** defined in:
 ## APO-3 Specific Tasks
 
 **See detailed instructions in:**
-📄 **[trinity/templates/documentation/processes/apo-config-specific.md](trinity/templates/documentation/processes/apo-config-specific.md)**
+📄 **[.claude/trinity/templates/documentation/processes/apo-config-specific.md](.claude/trinity/templates/documentation/processes/apo-config-specific.md)**
 
 ### Files to Generate:
 
@@ -1475,7 +1475,7 @@ LOG: "✅ Security check passed: No real secrets in .env.example";
 \\\`\\\`\\\`
 
 **See full security validation in:**
-📄 **[trinity/templates/documentation/processes/apo-config-specific.md](trinity/templates/documentation/processes/apo-config-specific.md)** (lines 61-78)
+📄 **[.claude/trinity/templates/documentation/processes/apo-config-specific.md](.claude/trinity/templates/documentation/processes/apo-config-specific.md)** (lines 61-78)
 
 ---
 
@@ -1484,7 +1484,7 @@ LOG: "✅ Security check passed: No real secrets in .env.example";
 **If JUNO report incomplete** (\`global.trinity_docs_session.juno_incomplete === true\`):
 
 **Use discovery template for direct analysis:**
-- 📄 **Env Variable Extraction:** [trinity/templates/documentation/discovery/env-variable-extraction.md](trinity/templates/documentation/discovery/env-variable-extraction.md)
+- 📄 **Env Variable Extraction:** [.claude/trinity/templates/documentation/discovery/env-variable-extraction.md](.claude/trinity/templates/documentation/discovery/env-variable-extraction.md)
 
 **Example Fallback:**
 \\\`\\\`\\\`javascript
@@ -1579,7 +1579,7 @@ Complete documentation is available in the [\\\`docs/\\\`](docs/) directory:
 
 **Run comprehensive self-validation** after generating config files:
 
-📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** - APO-3 Checklist
+📄 **[.claude/trinity/templates/documentation/validation/apo-self-validation.md](.claude/trinity/templates/documentation/validation/apo-self-validation.md)** - APO-3 Checklist
 
 **Key Checks:**
 - [ ] .env.example created with ≥5 variables (or all discovered)
@@ -1591,7 +1591,7 @@ Complete documentation is available in the [\\\`docs/\\\`](docs/) directory:
 - [ ] Configuration section added with .env instructions
 
 **See validation template for implementation:**
-📄 **[trinity/templates/documentation/validation/apo-self-validation.md](trinity/templates/documentation/validation/apo-self-validation.md)** (APO-3 validation code with security checks)
+📄 **[.claude/trinity/templates/documentation/validation/apo-self-validation.md](.claude/trinity/templates/documentation/validation/apo-self-validation.md)** (APO-3 validation code with security checks)
 
 ---
 
@@ -1678,7 +1678,7 @@ LOG: "";
 LOG: "Checking if all expected files were created...";
 LOG: "";
 
-// See trinity/templates/documentation/configuration/documentation-structure.md for verification patterns
+// See .claude/trinity/templates/documentation/configuration/documentation-structure.md for verification patterns
 const diagram_files = Glob({pattern: "docs/images/*.md"});
 const guide_files = Glob({pattern: "docs/guides/*.md"});
 const api_doc_files = Glob({pattern: "docs/api/*.md"});
@@ -2331,7 +2331,7 @@ LOG: "Generating verification report...";
 LOG: "";
 
 const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-const report_path = `trinity/reports/VERIFICATION-REPORT-${timestamp}.md`;
+const report_path = `.claude/trinity/reports/VERIFICATION-REPORT-${timestamp}.md`;
 
 // Rec 15: Performance timing variables (estimated for individual phases)
 const apo1_time = "N/A"; // Individual APO times not tracked (parallel execution)

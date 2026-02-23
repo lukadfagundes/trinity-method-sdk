@@ -13,16 +13,16 @@ Resume Trinity Method workflow after interruption.
 **Context:** User experienced a crash or is returning to an existing session with incomplete work.
 
 **When to use:**
-- Work orders in trinity/work-orders/ haven't been completed
-- Reports in trinity/reports/ haven't been analyzed
-- Session files in trinity/sessions/ need review
+- Work orders in .claude/trinity/work-orders/ haven't been completed
+- Reports in .claude/trinity/reports/ haven't been analyzed
+- Session files in .claude/trinity/sessions/ need review
 - User needs to pick up where they left off
 
 **Process:**
 1. **ALY (CTO)** reviews all current work:
-   - Check trinity/sessions/ for active session files
-   - Review trinity/work-orders/ for incomplete work orders
-   - Analyze trinity/reports/ for unprocessed reports
+   - Check .claude/trinity/sessions/ for active session files
+   - Review .claude/trinity/work-orders/ for incomplete work orders
+   - Analyze .claude/trinity/reports/ for unprocessed reports
 
 2. **ALY provides session summary:**
    - Last known state of work
@@ -52,7 +52,7 @@ git log --oneline -5
 
 2. **Work Order Checking**:
 ```bash
-cat trinity/work-orders/WO-042-jwt-refresh-implementation.md
+cat .claude/trinity/work-orders/WO-042-jwt-refresh-implementation.md
 # Status: IN PROGRESS
 # **Last Updated**: 2 hours ago
 # Progress: Task 3/7
@@ -60,14 +60,14 @@ cat trinity/work-orders/WO-042-jwt-refresh-implementation.md
 
 3. **Session File Reading**:
 ```bash
-cat trinity/sessions/SESSION-2025-12-18-14-30.md
+cat .claude/trinity/sessions/SESSION-2025-12-18-14-30.md
 # Last entry: "Implementing middleware integration (50% complete)"
 # Interrupted: Context window limit reached
 ```
 
 4. **Knowledge Base Review**:
 ```bash
-cat trinity/knowledge-base/To-do.md
+cat .claude/trinity/knowledge-base/To-do.md
 # Shows 4 remaining tasks for JWT implementation
 ```
 
@@ -209,7 +209,7 @@ The previous session (3 days ago) was completed successfully:
 - Or create new work order with `/trinity-workorder`
 
 **Option 2: Review Backlog**
-- Check trinity/work-orders/ for pending work orders
+- Check .claude/trinity/work-orders/ for pending work orders
 - Prioritize and select next task
 - Begin implementation
 
@@ -406,13 +406,13 @@ git diff HEAD
 ### 2. Work Order Checking
 ```bash
 # List all work orders
-ls -lt trinity/work-orders/
+ls -lt .claude/trinity/work-orders/
 
 # Find IN PROGRESS work orders
-grep -r "Status: IN PROGRESS" trinity/work-orders/
+grep -r "Status: IN PROGRESS" .claude/trinity/work-orders/
 
 # Read most recent work order
-cat trinity/work-orders/WO-042-*.md
+cat .claude/trinity/work-orders/WO-042-*.md
 ```
 
 **Information Gathered**:
@@ -424,10 +424,10 @@ cat trinity/work-orders/WO-042-*.md
 ### 3. Session File Reading
 ```bash
 # Find most recent session file
-ls -lt trinity/sessions/ | head -1
+ls -lt .claude/trinity/sessions/ | head -1
 
 # Read session log
-cat trinity/sessions/SESSION-2025-12-18-14-30.md
+cat .claude/trinity/sessions/SESSION-2025-12-18-14-30.md
 ```
 
 **Information Gathered**:
@@ -439,13 +439,13 @@ cat trinity/sessions/SESSION-2025-12-18-14-30.md
 ### 4. Knowledge Base Review
 ```bash
 # Check active tasks
-cat trinity/knowledge-base/To-do.md
+cat .claude/trinity/knowledge-base/To-do.md
 
 # Review known issues
-cat trinity/knowledge-base/ISSUES.md
+cat .claude/trinity/knowledge-base/ISSUES.md
 
 # Check recent decisions
-tail -20 trinity/knowledge-base/ARCHITECTURE.md
+tail -20 .claude/trinity/knowledge-base/ARCHITECTURE.md
 ```
 
 **Information Gathered**:
@@ -495,7 +495,7 @@ git log origin/main..HEAD --oneline
 - Terminal history
 - In-memory variables
 
-**Persisted In**: `trinity/sessions/SESSION-{timestamp}.md`
+**Persisted In**: `.claude/trinity/sessions/SESSION-{timestamp}.md`
 
 ### Work Order State
 **What**: Progress on specific task
@@ -503,7 +503,7 @@ git log origin/main..HEAD --oneline
 - Current phase
 - Blockers/issues
 
-**Persisted In**: `trinity/work-orders/WO-XXX-{title}.md`
+**Persisted In**: `.claude/trinity/work-orders/WO-XXX-{title}.md`
 
 ### Key Difference
 
@@ -547,7 +547,7 @@ git log origin/main..HEAD --oneline
 **/trinity-end**:
 - Creates session summary
 - Updates knowledge base
-- Archives work to trinity/archive/
+- Archives work to .claude/trinity/archive/
 - Clears session state
 
 **Don't Use /trinity-end** if you're just taking a break - context will be lost!

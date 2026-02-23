@@ -179,7 +179,7 @@ Trinity can setup automated testing workflows for your CI/CD platform.
 
   Will configure:
   ✓ .github/workflows/ci.yml
-  ✓ trinity/templates/ci/generic-ci.yml (reference)
+  ✓ .claude/trinity/templates/ci/generic-ci.yml (reference)
 ```
 
 **Output Display (No platform detected):**
@@ -190,7 +190,7 @@ Trinity can setup automated testing workflows for your CI/CD platform.
 📦 Will configure:
 
   ✓ .github/workflows/ci.yml (GitHub Actions)
-  ✓ trinity/templates/ci/generic-ci.yml (reference)
+  ✓ .claude/trinity/templates/ci/generic-ci.yml (reference)
 ```
 
 **Returns:** `boolean` - Whether CI/CD was enabled
@@ -312,7 +312,7 @@ Displays formatted CI/CD configuration summary.
 
   Will configure:
   ✓ .github/workflows/ci.yml
-  ✓ trinity/templates/ci/generic-ci.yml (reference)
+  ✓ .claude/trinity/templates/ci/generic-ci.yml (reference)
 ```
 
 **Output (Unknown):**
@@ -323,7 +323,7 @@ Displays formatted CI/CD configuration summary.
 📦 Will configure:
 
   ✓ .github/workflows/ci.yml (GitHub Actions)
-  ✓ trinity/templates/ci/generic-ci.yml (reference)
+  ✓ .claude/trinity/templates/ci/generic-ci.yml (reference)
 ```
 
 ---

@@ -326,7 +326,7 @@ APO-3 will receive these pre-filled variables from JUNO's audit report:
 ```markdown
 ## File 1: .env.example
 
-**Template:** trinity/templates/documentation/config/env-example-generator.md.template
+**Template:** .claude/trinity/templates/documentation/config/env-example-generator.md.template
 
 **Variables to Replace:**
 - {{PROJECT_NAME}}: "dnd-tool"

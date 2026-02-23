@@ -28,8 +28,8 @@
 - ✅ **Tool-based:** Uses actual linters/scanners, not just file reading
 
 **Deliverable:**
-- `trinity/reports/CODEBASE-AUDIT-{date}.md` (human-readable report)
-- `trinity/reports/AUDIT-BASELINE-{date}.json` (machine-readable baseline for future comparisons)
+- `.claude/trinity/reports/CODEBASE-AUDIT-{date}.md` (human-readable report)
+- `.claude/trinity/reports/AUDIT-BASELINE-{date}.json` (machine-readable baseline for future comparisons)
 
 ---
 
@@ -56,7 +56,7 @@
 
 ### ⚠️ Second Audit Behavior:
 
-When a baseline exists (`trinity/reports/AUDIT-BASELINE-*.json`):
+When a baseline exists (`.claude/trinity/reports/AUDIT-BASELINE-*.json`):
 - **FIXED issues:** ✅ Marked as resolved (celebrate!)
 - **NEW issues:** ⚠️ Flagged as introduced since last audit
 - **PERSISTENT issues:** 🔴 Still present from previous audit
@@ -75,7 +75,7 @@ JUNO follows a **strict, repeatable process** to ensure consistent results:
 
 ```bash
 # Check for existing baseline
-IF trinity/reports/AUDIT-BASELINE-*.json exists:
+IF .claude/trinity/reports/AUDIT-BASELINE-*.json exists:
   - Load previous findings
   - Track what's been fixed ✅
   - Track what's new ⚠️
@@ -425,7 +425,7 @@ IF baseline exists:
 
 **Two files created:**
 
-#### 1. Human-Readable Report: `trinity/reports/CODEBASE-AUDIT-{date}.md`
+#### 1. Human-Readable Report: `.claude/trinity/reports/CODEBASE-AUDIT-{date}.md`
 
 ```markdown
 # Codebase Audit Report
@@ -503,10 +503,10 @@ Expected result: "0 new issues, 0 persistent issues, X fixed issues"
 
 **Audit Complete:** {timestamp}
 **Confidence:** {HIGH|MEDIUM|LOW}
-**Baseline Saved:** trinity/reports/AUDIT-BASELINE-{date}.json
+**Baseline Saved:** .claude/trinity/reports/AUDIT-BASELINE-{date}.json
 ```
 
-#### 2. Machine-Readable Baseline: `trinity/reports/AUDIT-BASELINE-{date}.json`
+#### 2. Machine-Readable Baseline: `.claude/trinity/reports/AUDIT-BASELINE-{date}.json`
 
 ```json
 {
@@ -599,8 +599,8 @@ JUNO: Loading previous audit baseline...
 
 **Recommendation:** You're done! The codebase is in excellent shape.
 
-**Audit saved:** trinity/reports/CODEBASE-AUDIT-2025-12-21.md
-**Baseline updated:** trinity/reports/AUDIT-BASELINE-2025-12-21.json
+**Audit saved:** .claude/trinity/reports/CODEBASE-AUDIT-2025-12-21.md
+**Baseline updated:** .claude/trinity/reports/AUDIT-BASELINE-2025-12-21.json
 ```
 
 **This is how the cycle ends.**

@@ -1,7 +1,7 @@
 # Trinity End
 
 **Command:** `/session:trinity-end`
-**Purpose:** End session and archive work to trinity/archive/
+**Purpose:** End session and archive work to .claude/trinity/archive/
 **Architecture:** ALY session summary → Work archival → Documentation update
 **Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-21
@@ -18,17 +18,17 @@ End current Trinity Method session and prepare for commit.
    **STRICT ARCHIVING PROTOCOL:**
 
    a. **Archive Completed Work Orders:**
-      - Read all files from `trinity/sessions/` matching `WO-*.md`
-      - Move each to `trinity/archive/work-orders/YYYY-MM-DD/`
+      - Read all files from `.claude/trinity/sessions/` matching `WO-*.md`
+      - Move each to `.claude/trinity/archive/work-orders/YYYY-MM-DD/`
       - These were moved to sessions/ after completion per work order template
 
    b. **Archive Completed Investigations:**
-      - Read all files from `trinity/sessions/` matching `INV-*.md`
-      - Move each to `trinity/archive/investigations/YYYY-MM-DD/`
+      - Read all files from `.claude/trinity/sessions/` matching `INV-*.md`
+      - Move each to `.claude/trinity/archive/investigations/YYYY-MM-DD/`
       - These were moved to sessions/ after completion per investigation template
 
    c. **Archive ALL Reports:**
-      - Move ALL files from `trinity/reports/` to `trinity/archive/reports/YYYY-MM-DD/`
+      - Move ALL files from `.claude/trinity/reports/` to `.claude/trinity/archive/reports/YYYY-MM-DD/`
       - This includes:
         - Implementation completion reports
         - Investigation findings reports
@@ -37,18 +37,18 @@ End current Trinity Method session and prepare for commit.
       - **NO EXCEPTIONS:** Every file in reports/ must be archived
 
    d. **Archive Session Files:**
-      - Move ALL remaining files from `trinity/sessions/` to `trinity/archive/sessions/YYYY-MM-DD/`
-      - Create session summary document in `trinity/archive/sessions/YYYY-MM-DD/SESSION-SUMMARY-{date}.md`
+      - Move ALL remaining files from `.claude/trinity/sessions/` to `.claude/trinity/archive/sessions/YYYY-MM-DD/`
+      - Create session summary document in `.claude/trinity/archive/sessions/YYYY-MM-DD/SESSION-SUMMARY-{date}.md`
 
    e. **Verify Clean Slate:**
-      - **CRITICAL:** After archiving, `trinity/sessions/` MUST be empty
-      - **CRITICAL:** After archiving, `trinity/reports/` MUST be empty
+      - **CRITICAL:** After archiving, `.claude/trinity/sessions/` MUST be empty
+      - **CRITICAL:** After archiving, `.claude/trinity/reports/` MUST be empty
       - If any files remain, archive them or report error
       - Next session MUST start with completely empty sessions/ and reports/ folders
 
    **Archive Structure:**
    ```
-   trinity/archive/
+   .claude/trinity/archive/
    ├── work-orders/YYYY-MM-DD/
    │   ├── WO-001-*.md
    │   ├── WO-002-*.md
@@ -68,25 +68,25 @@ End current Trinity Method session and prepare for commit.
    ```
 
    **Important Notes:**
-   - Keep ONLY active/in-progress work orders in `trinity/work-orders/`
-   - Keep ONLY active/in-progress investigations in `trinity/investigations/`
+   - Keep ONLY active/in-progress work orders in `.claude/trinity/work-orders/`
+   - Keep ONLY active/in-progress investigations in `.claude/trinity/investigations/`
    - Do NOT archive incomplete work
-   - Completed work is identified by presence in `trinity/sessions/` folder
+   - Completed work is identified by presence in `.claude/trinity/sessions/` folder
    - All reports are archived regardless of status
 
 2. **ALY analyzes session events:**
    - Review all work completed during session
    - Identify patterns and learnings
-   - Update trinity/knowledge-base/ARCHITECTURE.md with architectural changes
-   - Update trinity/knowledge-base/ISSUES.md with new known issues
-   - Update trinity/knowledge-base/To-do.md with next tasks
-   - Update trinity/knowledge-base/Technical-Debt.md with new debt
+   - Update .claude/trinity/knowledge-base/ARCHITECTURE.md with architectural changes
+   - Update .claude/trinity/knowledge-base/ISSUES.md with new known issues
+   - Update .claude/trinity/knowledge-base/To-do.md with next tasks
+   - Update .claude/trinity/knowledge-base/Technical-Debt.md with new debt
 
 3. **Clean workspace:**
-   - Verify trinity/work-orders/ contains only active work
-   - Verify trinity/investigations/ contains only active investigations
-   - Verify trinity/reports/ is empty
-   - Verify trinity/sessions/ is empty
+   - Verify .claude/trinity/work-orders/ contains only active work
+   - Verify .claude/trinity/investigations/ contains only active investigations
+   - Verify .claude/trinity/reports/ is empty
+   - Verify .claude/trinity/sessions/ is empty
    - Ready for next session
 
 4. **Git commit instructions:**

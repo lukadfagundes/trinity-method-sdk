@@ -71,8 +71,7 @@ trinity-method-sdk/
 │   ├── unit/             # Unit tests (~200 tests)
 │   └── integration/      # Integration tests (~200 tests)
 ├── docs/                 # Documentation
-├── .claude/              # Trinity deployment (self-hosted)
-└── trinity/              # Trinity knowledge base (self-hosted)
+└── .claude/              # Trinity deployment (agents, commands, trinity/)
 ```
 
 **Key Directories:**
@@ -119,7 +118,7 @@ trinity-method-sdk/
 4. **Deployment Execution:**
    - Agent deployment (19 agents → `.claude/agents/`)
    - Command deployment (20 commands → `.claude/commands/`)
-   - Knowledge base deployment (9 files → `trinity/knowledge-base/`)
+   - Knowledge base deployment (9 files → `.claude/trinity/knowledge-base/`)
    - Template deployment (work orders, investigations)
    - Linting configuration deployment (framework-specific)
    - CI/CD workflow deployment (platform-specific)
@@ -130,8 +129,8 @@ trinity-method-sdk/
 
 ### Trinity Update Flow
 
-1. **Version Detection:** Read `trinity/VERSION` file
-2. **Backup Creation:** Create `trinity/backups/backup-{timestamp}.tar.gz`
+1. **Version Detection:** Read `.claude/trinity/VERSION` file
+2. **Backup Creation:** Create `.claude/trinity/backups/backup-{timestamp}.tar.gz`
 3. **User Content Preservation:** Save ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md
 4. **Update Deployment:** Deploy new templates while preserving user content
 5. **Restore on Failure:** Rollback to backup if deployment fails
@@ -180,7 +179,7 @@ Visual representations of Trinity Method SDK architecture and workflows:
 
 ### [Trinity Deployment Architecture](../images/trinity-deployment-architecture.md)
 
-Complete deployment flow showing how Trinity deploys 64 components (19 agents, 20 slash commands, knowledge base, linting configs, CI/CD workflows) to a target project. Illustrates the CLI entry point, framework detection, interactive configuration, template processing, and component deployment to `.claude/` and `trinity/` directories.
+Complete deployment flow showing how Trinity deploys 64 components (19 agents, 20 slash commands, knowledge base, linting configs, CI/CD workflows) to a target project. Illustrates the CLI entry point, framework detection, interactive configuration, template processing, and component deployment to `.claude/` and `.claude/trinity/` directories.
 
 ### [CLI Command Flow](../images/cli-command-flow.md)
 

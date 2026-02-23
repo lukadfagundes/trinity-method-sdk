@@ -10,10 +10,10 @@ import { Ora } from 'ora';
 
 /** User-managed files that need backup */
 const USER_FILES = [
-  'trinity/knowledge-base/ARCHITECTURE.md',
-  'trinity/knowledge-base/To-do.md',
-  'trinity/knowledge-base/ISSUES.md',
-  'trinity/knowledge-base/Technical-Debt.md',
+  '.claude/trinity/knowledge-base/ARCHITECTURE.md',
+  '.claude/trinity/knowledge-base/To-do.md',
+  '.claude/trinity/knowledge-base/ISSUES.md',
+  '.claude/trinity/knowledge-base/Technical-Debt.md',
 ];
 
 /**
@@ -35,8 +35,7 @@ export async function createUpdateBackup(spinner: Ora): Promise<string> {
     }
   }
 
-  // Backup entire trinity and .claude dirs for rollback safety
-  await fs.copy('trinity', path.join(backupDir, 'trinity'));
+  // Backup entire .claude dir for rollback safety (includes .claude/trinity/)
   await fs.copy('.claude', path.join(backupDir, '.claude'));
 
   spinner.succeed('Backup created');
@@ -77,13 +76,7 @@ export async function rollbackFromBackup(backupDir: string): Promise<void> {
   );
 
   try {
-    // Restore trinity directory
-    if (await fs.pathExists(path.join(backupDir, 'trinity'))) {
-      await fs.remove('trinity');
-      await fs.copy(path.join(backupDir, 'trinity'), 'trinity');
-    }
-
-    // Restore .claude directory
+    // Restore .claude directory (includes .claude/trinity/)
     if (await fs.pathExists(path.join(backupDir, '.claude'))) {
       await fs.remove('.claude');
       await fs.copy(path.join(backupDir, '.claude'), '.claude');

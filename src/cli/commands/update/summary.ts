@@ -45,15 +45,15 @@ export function displayDryRunPreview(oldVersion: string, newVersion: string): vo
   console.log(chalk.white('   Would update:'));
   console.log(chalk.gray(`   • 18 agent files in .claude/agents/`));
   console.log(chalk.gray(`   • 16 slash commands in .claude/commands/`));
-  console.log(chalk.gray(`   • 6 work order templates in trinity/templates/`));
+  console.log(chalk.gray(`   • 6 work order templates in .claude/trinity/templates/`));
   console.log(chalk.gray(`   • Knowledge base files (Trinity.md, CODING-PRINCIPLES.md, etc.)`));
   console.log(chalk.gray(`   • Version file: ${oldVersion} → ${newVersion}`));
   console.log('');
   console.log(chalk.white('   Would preserve:'));
-  console.log(chalk.gray(`   • trinity/knowledge-base/ARCHITECTURE.md`));
-  console.log(chalk.gray(`   • trinity/knowledge-base/To-do.md`));
-  console.log(chalk.gray(`   • trinity/knowledge-base/ISSUES.md`));
-  console.log(chalk.gray(`   • trinity/knowledge-base/Technical-Debt.md`));
+  console.log(chalk.gray(`   • .claude/trinity/knowledge-base/ARCHITECTURE.md`));
+  console.log(chalk.gray(`   • .claude/trinity/knowledge-base/To-do.md`));
+  console.log(chalk.gray(`   • .claude/trinity/knowledge-base/ISSUES.md`));
+  console.log(chalk.gray(`   • .claude/trinity/knowledge-base/Technical-Debt.md`));
   console.log('');
   console.log(chalk.blue('💡 Run without --dry-run to perform update\n'));
 }
