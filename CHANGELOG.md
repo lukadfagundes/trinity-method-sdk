@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `dependency-parser.ts` coverage: 9.37% → 100% (23 tests covering Node.js, Python, Rust, Flutter, Go, and error paths)
   - `framework-detector.ts` coverage: 36.36% → 95.23% (24 tests covering all version detectors and package manager detection)
   - Overall project coverage improved from 83% → 89% (464 tests total)
+- **Fixed all 32 devDependency vulnerabilities** - Resolved minimatch ReDoS, ajv ReDoS, and markdown-it ReDoS via `npm audit fix` and `overrides` in package.json (Issue #6)
+  - `npm audit fix` resolved ajv (<6.14.0), markdown-it (13.0.0-14.1.0), and @isaacs/brace-expansion (5.0.0) — 9 vulnerabilities
+  - Added `overrides` for `minimatch@^10.2.1` to force resolution of 23 remaining transitive dependency vulnerabilities through eslint, jest, and typedoc
+  - `npm audit` now reports 0 vulnerabilities (was 32: 30 high, 2 moderate)
 - **Restructured `trinity/` into `.claude/trinity/`** - Consolidated deployment footprint from two top-level directories to one (Issue #3)
   - `trinity deploy` now creates `.claude/trinity/` instead of a separate `trinity/` directory
   - `trinity update` manages `.claude/trinity/` with consolidated backup (single `.claude/` backup covers everything)

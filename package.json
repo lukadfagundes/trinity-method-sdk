@@ -90,5 +90,8 @@
     "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
+  },
+  "overrides": {
+    "minimatch": "^10.2.1"
   }
 }
