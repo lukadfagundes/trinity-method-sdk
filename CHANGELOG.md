@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **New `/trinity-breakdown` slash command** - Guided, user-driven implementations where CC acts as an instructor walking users through changes step-by-step instead of executing them directly (Issue #11)
 - **GitHub Releases workflow** - Automated draft release creation on version tags (`v*.*.*`) via `.github/workflows/release.yml` (Issue #5)
   - 5-job pipeline: version extraction, CHANGELOG release notes extraction, tag-vs-package.json version validation, full CI quality gates (lint, type-check, build, verify-build, all test suites, coverage thresholds), and draft GitHub release creation
   - Uses `softprops/action-gh-release@v2` with `draft: true` — releases require manual publishing

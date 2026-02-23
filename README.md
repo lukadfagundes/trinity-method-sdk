@@ -160,8 +160,8 @@ Trinity deploys **88 production-ready components** in 90 seconds:
   - `deployment/` - 4 infrastructure agents (EIN, INO, TAN, ZEN)
   - `leadership/` - 3 orchestration agents (ALY, AJ-CC, AJ-MAESTRO)
   - `planning/` - 4 planning agents (MON, ROR, EUS, TRA)
-- `.claude/commands/` - 20 slash commands organized in 7 categories:
-  - `execution/` - 2 commands (orchestrate, audit)
+- `.claude/commands/` - 21 slash commands organized in 7 categories:
+  - `execution/` - 3 commands (orchestrate, audit, breakdown)
   - `infrastructure/` - 1 command (init)
   - `investigation/` - 3 commands (create-investigation, plan-investigation, investigate-templates)
   - `maintenance/` - 4 commands (readme, docs, docs-update, changelog)
@@ -224,7 +224,7 @@ npx trinity-method-sdk deploy
 4. ✅ **Install Dependencies**: `npm install` (or `pip install -r requirements-dev.txt`)
 5. ✅ **Setup Pre-commit**: `pip install pre-commit && pre-commit install`
 
-**Result:** Production-ready development environment with 19 agents, 20 slash commands, quality gates, and documentation.
+**Result:** Production-ready development environment with 19 agents, 21 slash commands, quality gates, and documentation.
 
 ### Available Commands
 
@@ -369,7 +369,7 @@ Your project contains:
 
 - **88 production-ready components** deployed in 90 seconds
 - **19 specialized agents** in `.claude/agents/` (7 execution + 1 audit + 4 infrastructure + 3 leadership + 4 planning)
-- **20 slash commands** in `.claude/commands/` (2 execution + 1 infrastructure + 3 investigation + 4 maintenance + 4 planning + 3 session + 3 utility)
+- **21 slash commands** in `.claude/commands/` (3 execution + 1 infrastructure + 3 investigation + 4 maintenance + 4 planning + 3 session + 3 utility)
 - **Complete knowledge base** in `.claude/trinity/knowledge-base/` (ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md)
 - **Investigation templates** in `.claude/trinity/templates/investigations/` (bug, feature, performance, security, technical)
 - **Work order templates** in `.claude/trinity/templates/work-orders/`
@@ -389,7 +389,7 @@ your-project/
 │   │   ├── leadership/           # 3 orchestration agents (ALY, AJ-CC, AJ-MAESTRO)
 │   │   └── planning/             # 4 planning agents (MON, ROR, EUS, TRA)
 │   ├── commands/
-│   │   ├── execution/            # trinity-orchestrate, trinity-audit
+│   │   ├── execution/            # trinity-orchestrate, trinity-audit, trinity-breakdown
 │   │   ├── infrastructure/       # trinity-init
 │   │   ├── investigation/        # trinity-create-investigation, trinity-plan-investigation, trinity-investigate-templates
 │   │   ├── maintenance/          # trinity-readme, trinity-docs, trinity-docs-update, trinity-changelog
@@ -464,7 +464,7 @@ Trinity uses GitHub Actions for comprehensive continuous integration and deploym
 
 - ✅ Multi-platform testing (Ubuntu, Windows, macOS)
 - ✅ Multi-version testing (Node.js 18.x, 20.x, 22.x)
-- ✅ Trinity component validation (19 agents, 20 slash commands, knowledge base, CI/CD templates)
+- ✅ Trinity component validation (19 agents, 21 slash commands, knowledge base, CI/CD templates)
 - ✅ Test suite execution (unit, integration, e2e, performance)
 - ✅ Code coverage validation (80%+ threshold enforced)
 - ✅ Linting and type checking
