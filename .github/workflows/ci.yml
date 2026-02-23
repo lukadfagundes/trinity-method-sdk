@@ -92,9 +92,9 @@ jobs:
 
           echo "✅ Agent templates validated: $agent_count agents"
 
-      - name: Validate slash command templates (20 commands)
+      - name: Validate slash command templates (21 commands)
         run: |
-          echo "Validating 20 Trinity slash command templates..."
+          echo "Validating 21 Trinity slash command templates..."
 
           # Verify all 7 command categories exist
           command_categories=(
@@ -117,8 +117,8 @@ jobs:
           # Count slash command templates
           cmd_count=$(find src/templates/.claude/commands -name "*.md.template" | wc -l)
 
-          if [ "$cmd_count" -ne 20 ]; then
-            echo "ERROR: Expected 20 slash commands, found $cmd_count"
+          if [ "$cmd_count" -ne 21 ]; then
+            echo "ERROR: Expected 21 slash commands, found $cmd_count"
             exit 1
           fi
 
@@ -128,6 +128,7 @@ jobs:
             "src/templates/.claude/commands/session/trinity-start.md.template"
             "src/templates/.claude/commands/execution/trinity-orchestrate.md.template"
             "src/templates/.claude/commands/execution/trinity-audit.md.template"
+            "src/templates/.claude/commands/execution/trinity-breakdown.md.template"
             "src/templates/.claude/commands/maintenance/trinity-docs.md.template"
             "src/templates/.claude/commands/maintenance/trinity-docs-update.md.template"
           )
