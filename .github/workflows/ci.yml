@@ -697,6 +697,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint documentation markdown
+        run: npx markdownlint-cli2 "docs/**/*.md"
+
       - name: Generate API documentation
         run: |
           echo "BAS PHASE 6: Documentation Validation"

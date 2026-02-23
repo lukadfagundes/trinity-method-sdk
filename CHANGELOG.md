@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Markdown linting in CI pipeline** - Added blocking `markdownlint-cli2` validation step to the `docs` job in CI, enforcing markdown syntax standards across all 72 files in `docs/` using the existing `.markdownlint.json` config
+
 ### Changed
 
 - **Enabled all TypeScript strict mode flags** - Turned on `strictNullChecks`, `strictPropertyInitialization`, `noUnusedLocals`, and `noUnusedParameters` in tsconfig.json (Issue #6)
