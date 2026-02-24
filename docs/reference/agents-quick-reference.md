@@ -52,7 +52,7 @@ Quick lookup table for Trinity's 18-agent team.
 
 ## Quick Selection Guide
 
-```
+```text
 NEW FEATURE (complex)
 └─> /trinity-orchestrate (AJ MAESTRO)
     └─> Full workflow: MON → ROR → EUS → TRA → KIL → BAS
@@ -95,20 +95,20 @@ REFACTORING
 
 ### Full Planning Chain
 
-```
+```text
 MON (Requirements) → ROR (Design) → EUS (Decompose) → TRA (Plan)
 ```
 
 ### Execution Loop
 
-```
+```text
 KIL (Execute Task) → BAS (Validate) → [Pass] → Next Task
                                    → [Fail] → KIL (Fix)
 ```
 
 ### Orchestrated Workflow
 
-```
+```text
 AJ MAESTRO → MON → ROR → EUS → TRA → KIL → BAS (loop) → DRA → Complete
 ```
 

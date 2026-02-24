@@ -8,7 +8,8 @@
 
 ## Overview
 
-Custom error classes provide domain-specific error types with error codes, exit codes, and contextual information for debugging and error handling.
+Custom error classes provide domain-specific error types with error codes, exit codes,
+and contextual information for debugging and error handling.
 
 ---
 

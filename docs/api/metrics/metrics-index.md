@@ -8,7 +8,9 @@
 
 ## Overview
 
-The metrics orchestrator coordinates all metrics collection sub-modules to produce a comprehensive `CodebaseMetrics` object. It collects code quality metrics, file complexity, dependency information, git history, and framework-specific data.
+The metrics orchestrator coordinates all metrics collection sub-modules to produce a
+comprehensive `CodebaseMetrics` object. It collects code quality metrics, file
+complexity, dependency information, git history, and framework-specific data.
 
 ---
 
@@ -46,7 +48,8 @@ Main entry point for metrics collection.
 
 Creates a default `CodebaseMetrics` object with zero/empty values.
 
-**Returns:** `CodebaseMetrics` with all numeric fields set to `0`, string fields set to `'Unknown'`, and collection fields set to empty arrays/objects.
+**Returns:** `CodebaseMetrics` with all numeric fields set to `0`, string fields set
+to `'Unknown'`, and collection fields set to empty arrays/objects.
 
 **Used By:** Deploy command when `--skip-audit` flag is set (skips metrics collection, uses empty metrics).
 

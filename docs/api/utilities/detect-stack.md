@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Framework Detection module automatically identifies project type, language, framework, package manager, and source directories. It supports Node.js, Python, Rust, Flutter, and Go projects with monorepo detection capabilities.
+The Framework Detection module automatically identifies project type, language,
+framework, package manager, and source directories. It supports Node.js, Python, Rust,
+Flutter, and Go projects with monorepo detection capabilities.
 
 **Key Features:**
 
@@ -97,7 +99,8 @@ Detects Flutter/Dart projects.
 ```
 
 **Why Flutter First?**
-Flutter projects may have `package.json` if using Trinity SDK, causing false Node.js detection. Flutter check runs first to prevent this.
+Flutter projects may have `package.json` if using Trinity SDK, causing false Node.js
+detection. Flutter check runs first to prevent this.
 
 ---
 
@@ -313,33 +316,33 @@ Checks if file or directory exists.
 
 ## Detection Flow Diagram
 
-```
+```text
 detectStack()
-    ↓
+    |
 Initialize default Stack object
-    ↓
+    |
 Run detectors in order:
-    ├→ detectFlutter()
-    │   └→ pubspec.yaml exists? → Return Flutter stack
-    ├→ detectRust()
-    │   └→ Cargo.toml exists? → Return Rust stack
-    ├→ detectGo()
-    │   └→ go.mod exists? → Return Go stack
-    ├→ detectNodeJs()
-    │   ├→ package.json exists?
-    │   ├→ Parse JSON
-    │   ├→ detectNodeFramework() (check dependencies)
-    │   ├→ detectPackageManager() (check lock files)
-    │   └→ Return Node stack
-    └→ detectPython()
-        ├→ requirements.txt/setup.py/pyproject.toml exists?
-        ├→ Check requirements.txt for Flask
-        └→ Return Python stack
-    ↓
+    +-> detectFlutter()
+    |   +-> pubspec.yaml exists? -> Return Flutter stack
+    +-> detectRust()
+    |   +-> Cargo.toml exists? -> Return Rust stack
+    +-> detectGo()
+    |   +-> go.mod exists? -> Return Go stack
+    +-> detectNodeJs()
+    |   +-> package.json exists?
+    |   +-> Parse JSON
+    |   +-> detectNodeFramework() (check dependencies)
+    |   +-> detectPackageManager() (check lock files)
+    |   +-> Return Node stack
+    +-> detectPython()
+        +-> requirements.txt/setup.py/pyproject.toml exists?
+        +-> Check requirements.txt for Flask
+        +-> Return Python stack
+    |
 Detect all source directories (monorepo)
-    ↓
+    |
 Finalize source directories (consistency check)
-    ↓
+    |
 Return Stack object
 ```
 

@@ -5,7 +5,9 @@
 
 ## Overview
 
-Trinity Method deploys a specialized team of 18 AI agents to your project, each with distinct roles, tools, and responsibilities. This guide provides a comprehensive understanding of the agent system, when to use each agent, and how they work together.
+Trinity Method deploys a specialized team of 18 AI agents to your project, each with distinct
+roles, tools, and responsibilities. This guide provides a comprehensive understanding of the
+agent system, when to use each agent, and how they work together.
 
 ## Table of Contents
 
@@ -56,14 +58,14 @@ Trinity's 18 agents are organized into 5 functional categories:
 
 **Typical Workflow:**
 
-```
+```text
 User Request → MON analyzes requirements → Scale determination →
 Acceptance criteria → Handoff to ROR (Design Architect)
 ```
 
 **Example Command:**
 
-```
+```text
 /trinity-requirements
 ```
 
@@ -96,14 +98,14 @@ Acceptance criteria → Handoff to ROR (Design Architect)
 
 **Typical Workflow:**
 
-```
+```text
 MON requirements → ROR creates technical design → ADRs documented →
 Design Doc created → Handoff to TRA (Work Planner)
 ```
 
 **Example Command:**
 
-```
+```text
 /trinity-design
 ```
 
@@ -136,14 +138,14 @@ Design Doc created → Handoff to TRA (Work Planner)
 
 **Typical Workflow:**
 
-```
+```text
 ROR design → EUS decomposes into atomic tasks → TDD cycles defined →
 Commit plan created → Handoff to TRA (Work Planner)
 ```
 
 **Example Command:**
 
-```
+```text
 /trinity-decompose
 ```
 
@@ -176,14 +178,14 @@ Commit plan created → Handoff to TRA (Work Planner)
 
 **Typical Workflow:**
 
-```
+```text
 EUS tasks → TRA sequences work → BAS gates defined →
 Timeline estimated → Handoff to KIL (Task Executor)
 ```
 
 **Example Command:**
 
-```
+```text
 /trinity-plan
 ```
 
@@ -218,7 +220,7 @@ Timeline estimated → Handoff to KIL (Task Executor)
 
 **Typical Workflow:**
 
-```
+```text
 TRA work plan → KIL executes tasks (TDD cycle) →
 Tests written (RED) → Code implemented (GREEN) →
 Refactored → BAS validation → Next task
@@ -266,7 +268,7 @@ KIL is typically invoked by `/trinity-orchestrate` rather than directly.
 
 **Typical Workflow:**
 
-```
+```text
 KIL completes task → BAS runs 6-phase validation →
 All phases pass → Task approved → Next task OR
 Phase fails → KIL fixes issue → BAS re-validates
@@ -303,7 +305,7 @@ BAS is automatically invoked after KIL tasks in `/trinity-orchestrate`.
 
 **Typical Workflow:**
 
-```
+```text
 Implementation complete → DRA reviews against Design Doc →
 Compliance check → Quality assessment →
 Approval or escalation
@@ -342,14 +344,14 @@ DRA is invoked for complex reviews or when BAS validation requires escalation.
 
 **Typical Workflow:**
 
-```
+```text
 Documentation need identified → APO creates/updates docs →
 Organized in docs/ → README updated → Complete
 ```
 
 **Example Commands:**
 
-```
+```text
 /trinity-readme
 /trinity-docs
 /trinity-changelog
@@ -384,7 +386,7 @@ Organized in docs/ → README updated → Complete
 
 **Typical Workflow:**
 
-```
+```text
 Dependency need → BON evaluates options →
 Security audit → Adds dependency →
 Package manager files updated → Tests pass
@@ -418,7 +420,7 @@ Package manager files updated → Tests pass
 
 **Typical Workflow:**
 
-```
+```text
 Configuration need → CAP creates config files →
 Environment variables defined →
 Documentation updated → Configuration tested
@@ -452,7 +454,7 @@ Documentation updated → Configuration tested
 
 **Typical Workflow:**
 
-```
+```text
 Technical debt identified → URO plans refactoring →
 Code refactored → Tests pass →
 Technical debt reduced → Documentation updated
@@ -489,7 +491,7 @@ Technical debt reduced → Documentation updated
 
 **Typical Workflow:**
 
-```
+```text
 /trinity-start → ALY session initialization → Work performed →
 /trinity-continue → ALY restores context → Work continues →
 /trinity-end → ALY archives session
@@ -497,7 +499,7 @@ Technical debt reduced → Documentation updated
 
 **Example Commands:**
 
-```
+```text
 /trinity-start
 /trinity-continue
 /trinity-end
@@ -532,14 +534,14 @@ Technical debt reduced → Documentation updated
 
 **Typical Workflow:**
 
-```
+```text
 Trinity deployed → /trinity-audit → JUNO audits all components →
 Verification report → Issues identified or approval
 ```
 
 **Example Command:**
 
-```
+```text
 /trinity-audit
 ```
 
@@ -573,7 +575,7 @@ Verification report → Issues identified or approval
 
 **Typical Workflow:**
 
-```
+```text
 Structure verification needed → TAN validates structure →
 14 directories verified → File organization checked →
 Report generated
@@ -581,7 +583,7 @@ Report generated
 
 **Example Command:**
 
-```
+```text
 /trinity-verify
 ```
 
@@ -597,7 +599,8 @@ Report generated
 ### ZEN (Knowledge Base Specialist)
 
 **Full Name:** ZEN - Knowledge Base Specialist
-**Role:** Creates comprehensive documentation capturing project architecture and methodology with v2.0 best practices integration
+**Role:** Creates comprehensive documentation capturing project architecture
+and methodology with v2.0 best practices integration
 
 **When to Use:**
 
@@ -612,7 +615,7 @@ Report generated
 
 **Typical Workflow:**
 
-```
+```text
 Knowledge base need → ZEN creates documentation →
 .claude/trinity/knowledge-base/ updated → Architecture captured →
 Best practices integrated
@@ -646,7 +649,7 @@ Best practices integrated
 
 **Typical Workflow:**
 
-```
+```text
 Context management needed → INO manages CLAUDE.md hierarchy →
 ISSUES.md database created → Context organized →
 Issues tracked
@@ -679,7 +682,7 @@ Issues tracked
 
 **Typical Workflow:**
 
-```
+```text
 CI/CD need → EIN creates workflow → BAS gates integrated →
 Pipeline tested → Automated deployment configured
 ```
@@ -712,7 +715,7 @@ Pipeline tested → Automated deployment configured
 
 **Typical Workflow:**
 
-```
+```text
 Complex task → AJ MAESTRO orchestrates →
 MON → ROR → EUS → TRA → KIL → BAS loop →
 DRA review → Complete
@@ -720,7 +723,7 @@ DRA review → Complete
 
 **Example Command:**
 
-```
+```text
 /trinity-orchestrate
 ```
 
@@ -780,7 +783,7 @@ Use individual agents directly for:
 
 ### Decision Tree
 
-```
+```text
 Is this a NEW feature or complex task?
 ├─ YES → Use /trinity-orchestrate (AJ MAESTRO)
 │         → Full workflow: MON → ROR → EUS → TRA → KIL → BAS
@@ -927,7 +930,8 @@ Is this a NEW feature or complex task?
 
 ### 1. Use AJ MAESTRO for Complex Features
 
-For any non-trivial feature, use `/trinity-orchestrate` to get the full Planning → Execution workflow with quality gates.
+For any non-trivial feature, use `/trinity-orchestrate` to get the full
+Planning → Execution workflow with quality gates.
 
 ### 2. Trust the Quality Gates
 
@@ -962,19 +966,19 @@ Use specialist agents for focused tasks:
 
 ## Troubleshooting
 
-### Agent Not Responding?
+### Agent Not Responding
 
 - Ensure Trinity is properly deployed (`/trinity-verify`)
 - Check `.claude/agents/` directory contains all 18 agent files
 - Verify CLAUDE.md context hierarchy is intact
 
-### BAS Quality Gate Failing?
+### BAS Quality Gate Failing
 
 - Review the 6-phase validation output
 - Fix the specific phase that failed (syntax, types, linting, formatting, tests, build)
 - Re-run BAS validation
 
-### Agent Handoff Not Working?
+### Agent Handoff Not Working
 
 - Ensure previous agent completed successfully
 - Check work products are in expected locations (.claude/trinity/knowledge-base/, etc.)

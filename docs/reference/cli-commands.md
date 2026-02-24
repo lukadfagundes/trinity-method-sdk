@@ -83,25 +83,25 @@ trinity deploy            # Will prompt to overwrite
 
 ### Deployment Output
 
-```
-✅ Trinity Method Deployment
+```text
+Trinity Method Deployment
 
-📦 Framework Detected: Node.js
-📋 Project Name: my-app
-🔧 Linting: ESLint + Prettier
-🚀 CI/CD: GitHub Actions
+Framework Detected: Node.js
+Project Name: my-app
+Linting: ESLint + Prettier
+CI/CD: GitHub Actions
 
 Deploying Trinity components...
-✓ Creating directory structure (14 directories)
-✓ Deploying agents (18 files)
-✓ Deploying slash commands (21 files)
-✓ Deploying knowledge base (9 files)
-✓ Deploying templates (12 files)
-✓ Deploying linting configs (4 files)
-✓ Deploying CI/CD workflows (1 file)
-✓ Updating .gitignore
+  Creating directory structure (14 directories)
+  Deploying agents (18 files)
+  Deploying slash commands (21 files)
+  Deploying knowledge base (9 files)
+  Deploying templates (12 files)
+  Deploying linting configs (4 files)
+  Deploying CI/CD workflows (1 file)
+  Updating .gitignore
 
-✅ Trinity deployed successfully! (64 components)
+Trinity deployed successfully! (64 components)
 
 Next steps:
 1. Install linting dependencies: npm install -D eslint prettier
@@ -124,13 +124,13 @@ Next steps:
 
 Update Trinity deployment to latest version.
 
-### Synopsis
+### Update Synopsis
 
 ```bash
 trinity update [options]
 ```
 
-### Description
+### Update Description
 
 Updates Trinity components while preserving user-created content:
 
@@ -174,14 +174,14 @@ These files are **overwritten** with new versions:
 - `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md`
 - `.claude/trinity/templates/*` (all templates)
 
-### Exit Codes
+### Update Exit Codes
 
 | Code | Meaning                                  |
 | ---- | ---------------------------------------- |
 | `0`  | Successful update                        |
 | `1`  | Error during update (rollback triggered) |
 
-### Examples
+### Update Examples
 
 ```bash
 # Update Trinity
@@ -201,29 +201,29 @@ ls -lh .claude/trinity/backups/
 
 ### Update Output
 
-```
-🔄 Trinity Method Update
+```text
+Trinity Method Update
 
-📦 Current Version: 1.5.0
-📦 Latest Version: 2.1.0
+Current Version: 1.5.0
+Latest Version: 2.1.0
 
 Creating backup...
-✓ Backup created: .trinity-backup-1735382400000
+  Backup created: .trinity-backup-1735382400000
 
 Preserving user content...
-✓ ARCHITECTURE.md preserved
-✓ ISSUES.md preserved
-✓ To-do.md preserved
-✓ Technical-Debt.md preserved
+  ARCHITECTURE.md preserved
+  ISSUES.md preserved
+  To-do.md preserved
+  Technical-Debt.md preserved
 
 Updating Trinity components...
-✓ Removing old templates
-✓ Deploying new agents (18 files)
-✓ Deploying new commands (21 files)
-✓ Updating knowledge base
-✓ Restoring user content
+  Removing old templates
+  Deploying new agents (18 files)
+  Deploying new commands (21 files)
+  Updating knowledge base
+  Restoring user content
 
-✅ Trinity updated successfully! (v2.0.9)
+Trinity updated successfully! (v2.0.9)
 
 Remove backup? (y/N): N
 Backup preserved: .trinity-backup-1735382400000
@@ -233,12 +233,12 @@ Backup preserved: .trinity-backup-1735382400000
 
 If update fails, automatic rollback occurs:
 
-```
-❌ Update failed: Error deploying templates
+```text
+Update failed: Error deploying templates
 
-🔄 Rolling back to previous version...
-✓ Restored from backup: .trinity-backup-1735382400000
-✓ Rollback complete
+Rolling back to previous version...
+  Restored from backup: .trinity-backup-1735382400000
+  Rollback complete
 
 Trinity remains at version 1.5.0
 Backup preserved for investigation
@@ -259,7 +259,7 @@ cp -r .trinity-backup-1735382400000/.claude .
 cat .claude/trinity/VERSION
 ```
 
-### Errors
+### Update Errors
 
 | Error                    | Cause                               | Solution                                       |
 | ------------------------ | ----------------------------------- | ---------------------------------------------- |
@@ -274,24 +274,24 @@ cat .claude/trinity/VERSION
 
 Display Trinity Method SDK version.
 
-### Synopsis
+### Version Synopsis
 
 ```bash
 trinity --version
 trinity -v
 ```
 
-### Description
+### Version Description
 
 Shows the currently installed Trinity Method SDK version.
 
-### Output
+### Version Output
 
-```
+```text
 2.1.0 (Trinity Method SDK)
 ```
 
-### Examples
+### Version Examples
 
 ```bash
 # Check SDK version
@@ -311,20 +311,20 @@ cat .claude/trinity/VERSION
 
 Display help information.
 
-### Synopsis
+### Help Synopsis
 
 ```bash
 trinity --help
 trinity -h
 ```
 
-### Description
+### Help Description
 
 Shows available commands and options.
 
-### Output
+### Help Output
 
-```
+```text
 Usage: trinity [options] [command]
 
 Investigation-first development methodology deployment tool
@@ -346,7 +346,7 @@ Examples:
 Documentation: https://github.com/lukadfagundes/trinity-method-sdk
 ```
 
-### Examples
+### Help Examples
 
 ```bash
 # Show help
@@ -379,7 +379,8 @@ Trinity Method SDK currently does not use environment variables for configuratio
 
 ## Configuration Files
 
-Trinity does not use a configuration file in v2.0. All configuration is done via interactive prompts during `trinity deploy`.
+Trinity does not use a configuration file in v2.0. All configuration is done via
+interactive prompts during `trinity deploy`.
 
 ---
 

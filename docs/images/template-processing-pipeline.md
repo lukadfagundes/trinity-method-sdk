@@ -85,17 +85,15 @@ flowchart LR
 {{PACKAGE_MANAGER}} install
 {{PACKAGE_MANAGER}} test
 ```
-````
 
 ## Linting
 
 This project uses {{LINTING_TOOL}} for code quality.
-
 ````
 
-### After Processing → `.claude/trinity/knowledge-base/Trinity.md`
+### After Processing: `.claude/trinity/knowledge-base/Trinity.md`
 
-```markdown
+````markdown
 # Trinity Method - my-app
 
 **Framework:** Node.js
@@ -108,38 +106,39 @@ This project uses {{LINTING_TOOL}} for code quality.
 ```bash
 npm install
 npm test
-````
+```
 
 ## Linting
 
 This project uses ESLint for code quality.
-
-```
+````
 
 ## Supported Variables
 
-| Variable | Source | Example Value |
-|----------|--------|---------------|
-| `{{PROJECT_NAME}}` | User input or package.json | `my-app` |
-| `{{FRAMEWORK}}` | Auto-detected or user input | `Node.js`, `Python`, `Rust`, `Flutter`, `Go` |
+| Variable              | Source                       | Example Value                                          |
+| --------------------- | ---------------------------- | ------------------------------------------------------ |
+| `{{PROJECT_NAME}}`    | User input or package.json   | `my-app`                                               |
+| `{{FRAMEWORK}}`       | Auto-detected or user input  | `Node.js`, `Python`, `Rust`, `Flutter`, `Go`           |
 | `{{PACKAGE_MANAGER}}` | Auto-detected from framework | `npm`, `yarn`, `pnpm`, `pip`, `cargo`, `flutter`, `go` |
-| `{{LINTING_TOOL}}` | User selection | `ESLint`, `Black`, `Clippy`, `Dart Analyzer` |
-| `{{CI_PLATFORM}}` | User selection | `GitHub Actions`, `GitLab CI`, `CircleCI`, `Jenkins` |
-| `{{CURRENT_DATE}}` | System date | `2025-12-28` |
-| `{{VERSION}}` | SDK version | `2.1.0` |
-| `{{NODE_VERSION}}` | Minimum Node.js version | `16.9.0` |
+| `{{LINTING_TOOL}}`    | User selection               | `ESLint`, `Black`, `Clippy`, `Dart Analyzer`           |
+| `{{CI_PLATFORM}}`     | User selection               | `GitHub Actions`, `GitLab CI`, `CircleCI`, `Jenkins`   |
+| `{{CURRENT_DATE}}`    | System date                  | `2025-12-28`                                           |
+| `{{VERSION}}`         | SDK version                  | `2.1.0`                                                |
+| `{{NODE_VERSION}}`    | Minimum Node.js version      | `16.9.0`                                               |
 
 ## Processing Implementation
 
 **Location**: `src/cli/utils/templateProcessor.ts`
 
 **Key Functions**:
+
 - `processTemplate(templatePath, variables)` - Main processing function
 - `extractVariables(templateContent)` - Parse {{VAR}} syntax
 - `substituteVariables(content, variableMap)` - Replace variables
 - `validateOutput(processedContent)` - Ensure no unresolved variables
 
 **Performance**:
+
 - In-memory processing for speed
 - Async/await for non-blocking I/O
 - Average processing time: ~50-100ms per template
@@ -151,4 +150,3 @@ This project uses ESLint for code quality.
 - **Missing Templates**: Error if source template file not found
 - **Write Failures**: Automatic rollback on file system errors
 - **Permission Errors**: Validation of write permissions before processing
-```

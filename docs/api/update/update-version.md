@@ -8,7 +8,8 @@
 
 ## Overview
 
-The Version Management module detects the currently installed Trinity Method SDK version, compares it with the latest available version, and determines if an update is needed.
+The Version Management module detects the currently installed Trinity Method SDK version, compares
+it with the latest available version, and determines if an update is needed.
 
 **Key Features:**
 
@@ -138,7 +139,7 @@ if (!versionInfo.isUpToDate) {
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Checking versions...
 ✓ Version check complete
    Current version: 2.0.0
@@ -195,7 +196,7 @@ if (!versionInfo.isUpToDate) {
 
 **User Messages:**
 
-```
+```text
 ✅ Already up to date
 ```
 
@@ -219,7 +220,7 @@ if (!versionInfo.isUpToDate) {
 
 **User Message:**
 
-```
+```text
 ⚠️  Trinity Method is not deployed
 Run: trinity deploy
 ```
@@ -250,13 +251,13 @@ Run: trinity deploy
 
 ### File Location
 
-```
+```text
 .claude/trinity/VERSION
 ```
 
 ### File Content
 
-```
+```text
 2.1.0
 ```
 
@@ -435,7 +436,7 @@ const sdkPkgPath = await getPackageJsonPath();
 
 **User Message:**
 
-```
+```text
 ❌ Error: Trinity SDK installation corrupted
    Could not locate SDK package.json
 ```
@@ -457,7 +458,7 @@ const sdkPkg = JSON.parse(await fs.readFile(sdkPkgPath, 'utf8'));
 
 **User Message:**
 
-```
+```text
 ❌ Error: Trinity SDK installation corrupted
    package.json contains invalid JSON
 ```
@@ -569,7 +570,7 @@ describe('detectInstalledSDKVersion', () => {
 
 ### Up-to-Date Scenario
 
-```
+```text
 ⠙ Checking versions...
 ✓ Version check complete
    Current version: 2.1.0
@@ -582,7 +583,7 @@ describe('detectInstalledSDKVersion', () => {
 
 ### Update Available Scenario
 
-```
+```text
 ⠙ Checking versions...
 ✓ Version check complete
    Current version: 2.0.0
@@ -595,7 +596,7 @@ describe('detectInstalledSDKVersion', () => {
 
 ### Force Update Scenario
 
-```
+```text
 ⠙ Checking versions...
 ✓ Version check complete
    Current version: 2.1.0

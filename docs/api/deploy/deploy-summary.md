@@ -8,10 +8,15 @@
 
 ## Overview
 
-The Summary module provides a comprehensive deployment completion report with statistics, codebase metrics, quick start commands, and actionable next steps. It's the final step in the 12-step deployment workflow.
+The Summary module provides a comprehensive deployment completion report with
+statistics, codebase metrics, quick start commands, and actionable next steps.
+It's the final step in the 12-step deployment workflow.
 
 **Why This Exists:**
-After deployment completes, users need clear guidance on what was installed, what metrics were collected, and what to do next. This module transforms raw deployment statistics into an informative, actionable summary that guides users through their first Trinity session.
+After deployment completes, users need clear guidance on what was installed,
+what metrics were collected, and what to do next. This module transforms raw
+deployment statistics into an informative, actionable summary that guides users
+through their first Trinity session.
 
 ---
 
@@ -51,7 +56,7 @@ Displays what was deployed and created.
 
 **Output Example:**
 
-```
+```text
 📊 Deployment Statistics (v2.0):
 
    Directories Created: 17
@@ -79,7 +84,7 @@ Displays what was deployed and created.
 
 ### Agent Distribution (v2.0)
 
-```
+```text
 18 Agents Total:
 ├── 2 Leadership (AJ MAESTRO, JUNO)
 ├── 4 Planning (MON, ROR, TRA, EUS)
@@ -105,19 +110,19 @@ const claudeMdCount = 2 + stack.sourceDirs.length + (hasTests ? 1 : 0);
 
 **Single Source Directory (src/):**
 
-```
+```text
 CLAUDE.md Files: 3 (root + trinity + src)
 ```
 
 **Multiple Source Directories (src/, lib/, packages/):**
 
-```
+```text
 CLAUDE.md Files: 5 (root + trinity + src, lib, packages)
 ```
 
 **Monorepo with >3 Directories:**
 
-```
+```text
 CLAUDE.md Files: 12 (root + trinity + tests + src, lib, packages... (10 total))
 ```
 
@@ -131,7 +136,7 @@ Displays collected codebase metrics or skip message.
 
 **Output Example (Metrics Collected):**
 
-```
+```text
 🔍 Codebase Metrics:
    Files Analyzed: 342
    Technical Debt Items: 28
@@ -146,7 +151,7 @@ Displays collected codebase metrics or skip message.
 
 **Output Example (Metrics Skipped):**
 
-```
+```text
 ⚠️  Audit skipped - documents contain placeholders
    Deploy agents to complete documentation
 ```
@@ -176,7 +181,7 @@ Lists available Trinity slash commands organized by category.
 
 **Output Example:**
 
-```
+```text
 📚 Quick Start Commands:
 
   /trinity-init         - Complete Trinity integration (run first!)
@@ -232,7 +237,7 @@ Provides actionable next steps based on deployment configuration.
 
 **Output Example (With Linting):**
 
-```
+```text
 📚 Next Steps:
 
    1. Install linting dependencies:
@@ -255,7 +260,7 @@ Provides actionable next steps based on deployment configuration.
 
 **Output Example (No Linting):**
 
-```
+```text
 📚 Next Steps:
 
    1. Review .claude/trinity/knowledge-base/ARCHITECTURE.md
@@ -294,7 +299,7 @@ Provides actionable next steps based on deployment configuration.
 
 ### Complete Summary Flow
 
-```
+```text
 1. Display Success Header
    ✅ Trinity Method deployed successfully!
 
@@ -340,7 +345,7 @@ npx trinity deploy
 
 **Summary Output:**
 
-```
+```text
 ✅ Trinity Method deployed successfully!
 
 📊 Deployment Statistics (v2.0):
@@ -414,7 +419,7 @@ npx trinity deploy --yes --skipAudit
 
 **Summary Output:**
 
-```
+```text
 ✅ Trinity Method deployed successfully!
 
 📊 Deployment Statistics (v2.0):
@@ -465,7 +470,7 @@ npx trinity deploy --yes --skipAudit
 
 **Project Structure:**
 
-```
+```text
 packages/
   api/
   web/
@@ -474,7 +479,7 @@ packages/
 
 **Summary Output (Source Dirs):**
 
-```
+```text
 CLAUDE.md Files: 5 (root + trinity + api, web, shared)
 ```
 

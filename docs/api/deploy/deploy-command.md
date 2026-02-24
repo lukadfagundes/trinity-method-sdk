@@ -8,10 +8,18 @@
 
 ## Overview
 
-The Deploy Command is the primary entry point for installing the Trinity Method SDK into a target project. It orchestrates a 12-step deployment process that creates directory structures, deploys agent templates, configures quality tools, and sets up CI/CD templates.
+The Deploy Command is the primary entry point for installing the Trinity Method SDK
+into a target project. It orchestrates a 12-step deployment process that creates
+directory structures, deploys agent templates, configures quality tools, and sets
+up CI/CD templates.
 
 **Why This Exists:**
-Manual setup is error-prone and inconsistent. Developers forget folders, skip quality tools, or misconfigure agents. This command orchestrates multiple specialized agents (TAN for structure, ZEN for documentation, INO for context, EIN for CI/CD) to deploy battle-tested Trinity infrastructure in minutes. Every project gets the same high-quality foundation: 18 agents, 21 commands, quality gates, and documentation architecture.
+Manual setup is error-prone and inconsistent. Developers forget folders, skip
+quality tools, or misconfigure agents. This command orchestrates multiple
+specialized agents (TAN for structure, ZEN for documentation, INO for context,
+EIN for CI/CD) to deploy battle-tested Trinity infrastructure in minutes. Every
+project gets the same high-quality foundation: 18 agents, 21 commands, quality
+gates, and documentation architecture.
 
 ---
 
@@ -98,7 +106,7 @@ The deploy command executes a 12-step orchestrated workflow:
 **Purpose:** Create 16 Trinity directories (11 trinity core + 5 agent subdirs)
 **Creates:**
 
-```
+```text
 .claude/trinity/
   knowledge-base/
   sessions/
@@ -430,7 +438,7 @@ After deployment, 21 slash commands become available:
 
 ## File Structure After Deployment
 
-```
+```text
 project-root/
 ├── .claude/
 │   ├── agents/           (18 agent templates)

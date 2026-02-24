@@ -7,7 +7,8 @@
 
 ## Context
 
-Trinity Method SDK needed a robust, user-friendly CLI to enable developers to deploy and manage the Trinity Method in their projects. The CLI needed to support:
+Trinity Method SDK needed a robust, user-friendly CLI to enable developers to
+deploy and manage the Trinity Method in their projects. The CLI needed to support:
 
 - Multiple commands (`deploy`, `update`, etc.)
 - Interactive prompts for user configuration
@@ -18,7 +19,8 @@ Trinity Method SDK needed a robust, user-friendly CLI to enable developers to de
 
 Key requirements:
 
-1. **Interactive Configuration** - Users should be guided through deployment with prompts rather than complex command-line flags
+1. **Interactive Configuration** - Users should be guided through deployment with prompts
+   rather than complex command-line flags
 2. **Framework Agnostic** - Must work across Node.js, Python, Rust, Flutter, Go projects
 3. **Professional UX** - Spinners, colored output, clear success/error messages
 4. **Type Safety** - Full TypeScript support for maintainability
@@ -105,24 +107,31 @@ Key requirements:
 
 ## Decision
 
-**Chosen Option: Commander.js + Inquirer.js**
+### Chosen Option - Commander.js + Inquirer.js
 
-We will use Commander.js for command structure and Inquirer.js for interactive prompts, supplemented by Chalk for styling and Ora for spinners.
+We will use Commander.js for command structure and Inquirer.js for interactive
+prompts, supplemented by Chalk for styling and Ora for spinners.
 
 **Rationale:**
 
-1. **Industry Standard** - Commander.js is the most widely-used Node.js CLI framework (35M+ weekly downloads), ensuring long-term support and community resources
+1. **Industry Standard** - Commander.js is the most widely-used Node.js CLI
+   framework (35M+ weekly downloads), ensuring long-term support and community
+   resources
 
-2. **Interactive Excellence** - Inquirer.js provides the best interactive prompt experience with rich question types (select, confirm, input, checkbox, password)
+2. **Interactive Excellence** - Inquirer.js provides the best interactive prompt
+   experience with rich question types (select, confirm, input, checkbox,
+   password)
 
-3. **TypeScript First-Class** - Both libraries have excellent TypeScript support with comprehensive type definitions
+3. **TypeScript First-Class** - Both libraries have excellent TypeScript support
+   with comprehensive type definitions
 
 4. **Clean Architecture** - Clear separation of concerns:
    - Commander handles command structure and routing
    - Inquirer handles user interaction
    - Core logic remains framework-agnostic
 
-5. **Extensibility** - Easy to add new commands by creating new command files in `src/cli/commands/`
+5. **Extensibility** - Easy to add new commands by creating new command files in
+   `src/cli/commands/`
 
 6. **Professional UX** - Chalk and Ora provide polished terminal output with colors and spinners
 
@@ -130,7 +139,7 @@ We will use Commander.js for command structure and Inquirer.js for interactive p
 
 ### Directory Structure
 
-```
+```text
 src/cli/
 ├── index.ts              # CLI entry point
 ├── commands/
@@ -191,7 +200,8 @@ Commands:
 
 ### Positive
 
-- **Excellent Developer Experience** - Users get guided through deployment with clear prompts and feedback
+- **Excellent Developer Experience** - Users get guided through deployment with
+  clear prompts and feedback
 - **Maintainable Codebase** - Clear command structure makes it easy to add new commands
 - **Type Safety** - Full TypeScript support prevents runtime errors
 - **Professional Output** - Colored output, spinners, and clear messages create polished UX
@@ -200,14 +210,19 @@ Commands:
 
 ### Negative
 
-- **Multiple Dependencies** - Requires 4 main libraries (Commander, Inquirer, Chalk, Ora) vs. all-in-one solutions
-- **Bundle Size** - Combined dependencies add ~2MB to distribution (acceptable for CLI tool)
-- **Learning Curve** - Contributors need to learn Commander and Inquirer APIs (mitigated by excellent documentation)
+- **Multiple Dependencies** - Requires 4 main libraries (Commander, Inquirer,
+  Chalk, Ora) vs. all-in-one solutions
+- **Bundle Size** - Combined dependencies add ~2MB to distribution (acceptable
+  for CLI tool)
+- **Learning Curve** - Contributors need to learn Commander and Inquirer APIs
+  (mitigated by excellent documentation)
 
 ### Neutral
 
-- **Manual Command Registration** - Commands must be manually registered in CLI entry point (acceptable tradeoff for clarity)
-- **ESM Migration** - Chalk v5 and Ora v9 are ESM-only (requires project to use ES modules, which aligns with modern Node.js)
+- **Manual Command Registration** - Commands must be manually registered in CLI
+  entry point (acceptable tradeoff for clarity)
+- **ESM Migration** - Chalk v5 and Ora v9 are ESM-only (requires project to use
+  ES modules, which aligns with modern Node.js)
 
 ## Validation
 

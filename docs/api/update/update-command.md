@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Update Command orchestrates the Trinity Method SDK update process, bringing an existing deployment up to the latest version. It manages backup creation, component updates, user content restoration, verification, and rollback on failure.
+The Update Command orchestrates the Trinity Method SDK update process, bringing an existing
+deployment up to the latest version. It manages backup creation, component updates, user content
+restoration, verification, and rollback on failure.
 
 **Trinity Principle:** "Systematic Quality Assurance" - Keep deployment current
 
@@ -66,7 +68,7 @@ interface UpdateOptions {
 
 **User Message:**
 
-```
+```text
 ⚠️  Trinity Method is not deployed
 Run: trinity deploy
 ```
@@ -96,7 +98,7 @@ interface VersionInfo {
 
 **User Messages:**
 
-```
+```text
 ✅ Already up to date (if up-to-date)
 ⚠️  Forcing update (already at latest version) (if force)
 ```
@@ -112,7 +114,7 @@ interface VersionInfo {
 
 **Output:**
 
-```
+```text
 🔍 Dry Run Preview
 
 Current Version: 2.0.0
@@ -139,7 +141,7 @@ To apply this update, run: trinity update
 
 **Prompt:**
 
-```
+```text
 ? Update Trinity Method from 2.0.0 to 2.1.0? (Y/n)
 ```
 
@@ -150,7 +152,7 @@ To apply this update, run: trinity update
 
 **Cancellation Message:**
 
-```
+```text
 Update cancelled
 ```
 
@@ -163,7 +165,7 @@ Update cancelled
 
 **Backup Location:**
 
-```
+```text
 .claude/trinity/backups/update-YYYY-MM-DD-HHMMSS/
 ```
 
@@ -181,7 +183,7 @@ Update cancelled
 
 **User Message:**
 
-```
+```text
 ✓ Created backup: .claude/trinity/backups/update-2026-01-21-103000
 ```
 
@@ -277,7 +279,7 @@ Updates performed sequentially:
 
 **User Message:**
 
-```
+```text
 ✓ Restored user content (sessions, investigations, work orders)
 ```
 
@@ -290,13 +292,13 @@ Updates performed sequentially:
 
 **File Content:**
 
-```
+```text
 2.1.0
 ```
 
 **User Message:**
 
-```
+```text
 ✓ Updated VERSION file to 2.1.0
 ```
 
@@ -318,7 +320,7 @@ Updates performed sequentially:
 
 **User Message:**
 
-```
+```text
 ✓ Verified update deployment
 ```
 
@@ -336,7 +338,7 @@ Updates performed sequentially:
 
 **User Message:**
 
-```
+```text
 ✓ Cleaned up backup
 ```
 
@@ -348,7 +350,7 @@ Updates performed sequentially:
 
 **Output:**
 
-```
+```text
 ✅ Trinity Method Updated Successfully!
 
 Version: 2.0.0 → 2.1.0
@@ -396,7 +398,7 @@ Any error in Steps 4-11 triggers automatic rollback.
 
 **User Messages:**
 
-```
+```text
 ❌ Update failed - Rolling back changes...
 
 🔄 Rolling back from backup: .claude/trinity/backups/update-2026-01-21-103000
@@ -616,6 +618,7 @@ If automatic rollback fails:
    ```
 
 4. **Clean Reinstall (Last Resort):**
+
    ```bash
    trinity deploy --force
    ```
@@ -728,7 +731,7 @@ describe('update integration', () => {
 
 ## Workflow Diagram
 
-```
+```text
 update(options)
     ↓
 [1] Pre-flight Checks

@@ -2,7 +2,10 @@
 
 ## Overview
 
-The `deploy-linting` module handles the deployment of framework-specific linting configurations to the target project. This includes deploying configuration files for linting tools (ESLint, Prettier, Black, etc.) and injecting linting dependencies into the project's package management files.
+The `deploy-linting` module handles the deployment of framework-specific linting
+configurations to the target project. This includes deploying configuration files
+for linting tools (ESLint, Prettier, Black, etc.) and injecting linting
+dependencies into the project's package management files.
 
 **Module:** `src/cli/commands/deploy/linting.ts`
 **Purpose:** Deploy framework-specific linting configurations and dependencies
@@ -37,9 +40,12 @@ async function deployLinting(
 
 **Parameters:**
 
-- `lintingTools` (LintingTool[]) - Array of selected linting tools to deploy (e.g., `[{ id: 'eslint', name: 'ESLint' }, { id: 'prettier', name: 'Prettier' }]`)
-- `lintingDependencies` (string[]) - Array of dependency strings to inject (e.g., `['eslint@^8.50.0', 'prettier@^3.0.0']`)
-- `lintingScripts` (Record<string, string>) - Scripts to add to package.json (e.g., `{ lint: 'eslint .', format: 'prettier --write .' }`)
+- `lintingTools` (LintingTool[]) - Array of selected linting tools to deploy
+  (e.g., `[{ id: 'eslint', name: 'ESLint' }, { id: 'prettier', name: 'Prettier' }]`)
+- `lintingDependencies` (string[]) - Array of dependency strings to inject
+  (e.g., `['eslint@^8.50.0', 'prettier@^3.0.0']`)
+- `lintingScripts` (Record<string, string>) - Scripts to add to package.json
+  (e.g., `{ lint: 'eslint .', format: 'prettier --write .' }`)
 - `stack` (Stack) - Detected technology stack with framework and language information
 - `templatesPath` (string) - Absolute path to the SDK's templates directory
 - `variables` (Record<string, string>) - Template variables for substitution
@@ -125,14 +131,14 @@ console.log(`Deployed ${filesDeployed} linting configuration files`);
 
 **Status Messages:**
 
-```
+```text
 ⠹ Deploying linting configuration...
 ✔ Linting configuration deployed (2 tools)
 ```
 
 **Error Case:**
 
-```
+```text
 ✖ Linting configuration deployment failed
 ⚠ Warning: Template file not found
 ```
@@ -162,14 +168,14 @@ console.log(`Deployed ${filesDeployed} linting configuration files`);
 
 **Status Messages:**
 
-```
+```text
 ⠹ Adding linting dependencies to project...
 ✔ Linting dependencies added to project configuration
 ```
 
 **Error Case:**
 
-```
+```text
 ✖ Dependency injection failed
 ⚠ Warning: package.json not found, skipping dependency injection
 ```
@@ -399,16 +405,19 @@ tab_spaces = 4
 **Process:**
 
 1. Read `package.json`
-2. Parse dependency strings:
-   ```typescript
-   // Input: "@typescript-eslint/parser@^6.7.0"
-   const lastAtIndex = dep.lastIndexOf('@');
-   const name = dep.substring(0, lastAtIndex); // "@typescript-eslint/parser"
-   const version = dep.substring(lastAtIndex + 1); // "^6.7.0"
-   ```
+2. Parse dependency strings (see example below)
 3. Add to `devDependencies` object
 4. Add scripts to `scripts` object (only if not already present)
 5. Write back with `{ spaces: 2 }` formatting
+
+**Dependency Parsing Example:**
+
+```typescript
+// Input: "@typescript-eslint/parser@^6.7.0"
+const lastAtIndex = dep.lastIndexOf('@');
+const name = dep.substring(0, lastAtIndex); // "@typescript-eslint/parser"
+const version = dep.substring(lastAtIndex + 1); // "^6.7.0"
+```
 
 **Example Before:**
 
@@ -455,13 +464,13 @@ tab_spaces = 4
 
 **Example Before:**
 
-```
+```text
 pytest>=7.0.0
 ```
 
 **Example After:**
 
-```
+```text
 pytest>=7.0.0
 black>=23.0.0
 flake8>=6.0.0
@@ -568,7 +577,7 @@ if (lintingTools.length > 0) {
 
 **Example:**
 
-```
+```text
 ✖ Linting configuration deployment failed
 ⚠ Warning: Template file not found: /templates/root/linting/nodejs/.eslintrc.json.template
 ```
@@ -587,7 +596,7 @@ if (lintingTools.length > 0) {
 
 **Example:**
 
-```
+```text
 ⚠ Warning: package.json not found, skipping dependency injection
 ```
 
@@ -675,7 +684,7 @@ if (lintingTools.length > 0) {
 
 ## Linting Tool Comparison
 
-### Node.js / JavaScript / TypeScript
+### Node.js / JavaScript / TypeScript Tools Comparison
 
 | Tool              | Purpose              | Config File        | Auto-fix | Speed  |
 | ----------------- | -------------------- | ------------------ | -------- | ------ |
@@ -687,7 +696,7 @@ if (lintingTools.length > 0) {
 
 ---
 
-### Python
+### Python Tools Comparison
 
 | Tool   | Purpose                 | Config File      | Auto-fix | Speed |
 | ------ | ----------------------- | ---------------- | -------- | ----- |
@@ -699,7 +708,7 @@ if (lintingTools.length > 0) {
 
 ---
 
-### Rust
+### Rust Tools Comparison
 
 | Tool    | Purpose         | Config File    | Auto-fix | Speed  |
 | ------- | --------------- | -------------- | -------- | ------ |
@@ -710,7 +719,7 @@ if (lintingTools.length > 0) {
 
 ---
 
-### Flutter / Dart
+### Flutter / Dart Tools Comparison
 
 | Tool          | Purpose       | Config File             | Auto-fix | Speed |
 | ------------- | ------------- | ----------------------- | -------- | ----- |

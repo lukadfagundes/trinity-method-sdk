@@ -28,7 +28,9 @@ export interface UpdateStats {
 }
 ```
 
-**Used By:** Update orchestrator to track and report update statistics. Each update sub-function increments its respective counter. `filesUpdated` is computed as the sum of all other counters.
+**Used By:** Update orchestrator to track and report update statistics. Each update
+sub-function increments its respective counter. `filesUpdated` is computed as the sum
+of all other counters.
 
 ---
 

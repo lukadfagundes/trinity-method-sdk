@@ -4,7 +4,8 @@ API reference documentation for Trinity Method SDK.
 
 ## API Overview
 
-The Trinity Method SDK provides a comprehensive CLI and template system for deploying investigation-first development methodology to your projects.
+The Trinity Method SDK provides a comprehensive CLI and template system for deploying
+investigation-first development methodology to your projects.
 
 ## TypeDoc API Reference
 
@@ -31,7 +32,8 @@ The complete API reference is available as TypeDoc-generated HTML documentation 
 
 ## API Documentation Structure
 
-This directory contains markdown-based API documentation for SDK modules and utilities. Documentation is organized into subdirectories by functional area:
+This directory contains markdown-based API documentation for SDK modules and
+utilities. Documentation is organized into subdirectories by functional area:
 
 ### [Deploy Command](deploy/) (17 files)
 
@@ -100,7 +102,7 @@ Codebase analysis and metrics collection:
 - [metrics-framework-detector.md](metrics/metrics-framework-detector.md) - Framework detection
 - [metrics-git.md](metrics/metrics-git.md) - Git repository metrics
 
-### TypeDoc API Reference
+### TypeDoc Generated Reference
 
 For complete type definitions and inline documentation, see the TypeDoc-generated HTML reference:
 

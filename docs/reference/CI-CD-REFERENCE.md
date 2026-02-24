@@ -134,7 +134,7 @@ npm test && npm run lint
 npm run build && npm test
 ```
 
-### Deployment
+### Release Deployment
 
 ```bash
 # Release workflow (recommended)
@@ -323,7 +323,7 @@ on:
 
 ### Re-run Jobs
 
-```bash
+```text
 # Re-run failed jobs only
 Actions → Workflow run → Re-run failed jobs
 
@@ -376,8 +376,8 @@ gh release delete v2.0.9 --yes
 
 ## Support
 
-**Issues:** https://github.com/{user}/{repo}/issues
-**Discussions:** https://github.com/{user}/{repo}/discussions
+**Issues:** <https://github.com/{user}/{repo}/issues>
+**Discussions:** <https://github.com/{user}/{repo}/discussions>
 **Documentation:** [CI-CD-GUIDE.md](../guides/CI-CD-GUIDE.md)
 
 ---

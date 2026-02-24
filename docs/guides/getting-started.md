@@ -5,7 +5,9 @@
 
 ## Overview
 
-Trinity Method SDK - Investigation-first development methodology for any project. This CLI tool deploys a complete 18-agent team, 21 slash commands, and comprehensive investigation templates to transform your development workflow.
+Trinity Method SDK - Investigation-first development methodology for any project.
+This CLI tool deploys a complete 18-agent team, 21 slash commands, and comprehensive
+investigation templates to transform your development workflow.
 
 ## Prerequisites
 
@@ -57,7 +59,9 @@ trinity deploy
 
 ### 2. Codebase Metrics Collection
 
-During deployment (Step 3.5), Trinity automatically collects metrics about your codebase to create a baseline in `ARCHITECTURE.md`. This provides institutional knowledge about your project's state.
+During deployment (Step 3.5), Trinity automatically collects metrics about your codebase
+to create a baseline in `ARCHITECTURE.md`. This provides institutional knowledge about
+your project's state.
 
 **Metrics Collected:**
 
@@ -143,7 +147,7 @@ Trinity deploys **64 production-ready components** to your project:
 
 After deploying Trinity, your project structure includes:
 
-```
+```text
 your-project/
 ├── .claude/
 │   ├── agents/

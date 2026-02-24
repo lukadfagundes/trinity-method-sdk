@@ -9,7 +9,9 @@
 
 ## Overview
 
-The Update Summary module provides formatted console output for Trinity Method SDK updates. It displays comprehensive statistics, version information, and success messages, helping users understand what changed during the update process.
+The Update Summary module provides formatted console output for Trinity Method SDK updates. It
+displays comprehensive statistics, version information, and success messages, helping users
+understand what changed during the update process.
 
 ### Key Features
 
@@ -124,7 +126,7 @@ displayUpdateSummary(stats, '2.0.0', '2.1.0');
 
 **Output:**
 
-```
+```text
 ✅ Trinity Method updated successfully!
 
 📊 Update Statistics:
@@ -157,7 +159,7 @@ displayDryRunPreview('2.0.0', '2.1.0');
 
 **Output:**
 
-```
+```text
 🔍 DRY RUN - Preview of changes:
 
    Would update:
@@ -266,7 +268,7 @@ const totalFilesUpdated =
 
 ### Display Format
 
-```
+```text
 Total Files Updated: 61
 ```
 
@@ -304,7 +306,7 @@ console.log(chalk.gray(`   • 6 work order templates in .claude/trinity/templat
 
 **Files Highlighted:**
 
-```
+```text
 Would preserve:
 • .claude/trinity/knowledge-base/ARCHITECTURE.md
 • .claude/trinity/knowledge-base/To-do.md
@@ -385,7 +387,7 @@ chalk.blue('💡 Run without --dry-run to perform update');
 
 ### Version Arrow Format
 
-```
+```text
 Version: 2.0.0 → 2.1.0
 ```
 
@@ -562,7 +564,7 @@ describe('displayDryRunPreview', () => {
 
 ### Success Message Psychology
 
-```
+```text
 ✅ Trinity Method updated successfully!
 ```
 
@@ -573,7 +575,7 @@ describe('displayDryRunPreview', () => {
 
 ### Statistics Transparency
 
-```
+```text
 📊 Update Statistics:
    Agents Updated: 18
    ...
@@ -586,7 +588,7 @@ describe('displayDryRunPreview', () => {
 
 ### Version Tracking
 
-```
+```text
 Version: 2.0.0 → 2.1.0
 ```
 

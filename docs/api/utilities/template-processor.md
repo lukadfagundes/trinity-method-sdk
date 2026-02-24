@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Template Processor handles variable substitution in Trinity Method templates using `{{VARIABLE_NAME}}` placeholder syntax. It processes project metadata, stack information, and codebase metrics for deployment and update operations.
+The Template Processor handles variable substitution in Trinity Method templates using
+`{{VARIABLE_NAME}}` placeholder syntax. It processes project metadata, stack
+information, and codebase metrics for deployment and update operations.
 
 **Key Features:**
 

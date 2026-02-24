@@ -8,10 +8,15 @@
 
 ## Overview
 
-The Pre-flight module performs essential validation checks before Trinity deployment begins. It prevents accidental redeployment and ensures the target environment is ready for Trinity installation.
+The Pre-flight module performs essential validation checks before Trinity
+deployment begins. It prevents accidental redeployment and ensures the target
+environment is ready for Trinity installation.
 
 **Why This Exists:**
-Deploying Trinity twice to the same project without user intent can overwrite custom configurations and user-created content. Pre-flight checks prevent accidental overwrites while allowing intentional redeployment through the `--force` flag.
+Deploying Trinity twice to the same project without user intent can overwrite
+custom configurations and user-created content. Pre-flight checks prevent
+accidental overwrites while allowing intentional redeployment through the
+`--force` flag.
 
 ---
 
@@ -73,7 +78,7 @@ const trinityExists = await fs.pathExists('trinity');
 
 **Output:**
 
-```
+```text
 ❌ Running pre-flight checks...
 
 Trinity Method is already deployed in this project.
@@ -94,7 +99,7 @@ Use --force flag to redeploy (this will overwrite existing files):
 
 **Output:**
 
-```
+```text
 ⠸ Force flag detected - will overwrite existing deployment...
 ✔ Pre-flight checks passed
 ```
@@ -115,7 +120,7 @@ Use --force flag to redeploy (this will overwrite existing files):
 
 **Output:**
 
-```
+```text
 ✔ Pre-flight checks passed
 ```
 
@@ -177,7 +182,7 @@ npx trinity deploy
 
 **Pre-flight Output:**
 
-```
+```text
 ✔ Pre-flight checks passed
 ```
 
@@ -193,7 +198,7 @@ npx trinity deploy
 
 **Pre-flight Output:**
 
-```
+```text
 ❌ Running pre-flight checks...
 
 Trinity Method is already deployed in this project.
@@ -214,7 +219,7 @@ npx trinity deploy --force
 
 **Pre-flight Output:**
 
-```
+```text
 ⠸ Force flag detected - will overwrite existing deployment...
 ✔ Pre-flight checks passed
 ```
@@ -231,7 +236,7 @@ npx trinity deploy --yes --force
 
 **Pre-flight Output:**
 
-```
+```text
 ⠸ Force flag detected - will overwrite existing deployment...
 ✔ Pre-flight checks passed
 ```
@@ -242,7 +247,7 @@ npx trinity deploy --yes --force
 
 ## What Gets Overwritten with --force
 
-### Files That Are Overwritten:
+### Files That Are Overwritten
 
 - ✅ `.claude/agents/*.md` (18 agent templates)
 - ✅ `.claude/commands/*.md` (20 slash command templates)
@@ -255,7 +260,7 @@ npx trinity deploy --yes --force
 - ✅ `src/CLAUDE.md` (source context)
 - ✅ `VERSION` (Trinity version tracking)
 
-### Files/Directories That Are Preserved:
+### Files/Directories That Are Preserved
 
 - ❌ `.claude/trinity/sessions/**/*` (user session data)
 - ❌ `.claude/trinity/work-orders/WORKORDER-*.md` (user work orders, except template)
@@ -326,7 +331,7 @@ try {
 
 ## Design Rationale
 
-### Why Check for .claude/trinity/ Directory?
+### Why Check for .claude/trinity/ Directory
 
 **Options Considered:**
 
@@ -342,7 +347,7 @@ try {
 
 ---
 
-### Why Require --force Flag?
+### Why Require --force Flag
 
 **Without --force requirement:**
 

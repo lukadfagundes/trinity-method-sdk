@@ -7,7 +7,9 @@
 
 ## Context
 
-ESLint introduced a new "flat config" format in v8.21.0 (2022) and announced it would become the default in v9.0.0 (2024). The Trinity Method SDK needed to decide whether to:
+ESLint introduced a new "flat config" format in v8.21.0 (2022) and announced it
+would become the default in v9.0.0 (2024). The Trinity Method SDK needed to
+decide whether to:
 
 1. Continue using legacy `.eslintrc.js` format
 2. Migrate to new `eslint.config.js` flat config format
@@ -145,15 +147,18 @@ export default [
 
 ## Decision
 
-**Chosen Option: Adopt ESLint Flat Config**
+### Chosen Option - Adopt ESLint Flat Config
 
-Trinity Method SDK will use the modern `eslint.config.js` flat config format exclusively.
+Trinity Method SDK will use the modern `eslint.config.js` flat config format
+exclusively.
 
 **Rationale:**
 
 1. **Future-Proof** - ESLint v9.0.0+ defaults to flat config. Adopting now prevents forced migration later.
 
-2. **Node.js Requirement Alignment** - SDK already requires Node.js ≥ 16.9.0 for other features (ES modules, native fetch). Flat config has the same requirement, so no additional constraint.
+2. **Node.js Requirement Alignment** - SDK already requires Node.js >= 16.9.0
+   for other features (ES modules, native fetch). Flat config has the same
+   requirement, so no additional constraint.
 
 3. **Better TypeScript Integration** - Flat config's explicit parser and plugin definitions work better with TypeScript:
 
@@ -313,14 +318,19 @@ repos:
 
 ### Negative
 
-- **Breaking Change for Users** - Projects on Node.js < 16.9.0 cannot use Trinity linting (mitigated: already require 16.9.0)
-- **Learning Curve** - Developers familiar with `.eslintrc.js` must learn new format (mitigated: documentation provided)
-- **Plugin Compatibility** - Some older ESLint plugins may not support flat config yet (mitigated: major plugins updated)
+- **Breaking Change for Users** - Projects on Node.js < 16.9.0 cannot use
+  Trinity linting (mitigated: already require 16.9.0)
+- **Learning Curve** - Developers familiar with `.eslintrc.js` must learn new
+  format (mitigated: documentation provided)
+- **Plugin Compatibility** - Some older ESLint plugins may not support flat
+  config yet (mitigated: major plugins updated)
 
 ### Neutral
 
-- **Migration Required** - Existing Trinity deployments need to migrate (acceptable: part of major version update)
-- **Documentation Updates** - Must document flat config format (acceptable: improves docs quality)
+- **Migration Required** - Existing Trinity deployments need to migrate
+  (acceptable: part of major version update)
+- **Documentation Updates** - Must document flat config format (acceptable:
+  improves docs quality)
 
 ## Migration Guide for Users
 

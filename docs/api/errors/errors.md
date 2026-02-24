@@ -8,7 +8,8 @@
 
 ## Overview
 
-Error utilities provide type-safe error handling with consistent formatting, colors, and emoji indicators for errors, warnings, and informational messages.
+Error utilities provide type-safe error handling with consistent formatting, colors,
+and emoji indicators for errors, warnings, and informational messages.
 
 ---
 

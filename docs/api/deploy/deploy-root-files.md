@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Root Files Deployment module creates the Trinity Method CLAUDE.md context hierarchy across the project (root, trinity, source directories, tests) and deploys root configuration files.
+The Root Files Deployment module creates the Trinity Method CLAUDE.md context
+hierarchy across the project (root, trinity, source directories, tests) and
+deploys root configuration files.
 
 **Key Features:**
 
@@ -21,7 +23,7 @@ The Root Files Deployment module creates the Trinity Method CLAUDE.md context hi
 
 ## Core Function
 
-### `deployRootFiles(templatesPath: string, variables: Record<string, string>, stack: Stack, pkgVersion: string, spinner: Spinner): Promise<number>`
+### `deployRootFiles(templatesPath, variables, stack, pkgVersion, spinner)`
 
 Deploys root files and complete CLAUDE.md hierarchy.
 
@@ -41,13 +43,13 @@ Deploys root files and complete CLAUDE.md hierarchy.
 
 ### 1. Root Files (2 files)
 
-**CLAUDE.md**
+#### CLAUDE.md
 
 - Location: Project root
 - Purpose: Global project context (top-level)
 - Template: `root/CLAUDE.md.template`
 
-**.claude/trinity/VERSION**
+#### .claude/trinity/VERSION
 
 - Location: `.claude/trinity/VERSION`
 - Purpose: Trinity SDK version tracking
@@ -57,7 +59,7 @@ Deploys root files and complete CLAUDE.md hierarchy.
 
 ### 2. Trinity CLAUDE.md (1 file)
 
-**.claude/trinity/CLAUDE.md**
+#### .claude/trinity/CLAUDE.md
 
 - Location: `.claude/trinity/CLAUDE.md`
 - Purpose: Trinity Method enforcement context
@@ -67,7 +69,7 @@ Deploys root files and complete CLAUDE.md hierarchy.
 
 ### 3. Source Directory CLAUDE.md (1-N files)
 
-**{sourceDir}/CLAUDE.md**
+#### {sourceDir}/CLAUDE.md
 
 - Location: Each detected source directory
 - Purpose: Framework-specific development context
@@ -93,7 +95,7 @@ const frameworkMap = {
 
 ### 4. Tests CLAUDE.md (1 file, conditional)
 
-**tests/CLAUDE.md**
+#### tests/CLAUDE.md
 
 - Location: `tests/CLAUDE.md` (if `tests/` exists)
 - Purpose: Testing context and standards
@@ -104,7 +106,7 @@ const frameworkMap = {
 
 ## CLAUDE.md Hierarchy
 
-```
+```text
 Project/
 ├── CLAUDE.md                    # Global context (top-level)
 ├── .claude/
@@ -151,7 +153,7 @@ Project/
 
 ## Deployment Flow
 
-```
+```text
 deployRootFiles()
     ↓
 [1] Deploy Root Files

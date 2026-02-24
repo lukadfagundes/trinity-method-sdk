@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Update Backup module ensures data safety during Trinity Method SDK updates. It creates timestamped backups, preserves user content, enables automatic rollback on failure, and provides manual recovery options.
+The Update Backup module ensures data safety during Trinity Method SDK updates. It creates
+timestamped backups, preserves user content, enables automatic rollback on failure, and provides
+manual recovery options.
 
 **Key Features:**
 
@@ -34,7 +36,7 @@ Creates a complete backup of Trinity deployment before update.
 
 **Backup Structure:**
 
-```
+```text
 .trinity-backup-1737456000123/
 ├── ARCHITECTURE.md           # User-managed file
 ├── To-do.md                  # User-managed file
@@ -93,7 +95,7 @@ console.log(`Backup created: ${backupDir}`);
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Creating backup...
 ✓ Backup created
 ```
@@ -144,7 +146,7 @@ await restoreUserContent('.trinity-backup-1737456000123', spinner);
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Restoring user content...
 ✓ User content restored
 ```
@@ -160,7 +162,7 @@ await restoreUserContent('.trinity-backup-1737456000123', spinner);
 
 **Use Case:**
 
-```
+```text
 1. User customizes ARCHITECTURE.md before update
 2. Update overwrites ARCHITECTURE.md with template
 3. restoreUserContent() restores user's custom ARCHITECTURE.md
@@ -219,7 +221,7 @@ try {
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Restoring from backup...
 ✓ Rollback complete - Original state restored
 ```
@@ -242,7 +244,7 @@ try {
 
 **User Messages:**
 
-```
+```text
 ✗ Rollback failed
 ❌ CRITICAL: Rollback failed: ENOSPC: no space left on device
 ⚠️  Backup preserved at: .trinity-backup-1737456000123
@@ -294,7 +296,7 @@ await cleanupBackup('.trinity-backup-1737456000123', spinner);
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Cleaning up...
 ✓ Cleanup complete
 ```
@@ -327,27 +329,27 @@ const USER_FILES = [
 ];
 ```
 
-### Why These Files?
+### Why These Files
 
-**ARCHITECTURE.md**
+#### ARCHITECTURE.md
 
 - User documents project architecture
 - Custom diagrams and explanations
 - Project-specific patterns
 
-**To-do.md**
+#### To-do.md
 
 - User's task tracking
 - Work-in-progress items
 - Planning notes
 
-**ISSUES.md**
+#### ISSUES.md
 
 - Project-specific issue tracking
 - Custom bug documentation
 - Resolution strategies
 
-**Technical-Debt.md**
+#### Technical-Debt.md
 
 - User-identified technical debt
 - Refactoring plans
@@ -370,7 +372,7 @@ const USER_FILES = [
 
 ### 1. Pre-Update Backup
 
-```
+```text
 createUpdateBackup()
     ↓
 Create .trinity-backup-{timestamp}/
@@ -388,7 +390,7 @@ Return backup path
 
 ### 2. Post-Update Restoration
 
-```
+```text
 restoreUserContent(backupDir)
     ↓
 For each USER_FILE:
@@ -405,7 +407,7 @@ User customizations preserved
 
 ### 3. Successful Update Cleanup
 
-```
+```text
 cleanupBackup(backupDir)
     ↓
 Delete backup directory
@@ -419,7 +421,7 @@ Free disk space
 
 ### 4. Failure Rollback
 
-```
+```text
 rollbackFromBackup(backupDir)
     ↓
 Delete .claude/
@@ -488,7 +490,7 @@ export async function update(options) {
 
 ### Complete Backup Contents
 
-```
+```text
 .trinity-backup-1737456000123/
 ├── ARCHITECTURE.md              # User-managed (1.2 KB)
 ├── To-do.md                     # User-managed (0.8 KB)

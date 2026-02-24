@@ -8,7 +8,9 @@
 
 ## Overview
 
-This module contains all canonical TypeScript interface definitions used across the Trinity CLI. It is the single source of truth for command option types, stack detection types, codebase metrics, and deployment statistics.
+This module contains all canonical TypeScript interface definitions used across the
+Trinity CLI. It is the single source of truth for command option types, stack detection
+types, codebase metrics, and deployment statistics.
 
 ---
 
@@ -44,7 +46,9 @@ export interface DeployOptions {
 | `skipAudit`     | `--skip-audit`  | `boolean`      |
 | `ciDeploy`      | `--ci-deploy`   | `boolean`      |
 
-**Note:** `lintingTools`, `lintingDependencies`, `lintingScripts`, and `postInstallInstructions` are not CLI flags. They are populated during the interactive configuration phase.
+**Note:** `lintingTools`, `lintingDependencies`, `lintingScripts`, and
+`postInstallInstructions` are not CLI flags. They are populated during the interactive
+configuration phase.
 
 ---
 

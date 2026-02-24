@@ -5,7 +5,9 @@
 
 ## Overview
 
-This guide covers advanced Trinity Method deployment scenarios beyond the basic installation covered in the [Getting Started Guide](getting-started.md). Learn how to customize deployments, handle edge cases, and optimize Trinity for your specific project needs.
+This guide covers advanced Trinity Method deployment scenarios beyond the basic installation
+covered in the [Getting Started Guide](getting-started.md). Learn how to customize deployments,
+handle edge cases, and optimize Trinity for your specific project needs.
 
 ## Table of Contents
 
@@ -168,7 +170,7 @@ done
 
 **Scenario:** You have a monorepo with multiple packages
 
-```
+```text
 my-monorepo/
 ├── packages/
 │   ├── frontend/
@@ -178,7 +180,7 @@ my-monorepo/
 └── pnpm-workspace.yaml
 ```
 
-**Option 1: Root-Level Deployment (Recommended)**
+#### Option 1 - Root-Level Deployment (Recommended)
 
 Deploy Trinity at the monorepo root:
 
@@ -199,7 +201,7 @@ trinity deploy
 - Linting: Configure root-level linting (ESLint with monorepo support)
 - CI/CD: Single workflow for entire monorepo
 
-**Option 2: Per-Package Deployment**
+#### Option 2 - Per-Package Deployment
 
 Deploy Trinity to each package individually:
 

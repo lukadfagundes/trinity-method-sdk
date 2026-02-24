@@ -69,24 +69,24 @@ graph TB
 
 | Feature                 | Node.js | Python | Rust | Flutter | Go  |
 | ----------------------- | ------- | ------ | ---- | ------- | --- |
-| **Core Trinity**        |
+| **Core Trinity**        |         |        |      |         |     |
 | 18 Agents               | ✅      | ✅     | ✅   | ✅      | ✅  |
 | 20 Slash Commands       | ✅      | ✅     | ✅   | ✅      | ✅  |
 | Investigation Templates | ✅      | ✅     | ✅   | ✅      | ✅  |
 | Knowledge Base          | ✅      | ✅     | ✅   | ✅      | ✅  |
-| **Linting**             |
+| **Linting**             |         |        |      |         |     |
 | ESLint + Prettier       | ✅      | ❌     | ❌   | ❌      | ❌  |
 | Black + Flake8 + isort  | ❌      | ✅     | ❌   | ❌      | ❌  |
 | Clippy + Rustfmt        | ❌      | ❌     | ✅   | ❌      | ❌  |
 | Dart Analyzer           | ❌      | ❌     | ❌   | ✅      | ❌  |
 | gofmt                   | ❌      | ❌     | ❌   | ❌      | ✅  |
 | **Pre-commit Hooks**    | ✅      | ✅     | ✅   | ✅      | ⚠️  |
-| **CI/CD**               |
+| **CI/CD**               |         |        |      |         |     |
 | GitHub Actions          | ✅      | ✅     | ✅   | ✅      | ✅  |
 | GitLab CI               | ✅      | ✅     | ✅   | ✅      | ✅  |
 | CircleCI                | ✅      | ✅     | ⚠️   | ⚠️      | ⚠️  |
 | Jenkins                 | ✅      | ✅     | ⚠️   | ⚠️      | ⚠️  |
-| **Package Managers**    |
+| **Package Managers**    |         |        |      |         |     |
 | npm/yarn/pnpm           | ✅      | ❌     | ❌   | ❌      | ❌  |
 | pip                     | ❌      | ✅     | ❌   | ❌      | ❌  |
 | cargo                   | ❌      | ❌     | ✅   | ❌      | ❌  |

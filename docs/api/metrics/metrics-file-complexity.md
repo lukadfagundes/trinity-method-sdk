@@ -9,7 +9,9 @@
 
 ## Overview
 
-The File Complexity Metrics module analyzes source code files to identify complexity indicators such as file count, line count, and large files. It provides quantitative metrics for assessing codebase maintainability and identifying refactoring candidates.
+The File Complexity Metrics module analyzes source code files to identify complexity
+indicators such as file count, line count, and large files. It provides quantitative
+metrics for assessing codebase maintainability and identifying refactoring candidates.
 
 ### Key Features
 
@@ -159,7 +161,7 @@ if (complexityScore > 50) {
 
 **Red Flags:**
 
-```
+```text
 avgFileLength > 500:  Code smell - files too large
 filesOver1000 > 10:   Refactoring backlog needed
 filesOver3000 > 0:    Critical - immediate attention required
@@ -468,7 +470,7 @@ describe('File Complexity Analysis', () => {
 
 ### Healthy Codebase Profile
 
-```
+```text
 Total Files: 50-200
 Files > 500 lines: <10% of total
 Files > 1000 lines: <3% of total
@@ -478,20 +480,20 @@ Average File Length: 150-350 lines
 
 ### Code Smell Indicators
 
-```
+```text
 Files > 1000 lines: >10 files
-  → Refactoring backlog building up
+  -> Refactoring backlog building up
 
 Files > 3000 lines: >0 files
-  → Critical technical debt
+  -> Critical technical debt
 
 Average File Length: >500 lines
-  → Modules too large, poor separation of concerns
+  -> Modules too large, poor separation of concerns
 ```
 
 ### Refactoring Priority
 
-```
+```text
 Priority 1: Files >3000 lines (immediate)
 Priority 2: Files >1000 lines (next sprint)
 Priority 3: Files >500 lines (backlog)

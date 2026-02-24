@@ -7,19 +7,23 @@ Complete reference for Trinity Method template variables.
 
 ## Overview
 
-Trinity Method uses simple `{{VARIABLE_NAME}}` syntax for template variable substitution during deployment. This document lists all 13 available variables, their resolver functions, default values, and where they're used.
+Trinity Method uses simple `{{VARIABLE_NAME}}` syntax for template variable substitution
+during deployment. This document lists all 13 available variables, their resolver functions,
+default values, and where they're used.
 
 ## Variable Substitution System
 
 ### Syntax
 
-```
+```text
 {{VARIABLE_NAME}}
 ```
 
 ### Processing
 
-Variables are replaced during `trinity deploy` using the `VARIABLE_RESOLVERS` map in `src/cli/utils/template-processor.ts`. Each variable has a resolver function that accepts a variables record and returns a resolved string value.
+Variables are replaced during `trinity deploy` using the `VARIABLE_RESOLVERS` map in
+`src/cli/utils/template-processor.ts`. Each variable has a resolver function that accepts
+a variables record and returns a resolved string value.
 
 ```typescript
 // VARIABLE_RESOLVERS maps placeholder names to resolution functions
@@ -48,7 +52,8 @@ export function processTemplate(
 }
 ```
 
-**Note:** There is no unresolved variable validation. Any `{{VAR}}` patterns not matching a resolver key are left as-is in the output.
+**Note:** There is no unresolved variable validation. Any `{{VAR}}` patterns not matching a
+resolver key are left as-is in the output.
 
 ---
 
@@ -297,7 +302,9 @@ Welcome to the Trinity Method guide for {{PROJECT_NAME}}.
 
 **Description:** Lowercase alphanumeric version of the project name, suitable for variable names
 
-**Resolver:** `resolveProjectVarName()` - Uses `PROJECT_VAR_NAME` if set, otherwise derives from `PROJECT_NAME`/`projectName` by lowercasing and removing non-alphanumeric characters
+**Resolver:** `resolveProjectVarName()` - Uses `PROJECT_VAR_NAME` if set,
+otherwise derives from `PROJECT_NAME`/`projectName` by lowercasing
+and removing non-alphanumeric characters
 
 **Default:** Derived from project name (e.g., `my-app` → `myapp`)
 
@@ -342,13 +349,16 @@ export function extractVariables(stack: Stack, projectName: string): Record<stri
 }
 ```
 
-**Note:** The keys use camelCase (e.g., `projectName`), but resolvers accept both camelCase and UPPER_SNAKE_CASE variants (e.g., `v.PROJECT_NAME || v.projectName`).
+**Note:** The keys use camelCase (e.g., `projectName`), but resolvers accept both
+camelCase and UPPER_SNAKE_CASE variants (e.g., `v.PROJECT_NAME || v.projectName`).
 
 ---
 
 ## Metrics Placeholder Variables
 
-In addition to the 13 core VARIABLE_RESOLVERS, the template processor provides **metrics placeholder variables** via `getPlaceholderMetrics()` and `formatMetrics()`. These are used in knowledge base templates for codebase metrics display:
+In addition to the 13 core VARIABLE_RESOLVERS, the template processor provides
+**metrics placeholder variables** via `getPlaceholderMetrics()` and `formatMetrics()`.
+These are used in knowledge base templates for codebase metrics display:
 
 ### Code Quality Metrics
 

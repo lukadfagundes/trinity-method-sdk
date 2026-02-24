@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Agent Deployment module deploys Trinity Method's 18 specialized agents to the `.claude/agents/` directory with proper subdirectory organization. It processes agent templates with variable substitution and validates paths for security.
+The Agent Deployment module deploys Trinity Method's 18 specialized agents to the
+`.claude/agents/` directory with proper subdirectory organization. It processes agent
+templates with variable substitution and validates paths for security.
 
 **Key Features:**
 
@@ -162,7 +164,7 @@ const templatePath = path.join(templatesPath, '.claude/agents', dir, `${agent}.t
 
 **Template Path Example:**
 
-```
+```text
 {SDK}/templates/.claude/agents/leadership/aly-cto.md.template
 ```
 
@@ -215,7 +217,7 @@ console.log(`Deployed ${deployed} agents`);
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Deploying Claude Code agents...
 ✓ Agents deployed (18 agents)
 ```
@@ -224,7 +226,7 @@ console.log(`Deployed ${deployed} agents`);
 
 ## Deployed Directory Structure
 
-```
+```text
 .claude/
 └── agents/
     ├── leadership/

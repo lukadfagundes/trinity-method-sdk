@@ -8,7 +8,8 @@
 
 ## Overview
 
-Trinity Method SDK uses a comprehensive CI/CD pipeline that enforces BAS 6-phase quality gates, validates all Trinity components, and ensures 80%+ test coverage across multiple platforms.
+Trinity Method SDK uses a comprehensive CI/CD pipeline that enforces BAS 6-phase quality gates,
+validates all Trinity components, and ensures 80%+ test coverage across multiple platforms.
 
 ## Table of Contents
 
@@ -42,7 +43,7 @@ Trinity Method SDK uses a comprehensive CI/CD pipeline that enforces BAS 6-phase
 
 ### Execution Flow
 
-```
+```text
 validate-templates
       ├── quality (BAS Phase 1)
       │   └── build (BAS Phase 3)
@@ -577,7 +578,7 @@ npm run build
 
 ### 2. Commit Message Conventions
 
-```
+```text
 feat: Add new slash command template
 fix: Resolve template validation issue
 docs: Update CI/CD guide

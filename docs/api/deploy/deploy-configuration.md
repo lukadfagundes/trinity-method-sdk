@@ -8,10 +8,16 @@
 
 ## Overview
 
-The Configuration module provides an interactive wizard for collecting user preferences during Trinity deployment. It prompts for project name, linting tools, CI/CD platform, and optional features, or applies sensible defaults when running in non-interactive mode (`--yes`).
+The Configuration module provides an interactive wizard for collecting user
+preferences during Trinity deployment. It prompts for project name, linting
+tools, CI/CD platform, and optional features, or applies sensible defaults
+when running in non-interactive mode (`--yes`).
 
 **Why This Exists:**
-Different projects have different requirements for code quality tools and CI/CD platforms. This module adapts Trinity deployment to project needs through interactive prompts, while supporting automation through the `--yes` flag for CI/CD pipelines.
+Different projects have different requirements for code quality tools and CI/CD
+platforms. This module adapts Trinity deployment to project needs through
+interactive prompts, while supporting automation through the `--yes` flag for
+CI/CD pipelines.
 
 ---
 
@@ -66,7 +72,7 @@ Asks user to confirm or customize project name.
 
 **Example:**
 
-```
+```text
 ? Project name: › my-awesome-project
 ```
 
@@ -85,7 +91,7 @@ Asks whether to setup code quality tools.
 
 **Display:**
 
-```
+```text
 📋 Optional: Code Quality Tools
 
 Trinity can setup linting and formatting tools for Node.js projects.
@@ -117,7 +123,7 @@ Automatically selects framework-appropriate linting tools.
 
 **Output Display:**
 
-```
+```text
 ✔ Setup linting configuration? Recommended
 
 📦 Will configure:
@@ -163,7 +169,7 @@ Detects Git platform and prompts for CI/CD workflow deployment.
 
 **Prompt:**
 
-```
+```text
 ⚙️  Optional: CI/CD Automation
 
 Trinity can setup automated testing workflows for your CI/CD platform.
@@ -173,7 +179,7 @@ Trinity can setup automated testing workflows for your CI/CD platform.
 
 **Output Display (GitHub detected):**
 
-```
+```text
 ✔ Deploy CI/CD workflow templates? Yes
 📦 Detected platform: GitHub Actions
 
@@ -184,7 +190,7 @@ Trinity can setup automated testing workflows for your CI/CD platform.
 
 **Output Display (No platform detected):**
 
-```
+```text
 ✔ Deploy CI/CD workflow templates? Yes
 
 📦 Will configure:
@@ -205,13 +211,13 @@ Final confirmation before deployment begins.
 
 **Prompt:**
 
-```
+```text
 ? Proceed with deployment? › Yes
 ```
 
 **If user selects No:**
 
-```
+```text
 🔸 Deployment cancelled
 ```
 
@@ -262,7 +268,7 @@ Displays formatted linting configuration summary.
 
 **Output Format:**
 
-```
+```text
 📦 Will configure:
   ✓ Tool Name (config-file.js)
     Tool description
@@ -306,7 +312,7 @@ Displays formatted CI/CD configuration summary.
 
 **Output (GitHub):**
 
-```
+```text
 ✔ Deploy CI/CD workflow templates? Yes
 📦 Detected platform: GitHub Actions
 
@@ -317,7 +323,7 @@ Displays formatted CI/CD configuration summary.
 
 **Output (Unknown):**
 
-```
+```text
 ✔ Deploy CI/CD workflow templates? Yes
 
 📦 Will configure:
@@ -413,7 +419,7 @@ npx trinity deploy
 
 **User Experience:**
 
-```
+```text
 ? Project name: › my-project
 
 📋 Optional: Code Quality Tools
@@ -496,7 +502,7 @@ npx trinity deploy
 
 **User selects "No" at confirmation:**
 
-```
+```text
 ? Proceed with deployment? › No
 
 🔸 Deployment cancelled

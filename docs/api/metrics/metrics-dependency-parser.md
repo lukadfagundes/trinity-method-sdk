@@ -9,7 +9,10 @@
 
 ## Overview
 
-The Dependency Parser module extracts dependency information from framework-specific configuration files (package.json, pubspec.yaml, requirements.txt, Cargo.toml). It provides a unified interface for counting and listing dependencies across different technology stacks.
+The Dependency Parser module extracts dependency information from framework-specific
+configuration files (package.json, pubspec.yaml, requirements.txt, Cargo.toml). It
+provides a unified interface for counting and listing dependencies across different
+technology stacks.
 
 ### Key Features
 

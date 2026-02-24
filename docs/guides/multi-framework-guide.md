@@ -5,9 +5,13 @@
 
 ## Overview
 
-Trinity Method SDK is globally designed to provide investigation-first development methodology support for most known project frameworks. While this guide focuses on the five frameworks with pre-configured templates (Node.js, Python, Rust, Flutter, and Go), Trinity's agent-based architecture and customizable deployment system can adapt to any programming language or framework.
+Trinity Method SDK is globally designed to provide investigation-first development methodology
+support for most known project frameworks. While this guide focuses on the five frameworks with
+pre-configured templates (Node.js, Python, Rust, Flutter, and Go), Trinity's agent-based
+architecture and customizable deployment system can adapt to any programming language or framework.
 
-This guide shows framework-specific deployment, linting configuration, CI/CD setup, and migration strategies for the officially supported frameworks.
+This guide shows framework-specific deployment, linting configuration, CI/CD setup,
+and migration strategies for the officially supported frameworks.
 
 ## Supported Frameworks
 
@@ -21,13 +25,19 @@ This guide shows framework-specific deployment, linting configuration, CI/CD set
 
 ### Adapting Trinity to Other Frameworks
 
-Trinity's 18-agent system and investigation-first methodology are framework-agnostic. For frameworks not listed above (Java, C#, PHP, Ruby, Kotlin, Swift, etc.), Trinity can still be deployed:
+Trinity's 18-agent system and investigation-first methodology are framework-agnostic.
+For frameworks not listed above (Java, C#, PHP, Ruby, Kotlin, Swift, etc.),
+Trinity can still be deployed:
 
-1. **Manual Deployment**: Select the closest framework during `trinity deploy`, then customize linting configs and CI/CD workflows post-deployment
-2. **Core Trinity Components**: The 18 agents, 21 slash commands, investigation templates, and knowledge base work with any language
+1. **Manual Deployment**: Select the closest framework during `trinity deploy`,
+   then customize linting configs and CI/CD workflows post-deployment
+2. **Core Trinity Components**: The 18 agents, 21 slash commands,
+   investigation templates, and knowledge base work with any language
 3. **Custom Configuration**: Edit deployed linting configs and CI/CD workflows to match your framework's tooling
 
-**Example**: For a Java project, you might select "Node.js" during deployment, then replace `eslint.config.js` with `checkstyle.xml` and modify `.github/workflows/` to use Maven/Gradle.
+**Example**: For a Java project, you might select "Node.js" during deployment,
+then replace `eslint.config.js` with `checkstyle.xml` and modify
+`.github/workflows/` to use Maven/Gradle.
 
 ---
 
@@ -50,7 +60,7 @@ trinity deploy
 
 ### Deployed Components
 
-```
+```text
 project/
 ├── eslint.config.js           # Flat config (ESLint 9.0+)
 ├── .prettierrc                # Prettier configuration
@@ -125,14 +135,14 @@ export default [
 
 ## Python Deployment
 
-### Prerequisites
+### Python Prerequisites
 
 ```bash
 python --version  # ≥3.8 recommended
 pip --version
 ```
 
-### Deployment
+### Python Deploy Steps
 
 ```bash
 cd your-python-project
@@ -140,9 +150,9 @@ trinity deploy
 # Select: Python → Black + Flake8 + isort → GitHub Actions → [project-name]
 ```
 
-### Deployed Components
+### Python Deployed Components
 
-```
+```text
 project/
 ├── pyproject.toml             # Black + isort config
 ├── .flake8                    # Flake8 configuration
@@ -152,7 +162,7 @@ project/
 └── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
-### Post-Deployment Setup
+### Python Post-Deployment Setup
 
 ```bash
 # Install linting tools
@@ -198,14 +208,14 @@ pip install black flake8 isort
 
 ## Rust Deployment
 
-### Prerequisites
+### Rust Prerequisites
 
 ```bash
 rustc --version
 cargo --version
 ```
 
-### Deployment
+### Rust Deploy Steps
 
 ```bash
 cd your-rust-project
@@ -213,9 +223,9 @@ trinity deploy
 # Select: Rust → Clippy + Rustfmt → GitHub Actions → [project-name]
 ```
 
-### Deployed Components
+### Rust Deployed Components
 
-```
+```text
 project/
 ├── clippy.toml                # Clippy configuration
 ├── rustfmt.toml               # Rustfmt configuration
@@ -224,7 +234,7 @@ project/
 └── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
-### Post-Deployment Setup
+### Rust Post-Deployment Setup
 
 ```bash
 # Install Rust components
@@ -267,14 +277,14 @@ trinity deploy
 
 ## Flutter Deployment
 
-### Prerequisites
+### Flutter Prerequisites
 
 ```bash
 flutter --version
 flutter doctor  # Verify setup
 ```
 
-### Deployment
+### Flutter Deploy Steps
 
 ```bash
 cd your-flutter-project
@@ -282,9 +292,9 @@ trinity deploy
 # Select: Flutter → Dart Analyzer → GitHub Actions → [project-name]
 ```
 
-### Deployed Components
+### Flutter Deployed Components
 
-```
+```text
 project/
 ├── analysis_options.yaml      # Dart Analyzer config
 ├── .pre-commit-config.yaml    # Dart Analyzer hooks
@@ -292,7 +302,7 @@ project/
 └── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
-### Post-Deployment Setup
+### Flutter Post-Deployment Setup
 
 ```bash
 # Install pre-commit (requires Python)
@@ -322,13 +332,13 @@ environment:
 
 ## Go Deployment
 
-### Prerequisites
+### Go Prerequisites
 
 ```bash
 go version  # ≥1.21 recommended
 ```
 
-### Deployment
+### Go Deploy Steps
 
 ```bash
 cd your-go-project
@@ -336,15 +346,15 @@ trinity deploy
 # Select: Go → gofmt → GitHub Actions → [project-name]
 ```
 
-### Deployed Components
+### Go Deployed Components
 
-```
+```text
 project/
 ├── .github/workflows/go.yml   # CI/CD workflow (includes gofmt)
 └── .claude/                   # 18 agents + 21 commands + knowledge base
 ```
 
-### Post-Deployment Setup
+### Go Post-Deployment Setup
 
 ```bash
 # gofmt is built into Go toolchain
@@ -373,7 +383,7 @@ go 1.21                          // Version detected
 
 ### Scenario: Migrating from Node.js to Rust
 
-**Step 1: Remove Node.js Trinity Components**
+#### Step 1 - Remove Node.js Trinity Components
 
 ```bash
 # Backup customizations
@@ -384,7 +394,7 @@ rm eslint.config.js .prettierrc .pre-commit-config.yaml
 rm -rf .github/workflows/
 ```
 
-**Step 2: Update Project to Rust**
+#### Step 2 - Update Project to Rust
 
 ```bash
 # Initialize Rust project
@@ -393,14 +403,14 @@ cargo init
 # Copy application logic (manual migration required)
 ```
 
-**Step 3: Redeploy Trinity for Rust**
+#### Step 3 - Redeploy Trinity for Rust
 
 ```bash
 trinity deploy
 # Select: Rust → Clippy + Rustfmt → GitHub Actions
 ```
 
-**Step 4: Restore Customizations**
+#### Step 4 - Restore Customizations
 
 ```bash
 # Restore preserved knowledge base content
@@ -410,9 +420,9 @@ cp trinity-backup/ISSUES.md .claude/trinity/knowledge-base/
 
 ### Scenario: Adding Trinity to Existing Multi-Language Project
 
-**Example: Node.js frontend + Python backend**
+#### Example - Node.js Frontend + Python Backend
 
-**Option 1: Deploy at Root (Monorepo)**
+#### Option 1 - Deploy at Root (Monorepo)
 
 ```bash
 # Deploy at monorepo root
@@ -426,7 +436,7 @@ pip install black flake8
 # Add Python linting to root .pre-commit-config.yaml
 ```
 
-**Option 2: Deploy Per-Language (Separate)**
+#### Option 2 - Deploy Per-Language (Separate)
 
 ```bash
 # Deploy to frontend

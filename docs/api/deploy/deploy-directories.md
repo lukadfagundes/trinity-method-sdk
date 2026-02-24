@@ -8,10 +8,15 @@
 
 ## Overview
 
-The Directories module creates the complete Trinity Method directory structure in the target project. It ensures all necessary folders exist for agents, knowledge base, sessions, investigations, and archives.
+The Directories module creates the complete Trinity Method directory structure
+in the target project. It ensures all necessary folders exist for agents,
+knowledge base, sessions, investigations, and archives.
 
 **Why This Exists:**
-Trinity's 18-agent system requires a well-organized directory structure to function effectively. This module creates 16 directories that serve as the foundation for agent collaboration, knowledge management, and workflow orchestration.
+Trinity's 18-agent system requires a well-organized directory structure to
+function effectively. This module creates 16 directories that serve as the
+foundation for agent collaboration, knowledge management, and workflow
+orchestration.
 
 ---
 
@@ -227,7 +232,7 @@ Creates complete Trinity directory structure.
 
 ## Complete Directory Tree
 
-```
+```text
 project-root/
 └── .claude/
     ├── agents/
@@ -343,7 +348,7 @@ spinner.start('Creating Trinity Method structure...');
 
 ---
 
-### Success
+### Completion Success
 
 ```typescript
 spinner.succeed('Trinity Method structure created');
@@ -363,7 +368,7 @@ npx trinity deploy
 
 **Output:**
 
-```
+```text
 ✔ Trinity Method structure created
 ```
 
@@ -379,7 +384,7 @@ npx trinity deploy --force
 
 **Output:**
 
-```
+```text
 ✔ Trinity Method structure created
 ```
 
@@ -430,7 +435,7 @@ try {
 
 **User Experience:**
 
-```
+```text
 ❌ Creating Trinity Method structure...
 Deployment failed: EACCES: permission denied, mkdir 'trinity'
 ```
@@ -453,7 +458,7 @@ After directories are created, subsequent steps populate them:
 
 ## Design Rationale
 
-### Why Separate Leadership/Deployment/Planning Directories?
+### Why Separate Leadership/Deployment/Planning Directories
 
 **Options Considered:**
 
@@ -468,7 +473,7 @@ After directories are created, subsequent steps populate them:
 
 ---
 
-### Why Archive Subdirectories?
+### Why Archive Subdirectories
 
 **Purpose:** Prevent active directories from becoming cluttered
 

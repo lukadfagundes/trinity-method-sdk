@@ -7,7 +7,9 @@
 
 ## Context
 
-Trinity Method SDK deploys 64 components (agents, slash commands, knowledge base files, linting configs, CI/CD workflows) to user projects. These components need to be customized based on:
+Trinity Method SDK deploys 64 components (agents, slash commands, knowledge base
+files, linting configs, CI/CD workflows) to user projects. These components need
+to be customized based on:
 
 - **Project Name** - Referenced in documentation and configurations
 - **Framework** - Node.js, Python, Rust, Flutter, Go
@@ -53,7 +55,8 @@ The template system needed to:
 
 **Cons:**
 
-- **Limited logic** - No conditionals, loops, or filters (mitigated: not needed for deployment configs)
+- **Limited logic** - No conditionals, loops, or filters (mitigated: not needed
+  for deployment configs)
 - **Manual validation** - Must manually check for unresolved `{{VAR}}`
 
 ### Option 2: Handlebars
@@ -120,9 +123,10 @@ The template system needed to:
 
 ## Decision
 
-**Chosen Option: Custom Variable Substitution with {{VAR}} Syntax**
+### Chosen Option - Custom Variable Substitution with {{VAR}} Syntax
 
-We will implement a lightweight, custom template processing system using simple `{{VARIABLE_NAME}}` syntax with regex-based string replacement.
+We will implement a lightweight, custom template processing system using simple
+`{{VARIABLE_NAME}}` syntax with regex-based string replacement.
 
 **Rationale:**
 
@@ -149,6 +153,7 @@ We will implement a lightweight, custom template processing system using simple 
 6. **Easy Validation** - Simple regex check for remaining `{{.*}}` patterns catches unresolved variables.
 
 7. **Easy to Extend** - Adding new variables is trivial:
+
    ```typescript
    variables['{{NEW_VARIABLE}}'] = 'value';
    ```
@@ -157,7 +162,7 @@ We will implement a lightweight, custom template processing system using simple 
 
 ### Template Syntax
 
-```
+```text
 {{VARIABLE_NAME}} - Replaced with variable value
 ```
 
@@ -179,23 +184,22 @@ We will implement a lightweight, custom template processing system using simple 
 ```
 ````
 
-````
-
 ### Variable Registry
 
 **Core Variables:**
+
 ```typescript
 const variables = {
-  '{{PROJECT_NAME}}': projectName,      // User input or package.json
-  '{{FRAMEWORK}}': framework,            // Node.js, Python, Rust, Flutter, Go
+  '{{PROJECT_NAME}}': projectName, // User input or package.json
+  '{{FRAMEWORK}}': framework, // Node.js, Python, Rust, Flutter, Go
   '{{PACKAGE_MANAGER}}': packageManager, // npm, yarn, pip, cargo, flutter, go
-  '{{LINTING_TOOL}}': lintingTool,      // ESLint, Black, Clippy, etc.
-  '{{CI_PLATFORM}}': ciPlatform,        // GitHub Actions, GitLab CI, etc.
+  '{{LINTING_TOOL}}': lintingTool, // ESLint, Black, Clippy, etc.
+  '{{CI_PLATFORM}}': ciPlatform, // GitHub Actions, GitLab CI, etc.
   '{{CURRENT_DATE}}': new Date().toISOString().split('T')[0],
-  '{{VERSION}}': sdkVersion,             // From package.json
-  '{{NODE_VERSION}}': '16.9.0',         // Minimum Node.js version
+  '{{VERSION}}': sdkVersion, // From package.json
+  '{{NODE_VERSION}}': '16.9.0', // Minimum Node.js version
 };
-````
+```
 
 ### Processing Algorithm
 
@@ -228,7 +232,7 @@ export async function processTemplate(
 
 ### Template Directory Structure
 
-```
+```text
 src/templates/
 ├── agents/
 │   └── KIL.md.template              # {{PROJECT_NAME}}, {{FRAMEWORK}}
@@ -273,13 +277,16 @@ Templates are copied to `dist/templates/` during build:
 
 ### Negative
 
-- **No Logic** - Cannot use conditionals or loops in templates (acceptable: use different template files per framework instead)
+- **No Logic** - Cannot use conditionals or loops in templates (acceptable: use
+  different template files per framework instead)
 - **Manual Escaping** - If template needs literal `{{`, must use workaround (rare edge case)
-- **No Built-in Filters** - Cannot format dates or transform values in template (acceptable: format in variable registry)
+- **No Built-in Filters** - Cannot format dates or transform values in template
+  (acceptable: format in variable registry)
 
 ### Neutral
 
-- **Custom Implementation** - Must maintain custom code vs. using established library (tradeoff: simpler code, fewer dependencies)
+- **Custom Implementation** - Must maintain custom code vs. using established
+  library (tradeoff: simpler code, fewer dependencies)
 
 ## Validation
 
@@ -305,7 +312,8 @@ If future requirements need conditional logic or loops:
    - Migrate `{{VAR}}` syntax (compatible with Handlebars)
    - Add logic with `{{#if}}` and `{{#each}}`
 
-**Current Assessment:** Option A (multiple templates) has been sufficient for all use cases. No migration needed.
+**Current Assessment:** Option A (multiple templates) has been sufficient for all
+use cases. No migration needed.
 
 ## Related Decisions
 

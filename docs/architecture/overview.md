@@ -4,11 +4,14 @@
 **Type:** Node.js
 **Framework:** TypeScript CLI
 **Version:** 2.1.0
-**Last Updated**: 2026-01-12
+**Last Updated:** 2026-01-12
 
 ## System Overview
 
-Trinity Method SDK is a Node.js/TypeScript CLI tool that deploys a complete investigation-first development methodology to projects across multiple frameworks. It provides an 18-agent team, 21 slash commands, and comprehensive investigation templates for structured, quality-driven development.
+Trinity Method SDK is a Node.js/TypeScript CLI tool that deploys a complete
+investigation-first development methodology to projects across multiple frameworks.
+It provides an 18-agent team, 21 slash commands, and comprehensive investigation
+templates for structured, quality-driven development.
 
 ## Technology Stack
 
@@ -48,7 +51,7 @@ This project follows a modular command-line application architecture:
 
 ## Directory Structure
 
-```
+```text
 trinity-method-sdk/
 ├── dist/                 # Compiled JavaScript output
 │   ├── cli/              # CLI implementation
@@ -182,14 +185,20 @@ Visual representations of Trinity Method SDK architecture and workflows:
 
 ### [Trinity Deployment Architecture](../images/trinity-deployment-architecture.md)
 
-Complete deployment flow showing how Trinity deploys 64 components (18 agents, 21 slash commands, knowledge base, linting configs, CI/CD workflows) to a target project. Illustrates the CLI entry point, framework detection, interactive configuration, template processing, and component deployment to `.claude/` and `.claude/trinity/` directories.
+Complete deployment flow showing how Trinity deploys 64 components (18 agents,
+21 slash commands, knowledge base, linting configs, CI/CD workflows) to a target
+project. Illustrates the CLI entry point, framework detection, interactive
+configuration, template processing, and component deployment to `.claude/` and
+`.claude/trinity/` directories.
 
 ### [CLI Command Flow](../images/cli-command-flow.md)
 
 Detailed flowcharts for `trinity deploy` and `trinity update` commands:
 
-- **Deploy Flow**: Environment validation, framework detection, interactive prompts, directory creation, component deployment, and verification
-- **Update Flow**: Version checking, backup creation, user content preservation, template deployment, rollback on failure, and optional cleanup
+- **Deploy Flow**: Environment validation, framework detection, interactive prompts, directory
+  creation, component deployment, and verification
+- **Update Flow**: Version checking, backup creation, user content preservation, template
+  deployment, rollback on failure, and optional cleanup
 
 ### [Template Processing Pipeline](../images/template-processing-pipeline.md)
 
@@ -197,7 +206,8 @@ End-to-end template processing system showing variable substitution flow:
 
 - Template sources (agents, commands, knowledge base, framework configs)
 - User configuration capture (project name, framework, linting, CI/CD)
-- Variable registry with 8+ supported variables ({{PROJECT_NAME}}, {{FRAMEWORK}}, etc.)
+- Variable registry with 8+ supported variables ({{PROJECT_NAME}},
+  {{FRAMEWORK}}, etc.)
 - Processing engine (reader, parser, substitutor, validator)
 - Output generation with permission handling
 - Example: Template → Variable substitution → Deployed file
@@ -206,7 +216,8 @@ End-to-end template processing system showing variable substitution flow:
 
 Comprehensive framework compatibility matrix and detection logic:
 
-- Framework detection engine (auto-detection via package.json, requirements.txt, Cargo.toml, pubspec.yaml, go.mod)
+- Framework detection engine (auto-detection via package.json,
+  requirements.txt, Cargo.toml, pubspec.yaml, go.mod)
 - Support matrix for Node.js, Python, Rust, Flutter, Go
 - Framework-specific components (linting tools, CI/CD workflows, package managers)
 - Compatibility table showing feature support across frameworks
@@ -222,7 +233,8 @@ Architecture Decision Records (ADRs) document key technical decisions and their 
 
 **Decision:** Use Commander.js + Inquirer.js for CLI framework
 
-**Context:** Trinity SDK needed a robust, user-friendly CLI to support multiple commands, interactive prompts, framework detection, and TypeScript integration.
+**Context:** Trinity SDK needed a robust, user-friendly CLI to support multiple
+commands, interactive prompts, framework detection, and TypeScript integration.
 
 **Key Points:**
 
@@ -242,7 +254,9 @@ Architecture Decision Records (ADRs) document key technical decisions and their 
 
 **Decision:** Custom variable substitution with `{{VAR}}` syntax
 
-**Context:** Trinity deploys 64 components that need customization based on project name, framework, package manager, linting tools, CI/CD platform, and deployment date.
+**Context:** Trinity deploys 64 components that need customization based on
+project name, framework, package manager, linting tools, CI/CD platform, and
+deployment date.
 
 **Key Points:**
 
@@ -262,7 +276,8 @@ Architecture Decision Records (ADRs) document key technical decisions and their 
 
 **Decision:** Use ESLint flat config (`eslint.config.js`) format
 
-**Context:** ESLint introduced flat config in v8.21.0 and made it default in v9.0.0. SDK needed to decide between legacy `.eslintrc.js` and modern flat config.
+**Context:** ESLint introduced flat config in v8.21.0 and made it default in
+v9.0.0. SDK needed to decide between legacy `.eslintrc.js` and modern flat config.
 
 **Key Points:**
 
@@ -282,7 +297,8 @@ Architecture Decision Records (ADRs) document key technical decisions and their 
 
 **Decision:** Jest testing framework with 405+ comprehensive tests
 
-**Context:** SDK is a critical tool that deploys development infrastructure to user projects. Bugs could corrupt files, break CI/CD, or cause data loss.
+**Context:** SDK is a critical tool that deploys development infrastructure to
+user projects. Bugs could corrupt files, break CI/CD, or cause data loss.
 
 **Key Points:**
 

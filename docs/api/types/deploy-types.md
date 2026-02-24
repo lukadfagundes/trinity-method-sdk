@@ -8,7 +8,9 @@
 
 ## Overview
 
-This module defines deploy-specific types used across deploy sub-modules. It re-exports common types from `src/cli/types.ts` and adds deploy-specific interfaces for configuration and progress tracking.
+This module defines deploy-specific types used across deploy sub-modules. It re-exports
+common types from `src/cli/types.ts` and adds deploy-specific interfaces for
+configuration and progress tracking.
 
 ---
 

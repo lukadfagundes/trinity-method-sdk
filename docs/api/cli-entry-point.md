@@ -8,7 +8,9 @@
 
 ## Overview
 
-The CLI entry point initializes the Commander.js program, registers all commands (`deploy`, `update`), and parses command-line arguments. This is the authoritative source for all CLI command names, descriptions, and option flags.
+The CLI entry point initializes the Commander.js program, registers all commands
+(`deploy`, `update`), and parses command-line arguments. This is the authoritative
+source for all CLI command names, descriptions, and option flags.
 
 ---
 
@@ -81,7 +83,8 @@ program
 
 ## Error Handling
 
-All command handlers are wrapped with `errorHandler.wrap()`, which catches unhandled promise rejections and displays user-friendly error messages.
+All command handlers are wrapped with `errorHandler.wrap()`, which catches unhandled
+promise rejections and displays user-friendly error messages.
 
 ---
 

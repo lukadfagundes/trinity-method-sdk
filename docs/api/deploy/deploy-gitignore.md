@@ -8,10 +8,16 @@
 
 ## Overview
 
-The Gitignore module updates the project's `.gitignore` file to exclude Trinity Method directories and files from version control. It prevents accidental commits of session artifacts, work orders, and agent-generated content.
+The Gitignore module updates the project's `.gitignore` file to exclude Trinity
+Method directories and files from version control. It prevents accidental commits
+of session artifacts, work orders, and agent-generated content.
 
 **Why This Exists:**
-Trinity creates session artifacts, work orders, and investigation documents that are meant for local development only. These files should not be committed to version control. This module automatically adds Trinity-specific ignore patterns to protect developers from accidentally committing temporary or sensitive content.
+Trinity creates session artifacts, work orders, and investigation documents that
+are meant for local development only. These files should not be committed to
+version control. This module automatically adds Trinity-specific ignore patterns
+to protect developers from accidentally committing temporary or sensitive
+content.
 
 ---
 
@@ -42,7 +48,7 @@ Updates .gitignore with Trinity exclusions.
 
 ### Excluded Files and Directories
 
-```
+```gitignore
 # Trinity Method SDK
 .claude/
 *CLAUDE.md
@@ -61,7 +67,7 @@ Updates .gitignore with Trinity exclusions.
 
 ### .claude/ Directory (Excluded)
 
-```
+```text
 .claude/
 ├── agents/           ❌ Agent templates (deployed by SDK)
 ├── commands/         ❌ Slash commands (deployed by SDK)
@@ -75,7 +81,7 @@ Updates .gitignore with Trinity exclusions.
 
 ### .claude/trinity/ Directory (Excluded via .claude/)
 
-```
+```text
 .claude/trinity/
 ├── sessions/         ❌ Session artifacts (temporary)
 ├── work-orders/      ❌ Active work orders (local workflow)
@@ -89,7 +95,8 @@ Updates .gitignore with Trinity exclusions.
 
 **Reason:** All Trinity content is now inside `.claude/` and excluded by the `.claude/` pattern
 
-**Exception:** If you customize knowledge base or patterns, you may want to commit them. In that case, use negation patterns in .gitignore:
+**Exception:** If you customize knowledge base or patterns, you may want to
+commit them. In that case, use negation patterns in .gitignore:
 
 ```gitignore
 # Custom Trinity exclusions (if you want to commit knowledge base)
@@ -104,7 +111,7 @@ Updates .gitignore with Trinity exclusions.
 
 ### CLAUDE.md Files (Excluded)
 
-```
+```text
 CLAUDE.md                    ❌ Root context (deployed by SDK)
 .claude/trinity/CLAUDE.md    ❌ Trinity context (deployed by SDK)
 src/CLAUDE.md                ❌ Source context (deployed by SDK)
@@ -280,7 +287,7 @@ npx trinity deploy
 
 **Before:**
 
-```
+```text
 (no .gitignore file)
 ```
 
@@ -294,7 +301,7 @@ npx trinity deploy
 
 **Output:**
 
-```
+```text
 ✔ .gitignore updated with Trinity exclusions
 ```
 
@@ -328,7 +335,7 @@ dist/
 
 **Output:**
 
-```
+```text
 ✔ .gitignore updated with Trinity exclusions
 ```
 
@@ -352,13 +359,13 @@ node_modules/
 
 **After:**
 
-```gitignore
+```text
 (no changes - Trinity section already exists)
 ```
 
 **Output:**
 
-```
+```text
 ℹ .gitignore already contains Trinity exclusions
 ```
 
@@ -374,7 +381,7 @@ npx trinity deploy
 
 **Output:**
 
-```
+```text
 ⚠️ .gitignore update failed
 Warning: EACCES: permission denied, open '.gitignore'
 ```
@@ -448,7 +455,7 @@ const gitignorePath = '../../../etc/passwd';
 
 ## Design Rationale
 
-### Why Exclude Entire .claude/ Directory?
+### Why Exclude Entire .claude/ Directory
 
 **Options Considered:**
 
@@ -479,7 +486,7 @@ const gitignorePath = '../../../etc/passwd';
 
 ---
 
-### Why Use Marker Comment for Detection?
+### Why Use Marker Comment for Detection
 
 **Options Considered:**
 

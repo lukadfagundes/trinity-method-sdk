@@ -9,7 +9,9 @@
 
 ## Overview
 
-The Command Updates module synchronizes slash command template files from the Trinity Method SDK to the project's `.claude/commands/` directory. It updates all 20+ specialized slash commands across 7 categories, ensuring projects have the latest command capabilities and documentation.
+The Command Updates module synchronizes slash command template files from the Trinity Method SDK to
+the project's `.claude/commands/` directory. It updates all 20+ specialized slash commands across 7
+categories, ensuring projects have the latest command capabilities and documentation.
 
 ### Key Features
 
@@ -59,7 +61,7 @@ Commands are organized by workflow phase and purpose:
 
 #### 1. Session Commands
 
-```
+```text
 .claude/commands/session/
 ├── trinity-init.md - Initialize Trinity Method session
 ├── trinity-end.md - End Trinity session with summary
@@ -68,7 +70,7 @@ Commands are organized by workflow phase and purpose:
 
 #### 2. Planning Commands
 
-```
+```text
 .claude/commands/planning/
 ├── trinity-plan.md - Create feature implementation plan
 ├── trinity-audit.md - Audit codebase for issues
@@ -77,7 +79,7 @@ Commands are organized by workflow phase and purpose:
 
 #### 3. Execution Commands
 
-```
+```text
 .claude/commands/execution/
 ├── trinity-execute.md - Execute planned task
 ├── trinity-implement.md - Implement feature
@@ -87,7 +89,7 @@ Commands are organized by workflow phase and purpose:
 
 #### 4. Investigation Commands
 
-```
+```text
 .claude/commands/investigation/
 ├── trinity-analyze.md - Analyze code patterns
 ├── trinity-debug.md - Debug specific issue
@@ -96,7 +98,7 @@ Commands are organized by workflow phase and purpose:
 
 #### 5. Infrastructure Commands
 
-```
+```text
 .claude/commands/infrastructure/
 ├── trinity-deploy.md - Deploy Trinity Method SDK
 ├── trinity-update.md - Update Trinity components
@@ -106,7 +108,7 @@ Commands are organized by workflow phase and purpose:
 
 #### 6. Maintenance Commands
 
-```
+```text
 .claude/commands/maintenance/
 ├── trinity-refactor.md - Refactor code
 ├── trinity-optimize.md - Optimize performance
@@ -116,7 +118,7 @@ Commands are organized by workflow phase and purpose:
 
 #### 7. Utility Commands
 
-```
+```text
 .claude/commands/utility/
 ├── trinity-status.md - Show project status
 ├── trinity-metrics.md - Display metrics
@@ -130,7 +132,7 @@ Commands are organized by workflow phase and purpose:
 
 ### Phase 1: SDK Path Resolution
 
-```
+```text
 Call: getSDKPath()
 Purpose: Locate SDK installation (dev/local/global)
 Result: Path to SDK root directory
@@ -138,7 +140,7 @@ Result: Path to SDK root directory
 
 ### Phase 2: Template Path Validation
 
-```
+```text
 Check: ${SDK_PATH}/dist/templates/.claude/commands
 If not exists:
   Spinner: ⚠ "Commands template path not found, skipping"
@@ -147,7 +149,7 @@ If not exists:
 
 ### Phase 3: Category Iteration
 
-```
+```text
 For each command category:
   session → planning → execution → investigation →
   infrastructure → maintenance → utility
@@ -164,7 +166,7 @@ For each command category:
 
 ### Phase 4: File Processing
 
-```
+```text
 For each file in source directory:
   1. Check if filename ends with '.md.template'
   2. If yes:
@@ -177,7 +179,7 @@ For each file in source directory:
 
 ### Phase 5: Completion
 
-```
+```text
 Spinner: ✓ "Slash commands updated (N files)"
 Where N = total command files updated
 ```
@@ -243,13 +245,13 @@ for (const category of SELECTED_CATEGORIES) {
 
 **Source File (SDK):**
 
-```
+```text
 dist/templates/.claude/commands/session/trinity-init.md.template
 ```
 
 **Target File (Project):**
 
-```
+```text
 .claude/commands/session/trinity-init.md
 ```
 
@@ -274,7 +276,7 @@ await fs.copy(sourcePath, targetPath, { overwrite: true });
 
 **Before Update:**
 
-```
+```text
 .claude/
 └── commands/
     └── session/
@@ -284,7 +286,7 @@ await fs.copy(sourcePath, targetPath, { overwrite: true });
 
 **After Update:**
 
-```
+```text
 .claude/
 └── commands/
     ├── session/
@@ -359,7 +361,7 @@ await fs.copy(sourcePath, targetPath, { overwrite: true });
 
 ## Overwrite Strategy
 
-### Why Overwrite?
+### Why Overwrite
 
 **Command templates receive updates** including:
 
@@ -373,16 +375,16 @@ await fs.copy(sourcePath, targetPath, { overwrite: true });
 
 **If users need custom commands:**
 
-**Option 1: Custom Commands Directory**
+#### Option 1 - Custom Commands Directory
 
-```
+```text
 .claude/
 ├── commands/          (managed by SDK)
 └── custom-commands/   (user-managed)
     └── my-custom-command.md
 ```
 
-**Option 2: Extend Existing Commands**
+#### Option 2 - Extend Existing Commands
 
 ```markdown
 # In .claude/custom-commands/trinity-init-extended.md
@@ -434,7 +436,7 @@ stats.commandsUpdated++;
 
 ### Console Output
 
-```
+```text
 ⠋ Updating slash commands...
 ✓ Slash commands updated (25 files)
 ```
@@ -479,23 +481,23 @@ try {
 
 ### Common Error Scenarios
 
-**1. Permission Denied**
+#### 1. Permission Denied
 
-```
+```text
 Error: EACCES: permission denied, open '.claude/commands/session/trinity-init.md'
 Solution: Run with appropriate permissions or fix file ownership
 ```
 
-**2. SDK Not Installed**
+#### 2. SDK Not Installed
 
-```
+```text
 Error: SDK path not found
 Solution: Install Trinity Method SDK first (npm install trinity-method-sdk)
 ```
 
-**3. Disk Full**
+#### 3. Disk Full
 
-```
+```text
 Error: ENOSPC: no space left on device
 Solution: Free up disk space
 ```
