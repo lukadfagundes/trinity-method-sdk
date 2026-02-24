@@ -9,7 +9,9 @@
 
 ## Overview
 
-The Git Metrics module collects repository metadata from Git history, including total commit count, number of contributors, and the last commit date. It provides quantitative metrics for project activity and collaboration.
+The Git Metrics module collects repository metadata from Git history, including total
+commit count, number of contributors, and the last commit date. It provides
+quantitative metrics for project activity and collaboration.
 
 ### Key Features
 
@@ -124,7 +126,7 @@ return lines.length;
 
 **Output Format:**
 
-```
+```text
    142  John Doe
     87  Jane Smith
     23  Bob Johnson
@@ -328,7 +330,7 @@ git log -1 --format=%cI
 
 ### Commit Count Thresholds
 
-```
+```text
 0-50:      New project or prototype
 51-200:    Active development
 201-1000:  Established project
@@ -337,7 +339,7 @@ git log -1 --format=%cI
 
 ### Contributor Count Thresholds
 
-```
+```text
 1:         Solo project
 2-5:       Small team
 6-15:      Medium team

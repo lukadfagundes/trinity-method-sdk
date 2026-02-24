@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Update Command orchestrates the Trinity Method SDK update process, bringing an existing deployment up to the latest version. It manages backup creation, component updates, user content restoration, verification, and rollback on failure.
+The Update Command orchestrates the Trinity Method SDK update process, bringing an existing
+deployment up to the latest version. It manages backup creation, component updates, user content
+restoration, verification, and rollback on failure.
 
 **Trinity Principle:** "Systematic Quality Assurance" - Keep deployment current
 
@@ -37,10 +39,9 @@ Main entry point for update command. Orchestrates 12-step update workflow.
 
 ```typescript
 interface UpdateOptions {
-  force?: boolean; // Force update even if up-to-date
+  all?: boolean; // Update all registered Trinity projects
   dryRun?: boolean; // Preview changes without applying
-  targetDir?: string; // Target directory (default: cwd)
-  skipBackup?: boolean; // Skip backup creation (dangerous)
+  force?: boolean; // Force update even if up-to-date
 }
 ```
 
@@ -67,7 +68,7 @@ interface UpdateOptions {
 
 **User Message:**
 
-```
+```text
 ⚠️  Trinity Method is not deployed
 Run: trinity deploy
 ```
@@ -97,7 +98,7 @@ interface VersionInfo {
 
 **User Messages:**
 
-```
+```text
 ✅ Already up to date (if up-to-date)
 ⚠️  Forcing update (already at latest version) (if force)
 ```
@@ -113,7 +114,7 @@ interface VersionInfo {
 
 **Output:**
 
-```
+```text
 🔍 Dry Run Preview
 
 Current Version: 2.0.0
@@ -140,7 +141,7 @@ To apply this update, run: trinity update
 
 **Prompt:**
 
-```
+```text
 ? Update Trinity Method from 2.0.0 to 2.1.0? (Y/n)
 ```
 
@@ -151,7 +152,7 @@ To apply this update, run: trinity update
 
 **Cancellation Message:**
 
-```
+```text
 Update cancelled
 ```
 
@@ -164,7 +165,7 @@ Update cancelled
 
 **Backup Location:**
 
-```
+```text
 .claude/trinity/backups/update-YYYY-MM-DD-HHMMSS/
 ```
 
@@ -182,7 +183,7 @@ Update cancelled
 
 **User Message:**
 
-```
+```text
 ✓ Created backup: .claude/trinity/backups/update-2026-01-21-103000
 ```
 
@@ -190,7 +191,7 @@ Update cancelled
 
 ### Step 5-8: Update Components
 
-Updates performed in parallel for performance:
+Updates performed sequentially:
 
 #### Step 5: Update Agents
 
@@ -199,7 +200,7 @@ Updates performed in parallel for performance:
 
 **Updates:**
 
-- 19 Trinity agent templates
+- 18 Trinity agent templates
 - Preserves user customizations (if detected)
 
 **Stats Tracking:** `stats.agentsUpdated`
@@ -278,7 +279,7 @@ Updates performed in parallel for performance:
 
 **User Message:**
 
-```
+```text
 ✓ Restored user content (sessions, investigations, work orders)
 ```
 
@@ -291,13 +292,13 @@ Updates performed in parallel for performance:
 
 **File Content:**
 
-```
+```text
 2.1.0
 ```
 
 **User Message:**
 
-```
+```text
 ✓ Updated VERSION file to 2.1.0
 ```
 
@@ -319,7 +320,7 @@ Updates performed in parallel for performance:
 
 **User Message:**
 
-```
+```text
 ✓ Verified update deployment
 ```
 
@@ -337,7 +338,7 @@ Updates performed in parallel for performance:
 
 **User Message:**
 
-```
+```text
 ✓ Cleaned up backup
 ```
 
@@ -349,7 +350,7 @@ Updates performed in parallel for performance:
 
 **Output:**
 
-```
+```text
 ✅ Trinity Method Updated Successfully!
 
 Version: 2.0.0 → 2.1.0
@@ -397,7 +398,7 @@ Any error in Steps 4-11 triggers automatic rollback.
 
 **User Messages:**
 
-```
+```text
 ❌ Update failed - Rolling back changes...
 
 🔄 Rolling back from backup: .claude/trinity/backups/update-2026-01-21-103000
@@ -501,41 +502,6 @@ trinity update --dry-run
 
 ---
 
-### Target Directory (`--target-dir`)
-
-**Purpose:** Update Trinity deployment in specific directory
-
-**Example:**
-
-```bash
-trinity update --target-dir /path/to/project
-```
-
-**Behavior:**
-
-- Changes working directory to `targetDir`
-- All operations performed relative to `targetDir`
-
----
-
-### Skip Backup (`--skip-backup`)
-
-**Purpose:** Skip backup creation (faster but dangerous)
-
-**⚠️ DANGER:** Not recommended - no recovery if update fails
-
-**Example:**
-
-```bash
-trinity update --skip-backup
-```
-
-**Behavior:**
-
-- Skips Step 4 (backup creation)
-- No rollback possible on failure
-- Only for advanced users
-
 ---
 
 ## Integration with Other Commands
@@ -562,7 +528,7 @@ if (!fs.existsSync('.claude/trinity/VERSION')) {
 
 ```typescript
 if (options.audit) {
-  await audit({ targetDir: options.targetDir });
+  await audit();
 }
 ```
 
@@ -598,13 +564,6 @@ await update({ dryRun: true });
 ```
 
 ---
-
-### Update Specific Directory
-
-```typescript
-await update({ targetDir: '/path/to/project' });
-// Updates Trinity deployment in specific directory
-```
 
 ---
 
@@ -659,6 +618,7 @@ If automatic rollback fails:
    ```
 
 4. **Clean Reinstall (Last Resort):**
+
    ```bash
    trinity deploy --force
    ```
@@ -771,7 +731,7 @@ describe('update integration', () => {
 
 ## Workflow Diagram
 
-```
+```text
 update(options)
     ↓
 [1] Pre-flight Checks

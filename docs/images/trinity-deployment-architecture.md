@@ -24,7 +24,7 @@ graph TB
 
     subgraph "Deployed Components (64 total)"
         subgraph ".claude/"
-            A1[19 Agents<br/>Planning: MON, ROR, TRA, EUS<br/>Execution: KIL, BAS, DRA<br/>Support: APO, BON, CAP, URO<br/>Leadership: ALY, JUNO<br/>Infrastructure: TAN, ZEN, INO, EIN, AJ]
+            A1[18 Agents<br/>Planning: MON, ROR, TRA, EUS<br/>Execution: KIL, BAS, DRA<br/>Support: APO, BON, CAP, URO<br/>Leadership: ALY, JUNO<br/>Infrastructure: TAN, ZEN, INO, EIN, AJ]
             C1[20 Slash Commands<br/>Session/Planning/Execution<br/>Investigation/Utility]
             ED[EMPLOYEE-DIRECTORY.md]
         end
@@ -89,7 +89,7 @@ graph TB
 
 ## Components Deployed
 
-- **19 Agents** → `.claude/agents/`
+- **18 Agents** → `.claude/agents/`
 - **20 Slash Commands** → `.claude/commands/`
 - **Employee Directory** → `.claude/EMPLOYEE-DIRECTORY.md`
 - **9 Knowledge Base Files** → `.claude/trinity/knowledge-base/`

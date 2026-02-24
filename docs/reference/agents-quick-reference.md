@@ -3,7 +3,7 @@
 **Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
-Quick lookup table for Trinity's 19-agent team.
+Quick lookup table for Trinity's 18-agent team.
 
 ## Planning Agents (4)
 
@@ -38,22 +38,21 @@ Quick lookup table for Trinity's 19-agent team.
 | **ALY**  | Chief Technology Officer | Session management, strategic oversight     | Read, Write, Edit      | `/trinity-start`, `/trinity-continue`, `/trinity-end` |
 | **JUNO** | Quality Auditor          | Audit Trinity deployment, quality assurance | Read, Bash, Glob, Grep | `/trinity-audit`                                      |
 
-## Infrastructure Agents (6)
+## Infrastructure Agents (5)
 
-| Agent          | Role                      | When to Use                                   | Tools                        | Command                |
-| -------------- | ------------------------- | --------------------------------------------- | ---------------------------- | ---------------------- |
-| **TAN**        | Structure Specialist      | Verify Trinity folder structure               | Bash, Read, Edit, Glob, Grep | `/trinity-verify`      |
-| **ZEN**        | Knowledge Base Specialist | Create comprehensive project documentation    | All tools                    | (direct invocation)    |
-| **INO**        | Context Specialist        | Manage CLAUDE.md hierarchy, ISSUES.md         | Read, Write, Edit, Bash      | (direct invocation)    |
-| **EIN**        | CI/CD Specialist          | Setup CI/CD pipelines with BAS quality gates  | Read, Write, Edit, Bash      | (direct invocation)    |
-| **AJ MAESTRO** | Orchestration Coordinator | Coordinate multi-agent workflows              | All tools                    | `/trinity-orchestrate` |
-| **AJ (CC)**    | Collaboration Coordinator | Support AJ MAESTRO with complex orchestration | All tools                    | (supports AJ MAESTRO)  |
+| Agent          | Role                      | When to Use                                  | Tools                        | Command                |
+| -------------- | ------------------------- | -------------------------------------------- | ---------------------------- | ---------------------- |
+| **TAN**        | Structure Specialist      | Verify Trinity folder structure              | Bash, Read, Edit, Glob, Grep | `/trinity-verify`      |
+| **ZEN**        | Knowledge Base Specialist | Create comprehensive project documentation   | All tools                    | (direct invocation)    |
+| **INO**        | Context Specialist        | Manage CLAUDE.md hierarchy, ISSUES.md        | Read, Write, Edit, Bash      | (direct invocation)    |
+| **EIN**        | CI/CD Specialist          | Setup CI/CD pipelines with BAS quality gates | Read, Write, Edit, Bash      | (direct invocation)    |
+| **AJ MAESTRO** | Orchestration Coordinator | Coordinate multi-agent workflows             | All tools                    | `/trinity-orchestrate` |
 
 ---
 
 ## Quick Selection Guide
 
-```
+```text
 NEW FEATURE (complex)
 └─> /trinity-orchestrate (AJ MAESTRO)
     └─> Full workflow: MON → ROR → EUS → TRA → KIL → BAS
@@ -96,20 +95,20 @@ REFACTORING
 
 ### Full Planning Chain
 
-```
+```text
 MON (Requirements) → ROR (Design) → EUS (Decompose) → TRA (Plan)
 ```
 
 ### Execution Loop
 
-```
+```text
 KIL (Execute Task) → BAS (Validate) → [Pass] → Next Task
                                    → [Fail] → KIL (Fix)
 ```
 
 ### Orchestrated Workflow
 
-```
+```text
 AJ MAESTRO → MON → ROR → EUS → TRA → KIL → BAS (loop) → DRA → Complete
 ```
 
@@ -145,9 +144,9 @@ AJ MAESTRO → MON → ROR → EUS → TRA → KIL → BAS (loop) → DRA → Co
 ## Further Reading
 
 - [Agent Guide (Detailed)](../guides/agent-guide.md) - Comprehensive agent documentation
-- [Slash Commands Reference](slash-commands-reference.md) - All 20 slash commands
+- [Slash Commands Reference](slash-commands-reference.md) - All 21 slash commands
 - [CLI Commands](cli-commands.md) - Trinity CLI reference
 
 ---
 
-**Trinity Method SDK v2.0.9** - 19-Agent Team Quick Reference
+**Trinity Method SDK v2.1.0** - 18-Agent Team Quick Reference

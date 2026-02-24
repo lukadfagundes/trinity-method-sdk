@@ -2,7 +2,10 @@
 
 ## Overview
 
-The `deploy-claude-setup` module handles the deployment of Claude Code configuration files to the target project. This includes creating Claude Code settings, deploying the employee directory, and organizing slash commands into categorized directories for easy navigation.
+The `deploy-claude-setup` module handles the deployment of Claude Code configuration
+files to the target project. This includes creating Claude Code settings, deploying
+the employee directory, and organizing slash commands into categorized directories
+for easy navigation.
 
 **Module:** `src/cli/commands/deploy/claude-setup.ts`
 **Purpose:** Deploy Claude Code configuration files to enable Trinity Method agent integration
@@ -33,8 +36,10 @@ async function deployClaudeSetup(
 
 **Parameters:**
 
-- `templatesPath` (string) - Absolute path to the SDK's templates directory (e.g., `/path/to/sdk/src/templates`)
-- `variables` (Record<string, string>) - Template variables for substitution in templates (e.g., `{ PROJECT_NAME: "myapp", FRAMEWORK: "Node.js" }`)
+- `templatesPath` (string) - Absolute path to the SDK's templates directory
+  (e.g., `/path/to/sdk/src/templates`)
+- `variables` (Record<string, string>) - Template variables for substitution
+  in templates (e.g., `{ PROJECT_NAME: "myapp", FRAMEWORK: "Node.js" }`)
 - `spinner` (Spinner) - Ora spinner instance for displaying deployment progress and status messages
 
 **Returns:**
@@ -113,7 +118,7 @@ console.log(`Deployed ${result.commandsDeployed} slash commands`);
 
 **Status Message:**
 
-```
+```text
 ✔ Claude Code settings created (empty - customize as needed)
 ```
 
@@ -142,14 +147,14 @@ console.log(`Deployed ${result.commandsDeployed} slash commands`);
 
 **Status Messages:**
 
-```
+```text
 ⠹ Deploying Employee Directory...
 ✔ Employee Directory deployed
 ```
 
 **Warning Case:**
 
-```
+```text
 ⚠ Employee Directory template not found
 ```
 
@@ -159,7 +164,7 @@ console.log(`Deployed ${result.commandsDeployed} slash commands`);
 
 **Directory Structure Created:**
 
-```
+```text
 .claude/commands/
 ├── session/          # Session management
 ├── planning/         # Planning and design
@@ -217,7 +222,7 @@ console.log(`Deployed ${result.commandsDeployed} slash commands`);
 
 **Status Message:**
 
-```
+```text
 ✔ Deployed 20 Trinity slash commands (6 categories)
 ```
 

@@ -9,7 +9,10 @@
 
 ## Overview
 
-The Linting Deployment Utilities module provides low-level functions for deploying linting tool configurations. It handles framework-specific linting setups for 9 different tools across 4 frameworks (Node.js, Python, Flutter, Rust), with intelligent template selection based on language and module type.
+The Linting Deployment Utilities module provides low-level functions for
+deploying linting tool configurations. It handles framework-specific linting
+setups for 9 different tools across 4 frameworks (Node.js, Python, Flutter,
+Rust), with intelligent template selection based on language and module type.
 
 ### Key Features
 
@@ -167,7 +170,7 @@ function getFrameworkDirectory(framework: string): string;
 
 ### Decision Tree
 
-```
+```text
 stack.language === 'TypeScript'
   ├─ YES → .eslintrc-typescript.json.template
   └─ NO → Check module type
@@ -391,7 +394,7 @@ await fs.writeFile(destPath, processed);
 
 **Example:**
 
-```typescript
+```text
 validatePath('.eslintrc.json')     → ✓ Valid
 validatePath('../../../etc/passwd') → ✗ Throws error
 ```
@@ -400,7 +403,7 @@ validatePath('../../../etc/passwd') → ✗ Throws error
 
 ## Framework Directory Mapping
 
-### Why Mapping Needed?
+### Why Mapping Is Needed
 
 - Templates organized by framework category (nodejs, python, flutter, rust)
 - Multiple frameworks share same linting tools (React/Next.js use Node.js tools)
@@ -593,7 +596,7 @@ describe('getFrameworkDirectory', () => {
 
 ## Security Considerations
 
-### Path Validation
+### Path Validation Security
 
 - All destination paths validated before writing
 - Prevents directory traversal attacks

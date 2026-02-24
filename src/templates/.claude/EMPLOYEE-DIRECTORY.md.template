@@ -27,11 +27,11 @@
 
 ### AJ MAESTRO (Implementation Orchestrator)
 **File:** [.claude/agents/leadership/aj-maestro.md](.claude/agents/leadership/aj-maestro.md)
-**Role:** Implementation coordination using 19-agent team (organized in 5 role-based subdirectories)
+**Role:** Implementation coordination using 18-agent team (organized in 5 role-based subdirectories)
 **Specialization:** Planning layer, execution layer, support layer coordination
 
 **Agent Organization:**
-- **Leadership:** ALY, AJ MAESTRO, AJ CC (3 agents)
+- **Leadership:** ALY, AJ MAESTRO (2 agents)
 - **Deployment:** TAN, ZEN, INO, EIN (4 agents)
 - **Planning:** MON, ROR, TRA, EUS (4 agents)
 - **Implementation:** KIL, BAS, DRA, APO, BON, CAP, URO (7 agents)
@@ -46,13 +46,6 @@
 **To invoke AJ MAESTRO:**
 - Reference: "Please review `.claude/agents/leadership/aj-maestro.md` to orchestrate implementation"
 - AJ MAESTRO coordinates all specialized agents based on scale-determined workflow
-
----
-
-### AJ CC (Code Coordinator)
-**File:** [.claude/agents/leadership/aj-cc.md](.claude/agents/leadership/aj-cc.md)
-**Role:** Code quality and implementation oversight
-**Specialization:** Tactical implementation coordination
 
 ---
 
@@ -371,7 +364,7 @@ npx trinity-method-sdk deploy --skip-audit
 - Reference: "Please review `.claude/agents/leadership/aly-cto.md` to investigate [feature name] and create work order"
 
 **2. Implementation phase (AJ):**
-- Reference: "Please review `.claude/agents/leadership/aj-cc.md` to implement work order WO-XXX-[feature-name]"
+- Reference: "Please review `.claude/agents/leadership/aj-maestro.md` to implement work order WO-XXX-[feature-name]"
 
 **3. Quality review (JUNO):**
 - Reference: "Please review `.claude/agents/audit/juno-auditor.md` to review implementation of WO-XXX"
@@ -381,7 +374,7 @@ npx trinity-method-sdk deploy --skip-audit
 - Reference: "Please review `.claude/agents/leadership/aly-cto.md` to investigate bug: [description]"
 
 **2. Implement fix (AJ):**
-- Reference: "Please review `.claude/agents/leadership/aj-cc.md` to fix bug per investigation findings"
+- Reference: "Please review `.claude/agents/leadership/aj-maestro.md` to fix bug per investigation findings"
 
 ### Documentation Updates
 **Update architecture docs (ZEN):**

@@ -113,7 +113,7 @@ describe('deploy-ci', () => {
 
       const stats = await deployCITemplates();
 
-      expect(stats.skipped).toContain('.gitlab-ci.yml (already exists)');
+      expect(stats.skipped).toContain('.gitlab-ci.yml (already exists, use --force to overwrite)');
       const content = await fs.readFile('.gitlab-ci.yml', 'utf8');
       expect(content).toBe('existing content'); // Preserved
     });
@@ -285,7 +285,9 @@ describe('deploy-ci', () => {
 
       const stats = await deployCITemplates();
 
-      expect(stats.skipped).toContain('.github/workflows/ci.yml (already exists)');
+      expect(stats.skipped).toContain(
+        '.github/workflows/ci.yml (already exists, use --force to overwrite)'
+      );
       const content = await fs.readFile('.github/workflows/ci.yml', 'utf8');
       expect(content).toBe('existing ci content');
     });

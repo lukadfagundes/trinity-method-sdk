@@ -7,7 +7,9 @@
 
 ## Context
 
-Trinity Method SDK is a critical tool that deploys development infrastructure (agents, commands, linting configs, CI/CD workflows) to user projects. Any bugs or failures in deployment could:
+Trinity Method SDK is a critical tool that deploys development infrastructure
+(agents, commands, linting configs, CI/CD workflows) to user projects. Any bugs
+or failures in deployment could:
 
 - Corrupt user project files
 - Break existing CI/CD pipelines
@@ -118,7 +120,7 @@ The SDK needed a robust testing strategy to ensure:
 
 ## Decision
 
-**Chosen Option: Jest with Comprehensive Test Suite (405+ Tests)**
+### Chosen Option - Jest with Comprehensive Test Suite (405+ Tests)
 
 We will use Jest as the testing framework with:
 
@@ -181,6 +183,7 @@ We will use Jest as the testing framework with:
    ```
 
 7. **Code Coverage** - Built-in coverage reports:
+
    ```bash
    npm test -- --coverage
    # Generates HTML report in coverage/
@@ -190,7 +193,7 @@ We will use Jest as the testing framework with:
 
 ### Test Suite Organization
 
-```
+```text
 tests/
 ├── unit/                          # Unit tests (~200 tests)
 │   ├── templateProcessor.test.ts  # Template substitution
@@ -420,7 +423,8 @@ jobs:
 ### Neutral
 
 - **Test-Driven Development** - Encourages TDD workflow (write tests first)
-- **Coverage Requirements** - 90% threshold enforces quality but may be strict for some edge cases
+- **Coverage Requirements** - 90% threshold enforces quality but may be strict
+  for some edge cases
 
 ## Validation
 

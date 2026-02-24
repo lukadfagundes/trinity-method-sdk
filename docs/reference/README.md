@@ -14,10 +14,11 @@ Reference materials for Trinity Method SDK - Quick lookup tables, command refere
   - Exit codes, environment variables, configuration
   - Examples and troubleshooting
 
-- **[Slash Commands Reference](slash-commands-reference.md)** - All 19 slash commands ⭐ **COMPREHENSIVE**
+- **[Slash Commands Reference](slash-commands-reference.md)** - All 21 slash commands ⭐ **COMPREHENSIVE**
   - Session Management (3): `/trinity-start`, `/trinity-continue`, `/trinity-end`
   - Planning (4): `/trinity-requirements`, `/trinity-design`, `/trinity-decompose`, `/trinity-plan`
-  - Execution (5): `/trinity-orchestrate`, `/trinity-audit`, `/trinity-readme`, `/trinity-docs`, `/trinity-changelog`
+  - Execution (3): `/trinity-orchestrate`, `/trinity-audit`, `/trinity-breakdown`
+  - Maintenance (4): `/trinity-readme`, `/trinity-docs`, `/trinity-docs-update`, `/trinity-changelog`
   - Investigation (3): `/trinity-create-investigation`, `/trinity-plan-investigation`, `/trinity-investigate-templates`
   - Infrastructure (1): `/trinity-init`
   - Utility (3): `/trinity-verify`, `/trinity-agents`, `/trinity-workorder`
@@ -25,7 +26,7 @@ Reference materials for Trinity Method SDK - Quick lookup tables, command refere
 
 ### Quick Reference Cards
 
-- **[Agent Quick Reference Card](agents-quick-reference.md)** - 19-agent team lookup table ⭐ **ESSENTIAL**
+- **[Agent Quick Reference Card](agents-quick-reference.md)** - 18-agent team lookup table ⭐ **ESSENTIAL**
   - Planning Agents (4): MON, ROR, EUS, TRA
   - Execution Agents (3): KIL, BAS, DRA
   - Support Agents (4): APO, BON, CAP, URO
@@ -50,7 +51,7 @@ Reference materials for Trinity Method SDK - Quick lookup tables, command refere
 | ---------------------- | ----- | ---------------------------------------- |
 | **CLI Commands**       | 1     | Trinity command-line interface reference |
 | **Slash Commands**     | 1     | All 19 slash commands with examples      |
-| **Agent Reference**    | 1     | Quick lookup for 19-agent team           |
+| **Agent Reference**    | 1     | Quick lookup for 18-agent team           |
 | **Template Variables** | 1     | Variable substitution reference          |
 | **Total**              | **4** | Complete Trinity reference library       |
 
@@ -60,7 +61,7 @@ Reference materials for Trinity Method SDK - Quick lookup tables, command refere
 
 **Essential Reading Order:**
 
-1. [Agent Quick Reference](agents-quick-reference.md) - Understand the 19-agent team
+1. [Agent Quick Reference](agents-quick-reference.md) - Understand the 18-agent team
 2. [Slash Commands Reference](slash-commands-reference.md) - Learn available commands
 3. [CLI Commands](cli-commands.md) - Master trinity deploy/update
 

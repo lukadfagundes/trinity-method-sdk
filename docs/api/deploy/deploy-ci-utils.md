@@ -9,7 +9,10 @@
 
 ## Overview
 
-The CI/CD Deployment Utilities module provides low-level functions for deploying CI/CD workflow templates. It handles platform detection (GitHub Actions, GitLab CI), template deployment, and statistics tracking. This module is called by the higher-level `deploy/ci-cd.ts` command.
+The CI/CD Deployment Utilities module provides low-level functions for deploying CI/CD
+workflow templates. It handles platform detection (GitHub Actions, GitLab CI), template
+deployment, and statistics tracking. This module is called by the higher-level
+`deploy/ci-cd.ts` command.
 
 ### Key Features
 
@@ -141,7 +144,7 @@ type GitPlatform = 'github' | 'gitlab' | 'unknown';
 
 ### Platform-Based Deployment
 
-```
+```text
 1. Detect Git Platform (detectGitPlatform)
    ├─ GitHub detected → Deploy GitHub Actions CI
    ├─ GitLab detected → Deploy GitLab CI
@@ -274,7 +277,7 @@ if (platform === 'github') {
 
 ## GitHub Actions Deployment
 
-### Files Deployed
+### GitHub Files Deployed
 
 **1. CI Workflow (`.github/workflows/ci.yml`)**
 
@@ -282,14 +285,14 @@ if (platform === 'github') {
 - Linting, testing, building
 - Automated quality checks
 
-### Template Path
+### GitHub Template Path
 
-```
+```text
 src/cli/templates/ci/
 └── ci.yml.template → .github/workflows/ci.yml
 ```
 
-### Deployment Process
+### GitHub Deployment Process
 
 ```typescript
 // 1. Ensure directory exists
@@ -314,7 +317,7 @@ if (ciExists && !options.force) {
 
 ## GitLab CI Deployment
 
-### File Deployed
+### GitLab File Deployed
 
 **GitLab CI (`.gitlab-ci.yml`)**
 
@@ -322,14 +325,14 @@ if (ciExists && !options.force) {
 - Stages: test, build, deploy
 - Pipeline automation
 
-### Template Path
+### GitLab Template Path
 
-```
+```text
 src/cli/templates/ci/
 └── gitlab-ci.yml → .gitlab-ci.yml
 ```
 
-### Deployment Process
+### GitLab Deployment Process
 
 ```typescript
 // 1. Check if file exists
@@ -361,9 +364,9 @@ stats.deployed.push('.gitlab-ci.yml');
 
 Platform-agnostic CI template for reference or manual customization.
 
-### File Deployed
+### Generic File Deployed
 
-```
+```text
 .claude/trinity/templates/ci/generic-ci.yml
 ```
 
@@ -373,9 +376,9 @@ Platform-agnostic CI template for reference or manual customization.
 - Serves as documentation and reference
 - Users can customize for their platform
 
-### Template Path
+### Generic Template Path
 
-```
+```text
 src/cli/templates/ci/
 └── generic-ci.yml → .claude/trinity/templates/ci/generic-ci.yml
 ```
@@ -399,7 +402,7 @@ await fs.writeFile(destPath, content);
 
 **Example Blocked Paths:**
 
-```
+```text
 ../../../etc/passwd        ✗ Blocked
 .github/workflows/ci.yml   ✓ Allowed
 ```
@@ -662,7 +665,7 @@ describe('detectGitPlatform', () => {
 
 ## Security Considerations
 
-### Path Validation
+### Path Validation Security
 
 - All file paths validated before writing
 - Prevents directory traversal attacks

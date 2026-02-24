@@ -62,9 +62,9 @@ jobs:
 
           echo "✅ Template directory structure validated"
 
-      - name: Validate agent templates (19 agents)
+      - name: Validate agent templates (18 agents)
         run: |
-          echo "Validating 19 Trinity agent templates..."
+          echo "Validating 18 Trinity agent templates..."
 
           # Verify agent category directories
           agent_dirs=(
@@ -85,8 +85,8 @@ jobs:
           # Count agent templates
           agent_count=$(find src/templates/.claude/agents -name "*.md.template" | wc -l)
 
-          if [ "$agent_count" -ne 19 ]; then
-            echo "ERROR: Expected 19 agent templates, found $agent_count"
+          if [ "$agent_count" -ne 18 ]; then
+            echo "ERROR: Expected 18 agent templates, found $agent_count"
             exit 1
           fi
 
@@ -317,7 +317,7 @@ jobs:
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
           echo "  ✅ Directory Structure            - VALIDATED"
-          echo "  ✅ 19 Agent Templates             - VALIDATED"
+          echo "  ✅ 18 Agent Templates             - VALIDATED"
           echo "  ✅ 20 Slash Commands (7 cats)     - VALIDATED"
           echo "  ✅ 9 Knowledge Base Files         - VALIDATED"
           echo "  ✅ 5 Investigation Templates      - VALIDATED"
@@ -697,6 +697,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint documentation markdown
+        run: npx markdownlint-cli2 "*.md" "docs/**/*.md" "src/**/*.md"
+
       - name: Generate API documentation
         run: |
           echo "BAS PHASE 6: Documentation Validation"
@@ -797,7 +800,7 @@ jobs:
           echo "  Phase 6: Documentation                  - PASSED"
           echo ""
           echo "Trinity Component Validation:"
-          echo "  19 Agent Templates                      - VALIDATED"
+          echo "  18 Agent Templates                      - VALIDATED"
           echo "  20 Slash Commands (7 categories)        - VALIDATED"
           echo "  9 Knowledge Base Templates              - VALIDATED"
           echo "  CI/CD Templates                         - VALIDATED"

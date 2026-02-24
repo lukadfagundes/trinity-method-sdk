@@ -58,11 +58,31 @@ function getFrameworkDirectory(framework: string): string {
 }
 
 async function deployESLint(
-  tool: LintingTool,
+  _tool: LintingTool,
   stack: Stack,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
+  // Skip if ESLint config already exists
+  const eslintConfigs = [
+    '.eslintrc.json',
+    '.eslintrc.js',
+    '.eslintrc.cjs',
+    '.eslintrc.yml',
+    'eslint.config.js',
+    'eslint.config.mjs',
+  ];
+  for (const config of eslintConfigs) {
+    if (await fs.pathExists(config)) {
+      console.warn(
+        chalk.yellow(
+          `   Skipped: .eslintrc.json (${config} already exists, use --force to overwrite)`
+        )
+      );
+      return;
+    }
+  }
+
   let templateFile: string;
 
   if (stack.language === 'TypeScript') {
@@ -83,10 +103,30 @@ async function deployESLint(
 }
 
 async function deployPrettier(
-  tool: LintingTool,
+  _tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
+  // Skip if Prettier config already exists
+  const prettierConfigs = [
+    '.prettierrc.json',
+    '.prettierrc',
+    '.prettierrc.js',
+    '.prettierrc.cjs',
+    '.prettierrc.yml',
+    'prettier.config.js',
+  ];
+  for (const config of prettierConfigs) {
+    if (await fs.pathExists(config)) {
+      console.warn(
+        chalk.yellow(
+          `   Skipped: .prettierrc.json (${config} already exists, use --force to overwrite)`
+        )
+      );
+      return;
+    }
+  }
+
   const templatePath = path.join(templateDir, '.prettierrc.json.template');
   const content = await fs.readFile(templatePath, 'utf8');
   const processed = processTemplate(content, variables);
@@ -145,7 +185,7 @@ async function hasExistingPreCommitSetup(): Promise<boolean> {
 }
 
 async function deployHuskyPreCommit(
-  tool: LintingTool,
+  _tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
@@ -185,7 +225,7 @@ async function addLintStagedConfig(): Promise<void> {
 }
 
 async function deployPythonPreCommit(
-  tool: LintingTool,
+  _tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {
@@ -247,7 +287,7 @@ async function deployPythonTool(
 }
 
 async function deployDartAnalyzer(
-  tool: LintingTool,
+  _tool: LintingTool,
   templateDir: string,
   variables: Record<string, string | number>
 ): Promise<void> {

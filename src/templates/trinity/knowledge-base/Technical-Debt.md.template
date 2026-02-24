@@ -402,8 +402,6 @@ const calculateDebtScore = () => {
 - **ARCHITECTURE.md**: System design decisions
 - **Trinity.md**: Methodology implementation
 - **To-do.md**: Actionable task list
-- **Pattern Library**: .claude/trinity/patterns/
-
 ---
 
 ## 📝 WHEN TO UPDATE THIS DOCUMENT
@@ -512,7 +510,7 @@ Updates_Required:
   - Debt_Reduction_Plan: Add to Quick Wins or Strategic Improvements
   - Cross_References:
     - ISSUES.md: Link to duplication pattern if causes issues
-    - .claude/trinity/patterns/: Create pattern file
+    - Document pattern in Pattern Library section above
 ```
 
 **Scenario: Security Vulnerability Fixed**

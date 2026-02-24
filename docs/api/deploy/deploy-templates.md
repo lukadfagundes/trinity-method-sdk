@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Templates Deployment module deploys Trinity Method's template library to `.claude/trinity/templates/`, including work orders, investigations, and comprehensive documentation templates.
+The Templates Deployment module deploys Trinity Method's template library to
+`.claude/trinity/templates/`, including work orders, investigations, and
+comprehensive documentation templates.
 
 **Key Features:**
 
@@ -106,7 +108,7 @@ async function copyDocTemplates(sourcePath, destPath) {
 
 ## Deployed Directory Structure
 
-```
+```text
 .claude/trinity/templates/
 ├── work-orders/
 │   ├── INVESTIGATION-TEMPLATE.md

@@ -687,7 +687,7 @@ After investigating templates, verify your findings:
 ```bash
 # Count template files
 find src/templates -name "*.template" | wc -l
-# Expected: 19 agent templates + knowledge base templates
+# Expected: 18 agent templates + knowledge base templates
 
 # Verify organization
 ls -la src/templates/agents/leadership/

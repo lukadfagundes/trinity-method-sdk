@@ -9,7 +9,9 @@
 
 ## Overview
 
-The Update Summary module provides formatted console output for Trinity Method SDK updates. It displays comprehensive statistics, version information, and success messages, helping users understand what changed during the update process.
+The Update Summary module provides formatted console output for Trinity Method SDK updates. It
+displays comprehensive statistics, version information, and success messages, helping users
+understand what changed during the update process.
 
 ### Key Features
 
@@ -73,7 +75,7 @@ function displayDryRunPreview(oldVersion: string, newVersion: string): void;
 
 - Writes to `console.log()`
 - Uses chalk colors for formatting
-- Provides hardcoded estimates (18 agents, 16 commands, etc.)
+- Provides hardcoded estimates (18 agents, 21 commands, etc.)
 
 ---
 
@@ -94,13 +96,13 @@ interface UpdateStats {
 
 ```typescript
 const stats: UpdateStats = {
-  agentsUpdated: 19,
-  commandsUpdated: 25,
+  agentsUpdated: 18,
+  commandsUpdated: 21,
   templatesUpdated: 17,
   knowledgeBaseUpdated: 5,
 };
 
-// Total files: 19 + 25 + 17 + 5 = 66 files
+// Total files: 18 + 21 + 17 + 5 = 61 files
 ```
 
 ---
@@ -113,8 +115,8 @@ const stats: UpdateStats = {
 
 ```typescript
 const stats = {
-  agentsUpdated: 19,
-  commandsUpdated: 25,
+  agentsUpdated: 18,
+  commandsUpdated: 21,
   templatesUpdated: 17,
   knowledgeBaseUpdated: 5,
 };
@@ -124,16 +126,16 @@ displayUpdateSummary(stats, '2.0.0', '2.1.0');
 
 **Output:**
 
-```
+```text
 ✅ Trinity Method updated successfully!
 
 📊 Update Statistics:
 
-   Agents Updated: 19
-   Commands Updated: 25
+   Agents Updated: 18
+   Commands Updated: 21
    Templates Updated: 17
    Knowledge Base Updated: 5
-   Total Files Updated: 66
+   Total Files Updated: 61
 
    Version: 2.0.0 → 2.1.0
 ```
@@ -157,12 +159,12 @@ displayDryRunPreview('2.0.0', '2.1.0');
 
 **Output:**
 
-```
+```text
 🔍 DRY RUN - Preview of changes:
 
    Would update:
    • 18 agent files in .claude/agents/
-   • 16 slash commands in .claude/commands/
+   • 21 slash commands in .claude/commands/
    • 6 work order templates in .claude/trinity/templates/
    • Knowledge base files (Trinity.md, CODING-PRINCIPLES.md, etc.)
    • Version file: 2.0.0 → 2.1.0
@@ -193,8 +195,8 @@ displayDryRunPreview('2.0.0', '2.1.0');
 import { displayUpdateSummary } from './commands/update/summary.js';
 
 const stats = {
-  agentsUpdated: 19,
-  commandsUpdated: 25,
+  agentsUpdated: 18,
+  commandsUpdated: 21,
   templatesUpdated: 17,
   knowledgeBaseUpdated: 5,
 };
@@ -261,13 +263,13 @@ const totalFilesUpdated =
   stats.agentsUpdated + stats.commandsUpdated + stats.templatesUpdated + stats.knowledgeBaseUpdated;
 
 // Example:
-// 19 + 25 + 17 + 5 = 66 files
+// 18 + 21 + 17 + 5 = 61 files
 ```
 
 ### Display Format
 
-```
-Total Files Updated: 66
+```text
+Total Files Updated: 61
 ```
 
 **Purpose:**
@@ -292,11 +294,11 @@ Total Files Updated: 66
 
 ```typescript
 console.log(chalk.gray(`   • 18 agent files in .claude/agents/`));
-console.log(chalk.gray(`   • 16 slash commands in .claude/commands/`));
+console.log(chalk.gray(`   • 21 slash commands in .claude/commands/`));
 console.log(chalk.gray(`   • 6 work order templates in .claude/trinity/templates/`));
 ```
 
-**Note:** These are estimates and may differ from actual counts (current SDK has 19 agents, 25 commands, 17 templates).
+**Note:** These are estimates and may differ from actual counts (current SDK has 18 agents, 21 commands).
 
 ### Preservation Notices
 
@@ -304,7 +306,7 @@ console.log(chalk.gray(`   • 6 work order templates in .claude/trinity/templat
 
 **Files Highlighted:**
 
-```
+```text
 Would preserve:
 • .claude/trinity/knowledge-base/ARCHITECTURE.md
 • .claude/trinity/knowledge-base/To-do.md
@@ -385,7 +387,7 @@ chalk.blue('💡 Run without --dry-run to perform update');
 
 ### Version Arrow Format
 
-```
+```text
 Version: 2.0.0 → 2.1.0
 ```
 
@@ -423,8 +425,8 @@ describe('displayUpdateSummary', () => {
 
   it('should display success message', () => {
     const stats = {
-      agentsUpdated: 19,
-      commandsUpdated: 25,
+      agentsUpdated: 18,
+      commandsUpdated: 21,
       templatesUpdated: 17,
       knowledgeBaseUpdated: 5,
     };
@@ -438,16 +440,16 @@ describe('displayUpdateSummary', () => {
 
   it('should display all statistics', () => {
     const stats = {
-      agentsUpdated: 19,
-      commandsUpdated: 25,
+      agentsUpdated: 18,
+      commandsUpdated: 21,
       templatesUpdated: 17,
       knowledgeBaseUpdated: 5,
     };
 
     displayUpdateSummary(stats, '2.0.0', '2.1.0');
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Agents Updated: 19'));
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Commands Updated: 25'));
+    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Agents Updated: 18'));
+    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Commands Updated: 21'));
   });
 
   it('should calculate total files correctly', () => {
@@ -498,7 +500,7 @@ describe('displayDryRunPreview', () => {
     displayDryRunPreview('2.0.0', '2.1.0');
 
     expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('18 agent files'));
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('16 slash commands'));
+    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('21 slash commands'));
   });
 
   it('should display preserved files', () => {
@@ -562,7 +564,7 @@ describe('displayDryRunPreview', () => {
 
 ### Success Message Psychology
 
-```
+```text
 ✅ Trinity Method updated successfully!
 ```
 
@@ -573,9 +575,9 @@ describe('displayDryRunPreview', () => {
 
 ### Statistics Transparency
 
-```
+```text
 📊 Update Statistics:
-   Agents Updated: 19
+   Agents Updated: 18
    ...
 ```
 
@@ -586,7 +588,7 @@ describe('displayDryRunPreview', () => {
 
 ### Version Tracking
 
-```
+```text
 Version: 2.0.0 → 2.1.0
 ```
 

@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Knowledge Base Deployment module deploys 9 Trinity knowledge base templates to `.claude/trinity/knowledge-base/` and enriches them with project-specific metrics and stack information.
+The Knowledge Base Deployment module deploys 9 Trinity knowledge base templates
+to `.claude/trinity/knowledge-base/` and enriches them with project-specific
+metrics and stack information.
 
 **Key Features:**
 
@@ -22,7 +24,7 @@ The Knowledge Base Deployment module deploys 9 Trinity knowledge base templates 
 
 ## Core Function
 
-### `deployKnowledgeBase(templatesPath: string, variables: Record<string, string>, stack: Stack, metrics: CodebaseMetrics, spinner: Spinner): Promise<number>`
+### `deployKnowledgeBase(templatesPath, variables, stack, metrics, spinner)`
 
 Deploys knowledge base templates and enriches with project data.
 
@@ -111,7 +113,7 @@ archContent = archContent
 
 ## Deployed Directory Structure
 
-```
+```text
 .claude/trinity/knowledge-base/
 ├── ARCHITECTURE.md           # Project architecture (enriched)
 ├── Trinity.md                # Trinity Method guide

@@ -14,7 +14,7 @@ This document provides detailed information about:
 - Data flow (deployment and update flows)
 - Configuration and build process
 - Performance and security considerations
-- Quality metrics (405 tests, 16 suites)
+- Quality metrics (464 tests, 16 suites)
 
 ## Key Architecture Documents
 
@@ -22,29 +22,39 @@ This document provides detailed information about:
 
 ## Architecture Decision Records (ADRs)
 
-Architecture Decision Records document significant architectural decisions made during development. Each ADR follows the standard format: Status, Context, Decision, Consequences, and Alternatives Considered.
+Architecture Decision Records document significant architectural decisions made during
+development. Each ADR follows the standard format: Status, Context, Decision,
+Consequences, and Alternatives Considered.
 
 **Available ADRs:**
 
-- **[ADR-001: CLI Architecture](adr/ADR-001-cli-architecture.md)** - Commander.js + Inquirer.js selection for CLI framework
+- **[ADR-001: CLI Architecture](adr/ADR-001-cli-architecture.md)** - Commander.js + Inquirer.js
+  selection for CLI framework
   - Evaluated: Commander.js, Oclif, Yargs, CAC
-  - Decision: Commander.js (35M+ weekly downloads) with Inquirer.js for interactive prompts
+  - Decision: Commander.js (35M+ weekly downloads) with Inquirer.js for
+    interactive prompts
   - Rationale: Industry standard, excellent TypeScript support, professional UX
 
-- **[ADR-002: Template System Design](adr/ADR-002-template-system-design.md)** - Custom variable substitution with `{{VAR}}` syntax
+- **[ADR-002: Template System Design](adr/ADR-002-template-system-design.md)** - Custom
+  variable substitution with `{{VAR}}` syntax
   - Evaluated: Custom {{VAR}}, Handlebars, Mustache, EJS, Template Literals
   - Decision: Simple regex-based replacement with zero dependencies
-  - Rationale: Fast (2-3 seconds for 64 files), framework-agnostic, easy to maintain
+  - Rationale: Fast (2-3 seconds for 64 files), framework-agnostic, easy to
+    maintain
 
-- **[ADR-003: ESLint Flat Config Adoption](adr/ADR-003-eslint-flat-config.md)** - Modern ESLint configuration format
+- **[ADR-003: ESLint Flat Config Adoption](adr/ADR-003-eslint-flat-config.md)** - Modern
+  ESLint configuration format
   - Evaluated: Flat config vs. legacy .eslintrc.js vs. support both
   - Decision: Adopt eslint.config.js flat config exclusively
-  - Rationale: Future-proof (ESLint v9.0.0+ default), better TypeScript integration
+  - Rationale: Future-proof (ESLint v9.0.0+ default), better TypeScript
+    integration
 
-- **[ADR-004: Comprehensive Test Strategy](adr/ADR-004-test-strategy.md)** - Jest with 405+ tests for production-ready quality
+- **[ADR-004: Comprehensive Test Strategy](adr/ADR-004-test-strategy.md)** - Jest with
+  405+ tests for production-ready quality
   - Evaluated: Jest, Mocha + Chai + Sinon, Vitest, AVA
   - Decision: Jest with 405+ tests (Unit: ~200, Integration: ~200)
-  - Rationale: Production-ready SDK quality, 95%+ coverage, regression prevention
+  - Rationale: Production-ready SDK quality, 95%+ coverage, regression
+    prevention
 
 ## Architecture Diagrams
 
@@ -52,10 +62,14 @@ Visual representations of Trinity Method SDK architecture and workflows are avai
 
 **Available Diagrams:**
 
-- **[Trinity Deployment Architecture](../images/trinity-deployment-architecture.md)** - Complete deployment flow showing how 64 components are deployed
-- **[CLI Command Flow](../images/cli-command-flow.md)** - Flowcharts for `trinity deploy` and `trinity update` commands
-- **[Template Processing Pipeline](../images/template-processing-pipeline.md)** - End-to-end variable substitution system
-- **[Multi-Framework Support Matrix](../images/multi-framework-support-matrix.md)** - Framework compatibility and detection logic
+- **[Trinity Deployment Architecture](../images/trinity-deployment-architecture.md)** -
+  Complete deployment flow showing how 64 components are deployed
+- **[CLI Command Flow](../images/cli-command-flow.md)** - Flowcharts for
+  `trinity deploy` and `trinity update` commands
+- **[Template Processing Pipeline](../images/template-processing-pipeline.md)** -
+  End-to-end variable substitution system
+- **[Multi-Framework Support Matrix](../images/multi-framework-support-matrix.md)** -
+  Framework compatibility and detection logic
 
 All diagrams use Mermaid syntax for version control-friendly visualization.
 

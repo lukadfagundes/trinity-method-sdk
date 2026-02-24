@@ -37,10 +37,7 @@ const VARIABLE_RESOLVERS: Record<string, (vars: Record<string, string | number>)
     toString(v.PRIMARY_FRAMEWORK || v.FRAMEWORK || v.framework) || 'Generic',
   CURRENT_DATE: (v) => toString(v.CURRENT_DATE) || new Date().toISOString().split('T')[0],
   PROJECT_VAR_NAME: (v) => resolveProjectVarName(v),
-  TRINITY_HOME: (v) =>
-    toString(v.TRINITY_HOME) ||
-    process.env.TRINITY_HOME ||
-    'C:/Users/lukaf/Desktop/Dev Work/trinity-method',
+  TRINITY_HOME: (v) => toString(v.TRINITY_HOME) || process.env.TRINITY_HOME || process.cwd(),
 };
 
 export function processTemplate(

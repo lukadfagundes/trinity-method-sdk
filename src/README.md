@@ -5,21 +5,29 @@
 
 ## Overview
 
-The `src/` directory contains the complete Trinity Method SDK source code, including the CLI commands, template processing system, and all agent/command templates.
+The `src/` directory contains the complete Trinity Method SDK source code, including the CLI
+commands, template processing system, and all agent/command templates.
 
 ## Directory Structure
 
-```
+```text
 src/
-├── CLAUDE.md           # Node.js technology-specific rules and debugging standards
-├── index.ts            # Main entry point for SDK
+├── index.ts            # Main entry point (CLI-only, no programmatic exports)
 ├── cli/                # Command-line interface implementation
-│   ├── commands/       # All Trinity CLI commands (deploy, update, etc.)
-│   └── utils/          # Shared utilities and helpers
-└── templates/          # Agent and command templates
-    ├── agents/         # 19 agent templates
-    ├── shared/         # Shared command templates
-    └── framework/      # Framework-specific templates
+│   ├── index.ts        # CLI entry point (Commander.js program definition)
+│   ├── types.ts        # Shared CLI type definitions
+│   ├── commands/       # CLI command implementations
+│   │   ├── deploy/     # Deploy command (modular: pre-flight, config, agents, etc.)
+│   │   └── update/     # Update command (modular: backup, version, verification, etc.)
+│   └── utils/          # Shared utilities (template processor, error handler, etc.)
+└── templates/          # All deployment templates
+    ├── .claude/        # Claude Code templates (agents, commands)
+    │   ├── agents/     # 18 agent templates (leadership, planning, aj-team, etc.)
+    │   └── commands/   # 21 slash command templates (7 categories)
+    ├── root/           # Root file templates (CLAUDE.md)
+    ├── trinity/        # Trinity infrastructure templates (knowledge-base, etc.)
+    ├── linting/        # Linting configuration templates per framework
+    └── ci/             # CI/CD workflow templates (GitHub Actions, GitLab CI)
 ```
 
 ## Key Components
@@ -34,33 +42,34 @@ Command-line interface for Trinity deployment and management:
 
 ### Templates (`templates/`)
 
-#### Agent Templates (`templates/agents/`)
+#### Agent Templates (`templates/.claude/agents/`)
 
-19 specialized agent templates deployed to `.claude/agents/`:
+18 specialized agent templates deployed to `.claude/agents/`:
 
-- **leadership/** - ALY (Chief Technology Officer)
+- **leadership/** - ALY (CTO), AJ MAESTRO (Orchestrator)
 - **audit/** - JUNO (Quality Auditor)
 - **planning/** - MON, ROR, TRA, EUS (Requirements, Design, Planning, Decomposition)
 - **aj-team/** - KIL, BAS, DRA, APO, BON, CAP, URO (Execution and Support agents)
-- **infrastructure/** - TAN, ZEN, INO, EIN, AJ MAESTRO (Infrastructure agents)
+- **deployment/** - TAN, ZEN, INO, EIN (Infrastructure agents)
 
-#### Command Templates (`templates/shared/claude-commands/`)
+#### Command Templates (`templates/.claude/commands/`)
 
-20 Trinity slash command templates:
+21 Trinity slash command templates across 7 categories:
 
-- **Session**: start, continue, end
-- **Planning**: requirements, design, decompose, plan
-- **Execution**: orchestrate, audit, readme, docs, changelog
-- **Investigation**: create-investigation, plan-investigation, investigate-templates
-- **Infrastructure**: init
-- **Utility**: verify, agents, workorder
+- **Session** (3): start, continue, end
+- **Planning** (4): requirements, design, decompose, plan
+- **Execution** (3): orchestrate, audit, breakdown
+- **Maintenance** (4): readme, docs, docs-update, changelog
+- **Investigation** (3): create-investigation, plan-investigation, investigate-templates
+- **Infrastructure** (1): init
+- **Utility** (3): verify, agents, workorder
 
 ### Technology Stack
 
 **Language:** TypeScript
 **Runtime:** Node.js ≥16.9.0
 **Build:** TypeScript compiler + template copying
-**Testing:** Jest (405 tests)
+**Testing:** Jest (464 tests)
 **Package Manager:** npm
 
 ## Development
@@ -107,7 +116,7 @@ Templates use variable substitution:
 - **Modular CLI architecture** - Commands organized by responsibility (deploy, update)
 - **Template-driven deployment** - Variable substitution for framework-agnostic templates
 - **ESLint flat config** - Modern ESLint configuration for Node.js ≥16.9.0
-- **Comprehensive testing** - 405 tests across unit, integration, and e2e suites
+- **Comprehensive testing** - 464 tests across unit, integration, and e2e suites
 
 ## Node.js Best Practices
 
@@ -121,7 +130,8 @@ As defined in [src/CLAUDE.md](CLAUDE.md):
 
 ## Documentation
 
-See [src/CLAUDE.md](CLAUDE.md) for Node.js-specific debugging standards, performance optimization patterns, and testing requirements.
+See [src/CLAUDE.md](CLAUDE.md) for Node.js-specific debugging standards, performance
+optimization patterns, and testing requirements.
 
 ---
 

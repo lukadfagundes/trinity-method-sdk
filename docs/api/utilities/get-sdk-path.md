@@ -9,7 +9,10 @@
 
 ## Overview
 
-The SDK Path Resolution module provides utilities for locating the Trinity Method SDK installation directory. It automatically detects whether running from SDK root (development/testing), local install (node_modules), or global install, ensuring templates and resources can be accessed regardless of installation method.
+The SDK Path Resolution module provides utilities for locating the Trinity Method SDK
+installation directory. It automatically detects whether running from SDK root
+(development/testing), local install (node_modules), or global install, ensuring
+templates and resources can be accessed regardless of installation method.
 
 ### Key Features
 
@@ -78,7 +81,7 @@ async function getPackageJsonPath(): Promise<string>;
 
 **Example Path:**
 
-```
+```text
 /Users/dev/trinity-method-sdk/
 ├── dist/
 │   └── templates/
@@ -103,7 +106,7 @@ async function getPackageJsonPath(): Promise<string>;
 
 **Example Path:**
 
-```
+```text
 /Users/dev/my-project/
 ├── node_modules/
 │   └── trinity-method-sdk/
@@ -130,12 +133,12 @@ async function getPackageJsonPath(): Promise<string>;
 
 **Example Path:**
 
-```
+```text
 /usr/local/lib/node_modules/trinity-method-sdk/
 ├── dist/
 │   ├── cli/
 │   │   └── utils/
-│   │       └── get-sdk-path.js  ← import.meta.url points here
+│   │       └── get-sdk-path.js  <- import.meta.url points here
 │   └── templates/
 └── package.json
 ```
@@ -225,12 +228,12 @@ async function deployAgents() {
 
 **File Structure:**
 
-```
+```text
 trinity-method-sdk/
 └── dist/
     └── cli/
         └── utils/
-            └── get-sdk-path.js  ← We are here
+            └── get-sdk-path.js  <- We are here
 ```
 
 **Calculation:**

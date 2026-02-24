@@ -8,10 +8,18 @@
 
 ## Overview
 
-The Deploy Command is the primary entry point for installing the Trinity Method SDK into a target project. It orchestrates a 12-step deployment process that creates directory structures, deploys agent templates, configures quality tools, and sets up CI/CD templates.
+The Deploy Command is the primary entry point for installing the Trinity Method SDK
+into a target project. It orchestrates a 12-step deployment process that creates
+directory structures, deploys agent templates, configures quality tools, and sets
+up CI/CD templates.
 
 **Why This Exists:**
-Manual setup is error-prone and inconsistent. Developers forget folders, skip quality tools, or misconfigure agents. This command orchestrates multiple specialized agents (TAN for structure, ZEN for documentation, INO for context, EIN for CI/CD) to deploy battle-tested Trinity infrastructure in minutes. Every project gets the same high-quality foundation: 19 agents, 20 commands, quality gates, and documentation architecture.
+Manual setup is error-prone and inconsistent. Developers forget folders, skip
+quality tools, or misconfigure agents. This command orchestrates multiple
+specialized agents (TAN for structure, ZEN for documentation, INO for context,
+EIN for CI/CD) to deploy battle-tested Trinity infrastructure in minutes. Every
+project gets the same high-quality foundation: 18 agents, 21 commands, quality
+gates, and documentation architecture.
 
 ---
 
@@ -42,7 +50,7 @@ Deploys the complete Trinity Method SDK infrastructure to a target project.
 **Throws:**
 
 - Error when deployment fails (network issues, file system errors, validation failures)
-- Error when pre-flight checks fail (Node.js version too old, existing deployment without --force)
+- Error when pre-flight checks fail (existing deployment without --force)
 - Error when user cancels deployment during interactive prompts
 
 ---
@@ -57,9 +65,8 @@ The deploy command executes a 12-step orchestrated workflow:
 **Purpose:** Validate environment before deployment
 **Checks:**
 
-- Node.js version compatibility (v14+)
-- Existing Trinity deployment detection
-- Target directory validity
+- Existing Trinity deployment detection (checks if `.claude/trinity` exists)
+- If Trinity exists and `--force` not used, deployment is aborted with guidance to use `--force`
 
 ### Step 2: Technology Stack Detection
 
@@ -76,8 +83,7 @@ The deploy command executes a 12-step orchestrated workflow:
 
 - Project name
 - Linting tools (ESLint, Prettier, TypeScript, etc.)
-- CI/CD platform (GitHub Actions, GitLab CI, CircleCI, etc.)
-- Optional features (work orders, investigations, documentation templates)
+- CI/CD platform (GitHub Actions, GitLab CI - auto-detected from .git/config)
 
 **Skipped when:** `--yes` flag is used (defaults applied)
 
@@ -97,25 +103,28 @@ The deploy command executes a 12-step orchestrated workflow:
 ### Step 4: Directory Structure Creation
 
 **Function:** `createDirectories(spinner)`
-**Purpose:** Create 14 Trinity directories
+**Purpose:** Create 16 Trinity directories (11 trinity core + 5 agent subdirs)
 **Creates:**
 
-```
-.claude/
-  agents/
-  commands/
+```text
 .claude/trinity/
-  investigations/
   knowledge-base/
-  patterns/
-  reports/
   sessions/
-  templates/
-    documentation/
-    investigation/
-    work-order/
+  investigations/
+  investigations/plans/
   work-orders/
-docs/
+  templates/
+  reports/
+  archive/work-orders/
+  archive/investigations/
+  archive/reports/
+  archive/sessions/
+.claude/agents/
+  leadership/
+  deployment/
+  audit/
+  planning/
+  aj-team/
 ```
 
 ### Step 5: Knowledge Base Deployment
@@ -132,6 +141,7 @@ docs/
 - `.claude/trinity/knowledge-base/TESTING-PRINCIPLES.md`
 - `.claude/trinity/knowledge-base/CODING-PRINCIPLES.md`
 - `.claude/trinity/knowledge-base/DOCUMENTATION-CRITERIA.md`
+- `.claude/trinity/knowledge-base/AI-DEVELOPMENT-GUIDE.md`
 
 ### Step 6: Root Files Deployment
 
@@ -147,13 +157,14 @@ docs/
 ### Step 7: Agent Configuration Deployment
 
 **Function:** `deployAgents(templatesPath, variables, spinner)`
-**Purpose:** Deploy 19 agent templates to `.claude/agents/`
-**Agents deployed:**
+**Purpose:** Deploy 18 agent templates to `.claude/agents/`
+**Agents deployed (5 categories, 18 total):**
 
-- AJ MAESTRO (workflow orchestrator)
-- JUNO (quality auditor)
-- AJ Team (10 specialized implementation agents)
-- Troubleshooting Agents (8 specialized debug agents)
+- Leadership (2): ALY (CTO), AJ MAESTRO (Orchestrator)
+- Deployment (4): TAN (Structure), ZEN (Knowledge), INO (Context), EIN (CI/CD)
+- Audit (1): JUNO (Quality Auditor)
+- Planning (4): MON (Requirements), ROR (Design), TRA (Planner), EUS (Decomposer)
+- AJ Team (7): KIL (TDD), BAS (Quality Gate), DRA (Code Review), APO (Docs), BON (Dependencies), CAP (Config), URO (Refactoring)
 
 ### Step 9: Claude Code Setup
 
@@ -163,7 +174,7 @@ docs/
 
 - `.claude/settings.json` (Claude Code configuration)
 - `.claude/EMPLOYEE-DIRECTORY.md` (agent directory and workflows)
-- `.claude/commands/` (20 slash command templates)
+- `.claude/commands/` (21 slash command templates)
 
 ### Step 9.7-9.8: Linting Configuration (Conditional)
 
@@ -184,9 +195,9 @@ docs/
 
 ### Step 11: CI/CD Workflow Deployment (Conditional)
 
-**Function:** `deployCICD(options, spinner)`
+**Function:** `deployCICD(options, spinner, variables)`
 **Purpose:** Deploy CI/CD workflow templates
-**Deploys:** GitHub Actions, GitLab CI, CircleCI, Azure Pipelines templates
+**Deploys:** GitHub Actions, GitLab CI templates
 **Skipped when:** User doesn't enable CI/CD
 
 ### Step 11.5: Gitignore Update
@@ -195,14 +206,14 @@ docs/
 **Purpose:** Add Trinity-specific entries to .gitignore
 **Adds:**
 
-- `.claude/` (entire .claude directory including trinity/)
-- `*CLAUDE.md` (all CLAUDE.md context files)
+- `.claude/trinity/archive/` (archived work orders, investigations, reports, sessions)
+- `.claude/trinity/templates/` (ephemeral/generated template files)
 
 ### Step 12: SDK Installation
 
 **Function:** `installSDK(spinner)`
 **Purpose:** Add Trinity Method SDK to project's package.json
-**Installs:** `@trinity-labs/trinity-method-sdk` as devDependency
+**Installs:** `trinity-method-sdk` as a regular dependency
 
 ### Final Step: Summary Display
 
@@ -244,9 +255,9 @@ const progress: DeploymentProgress = {
 };
 
 // After each step, progress is updated:
-progress.agentsDeployed = 19;
-progress.commandsDeployed = 20;
-progress.knowledgeBaseFiles = 8;
+progress.agentsDeployed = 18;
+progress.commandsDeployed = 21;
+progress.knowledgeBaseFiles = 9;
 // ... etc
 ```
 
@@ -345,8 +356,8 @@ npx trinity deploy --yes
 
 - Skips all prompts
 - Uses detected project name from package.json
-- Installs recommended linting tools for framework
-- Skips CI/CD deployment
+- Skips linting setup (disabled by default)
+- Skips CI/CD deployment (disabled by default)
 - Collects codebase metrics
 - Completes deployment with defaults
 
@@ -416,26 +427,26 @@ After initial deployment, use `trinity update` to:
 
 ### Slash Commands
 
-After deployment, 20 slash commands become available:
+After deployment, 21 slash commands become available:
 
 - `/trinity-audit` - Run JUNO quality audit
 - `/trinity-investigate` - Start investigation workflow
 - `/trinity-workorder` - Create work order
-- ... (17 more commands)
+- ... (18 more commands)
 
 ---
 
 ## File Structure After Deployment
 
-```
+```text
 project-root/
 ├── .claude/
-│   ├── agents/           (19 agent templates)
-│   ├── commands/         (20 slash command templates)
+│   ├── agents/           (18 agent templates)
+│   ├── commands/         (21 slash command templates)
 │   ├── settings.json
 │   ├── EMPLOYEE-DIRECTORY.md
 │   └── trinity/
-│       ├── knowledge-base/   (8 knowledge base files)
+│       ├── knowledge-base/   (9 knowledge base files)
 │       ├── templates/
 │       │   ├── work-order/
 │       │   ├── investigation/
@@ -464,7 +475,7 @@ project-root/
 ### File System Operations
 
 - **Total files written**: ~50-80 files (depending on selections)
-- **Total directories created**: 14 directories
+- **Total directories created**: 16 directories
 - **Disk space required**: ~500KB - 1MB
 
 ### Network Operations

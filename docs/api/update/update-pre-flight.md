@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Update Pre-flight module performs essential validation checks before allowing an update to proceed. It ensures Trinity Method SDK is properly deployed and prevents update attempts on non-deployed projects.
+The Update Pre-flight module performs essential validation checks before allowing an update to
+proceed. It ensures Trinity Method SDK is properly deployed and prevents update attempts on
+non-deployed projects.
 
 **Key Features:**
 
@@ -62,7 +64,7 @@ if (!trinityExists) {
 
 **User Messages:**
 
-```
+```text
 ✗ Trinity Method not deployed
 ℹ️  Use: trinity deploy to install
 ❌ Error: Trinity Method not deployed in this project
@@ -97,7 +99,7 @@ if (!claudeExists) {
 
 **User Messages:**
 
-```
+```text
 ✗ .claude directory not found
 ℹ️  Trinity deployment appears incomplete
 ❌ Error: .claude directory not found
@@ -124,7 +126,7 @@ try {
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Running pre-flight checks...
 ✓ Pre-flight checks passed
 ```
@@ -194,7 +196,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 **Pre-flight Result:**
 
-```
+```text
 ⠙ Running pre-flight checks...
 ✗ Trinity Method not deployed
 ℹ️  Use: trinity deploy to install
@@ -214,7 +216,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 **Pre-flight Result:**
 
-```
+```text
 ⠙ Running pre-flight checks...
 ✗ .claude directory not found
 ℹ️  Trinity deployment appears incomplete
@@ -236,7 +238,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 **Pre-flight Result:**
 
-```
+```text
 ⠙ Running pre-flight checks...
 ✓ Pre-flight checks passed
 ```
@@ -254,7 +256,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 **Pre-flight Result:**
 
-```
+```text
 ⠙ Running pre-flight checks...
 ✗ Trinity Method not deployed
 ℹ️  Use: trinity deploy to install
@@ -271,7 +273,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 ### Trinity Directory Structure Expected
 
-```
+```text
 .claude/trinity/
 ├── agents/
 ├── commands/
@@ -291,7 +293,7 @@ throw new UpdateError('Trinity Method not deployed in this project', {
 
 ### Agent Directory Structure Expected
 
-```
+```text
 .claude/
 ├── agents/
 │   ├── leadership/
@@ -485,7 +487,7 @@ describe('update pre-flight integration', () => {
 
 ## Pre-flight Check Flow Diagram
 
-```
+```text
 runUpdatePreflightChecks(spinner)
     ↓
 [Check 1] .claude/trinity/ directory exists?

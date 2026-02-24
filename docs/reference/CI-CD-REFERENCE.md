@@ -18,7 +18,7 @@
 
 | Job                  | Description                       | Trigger        | Duration |
 | -------------------- | --------------------------------- | -------------- | -------- |
-| `validate-templates` | Validate 19 agents, 19+ commands  | All pushes/PRs | ~1 min   |
+| `validate-templates` | Validate 18 agents, 19+ commands  | All pushes/PRs | ~1 min   |
 | `test`               | Multi-platform testing (9 combos) | All pushes/PRs | ~15 min  |
 | `coverage`           | Enforce ≥80% coverage             | All pushes/PRs | ~3 min   |
 | `quality`            | Linting, type checking            | All pushes/PRs | ~2 min   |
@@ -134,7 +134,7 @@ npm test && npm run lint
 npm run build && npm test
 ```
 
-### Deployment
+### Release Deployment
 
 ```bash
 # Release workflow (recommended)
@@ -323,7 +323,7 @@ on:
 
 ### Re-run Jobs
 
-```bash
+```text
 # Re-run failed jobs only
 Actions → Workflow run → Re-run failed jobs
 
@@ -376,8 +376,8 @@ gh release delete v2.0.9 --yes
 
 ## Support
 
-**Issues:** https://github.com/{user}/{repo}/issues
-**Discussions:** https://github.com/{user}/{repo}/discussions
+**Issues:** <https://github.com/{user}/{repo}/issues>
+**Discussions:** <https://github.com/{user}/{repo}/discussions>
 **Documentation:** [CI-CD-GUIDE.md](../guides/CI-CD-GUIDE.md)
 
 ---
