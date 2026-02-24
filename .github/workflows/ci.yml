@@ -698,7 +698,7 @@ jobs:
         run: npm ci
 
       - name: Lint documentation markdown
-        run: npx markdownlint-cli2 "docs/**/*.md"
+        run: npx markdownlint-cli2 "*.md" "docs/**/*.md" "src/**/*.md"
 
       - name: Generate API documentation
         run: |

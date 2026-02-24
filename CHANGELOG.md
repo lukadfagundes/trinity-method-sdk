@@ -9,90 +9,134 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Markdown linting in CI pipeline** - Added blocking `markdownlint-cli2` validation step to the `docs` job in CI, enforcing markdown syntax standards across all 72 files in `docs/` using the existing `.markdownlint.json` config
+- **Markdown linting in CI pipeline** - Added blocking `markdownlint-cli2` validation step
+  to the `docs` job in CI, enforcing markdown syntax standards across all 72 files in `docs/`
+  using the existing `.markdownlint.json` config
+- **New `/trinity-breakdown` slash command** - Guided, user-driven implementations where CC
+  acts as an instructor walking users through changes step-by-step instead of executing them
+  directly (Issue #11)
+- **GitHub Releases workflow** - Automated draft release creation on version tags (`v*.*.*`)
+  via `.github/workflows/release.yml` (Issue #5)
+  - 5-job pipeline: version extraction, CHANGELOG release notes extraction,
+    tag-vs-package.json version validation, full CI quality gates, and draft GitHub release
+  - Uses `softprops/action-gh-release@v2` with `draft: true` — releases require manual
+    publishing
+  - CHANGELOG extraction uses Node.js script (not sed) matching `## [X.Y.Z]` Keep a
+    Changelog format
+  - Fails fast on version mismatch or missing/empty CHANGELOG section
+  - Coverage thresholds mirror CI pipeline: lines >= 75%, branches >= 65%,
+    functions >= 80%, statements >= 75%
+  - No `npm publish` automation — publishing remains manual via `npm publish`
 
 ### Changed
 
-- **Enabled all TypeScript strict mode flags** - Turned on `strictNullChecks`, `strictPropertyInitialization`, `noUnusedLocals`, and `noUnusedParameters` in tsconfig.json (Issue #6)
+- **Enabled all TypeScript strict mode flags** - Turned on `strictNullChecks`,
+  `strictPropertyInitialization`, `noUnusedLocals`, and `noUnusedParameters` in
+  tsconfig.json (Issue #6)
   - All four flags were previously disabled, weakening compile-time type safety
-  - Codebase required zero changes for `strictNullChecks` and `strictPropertyInitialization` (already null-safe)
-  - Prefixed 6 unused parameters with `_` to satisfy `noUnusedParameters` (5 in `deploy-linting.ts`, 1 in `summary.ts`)
+  - Codebase required zero changes for `strictNullChecks` and
+    `strictPropertyInitialization` (already null-safe)
+  - Prefixed 6 unused parameters with `_` to satisfy `noUnusedParameters`
+    (5 in `deploy-linting.ts`, 1 in `summary.ts`)
   - All 417 tests pass, 0 type errors, lint clean
-- **Added metrics module test coverage** - Created comprehensive test suites for `dependency-parser.ts` and `framework-detector.ts` (Issue #6)
-  - `dependency-parser.ts` coverage: 9.37% → 100% (23 tests covering Node.js, Python, Rust, Flutter, Go, and error paths)
-  - `framework-detector.ts` coverage: 36.36% → 95.23% (24 tests covering all version detectors and package manager detection)
+- **Added metrics module test coverage** - Created comprehensive test suites for
+  `dependency-parser.ts` and `framework-detector.ts` (Issue #6)
+  - `dependency-parser.ts` coverage: 9.37% → 100% (23 tests covering Node.js, Python,
+    Rust, Flutter, Go, and error paths)
+  - `framework-detector.ts` coverage: 36.36% → 95.23% (24 tests covering all version
+    detectors and package manager detection)
   - Overall project coverage improved from 83% → 89% (464 tests total)
-- **Fixed all 32 devDependency vulnerabilities** - Resolved minimatch ReDoS, ajv ReDoS, and markdown-it ReDoS via `npm audit fix` and `overrides` in package.json (Issue #6)
-  - `npm audit fix` resolved ajv (<6.14.0), markdown-it (13.0.0-14.1.0), and @isaacs/brace-expansion (5.0.0) — 9 vulnerabilities
-  - Added `overrides` for `minimatch@^10.2.1` to force resolution of 23 remaining transitive dependency vulnerabilities through eslint, jest, and typedoc
+- **Fixed all 32 devDependency vulnerabilities** - Resolved minimatch ReDoS, ajv ReDoS,
+  and markdown-it ReDoS via `npm audit fix` and `overrides` in package.json (Issue #6)
+  - `npm audit fix` resolved ajv (<6.14.0), markdown-it (13.0.0-14.1.0), and
+    @isaacs/brace-expansion (5.0.0) — 9 vulnerabilities
+  - Added `overrides` for `minimatch@^10.2.1` to force resolution of 23 remaining
+    transitive dependency vulnerabilities through eslint, jest, and typedoc
   - `npm audit` now reports 0 vulnerabilities (was 32: 30 high, 2 moderate)
-- **Restructured `trinity/` into `.claude/trinity/`** - Consolidated deployment footprint from two top-level directories to one (Issue #3)
-  - `trinity deploy` now creates `.claude/trinity/` instead of a separate `trinity/` directory
-  - `trinity update` manages `.claude/trinity/` with consolidated backup (single `.claude/` backup covers everything)
+- **Restructured `trinity/` into `.claude/trinity/`** - Consolidated deployment footprint
+  from two top-level directories to one (Issue #3)
+  - `trinity deploy` now creates `.claude/trinity/` instead of a separate `trinity/`
+    directory
+  - `trinity update` manages `.claude/trinity/` with consolidated backup (single `.claude/`
+    backup covers everything)
   - All 50+ template files updated with new deployment target paths
   - All relative paths recalculated for new directory depth
   - 417 tests pass with restructured paths
-- **Updated `.gitignore` entries** - Trinity deployment now only ignores `.claude/trinity/archive/` and `.claude/trinity/templates/` instead of all `.claude/`, `*CLAUDE.md`, `TRINITY.md`, and `trinity/` allowing agents, commands, and context files to be tracked in version control
-- **Removed `.claude/trinity/patterns/` directory** - No longer deployed as an empty placeholder; directory structure reduced from 17 to 16 directories
-
-### Added
-
-- **New `/trinity-breakdown` slash command** - Guided, user-driven implementations where CC acts as an instructor walking users through changes step-by-step instead of executing them directly (Issue #11)
-- **GitHub Releases workflow** - Automated draft release creation on version tags (`v*.*.*`) via `.github/workflows/release.yml` (Issue #5)
-  - 5-job pipeline: version extraction, CHANGELOG release notes extraction, tag-vs-package.json version validation, full CI quality gates (lint, type-check, build, verify-build, all test suites, coverage thresholds), and draft GitHub release creation
-  - Uses `softprops/action-gh-release@v2` with `draft: true` — releases require manual publishing
-  - CHANGELOG extraction uses Node.js script (not sed) matching `## [X.Y.Z]` Keep a Changelog format
-  - Fails fast on version mismatch or missing/empty CHANGELOG section
-  - Coverage thresholds mirror CI pipeline: lines >= 75%, branches >= 65%, functions >= 80%, statements >= 75%
-  - No `npm publish` automation — publishing remains manual via `npm publish`
+- **Updated `.gitignore` entries** - Trinity deployment now only ignores
+  `.claude/trinity/archive/` and `.claude/trinity/templates/` instead of all `.claude/`,
+  `*CLAUDE.md`, `TRINITY.md`, and `trinity/` allowing agents, commands, and context files
+  to be tracked in version control
+- **Removed `.claude/trinity/patterns/` directory** - No longer deployed as an empty
+  placeholder; directory structure reduced from 17 to 16 directories
 
 ### Fixed
 
-- **CRITICAL: Pre-commit hooks non-functional for Node.js** - Switched from Python's pre-commit framework to husky + lint-staged for Node.js/React projects (Issue #4)
-  - Node.js/React projects now deploy `.husky/pre-commit` with `npx lint-staged` instead of `.pre-commit-config.yaml`
-  - Added `husky@^9.1.7` and `lint-staged@^16.2.0` as devDependencies with `prepare: 'husky'` script
+- **CRITICAL: Pre-commit hooks non-functional for Node.js** - Switched from Python's
+  pre-commit framework to husky + lint-staged for Node.js/React projects (Issue #4)
+  - Node.js/React projects now deploy `.husky/pre-commit` with `npx lint-staged` instead
+    of `.pre-commit-config.yaml`
+  - Added `husky@^9.1.7` and `lint-staged@^16.2.0` as devDependencies with
+    `prepare: 'husky'` script
   - Hooks activate automatically on `npm install` — no manual setup required
-  - `lint-staged` configuration injected into `package.json` (eslint + prettier for TS/JS, prettier for JSON/MD/YAML)
+  - `lint-staged` configuration injected into `package.json` (eslint + prettier for TS/JS,
+    prettier for JSON/MD/YAML)
   - Python/Flutter/Rust projects continue to use `.pre-commit-config.yaml` (unchanged)
-  - Existing pre-commit configurations detected and preserved (`.husky/`, `.pre-commit-config.yaml`, or husky/lint-staged in package.json)
+  - Existing pre-commit configurations detected and preserved (`.husky/`,
+    `.pre-commit-config.yaml`, or husky/lint-staged in package.json)
 
-- **CRITICAL: CI/CD workflow templates never deployed** - Fixed `enableCICD` from interactive config never bridging to `ciDeploy` deployment flag
-  - Added bridge in deploy orchestrator: `if (config.enableCICD) { options.ciDeploy = true; }`
+- **CRITICAL: CI/CD workflow templates never deployed** - Fixed `enableCICD` from
+  interactive config never bridging to `ciDeploy` deployment flag
+  - Added bridge in deploy orchestrator:
+    `if (config.enableCICD) { options.ciDeploy = true; }`
   - CI templates now correctly deploy when user selects CI/CD during `trinity deploy`
 
-- **CI template variables not processed** - Added `processTemplate()` call to CI workflow deployment
-  - `{{PROJECT_NAME}}`, `{{FRAMEWORK}}`, and other template variables now resolve in deployed `ci.yml`
-  - Passes variables from deploy orchestrator through `deployCICD()` to `deployCITemplates()`
+- **CI template variables not processed** - Added `processTemplate()` call to CI workflow
+  deployment
+  - `{{PROJECT_NAME}}`, `{{FRAMEWORK}}`, and other template variables now resolve in
+    deployed `ci.yml`
+  - Passes variables from deploy orchestrator through `deployCICD()` to
+    `deployCITemplates()`
 
-- **No --force protection for GitHub Actions templates** - Added existence check matching GitLab's pattern
+- **No --force protection for GitHub Actions templates** - Added existence check matching
+  GitLab's pattern
   - `.github/workflows/ci.yml` now skipped if it already exists (unless `--force` is used)
   - Both GitHub and GitLab platforms now have consistent `--force` flag protection
 
-- **Configuration display showed wrong filename** - Changed `trinity-ci.yml` to `ci.yml` in interactive prompt output
+- **Configuration display showed wrong filename** - Changed `trinity-ci.yml` to `ci.yml`
+  in interactive prompt output
   - Both detected-platform and unknown-platform display now show correct filename
 
-- **CI workflow template header** - Changed `CI/CD Pipeline` to `CI Pipeline` in `ci.yml.template`
+- **CI workflow template header** - Changed `CI/CD Pipeline` to `CI Pipeline` in
+  `ci.yml.template`
 
 ### Removed
 
-- **`TRINITY.md` root file** - No longer deployed; Trinity context is now at `.claude/trinity/CLAUDE.md`
+- **`TRINITY.md` root file** - No longer deployed; Trinity context is now at
+  `.claude/trinity/CLAUDE.md`
   - Deleted `src/templates/root/TRINITY.md.template`
   - Removed `deployTrinityMarkdown()` function from deploy pipeline
-- **Dead template files** - Deleted `cd.yml.template` (used undefined `{{DOMAIN}}` variable) and `github-actions.yml` (orphaned, never referenced)
-- **CD workflow references** - Removed all Continuous Deployment workflow references from source code, templates (EIN, TAN, init, verify), CI workflow, tests, and documentation
+- **Dead template files** - Deleted `cd.yml.template` (used undefined `{{DOMAIN}}`
+  variable) and `github-actions.yml` (orphaned, never referenced)
+- **CD workflow references** - Removed all Continuous Deployment workflow references from
+  source code, templates (EIN, TAN, init, verify), CI workflow, tests, and documentation
 
 ## [2.1.0] - 2026-01-21
 
 ### Added
 
-- **NEW: Trinity-docs-update command** - Comprehensive documentation update system for maintaining existing docs
-  - **Command:** `/maintenance:trinity-docs-update` - Updates existing documentation to reflect codebase changes
-  - **Architecture:** JUNO audit → 3 parallel APO instances → JUNO verification loop → Final quality audit
-  - **Autonomous Execution:** Runs from start to finish without user intervention unless errors occur
+- **NEW: Trinity-docs-update command** - Comprehensive documentation update system for
+  maintaining existing docs
+  - **Command:** `/maintenance:trinity-docs-update` - Updates existing documentation to
+    reflect codebase changes
+  - **Architecture:** JUNO audit → 3 parallel APO instances → JUNO verification loop →
+    Final quality audit
+  - **Autonomous Execution:** Runs from start to finish without user intervention unless
+    errors occur
   - **Version:** 2.0.9
   - **Last Updated:** 2026-01-19
 
-- **Trinity-docs-update - JUNO audit system** - Phase 1 comprehensive codebase analysis with mandatory verification protocols
+- **Trinity-docs-update - JUNO audit system** - Phase 1 comprehensive codebase analysis
+  with mandatory verification protocols
   - **Database Verification Protocol (Mandatory):**
     - Step 1: Detect database presence via bash detection script
     - Step 2: **MANDATORY** production database connection attempt if database detected
@@ -106,28 +150,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Priority 3: Check code defaults (|| fallback values)
     - Documents all findings and discrepancies
     - Source of truth order: Actual config > Template > Code defaults
-    - **Prevents false positives:** Won't flag correct docs as wrong by verifying against actual config
-  - **Business Logic Discovery:** Scans controllers, services, models, utilities at function-level granularity
+    - **Prevents false positives:** Won't flag correct docs as wrong by verifying against
+      actual config
+  - **Business Logic Discovery:** Scans controllers, services, models, utilities at
+    function-level granularity
   - **Output:** `trinity/reports/DOCS-UPDATE-AUDIT-{{DATE}}.md` with APO work assignments
 
-- **Trinity-docs-update - Configuration false positive prevention** - Resolution rules prevent incorrect audit findings
-  - **Resolution Rule 1:** If .env sets value X, then X is correct (docs showing X are correct)
+- **Trinity-docs-update - Configuration false positive prevention** - Resolution rules
+  prevent incorrect audit findings
+  - **Resolution Rule 1:** If .env sets value X, then X is correct (docs showing X are
+    correct)
   - **Resolution Rule 2:** Code defaults contradicting .env should be fixed (not docs)
   - **Resolution Rule 3:** Documentation showing actual config value is NEVER wrong
-  - **Example:** Port 3001 in docs + .env, but code shows `|| 4000` → docs are correct, code default needs fixing
-  - **Impact:** Eliminates false positives where JUNO would flag correct documentation as wrong
+  - **Example:** Port 3001 in docs + .env, but code shows `|| 4000` → docs are correct,
+    code default needs fixing
+  - **Impact:** Eliminates false positives where JUNO would flag correct documentation as
+    wrong
 
-- **Trinity-docs-update - Scope boundary with consistency exceptions** - Defines strict boundaries with limited exceptions
+- **Trinity-docs-update - Scope boundary with consistency exceptions** - Defines strict
+  boundaries with limited exceptions
   - **ALLOWED:** Read any file, write/edit files in docs/ directory only
   - **FORBIDDEN:** Modify source code, database schemas, config files, build files, tests
   - **EXCEPTIONS (APO-1 only):**
-    - Fix hardcoded default values contradicting documented standards (e.g., `|| 4000` → `|| 3001`)
+    - Fix hardcoded default values contradicting documented standards
+      (e.g., `|| 4000` → `|| 3001`)
     - Update .env.example template values to match actual standards
     - ONLY simple constant/default changes (no logic modifications)
     - MUST verify against actual .env first
-  - **Scenario C Example:** Docs show port 3001, .env has 3001, code default is 4000 → Fix code default to 3001
+  - **Scenario C Example:** Docs show port 3001, .env has 3001, code default is 4000 →
+    Fix code default to 3001
 
-- **Trinity-docs-update - APO parallel execution system** - Phase 2 launches three documentation specialists concurrently
+- **Trinity-docs-update - APO parallel execution system** - Phase 2 launches three
+  documentation specialists concurrently
   - **APO-1:** Base documentation updates (architecture, setup, guides)
     - **NEW:** Configuration consistency fixes (simple defaults that contradict standards)
     - Update .env.example to match actual standards
@@ -139,7 +193,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All APOs verify changes against actual codebase (not assumptions)
   - Output: Updated/new documentation files in docs/
 
-- **Trinity-docs-update - APO verification requirements** - Mandatory codebase verification for all documentation changes
+- **Trinity-docs-update - APO verification requirements** - Mandatory codebase
+  verification for all documentation changes
   - **For EVERY change, APO must:**
     1. Identify what needs to change (from JUNO's assignment)
     2. Verify correct value in codebase (read .env, source files, config)
@@ -154,13 +209,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Method signatures → Read actual source file
     - Configuration values → Read config files
   - **Documentation format:**
+
     ```markdown
     - [x] docs/api/README.md
       - Verification: Read backend/.env - confirmed port is 3001
       - Changes made: Updated 49 instances of port number to 3001
     ```
 
-- **Trinity-docs-update - JUNO verification loop** - Phase 3 ensures 100% completion before final audit
+- **Trinity-docs-update - JUNO verification loop** - Phase 3 ensures 100% completion
+  before final audit
   - **Step 3.1:** JUNO checks all three APO checklists for completion status
     - Counts total tasks vs completed tasks per APO
     - Calculates completion percentage
@@ -176,38 +233,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Generates verification report with pass/fail status
   - **Output:** `trinity/reports/DOCS-UPDATE-VERIFICATION-{{DATE}}.md`
 
-- **Trinity-docs-update - Three template files** - Command template and two checklist templates deployed via CLI
-  - **Command Template:** `src/templates/.claude/commands/maintenance/trinity-docs-update.md.template`
+- **Trinity-docs-update - Three template files** - Command template and two checklist
+  templates deployed via CLI
+  - **Command Template:**
+    `src/templates/.claude/commands/maintenance/trinity-docs-update.md.template`
     - Deployed to: `.claude/commands/maintenance/trinity-docs-update.md`
     - Updated by: `trinity update` command via `updateCommands()` function
-  - **JUNO Checklist:** `src/templates/trinity/templates/documentation/reports/juno-docs-update-checklist.md.template`
-    - Deployed to: `trinity/templates/documentation/reports/juno-docs-update-checklist.md`
-    - Updated by: `trinity update` command via `updateTemplates()` function (recursively copies all documentation templates)
-  - **APO Checklist:** `src/templates/trinity/templates/documentation/reports/apo-docs-update-checklist.md.template`
-    - Deployed to: `trinity/templates/documentation/reports/apo-docs-update-checklist.md`
-    - Updated by: `trinity update` command via `updateTemplates()` function (recursively copies all documentation templates)
-  - All templates automatically deployed during `trinity deploy` and updated during `trinity update`
+  - **JUNO Checklist:**
+    `src/templates/trinity/templates/documentation/reports/juno-docs-update-checklist.md.template`
+    - Deployed to:
+      `trinity/templates/documentation/reports/juno-docs-update-checklist.md`
+    - Updated by: `trinity update` command via `updateTemplates()` function (recursively
+      copies all documentation templates)
+  - **APO Checklist:**
+    `src/templates/trinity/templates/documentation/reports/apo-docs-update-checklist.md.template`
+    - Deployed to:
+      `trinity/templates/documentation/reports/apo-docs-update-checklist.md`
+    - Updated by: `trinity update` command via `updateTemplates()` function (recursively
+      copies all documentation templates)
+  - All templates automatically deployed during `trinity deploy` and updated during
+    `trinity update`
 
-- **Trinity-docs command - Complete architectural overhaul** - Transformed from single-agent to multi-agent orchestration
+- **Trinity-docs command - Complete architectural overhaul** - Transformed from
+  single-agent to multi-agent orchestration
   - **New Architecture:** JUNO audit → 3 parallel APO instances → Verification
-  - **JUNO Agent Integration:** Read-only codebase audit creates documentation checklist before generation
-  - **Parallel APO Execution:** APO-1 (diagrams), APO-2 (guides/API), APO-3 (config) run concurrently
+  - **JUNO Agent Integration:** Read-only codebase audit creates documentation checklist
+    before generation
+  - **Parallel APO Execution:** APO-1 (diagrams), APO-2 (guides/API), APO-3 (config) run
+    concurrently
   - **Performance:** 3x faster execution via parallel agent orchestration
-  - **Context Efficiency:** Each agent receives focused instructions (<100 lines) vs single 2,577-line spec
+  - **Context Efficiency:** Each agent receives focused instructions (<100 lines) vs
+    single 2,577-line spec
 
-- **Trinity-docs command - External template system** - Created 28 reusable documentation templates
+- **Trinity-docs command - External template system** - Created 28 reusable documentation
+  templates
   - **Template Directory:** `trinity/templates/documentation/` with 8 categories
-  - **Mermaid Diagrams (4 templates):** MVC flow, database ER, API endpoint map, component hierarchy
+  - **Mermaid Diagrams (4 templates):** MVC flow, database ER, API endpoint map,
+    component hierarchy
   - **Guides (4 templates):** Getting started, API development, deployment, contributing
   - **API Documentation (1 template):** API README with endpoint structure
   - **Configuration (2 templates):** Documentation structure, env-example generator
-  - **Discovery (4 templates):** Framework detection, component discovery, API endpoint scanner, env variable extraction
+  - **Discovery (4 templates):** Framework detection, component discovery, API endpoint
+    scanner, env variable extraction
   - **Validation (3 templates):** APO self-validation checklists for all 3 agents
-  - **Processes (6 templates):** APO workflows (common, diagram-specific, guide-specific, config-specific), error handling, fallback mechanisms
+  - **Processes (6 templates):** APO workflows (common, diagram-specific,
+    guide-specific, config-specific), error handling, fallback mechanisms
   - **Reports (2 templates):** JUNO internal report, ROOT-README for template organization
-  - **Template Variables:** All templates use `{{UPPERCASE_UNDERSCORE}}` syntax for dynamic content replacement
+  - **Template Variables:** All templates use `{{UPPERCASE_UNDERSCORE}}` syntax for
+    dynamic content replacement
 
-- **Trinity-docs command - Template validation phase** - Optional Phase 0.2 validates template syntax
+- **Trinity-docs command - Template validation phase** - Optional Phase 0.2 validates
+  template syntax
   - Validates `{{VARIABLE}}` syntax (must be UPPERCASE_UNDERSCORE)
   - Detects nested variables (not supported)
   - Checks balanced braces
@@ -218,13 +294,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Handles filesystem delays and race conditions
   - Graceful degradation for non-critical operations
 
-- **Trinity-docs command - JUNO documentation audit** - Phase 1 performs comprehensive codebase analysis
-  - **Framework Detection:** Analyzes package.json for Express, NestJS, React, Next.js, Django, Flask, FastAPI
-  - **Component Discovery:** Scans for React/Vue/Angular/Svelte components with zero-tolerance for fake components
-  - **API Endpoint Scanning:** Detects Express/Fastify/NestJS/Koa routes with enhanced patterns
-  - **Database Detection:** PostgreSQL, MySQL, MongoDB, SQLite, Redis via dependency analysis
+- **Trinity-docs command - JUNO documentation audit** - Phase 1 performs comprehensive
+  codebase analysis
+  - **Framework Detection:** Analyzes package.json for Express, NestJS, React, Next.js,
+    Django, Flask, FastAPI
+  - **Component Discovery:** Scans for React/Vue/Angular/Svelte components with
+    zero-tolerance for fake components
+  - **API Endpoint Scanning:** Detects Express/Fastify/NestJS/Koa routes with enhanced
+    patterns
+  - **Database Detection:** PostgreSQL, MySQL, MongoDB, SQLite, Redis via dependency
+    analysis
   - **Environment Variables:** Extracts from .env and process.env usage patterns
-  - **Checklist Report:** Generates `trinity/templates/documentation/reports/juno-internal-report.md` with all discovered metadata
+  - **Checklist Report:** Generates
+    `trinity/templates/documentation/reports/juno-internal-report.md` with all discovered
+    metadata
 
 - **Trinity-docs command - Fallback mechanism** - Handles missing JUNO data gracefully
   - Uses discovery templates when JUNO variables missing
@@ -234,13 +317,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Environment variable extraction fallback
   - Default template paths when discovery fails
 
-- **Trinity-docs command - APO self-validation** - Each APO validates its own work before completion
-  - APO-1 validates: 4 diagram files created, correct paths, no placeholders, proper Mermaid syntax
+- **Trinity-docs command - APO self-validation** - Each APO validates its own work before
+  completion
+  - APO-1 validates: 4 diagram files created, correct paths, no placeholders, proper
+    Mermaid syntax
   - APO-2 validates: Guide completeness, API documentation accuracy, no fake examples
   - APO-3 validates: Config files exist, no hardcoded secrets, proper .env.example format
-  - Security checks for APO-3: No API keys, passwords, tokens, or sensitive data in generated files
+  - Security checks for APO-3: No API keys, passwords, tokens, or sensitive data in
+    generated files
 
-- **Trinity-docs command - Enhanced verification phase** - Phase 4 performs comprehensive quality checks
+- **Trinity-docs command - Enhanced verification phase** - Phase 4 performs comprehensive
+  quality checks
   - Verifies all JUNO checklist items completed
   - Validates file existence and content quality
   - Checks for placeholders and fake data
@@ -250,22 +337,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Trinity-docs command - File relocation** - Moved from `src/templates/shared/claude-commands/` to `src/templates/.claude/commands/execution/`
+- **Trinity-docs command - File relocation** - Moved from
+  `src/templates/shared/claude-commands/` to
+  `src/templates/.claude/commands/execution/`
   - Aligns with new command categorization structure
   - Distinguishes execution commands from utility/session/planning commands
 
-- **Trinity-docs command - Diagram output path** - Changed from `docs/architecture/diagrams/` to `docs/architecture/`
+- **Trinity-docs command - Diagram output path** - Changed from
+  `docs/architecture/diagrams/` to `docs/architecture/`
   - Simplified directory structure
   - All architecture files (diagrams, overview, ADRs) now in single directory
   - Updated all references throughout command specification (lines 1079, 1205-1208)
 
-- **Trinity-docs command - API endpoint scanner enhancement** - Added 3 missing route detection patterns
+- **Trinity-docs command - API endpoint scanner enhancement** - Added 3 missing route
+  detection patterns
   - Added `router.route('...').get|post|put|patch|delete()` pattern
   - Added `app.route('...').get|post|put|patch|delete()` pattern
   - Added `router.all('...')` wildcard route pattern
   - Fixes endpoint count variance (33 vs 34 detected endpoints)
 
-- **Trinity-docs command - Configuration directory consolidation** - Merged `config/` into `configuration/`
+- **Trinity-docs command - Configuration directory consolidation** - Merged `config/` into
+  `configuration/`
   - Moved `env-example-generator.md.template` from `config/` to `configuration/`
   - Removed duplicate directory structure
   - Now single `configuration/` directory with 2 templates
@@ -278,13 +370,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- **Trinity-docs command - Inline documentation logic** - Removed 808+ lines of inline instructions (WO-004)
-  - Phase 1 codebase analysis logic → `trinity/templates/documentation/discovery/` templates
+- **Trinity-docs command - Inline documentation logic** - Removed 808+ lines of inline
+  instructions (WO-004)
+  - Phase 1 codebase analysis logic → `trinity/templates/documentation/discovery/`
+    templates
   - Phase 2 content seeding → `trinity/templates/documentation/guides/` templates
   - Diagram generation → `trinity/templates/documentation/mermaid-diagrams/` templates
   - Validation logic → `trinity/templates/documentation/validation/` templates
 
-- **Trinity-docs command - Single-agent architecture** - Replaced with multi-agent orchestration
+- **Trinity-docs command - Single-agent architecture** - Replaced with multi-agent
+  orchestration
   - Old: Single APO reads 2,577-line spec and performs all work
   - New: JUNO audit + 3 parallel APO instances with focused instructions
   - Reduces context fatigue and improves reliability
@@ -298,7 +393,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Trinity-docs command specification** - Added evidence-based documentation verification
-  - Added Rule 2: Evidence-Based Documentation Only - prevents documenting uninstalled tools
+  - Added Rule 2: Evidence-Based Documentation Only - prevents documenting uninstalled
+    tools
   - Added Phase 1 Step 6: Tool & Feature Verification for all project types
   - Added tool verification report to Phase 5 output
   - Prevents aspirational/best-practice content that doesn't exist in codebase
@@ -310,7 +406,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added Phase 1 Step 4.5: Filter Gitignored and Trinity Directories
   - Added Trinity Detection Warning to explicitly skip trinity/ and .claude/
   - Removed trinity/ from glob patterns and project structure examples
-  - Addresses incident where trinity/ was included in README file tree despite being gitignored
+  - Addresses incident where trinity/ was included in README file tree despite being
+    gitignored
 
 - **Trinity-readme command specification** - Added LICENSE file verification for badges
   - Added Phase 1 Step 7: License Verification - reads actual LICENSE file
@@ -321,11 +418,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Addresses incident where ISC badge was generated despite MIT LICENSE file
 
 - **Trinity-docs command specification** - Added Trinity reference sanitization enforcement
-  - Added Rule 1 Forbidden Patterns - explicit list of patterns that must not appear in docs/
+  - Added Rule 1 Forbidden Patterns - explicit list of patterns that must not appear in
+    docs/
   - Added Phase 4.5: Trinity Reference Sanitization - scans and removes Trinity references
   - Added Rule 1 Compliance verification to Phase 5 report with pass/fail status
   - Removed Trinity report link from docs/README.md template footer
-  - Prevents Trinity Method, agent names, commands, and infrastructure references in user docs
+  - Prevents Trinity Method, agent names, commands, and infrastructure references in user
+    docs
   - Addresses incident where 7 documentation files contained Trinity Method references
 
 ## [2.0.8] - 2026-01-08
@@ -346,34 +445,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **CRITICAL: Agent file extension handling** - Fixed agent updates to strip `.template` extension
-  - Agents were being copied with `.md.template` extension, creating duplicates alongside old `.md` files
-  - Now correctly strips `.template` extension during deployment to `.claude/agents/` subdirectories
+- **CRITICAL: Agent file extension handling** - Fixed agent updates to strip `.template`
+  extension
+  - Agents were being copied with `.md.template` extension, creating duplicates alongside
+    old `.md` files
+  - Now correctly strips `.template` extension during deployment to `.claude/agents/`
+    subdirectories
   - Each agent file copied individually with proper extension handling
 
-- **CRITICAL: Template directory structure** - Fixed template updates to use correct directory structure
-  - Work order templates were being deployed to wrong directory (`trinity/templates/` instead of `trinity/templates/work-orders/`)
-  - Documentation templates (`trinity/templates/documentation/`) were not being updated at all
-  - Investigation templates (`trinity/templates/investigations/`) were not being updated at all
-  - Now correctly deploys all 3 template types to their proper subdirectories with `.template` extension stripped
+- **CRITICAL: Template directory structure** - Fixed template updates to use correct
+  directory structure
+  - Work order templates were being deployed to wrong directory (`trinity/templates/`
+    instead of `trinity/templates/work-orders/`)
+  - Documentation templates (`trinity/templates/documentation/`) were not being updated at
+    all
+  - Investigation templates (`trinity/templates/investigations/`) were not being updated
+    at all
+  - Now correctly deploys all 3 template types to their proper subdirectories with
+    `.template` extension stripped
   - Total templates updated: 13 files (6 work-orders + 2 documentation + 5 investigations)
 
 ## [2.0.6] - 2026-01-06
 
 ### Fixed
 
-- **CRITICAL: Command categorization logic** - Fixed `trinity update` to correctly categorize slash commands
-  - Execution commands (`audit`, `changelog`, `docs`, `readme`) were falling through to utility category
+- **CRITICAL: Command categorization logic** - Fixed `trinity update` to correctly
+  categorize slash commands
+  - Execution commands (`audit`, `changelog`, `docs`, `readme`) were falling through to
+    utility category
   - Investigation commands containing `investigate` were not being matched properly
-  - Commands now deploy to correct category directories (session, planning, execution, investigation, infrastructure, infrastructure, utility)
+  - Commands now deploy to correct category directories (session, planning, execution,
+    investigation, infrastructure, infrastructure, utility)
   - Prevents duplicate commands in wrong directories during updates
 
 ## [2.0.5] - 2026-01-06
 
 ### Fixed
 
-- **CRITICAL: Slash command file updates** - Fixed `trinity update` command file extension handling
-  - Update commands module was looking for `.md` files but templates use `.md.template` extension
+- **CRITICAL: Slash command file updates** - Fixed `trinity update` command file extension
+  handling
+  - Update commands module was looking for `.md` files but templates use `.md.template`
+    extension
   - Now correctly processes `.md.template` files and strips extension for deployed files
   - Slash commands now update properly (20 command files) when running `trinity update`
   - Matches the pattern used by knowledge-base update module
@@ -382,17 +494,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **CRITICAL: Update command path resolution** - Fixed `trinity update` to use centralized SDK path resolution
-  - Update command was using hardcoded `@trinity-method/sdk` path instead of `trinity-method-sdk`
-  - Commands, agents, templates, and knowledge base files now update correctly with global installations
+- **CRITICAL: Update command path resolution** - Fixed `trinity update` to use centralized
+  SDK path resolution
+  - Update command was using hardcoded `@trinity-method/sdk` path instead of
+    `trinity-method-sdk`
+  - Commands, agents, templates, and knowledge base files now update correctly with global
+    installations
   - Fixed "Commands template path not found, skipping" warning
 
 ## [2.0.3] - 2026-01-06
 
 ### Fixed
 
-- **CRITICAL: Global install support** - Fixed SDK path resolution to work with global installations
-  - Changed package name from incorrect `@trinity-method/sdk` to `trinity-method-sdk` in path resolution
+- **CRITICAL: Global install support** - Fixed SDK path resolution to work with global
+  installations
+  - Changed package name from incorrect `@trinity-method/sdk` to `trinity-method-sdk` in
+    path resolution
   - Added `import.meta.url` support for resolving SDK location in global installs
   - `trinity update` command now works correctly when SDK is installed globally
   - Fixed "ENOENT: no such file or directory" error when running update command
@@ -401,11 +518,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **DOCUMENTATION RULES** section to all APO documentation commands (`/trinity-docs`, `/trinity-readme`, `/trinity-changelog`)
-  - Rule 1: No Self-Serving Trinity Documentation - Prevents APO from including Trinity Method information in user project documentation
-  - Provides clear ✅/❌ examples and rationale for focusing exclusively on user's codebase
+- **DOCUMENTATION RULES** section to all APO documentation commands (`/trinity-docs`,
+  `/trinity-readme`, `/trinity-changelog`)
+  - Rule 1: No Self-Serving Trinity Documentation - Prevents APO from including Trinity
+    Method information in user project documentation
+  - Provides clear examples and rationale for focusing exclusively on user's codebase
 - Explicit **Write tool execution commands** throughout `/trinity-docs` Phase 2
-  - Added 🚨 CRITICAL EXECUTION REQUIREMENT section at Phase 2 start
+  - Added CRITICAL EXECUTION REQUIREMENT section at Phase 2 start
   - Added **EXECUTION REQUIRED** code blocks for each seeding step
   - Added **Phase 2 Execution Summary** with mandatory file creation checklist
   - Ensures APO creates actual documentation files instead of just showing templates
@@ -413,15 +532,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **`/trinity-docs` command:** Enhanced Phase 2 with explicit Write tool requirements
-  - Step 2 (Guides): Added execution requirements for getting-started.md and framework-specific guides
+  - Step 2 (Guides): Added execution requirements for getting-started.md and
+    framework-specific guides
   - Step 3 (API): Added execution requirements for api/README.md
   - Step 4 (Architecture): Added execution requirements for architecture/overview.md
   - Step 5 (Reference): Added execution requirements for reference/README.md
-  - Phase now requires minimum 4 files to be created: getting-started.md, api/README.md, architecture/overview.md, reference/README.md
+  - Phase now requires minimum 4 files to be created: getting-started.md, api/README.md,
+    architecture/overview.md, reference/README.md
 
 ### Fixed
 
-- **APO file creation issue:** `/trinity-docs` now explicitly commands APO to use Write tool, preventing scenario where directory structure is created but documentation files are not written
+- **APO file creation issue:** `/trinity-docs` now explicitly commands APO to use Write
+  tool, preventing scenario where directory structure is created but documentation files
+  are not written
 
 ## [2.0.1] - 2025-12-29
 
@@ -432,7 +555,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **CD Workflow:** Modified to deploy to npm on all main branch pushes (not just version tags)
+- **CD Workflow:** Modified to deploy to npm on all main branch pushes (not just version
+  tags)
 - **CD Workflow:** GitHub releases now only created for version tags, not regular commits
 - Updated all package references from `@trinity-method/cli` to `trinity-method-sdk`
 
@@ -445,25 +569,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Agent System Expansion:** Grew from 7 to 19 specialized agents
-  - **Planning Layer (4 agents):** MON (Requirements Analyst), ROR (Design Architect), TRA (Work Planner), EUS (Task Decomposer)
-  - **Execution Layer (3 agents):** KIL (Task Executor), BAS (Quality Gate), DRA (Code Reviewer)
-  - **Support Layer (4 agents):** APO (Documentation Specialist), BON (Dependency Manager), CAP (Configuration Specialist), URO (Refactoring Specialist)
-  - **Leadership & Audit (2 agents):** ALY (Chief Technology Officer), JUNO (Quality Auditor)
+  - **Planning Layer (4 agents):** MON (Requirements Analyst), ROR (Design Architect),
+    TRA (Work Planner), EUS (Task Decomposer)
+  - **Execution Layer (3 agents):** KIL (Task Executor), BAS (Quality Gate),
+    DRA (Code Reviewer)
+  - **Support Layer (4 agents):** APO (Documentation Specialist),
+    BON (Dependency Manager), CAP (Configuration Specialist),
+    URO (Refactoring Specialist)
+  - **Leadership & Audit (2 agents):** ALY (Chief Technology Officer),
+    JUNO (Quality Auditor)
   - **Infrastructure (5 agents):** TAN, ZEN, INO, EIN, AJ MAESTRO (legacy)
 - Increased deployment from 49 to 64 production-ready components
 - Expanded slash commands from 8 to 20 commands across 6 categories
   - Session Management: `/trinity-start`, `/trinity-continue`, `/trinity-end`
-  - Planning: `/trinity-requirements`, `/trinity-design`, `/trinity-decompose`, `/trinity-plan`
-  - Execution: `/trinity-orchestrate`, `/trinity-audit`, `/trinity-readme`, `/trinity-docs`, `/trinity-changelog`
-  - Investigation: `/trinity-create-investigation`, `/trinity-plan-investigation`, `/trinity-investigate-templates`
+  - Planning: `/trinity-requirements`, `/trinity-design`, `/trinity-decompose`,
+    `/trinity-plan`
+  - Execution: `/trinity-orchestrate`, `/trinity-audit`, `/trinity-readme`,
+    `/trinity-docs`, `/trinity-changelog`
+  - Investigation: `/trinity-create-investigation`, `/trinity-plan-investigation`,
+    `/trinity-investigate-templates`
   - Infrastructure: `/trinity-init`
   - Utility: `/trinity-verify`, `/trinity-agents`, `/trinity-workorder`
-- Enhanced `/trinity-readme` command template to v2.0.0 with comprehensive validation phases
-  - Phase 2h: Command/Script/CLI Validation - Verifies all documented commands exist in codebase
+- Enhanced `/trinity-readme` command template to v2.0.0 with comprehensive validation
+  phases
+  - Phase 2h: Command/Script/CLI Validation - Verifies all documented commands exist in
+    codebase
   - Phase 2i: Code Example Validation - Checks code examples match current API signatures
-  - Phase 2j: API/Function Reference Validation - Verifies documented functions/classes exist
-  - Phase 2k: Dependency Claims Validation - Cross-references README with package manifests
-  - Phase 2l: Stale Content Detection - Finds TODO markers, outdated dates, placeholder text
+  - Phase 2j: API/Function Reference Validation - Verifies documented functions/classes
+    exist
+  - Phase 2k: Dependency Claims Validation - Cross-references README with package
+    manifests
+  - Phase 2l: Stale Content Detection - Finds TODO markers, outdated dates, placeholder
+    text
 
 ### Changed
 
@@ -483,10 +620,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Template path resolution in integration tests
 - Linting deployment tests now correctly locate template files
 - **Documentation Accuracy:** Fixed 6 critical inaccuracies in README.md
-  - Removed 24+ non-existent CLI commands (`npx trinity investigate`, `crisis`, `analytics`, etc.)
+  - Removed 24+ non-existent CLI commands (`npx trinity investigate`, `crisis`,
+    `analytics`, etc.)
   - Fixed 13 broken documentation links (docs/methodology/, docs/adr/, docs/workflows/)
   - Corrected agent count inconsistencies throughout documentation (unified to 18 agents)
-  - Updated deployment examples to reflect actual CLI (`npx @trinity-method/cli deploy/update`)
+  - Updated deployment examples to reflect actual CLI
+    (`npx @trinity-method/cli deploy/update`)
 - Fixed broken ADR links in src/README.md (replaced with design principles summary)
 - Fixed broken ADR links in docs/README.md (removed non-existent file references)
 
@@ -507,7 +646,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reorganized package structure to be self-contained when published to npm
 - Templates, agents, and hooks now bundled in `packages/cli/templates/`
 
-**Note:** This version was published as `@trinity-method/cli`. Starting with v2.0.0, the package was renamed to `trinity-method-sdk`.
+**Note:** This version was published as `@trinity-method/cli`. Starting with v2.0.0,
+the package was renamed to `trinity-method-sdk`.
 
 ---
 
@@ -527,7 +667,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Trinity structure (knowledge-base, templates)
 - CLAUDE.md context file deployment
 - README injection for Trinity Method section
-- 8 slash commands (/trinity-init, /trinity-verify, /trinity-docs, /trinity-start, /trinity-continue, /trinity-end, /trinity-workorder, /trinity-agents)
+- 8 slash commands (/trinity-init, /trinity-verify, /trinity-docs, /trinity-start,
+  /trinity-continue, /trinity-end, /trinity-workorder, /trinity-agents)
 - Session management with archival system
 - Comprehensive CLI documentation
 
@@ -536,6 +677,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Focused exclusively on Claude Code for exceptional user experience
 - Community contributions welcome for other coding agents
 
-**Note:** This version was published as `@trinity-method/cli`. Starting with v2.0.0, the package was renamed to `trinity-method-sdk`.
+**Note:** This version was published as `@trinity-method/cli`. Starting with v2.0.0,
+the package was renamed to `trinity-method-sdk`.
 
 [1.0.0]: https://github.com/lukadfagundes/trinity-method-sdk/releases/tag/v1.0.0

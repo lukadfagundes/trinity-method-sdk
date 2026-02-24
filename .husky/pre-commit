@@ -18,5 +18,10 @@ echo ""
 echo "📋 Stage 3: Running tests..."
 npm test -- --bail --passWithNoTests
 
+# Stage 4: Markdown lint
+echo ""
+echo "📋 Stage 4: Linting markdown files..."
+npx markdownlint-cli2 "*.md" "docs/**/*.md" "src/**/*.md"
+
 echo ""
 echo "✅ All quality gates passed! Ready to commit."

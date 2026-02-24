@@ -5,11 +5,12 @@
 
 ## Overview
 
-The `src/` directory contains the complete Trinity Method SDK source code, including the CLI commands, template processing system, and all agent/command templates.
+The `src/` directory contains the complete Trinity Method SDK source code, including the CLI
+commands, template processing system, and all agent/command templates.
 
 ## Directory Structure
 
-```
+```text
 src/
 ├── index.ts            # Main entry point (CLI-only, no programmatic exports)
 ├── cli/                # Command-line interface implementation
@@ -129,7 +130,8 @@ As defined in [src/CLAUDE.md](CLAUDE.md):
 
 ## Documentation
 
-See [src/CLAUDE.md](CLAUDE.md) for Node.js-specific debugging standards, performance optimization patterns, and testing requirements.
+See [src/CLAUDE.md](CLAUDE.md) for Node.js-specific debugging standards, performance
+optimization patterns, and testing requirements.
 
 ---
 
