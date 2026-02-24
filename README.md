@@ -548,7 +548,3 @@ MIT License - see [LICENSE](LICENSE) for details
 - **Changelog**: [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
 
 ---
-
-Built with ❤️ by the Trinity Method Team
-
-Trinity Method: Investigation-first development for the AI age
