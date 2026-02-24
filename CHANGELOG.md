@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Markdown linting in CI pipeline** - Added blocking `markdownlint-cli2` validation step
-  to the `docs` job in CI, enforcing markdown syntax standards across all 72 files in `docs/`
-  using the existing `.markdownlint.json` config
+- **Markdown linting in CI pipeline and pre-commit hook** - Added blocking `markdownlint-cli2`
+  validation for `*.md`, `docs/**/*.md`, and `src/**/*.md` in both CI and pre-commit
+  - CI: Added lint step to `docs` job in `.github/workflows/ci.yml`
+  - Pre-commit: Added Stage 4 to `.husky/pre-commit` running markdownlint on all tracked
+    markdown directories
+  - Enforces markdown syntax standards across all 78 markdown files using
+    `.markdownlint.json` config
 - **New `/trinity-breakdown` slash command** - Guided, user-driven implementations where CC
   acts as an instructor walking users through changes step-by-step instead of executing them
   directly (Issue #11)
@@ -70,6 +74,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   placeholder; directory structure reduced from 17 to 16 directories
 
 ### Fixed
+
+- **Resolved ~600 markdownlint violations across 78 markdown files** - Fixed all markdown
+  syntax errors in `docs/`, root (`*.md`), and `src/` directories (Issue #6)
+  - `docs/` (72 files): ~580 violations fixed (MD013 line length, MD022 blanks around
+    headings, MD031/MD032 blanks around fences/lists, MD040 code fence languages, MD009
+    trailing spaces, MD036 emphasis as heading, MD026 trailing punctuation)
+  - `README.md`: 16 violations fixed (MD013, MD022, MD026, MD036, MD040)
+  - `CONTRIBUTING.md`: 6 violations fixed (MD013, MD009, MD031, MD032, MD040)
+  - `CLAUDE.md`: 4 violations fixed (MD022 blanks around headings)
+  - `src/CLAUDE.md`: 42 violations fixed (MD022, MD031, MD032, MD040, MD013)
+  - `src/README.md`: 3 violations fixed (MD013, MD040)
+  - Updated `.markdownlint.json` config: added `siblings_only: true` to MD024 for Keep a
+    Changelog duplicate heading compatibility
 
 - **CRITICAL: Pre-commit hooks non-functional for Node.js** - Switched from Python's
   pre-commit framework to husky + lint-staged for Node.js/React projects (Issue #4)

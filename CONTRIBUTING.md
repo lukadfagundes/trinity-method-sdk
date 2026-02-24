@@ -373,14 +373,14 @@ Trinity uses GitHub Actions for automated quality assurance:
 
 **CI Workflow** (`.github/workflows/ci.yml`):
 
-- ✅ Multi-platform testing (Ubuntu, Windows, macOS)
-- ✅ Multi-version testing (Node.js 18.x, 20.x, 22.x)
-- ✅ Comprehensive test suite (unit, integration, e2e, performance)
-- ✅ Code coverage validation (80%+ threshold enforced)
-- ✅ Linting and type checking (ESLint, TypeScript)
-- ✅ Code formatting verification (Prettier)
-- ✅ Security scanning (npm audit, dependency checks)
-- ✅ Build verification and artifact validation
+- Multi-platform testing (Ubuntu, Windows, macOS)
+- Multi-version testing (Node.js 18.x, 20.x, 22.x)
+- Comprehensive test suite (unit, integration, e2e, performance)
+- Code coverage validation (80%+ threshold enforced)
+- Linting and type checking (ESLint, TypeScript)
+- Code formatting verification (Prettier)
+- Security scanning (npm audit, dependency checks)
+- Build verification and artifact validation
 
 **Triggers:**
 
@@ -443,7 +443,7 @@ Trinity uses GitHub Actions for automated quality assurance:
    npm publish            # Publish with automatic prepublishOnly checks
    ```
 
-   **Note:** Automated npm publishing is not currently configured. 
+   **Note:** Automated npm publishing is not currently configured.
    All releases require manual `npm publish` after successful CI validation.
 
 7. **Create GitHub Release:**
@@ -562,12 +562,14 @@ Use the feature request template and include:
 
 Trinity Method SDK v2.1.0 is built for [Claude Code](https://claude.com/claude-code).
 
-We welcome contributions to add support for other AI coding agents (Cursor, GitHub Copilot, Aider, etc.).
+We welcome contributions to add support for other AI coding agents
+(Cursor, GitHub Copilot, Aider, etc.).
 
 ### Guidelines
 
 1. **Agent-Specific Templates**: Create templates in `src/templates/[agent-name]/`
-2. **Context Files**: Each agent needs its own context file format (e.g., cursor-rules.md, copilot-instructions.md)
+2. **Context Files**: Each agent needs its own context file format
+   (e.g., cursor-rules.md, copilot-instructions.md)
 3. **Agent Configuration**: Add agent config to deployment logic
 4. **Documentation**: Update README with agent-specific instructions
 5. **Testing**: Test full deployment for your agent
@@ -610,13 +612,14 @@ trinity-method-sdk/
 
 ## License
 
-By contributing to Trinity Method SDK, you agree that your contributions will be licensed under the MIT License.
+By contributing to Trinity Method SDK, you agree that your contributions
+will be licensed under the MIT License.
 
 ---
 
 ## Acknowledgments
 
-Thank you for contributing to the Trinity Method SDK! Your efforts help improve the 
-development experience for teams using investigation-first methodology.
+Thank you for contributing to the Trinity Method SDK! Your efforts help
+improve the development experience for teams using investigation-first methodology.
 
 For questions or clarification, please open a GitHub Discussion or contact the maintainers.
