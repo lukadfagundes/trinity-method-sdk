@@ -1,0 +1,2226 @@
+# Trinity README Management
+
+**Command:** `/execution:trinity-readme`
+**Purpose:** Launch APO (Documentation Specialist) to ensure 100% CLAUDE.md → README.md coverage with accurate content
+**Architecture:** APO 5-phase process (Discovery → Audit → Update → Create → Report)
+**Trinity Version:** 2.1.0
+**Last Updated:** 2026-01-21
+
+**Use Case:** Create missing READMEs, update existing READMEs with current codebase reality, fix inaccuracies.
+
+**Deliverable:** README audit report in `.claude/trinity/reports/README-AUDIT-{date}.md`
+
+---
+
+## Overview
+
+The `/trinity-readme` command invokes APO (Documentation Specialist) to manage README.md files across the codebase. This command focuses exclusively on ensuring every directory with a CLAUDE.md file has a corresponding README.md file that is accurate and up-to-date.
+
+**APO's Responsibilities:**
+
+- Discover all CLAUDE.md files in the codebase
+- Audit existing READMEs for factual inaccuracies
+- Update root README.md with current project state
+- Create missing subdirectory READMEs
+- Fix all identified inaccuracies
+
+**What This Command Does NOT Handle:**
+
+- ❌ docs/ directory organization (use `/trinity-docs`)
+- ❌ CHANGELOG.md updates (use `/trinity-changelog`)
+- ❌ API documentation generation
+- ❌ Code comments or inline documentation
+
+---
+
+## CRITICAL: APO Must Perform Work DIRECTLY
+
+**APO is NOT a planning agent. APO is an EXECUTION agent for documentation.**
+
+**✅ APO MUST:**
+
+- Read, analyze, and UPDATE existing README files **in this command execution**
+- CREATE missing README files **in this command execution**
+- Fix ALL factual inaccuracies identified in Phase 2 **immediately in Phase 3-5**
+- Apply updates directly to files (use Edit/Write tools)
+- Report COMPLETED work in Phase 7 (past tense: "Updated README.md")
+
+**❌ APO MUST NOT:**
+
+- Create work orders for README updates
+- Create "recommendations" instead of performing updates
+- Skip updates because "it's too much work"
+- Defer work to future execution
+- Ask for user approval before fixing factual errors
+
+**If APO identifies an inaccuracy in Phase 2, APO MUST fix it in Phases 3-5. No exceptions.**
+
+---
+
+## DOCUMENTATION RULES
+
+**These rules apply to ALL documentation created by this command. NO EXCEPTIONS.**
+
+### Rule 1: No Self-Serving Trinity Documentation
+
+**❌ FORBIDDEN:**
+
+- Including information about Trinity Method in project documentation
+- Explaining what Trinity Method is in README/docs
+- Mentioning Trinity agents (APO, MON, ROR, KIL, BAS, etc.) in user-facing docs
+- Documenting Trinity slash commands in project docs
+- Adding Trinity Method badges, links, or references to project documentation
+- Describing the Trinity Method SDK in project documentation
+
+**✅ CORRECT:**
+
+- Document the USER'S codebase exclusively
+- Focus on the project's functionality, architecture, and usage
+- Trinity Method is a development tool, not the subject of documentation
+- The project documentation is about the project, not about how it was documented
+
+**Why:** Trinity Method SDK is a tool for developers. The project's documentation should focus exclusively on the project's code, features, and usage - not on the development methodology used to create it.
+
+### Rule 1 Enforcement Checklist
+
+Before finalizing any README, verify:
+
+- [ ] No .claude/trinity/ directory in file tree
+- [ ] No .claude/ directory in file tree
+- [ ] No Trinity commands documented (unless project IS Trinity Method)
+- [ ] No references to Trinity agents (MON, ROR, KIL, etc.)
+- [ ] No Trinity session files documented
+- [ ] No Trinity work orders documented
+
+**Verification Command:**
+
+```bash
+# Check for forbidden Trinity references in README
+grep -i ".claude/trinity/" README.md && echo "❌ VIOLATION: Documents .claude/trinity/ directory"
+grep -i "\.claude/" README.md && echo "❌ VIOLATION: Documents .claude/ directory"
+grep -i "/trinity-" README.md && echo "❌ VIOLATION: Documents Trinity commands"
+```
+
+**If any violations found:** Remove the offending documentation immediately.
+
+---
+
+## When to Use `/trinity-readme`
+
+### Perfect Use Cases:
+
+✅ **After Codebase Changes** - Ensure READMEs reflect current state
+✅ **Missing READMEs** - Create READMEs for directories with CLAUDE.md
+✅ **Inaccurate READMEs** - Fix outdated counts, features, versions
+✅ **New Directories** - Add READMEs for newly added code sections
+✅ **Pre-Release** - Verify all READMEs are current before release
+
+### When NOT to Use:
+
+❌ **CHANGELOG Updates** - Use `/trinity-changelog` instead
+❌ **docs/ Organization** - Use `/trinity-docs` instead
+❌ **API Documentation** - Use specialized API doc generators
+❌ **During Active Development** - Wait for stable state
+
+---
+
+## Usage
+
+### Basic Usage (Scans Entire Codebase)
+
+```bash
+/trinity-readme
+```
+
+APO performs complete README management:
+
+1. Discovers all CLAUDE.md files
+2. Audits existing READMEs for inaccuracies
+3. Updates root README.md
+4. Creates missing subdirectory READMEs
+5. Fixes all identified inaccuracies
+6. Generates audit report
+
+---
+
+## APO Execution Principles
+
+### Unlimited Token Budget
+
+**CRITICAL: APO has NO token budget limits for this command.**
+
+**✅ APO MUST:**
+
+1. Complete ALL 7 phases regardless of token usage
+2. Create/update ALL required READMEs (no "budget exceeded" stops)
+3. Fix ALL inaccuracies identified in Phase 2 (100% completion required)
+4. NEVER claim "token budget constraints" as reason for incomplete work
+
+**❌ APO MUST NOT:**
+
+1. Stop execution due to token concerns
+2. Skip READMEs due to "budget constraints"
+3. Defer work to future sessions due to token usage
+4. Report "partial completion" due to budget limits
+
+**If APO approaches context limit, Claude Code will handle pagination automatically. APO should continue working.**
+
+---
+
+## Phase Execution Rules
+
+**ALL 7 phases are MANDATORY. APO MUST execute phases in sequence.**
+
+**FORBIDDEN:**
+
+- ❌ Skipping phases
+- ❌ "Deferring" phases to future sessions
+- ❌ Claiming phases are "optional"
+- ❌ Stopping early claiming "critical work complete"
+
+**If APO cannot complete a phase:**
+
+1. APO MUST report specific blocker (e.g., "File X not found")
+2. APO MUST attempt workaround or alternative approach
+3. APO MUST document in Phase 7 report which phase(s) could not complete and why
+4. APO MUST NOT skip to Phase 7 without attempting ALL phases
+
+**Example INVALID justifications:**
+
+- "Deferred to future sessions" ❌
+- "Already comprehensive" ❌
+- "Critical work complete" ❌
+- "Token budget concerns" ❌
+
+**Example VALID blockers:**
+
+- "README.md file not found, cannot verify version" ✅
+- "CLAUDE.md syntax error prevents parsing" ✅
+
+---
+
+## Phase Dependency Enforcement
+
+**CRITICAL: Each phase has DEPENDENCIES that MUST be satisfied before execution.**
+
+### Phase Execution Flow
+
+```
+Phase 1: README Discovery
+  ↓ (MUST complete before Phase 2)
+Phase 2: README Audit
+  ↓ (MUST complete before Phase 2.5)
+Phase 2.5: Fix Commitment
+  ↓ (MUST complete before Phase 3)
+Phase 3: Root README Update
+  ↓ (MUST complete before Phase 3-checkpoint)
+Phase 3-checkpoint (MUST PASS before Phase 4)
+  ↓
+Phase 4: Subdirectory README Creation
+  ↓ (MUST complete before Phase 4-checkpoint)
+Phase 4-checkpoint (MUST PASS before Phase 5)
+  ↓
+Phase 5: Existing README Updates
+  ↓ (MUST complete before Phase 6)
+Phase 6: Final Validation
+  ↓ (MUST complete before Phase 7)
+Phase 7: Audit Report
+```
+
+### Phase Dependency Rules
+
+**Phase 1 → Phase 2 Dependency:**
+
+- ✅ Phase 1 MUST discover ALL CLAUDE.md files before Phase 2 begins
+- ❌ CANNOT start Phase 2 until Phase 1 discovery is complete
+- **Why:** Phase 2 needs to know which READMEs exist
+
+**Phase 2 → Phase 2.5 Dependency:**
+
+- ✅ Phase 2 MUST audit ALL existing READMEs before Phase 2.5
+- ❌ CANNOT create Phase 2.5 commitment list until Phase 2 audit is complete
+- **Why:** Phase 2.5 lists ALL inaccuracies found in Phase 2
+
+**Phase 2.5 → Phase 3 Dependency:**
+
+- ✅ Phase 2.5 MUST create complete inaccuracy commitment list before Phase 3
+- ❌ CANNOT start Phase 3 until Phase 2.5 commitment exists
+- **Why:** Phase 3 MUST apply ALL Phase 2.5 corrections
+
+**Phase 3 → Phase 3-checkpoint Dependency:**
+
+- ✅ Phase 3 MUST execute completely before Phase 3-checkpoint
+- ❌ CANNOT run Phase 3-checkpoint until root README.md is updated
+- **Why:** Checkpoint verifies Phase 3 execution and Phase 2.5 fixes applied
+
+**Phase 3-checkpoint → Phase 4 Dependency:**
+
+- ✅ Phase 3-checkpoint MUST return PASSED before Phase 4 starts
+- ❌ CANNOT create subdirectory READMEs until root README is verified
+- **Why:** Ensures root documentation is correct before subdirectory work
+
+**Phase 4 → Phase 4-checkpoint Dependency:**
+
+- ✅ Phase 4 MUST create ALL missing subdirectory READMEs before Phase 4-checkpoint
+- ❌ CANNOT run Phase 4-checkpoint until Phase 4 work is complete
+- **Why:** Phase 4-checkpoint verifies 100% README coverage from Phase 4
+
+**Phase 4-checkpoint → Phase 5 Dependency:**
+
+- ✅ Phase 4-checkpoint MUST return PASSED before Phase 5 starts
+- ❌ CANNOT update existing READMEs until new READMEs are verified created
+- **Why:** Ensures all required READMEs exist before applying Phase 2.5 fixes
+
+**Phase 6 → Phase 7 Dependency:**
+
+- ✅ Phase 6 final validation MUST complete before Phase 7 report
+- ❌ CANNOT generate report until validation confirms 100% coverage
+- **Why:** Report must reflect verified reality, not assumptions
+
+---
+
+## APO's 7-Phase README Management Process
+
+### Phase 1: README Discovery (SYSTEMATIC)
+
+**Goal:** Identify ALL CLAUDE.md files and check for corresponding READMEs
+
+**CRITICAL: APO MUST Execute Systematically - NO ASSUMPTIONS - VERIFY COMPLETENESS**
+
+**Step 1: Execute Glob Search**
+
+```bash
+Use Glob tool with pattern: "**/CLAUDE.md"
+```
+
+**Step 2: Paste Raw Glob Output (MANDATORY - VALIDATION CHECKPOINT)**
+
+**CRITICAL: APO MUST paste the complete, unfiltered Glob tool output below.**
+
+**DO NOT summarize, filter, or process the output. Paste it exactly as returned by the Glob tool.**
+
+```
+=== GLOB TOOL OUTPUT START ===
+{paste complete Glob output here - every single line}
+=== GLOB TOOL OUTPUT END ===
+```
+
+**Step 3: Count Validation (ENFORCED)**
+
+Count the lines in the Glob tool output pasted in Step 2:
+
+```javascript
+glob_output_lines = {manually count lines in pasted Glob output above}
+apo_reported_count = {APO's count of CLAUDE.md files to report}
+
+// VALIDATION CHECK (MANDATORY)
+if (apo_reported_count !== glob_output_lines) {
+  ❌ CRITICAL ERROR: Count mismatch - Phase 1 validation FAILED
+
+  - Glob tool returned: {glob_output_lines} lines
+  - APO planned to report: {apo_reported_count} files
+  - Discrepancy: {Math.abs(glob_output_lines - apo_reported_count)} files
+
+  **STOP EXECUTION IMMEDIATELY**
+  **APO MUST use glob_output_lines as the correct count**
+  **Re-count using the pasted Glob output as source of truth**
+
+} else {
+  ✅ Count validation PASSED: {apo_reported_count} == {glob_output_lines}
+}
+```
+
+**CRITICAL: If counts don't match, APO CANNOT proceed. Must use Glob output line count.**
+
+**Step 4: Build Inventory from Validated Glob Output**
+
+For EACH line in the pasted Glob output (process all {glob_output_lines} lines):
+
+```javascript
+for (let i = 0; i < glob_output_lines; i++) {
+  path = glob_output[i]  // Each line from pasted output
+  directory = dirname(path)
+  readme_path = directory + "/README.md"
+
+  if exists(readme_path):
+    existing_readmes.push(directory)
+  else:
+    missing_readmes.push(directory)
+}
+```
+
+**Step 4.5: Filter Gitignored and Trinity Directories (CRITICAL)**
+
+**CRITICAL: Remove Trinity infrastructure and gitignored directories from documentation.**
+
+```bash
+# Filter out Trinity infrastructure (ALWAYS excluded)
+filtered_directories = []
+
+for each directory in all_directories:
+  # ALWAYS skip Trinity infrastructure
+  if directory.includes(".claude/trinity/") or directory.includes(".claude/"):
+    echo "SKIP: $directory (Trinity infrastructure - never document)"
+    continue
+
+  # Check if gitignored (optional but recommended)
+  if git check-ignore -q "$directory" 2>/dev/null; then
+    echo "SKIP: $directory (gitignored)"
+    continue
+  fi
+
+  # Include this directory
+  filtered_directories.push(directory)
+  echo "INCLUDE: $directory"
+done
+```
+
+**Trinity Detection Warning:**
+
+If you detect .claude/trinity/ or .claude/ directories during Phase 1:
+
+1. **Acknowledge detection:** "Detected Trinity Method infrastructure (.claude/trinity/ directory found)"
+2. **Skip documentation:** Do NOT include .claude/trinity/ in file tree or README content
+3. **Skip template:** Do NOT use Trinity-specific templates
+4. **Continue normally:** Process other directories (backend/, frontend/, etc.)
+
+**Example Output:**
+
+```
+✓ Detected directories: backend/, frontend/, docs/, .claude/trinity/
+✓ Filtering Trinity infrastructure and gitignored directories...
+  - .claude/trinity/ (Trinity infrastructure) → SKIP
+  - .claude/ (Trinity infrastructure) → SKIP
+✓ Final directories to document: backend/, frontend/, docs/
+```
+
+**Rule:** Trinity infrastructure (.claude/trinity/, .claude/) is ALWAYS excluded from user-facing READMEs, even if not gitignored.
+
+**Step 5: Report Complete Inventory (Using Validated Count)**
+
+APO MUST output:
+
+```markdown
+=== PHASE 1 DISCOVERY RESULTS ===
+
+**Total CLAUDE.md files:** {glob_output_lines} (validated against Glob tool output)
+
+**Glob Tool Output Validation:**
+✅ Raw Glob output pasted in Step 2
+✅ Reported count ({glob_output_lines}) matches Glob output lines
+✅ All {glob_output_lines} paths processed
+
+**CLAUDE.md file paths (ALL {glob_output_lines} PATHS):**
+
+1. {absolute path 1 from Glob output line 1}
+2. {absolute path 2 from Glob output line 2}
+   ...
+   {glob_output_lines}. {absolute path N from Glob output line N}
+
+**Directories with READMEs:** {existing_readmes.length}
+{list all paths}
+
+**Directories MISSING READMEs:** {missing_readmes.length}
+{list all paths - this becomes Phase 4 work list}
+
+**Coverage:** {(existing_readmes.length / glob_output_lines) \* 100}%
+```
+
+**Step 6: Self-Verification Checklist (MANDATORY OUTPUT)**
+
+APO MUST answer ALL checklist items:
+
+```markdown
+=== PHASE 1 SELF-VERIFICATION ===
+
+1. **Glob Output Pasted:**
+   - Did I paste the raw Glob output in Step 2? ✅ YES | ❌ NO
+   - Evidence: See "GLOB TOOL OUTPUT START/END" markers above
+
+2. **Nested Directory Check:**
+   - Did Glob find ANY paths matching `*/src/`? ✅ YES (found: {list}) | ❌ NO
+
+3. **Nested Directory Check:**
+   - Did Glob find ANY paths matching `*/app/`? ✅ YES (found: {list}) | ❌ NO
+
+4. **Nested Directory Check:**
+   - Did Glob find ANY paths matching `*/lib/`? ✅ YES (found: {list}) | ❌ NO
+
+5. **Count Validation:**
+   - Does my reported count ({glob_output_lines}) match Glob output lines? ✅ YES | ❌ NO
+   - If NO: STOP and use Glob output count
+
+6. **Project Structure Sanity:**
+   - For project with backend/, frontend/, database/, do I expect nested CLAUDE.md files? ✅ YES | ❌ NO
+   - Do I see .claude/trinity/ or .claude/ directories? ⚠️ IGNORE (methodology infrastructure, not project code)
+   - If YES but none found: Re-run Glob with explicit paths
+
+**Self-Verification Action:**
+
+IF any critical item = ❌ NO:
+Re-run Glob with explicit patterns: - backend/**/CLAUDE.md - frontend/**/CLAUDE.md - database/**/CLAUDE.md - src/**/CLAUDE.md - lib/\*\*/CLAUDE.md
+Merge results and re-validate
+
+**Note:** Do NOT include .claude/trinity/ or .claude/ patterns - these are methodology infrastructure.
+
+**Checklist Completion:** ✅ 6/6 items verified
+```
+
+**Step 7: License Verification (CRITICAL)**
+
+**CRITICAL: Verify actual LICENSE file before generating license badges.**
+
+Before generating any license badge, read and verify the LICENSE file:
+
+1. **Check for LICENSE file:**
+
+   ```bash
+   # Check for LICENSE file (various naming conventions)
+   if exists("LICENSE"): LICENSE_FILE = "LICENSE"
+   elif exists("LICENSE.md"): LICENSE_FILE = "LICENSE.md"
+   elif exists("LICENSE.txt"): LICENSE_FILE = "LICENSE.txt"
+   elif exists("LICENCE"): LICENSE_FILE = "LICENCE"
+   else: LICENSE_FILE = null
+   ```
+
+2. **Read LICENSE file and detect type:**
+
+   ```javascript
+   // Read first 3 lines to identify license type
+   firstLine = read(LICENSE_FILE).lines[0].toUpperCase()
+   firstThreeLines = read(LICENSE_FILE).lines.slice(0, 3).join(' ').toUpperCase()
+
+   // Detect license type from file header
+   if (firstLine.includes('MIT LICENSE')): DETECTED_LICENSE = 'MIT'
+   elif (firstLine.includes('ISC LICENSE')): DETECTED_LICENSE = 'ISC'
+   elif (firstLine.includes('APACHE LICENSE')): DETECTED_LICENSE = 'Apache-2.0'
+   elif (firstLine.includes('BSD 3-CLAUSE')): DETECTED_LICENSE = 'BSD-3-Clause'
+   elif (firstLine.includes('BSD 2-CLAUSE')): DETECTED_LICENSE = 'BSD-2-Clause'
+   elif (firstThreeLines.includes('GNU GENERAL PUBLIC LICENSE VERSION 3')): DETECTED_LICENSE = 'GPL-3.0'
+   elif (firstThreeLines.includes('GNU GENERAL PUBLIC LICENSE VERSION 2')): DETECTED_LICENSE = 'GPL-2.0'
+   elif (firstThreeLines.includes('GNU LESSER GENERAL PUBLIC LICENSE')): DETECTED_LICENSE = 'LGPL-3.0'
+   else: DETECTED_LICENSE = null
+   ```
+
+3. **Compare with package.json (if exists):**
+
+   ```javascript
+   if exists("package.json"):
+     PACKAGE_LICENSE = read("package.json").license
+
+     if (DETECTED_LICENSE && PACKAGE_LICENSE && DETECTED_LICENSE != PACKAGE_LICENSE):
+       echo "⚠️  WARNING: package.json claims ${PACKAGE_LICENSE} but LICENSE file is ${DETECTED_LICENSE}"
+       echo "Using LICENSE file as source of truth: ${DETECTED_LICENSE}"
+   ```
+
+4. **Determine badge license (priority order):**
+
+   ```javascript
+   // Priority: LICENSE file > package.json > default
+   if (DETECTED_LICENSE):
+     BADGE_LICENSE = DETECTED_LICENSE  // Use LICENSE file (source of truth)
+   elif (PACKAGE_LICENSE):
+     BADGE_LICENSE = PACKAGE_LICENSE   // Fall back to package.json
+   else:
+     BADGE_LICENSE = "Unlicensed"      // Default if neither found
+   ```
+
+5. **Generate license badge:**
+   ```markdown
+   [![License](https://img.shields.io/badge/License-${BADGE_LICENSE}-yellow)](LICENSE)
+   ```
+
+**Rule:** The LICENSE file is the legal source of truth. package.json metadata is secondary.
+
+**Mismatch Detection:** If LICENSE file and package.json disagree, always use LICENSE file and warn user to update package.json.
+
+---
+
+### Phase 2: README Audit (Root + Subdirectories)
+
+**Goal:** Identify factual inaccuracies in existing READMEs
+
+**CRITICAL: Phase 2 MUST audit BOTH root README.md AND subdirectory READMEs**
+
+**Audit Scope:**
+
+1. **Root README.md** (Phase 2a-2f) - MANDATORY
+2. **Existing Subdirectory READMEs** (Phase 2g) - MANDATORY
+
+#### 2a. Root README.md Quantitative Claims Audit (MANDATORY)
+
+**CRITICAL: This section audits ROOT README.md specifically, not subdirectory READMEs.**
+
+**Step 1: Load Root README.md**
+
+```bash
+Read README.md
+
+# If file doesn't exist: Skip Phase 2a-2f (proceed to Phase 2g)
+# If file exists: Continue to Step 2
+```
+
+**Step 2: Extract Quantitative Claims from Root README.md**
+
+If root README.md makes numeric claims, verify them:
+
+1. **Count Claims:**
+   - "50+ features" → Count actual features
+   - "12 API endpoints" → Count actual endpoints
+   - "100+ tests" → Count test files/cases
+   - "8 integrations" → Count integration implementations
+
+2. **How to Verify:**
+   - Use Grep to search for feature implementations
+   - Count files matching patterns (test files, spec files, etc.)
+   - Read API route files to count endpoints
+   - Check configuration files for integrations
+
+3. **Record Inaccuracies for Phase 2.5:**
+   - Replace vague claims ("many features") with exact counts
+   - Remove inflated numbers (claimed 100, found 42)
+   - Update outdated counts (README says 5, code has 12)
+
+#### 2b. Root README.md Feature/Functionality Claims Audit
+
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+If root README.md lists features, verify each one exists:
+
+1. **For each feature listed:**
+   - Search codebase for implementation
+   - Verify feature is actually functional (not just TODO)
+   - Check if feature is documented correctly
+
+2. **Result:**
+   - ✅ Feature exists → Keep in README
+   - ❌ Feature doesn't exist → Remove from README or mark as "Planned"
+   - ⏳ Feature is TODO/planned → Move to "Roadmap" section
+
+#### 2c. Root README.md Installation/Setup Instructions Audit
+
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+Test that documented setup in root README.md actually works:
+
+1. **Check Prerequisites:**
+   - README says "Node 16+" → Verify package.json engines field
+   - README says "PostgreSQL required" → Check if actually used
+
+2. **Check Installation Steps:**
+   - README shows `npm install` → Verify package.json exists
+   - README references config files → Verify they exist
+
+3. **Check Configuration:**
+   - README references .env variables → List what's actually used
+   - README shows config examples → Verify config schema matches code
+
+#### 2d. Root README.md Version Information Audit
+
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+Ensure version claims in root README.md are accurate:
+
+1. **Check Version Consistency:**
+   - Project manifest version (package.json, Cargo.toml, pyproject.toml, etc.)
+   - README version badges/claims
+   - CHANGELOG latest version
+
+2. **Check Compatibility Claims:**
+   - "Works with Node 14-18" → Verify package.json engines
+   - "Compatible with React 17+" → Verify peerDependencies
+
+#### 2e. Root README.md Links and References Audit
+
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+Check all documentation links in root README.md work:
+
+1. **Internal Links:**
+   - For each `[text](./path/file.md)` link → Verify file exists
+   - For each `[Section](#heading)` link → Verify heading exists
+
+2. **External Links:**
+   - Badge links → Verify they work
+   - Documentation links → Check if still valid
+
+3. **Cross-References:**
+   - README mentions "see CONTRIBUTING.md" → Verify file exists
+   - README references docs/ → Verify directory exists
+
+#### 2f. Root README.md Cross-Reference with Audit Report (If Available)
+
+**CRITICAL: This section audits ROOT README.md specifically.**
+
+If JUNO audit report exists, cross-reference root README.md claims:
+
+1. Read `.claude/trinity/reports/CODEBASE-AUDIT-{latest}.md`
+2. Extract actual counts (files, components, tests, etc.)
+3. Use audit findings as source of truth for root README.md
+4. Identify inaccuracies in root README.md for Phase 2.5 commitment
+
+**Output:** List of root README.md inaccuracies found (to be added to Phase 2.5 commitment list)
+
+---
+
+#### 2g. Existing Subdirectory README Audit (COMPREHENSIVE)
+
+**CRITICAL: This section audits SUBDIRECTORY READMEs, not root.**
+
+For EACH existing subdirectory README (from Phase 1 existing_readmes list):
+
+1. **Read the README:**
+
+   ```bash
+   Read {directory}/README.md
+   ```
+
+2. **Check for Inaccuracies:**
+   - Outdated descriptions of directory purpose
+   - Incorrect file counts or lists
+   - Broken links to other docs
+   - References to deleted files
+
+3. **Record Inaccuracies:**
+   - Add to Phase 2.5 commitment list
+   - Note which README has the issue
+   - Describe what needs to be fixed
+
+**APO MUST audit ALL existing subdirectory READMEs, not just root.**
+
+---
+
+#### 2h. Command/Script/CLI Validation (COMPREHENSIVE)
+
+**CRITICAL: Verify ALL documented commands, scripts, and CLI tools actually exist**
+
+**Goal:** Find commands in README that don't exist in the codebase or have changed
+
+**Step 1: Extract Command References from README**
+
+Scan README.md for command patterns:
+
+- Bash/shell commands: `` `npm run test` ``, `` `python manage.py` ``, `` `cargo build` ``
+- CLI invocations: `` `npx trinity deploy` ``, `` `./scripts/setup.sh` ``
+- Script references: "Run `make install`", "Execute `build.sh`"
+- Package commands: `` `pip install` ``, `` `yarn start` ``, `` `go run` ``
+
+**Step 2: Categorize Commands**
+
+Group commands by type:
+
+1. **npm/yarn/pnpm scripts:**
+   - Extract: All `` `npm run <script>` ``, `` `yarn <script>` ``, `` `pnpm <script>` ``
+   - Verify against: `package.json` scripts section
+
+2. **Python scripts:**
+   - Extract: `` `python <script>` ``, `` `python -m <module>` ``, CLI tools
+   - Verify against: Actual .py files, pyproject.toml, setup.py
+
+3. **Shell scripts:**
+   - Extract: `` `./scripts/setup.sh` ``, `` `bash build.sh` ``
+   - Verify against: Actual script files in repository
+
+4. **Custom CLI tools:**
+   - Extract: `` `npx <package>` ``, custom binaries
+   - Verify against: package.json bin field, local executables
+
+5. **Makefile targets:**
+   - Extract: `` `make <target>` ``
+   - Verify against: Makefile contents
+
+**Step 3: Verification Process**
+
+For EACH documented command:
+
+```javascript
+// For npm scripts
+if (command matches "npm run <script>"):
+  Read package.json
+  Search for script in "scripts" section
+
+  if NOT found:
+    ❌ Inaccuracy: "npm run <script>" documented but script doesn't exist in package.json
+    Add to Phase 2.5 commitment
+
+// For script files
+if (command matches "./<path>/script.sh"):
+  Check if file exists at that path
+
+  if NOT found:
+    ❌ Inaccuracy: Script file documented but doesn't exist
+    Add to Phase 2.5 commitment
+
+// For custom CLI tools
+if (command matches "npx <tool>"):
+  Read package.json
+  Check if tool is in dependencies or bin
+
+  if NOT found:
+    ❌ Inaccuracy: CLI tool documented but not installed/configured
+    Add to Phase 2.5 commitment
+```
+
+**Step 4: Common Command Validation Patterns**
+
+**Node.js Projects:**
+
+```bash
+README says: `npm test`
+Verify: "test" exists in package.json scripts
+```
+
+**Python Projects:**
+
+```bash
+README says: `python manage.py migrate`
+Verify: manage.py exists and has migrate command
+```
+
+**Custom Scripts:**
+
+```bash
+README says: `./scripts/deploy.sh`
+Verify: scripts/deploy.sh file exists
+```
+
+**Makefile:**
+
+```bash
+README says: `make build`
+Verify: Makefile exists and has "build:" target
+```
+
+**Step 5: Record Inaccuracies**
+
+For each invalid command found, add to Phase 2.5 commitment:
+
+```markdown
+❌ **Non-existent Command**
+
+- **File:** README.md (line X)
+- **Current (WRONG):** "Run `npm run deploy`"
+- **Reality:** No "deploy" script exists in package.json
+- **Correct:** Remove reference OR add script to package.json
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+#### 2i. Code Example Validation (COMPREHENSIVE)
+
+**CRITICAL: Verify code examples in README actually work with current codebase**
+
+**Goal:** Find outdated code examples that don't match current API/structure
+
+**Step 1: Extract Code Examples from README**
+
+Find all code blocks in README.md:
+
+- ` ```javascript ` blocks
+- ` ```python ` blocks
+- ` ```bash ` blocks
+- ` ```typescript ` blocks
+- Inline code showing API usage
+
+**Step 2: Categorize Examples**
+
+1. **Import/Require Statements:**
+
+   ```javascript
+   import { SomeClass } from './src/lib';
+   ```
+
+   Verify: Does `./src/lib` export `SomeClass`?
+
+2. **API Usage Examples:**
+
+   ```javascript
+   const result = api.fetchData({ option: true });
+   ```
+
+   Verify: Does `api.fetchData` exist? Does it accept `option` parameter?
+
+3. **Configuration Examples:**
+
+   ```javascript
+   {
+     "setting": "value",
+     "newFeature": true
+   }
+   ```
+
+   Verify: Are these valid config options in current version?
+
+4. **Function Call Examples:**
+   ```python
+   result = calculate_total(items, tax_rate)
+   ```
+   Verify: Does `calculate_total` exist? Does it take these parameters?
+
+**Step 3: Validation Process**
+
+For code examples showing **function calls**:
+
+```bash
+Example shows: `api.login(username, password)`
+
+Use Grep to search codebase for:
+- "function login" (JavaScript)
+- "def login" (Python)
+- "fn login" (Rust)
+
+Check if function signature matches documented usage
+```
+
+For code examples showing **imports**:
+
+```bash
+Example shows: import { Auth } from '@/lib/auth'
+
+Use Grep to find:
+- export.*Auth in files matching lib/auth pattern
+
+Verify export actually exists
+```
+
+**Step 4: Common Validation Checks**
+
+1. **API signature changes:**
+   - README shows: `user.save()`
+   - Reality: `user.save()` now requires `user.save({ validate: true })`
+   - Result: ❌ Example is outdated
+
+2. **Deprecated methods:**
+   - README shows: `db.connect()`
+   - Reality: `db.connect()` was deprecated, now use `db.initialize()`
+   - Result: ❌ Example uses deprecated API
+
+3. **Changed file paths:**
+   - README shows: `import from './utils/helper'`
+   - Reality: File moved to `./lib/utils/helper`
+   - Result: ❌ Import path is wrong
+
+**Step 5: Record Inaccuracies**
+
+```markdown
+❌ **Outdated Code Example**
+
+- **File:** README.md (line X)
+- **Current (WRONG):** Shows `api.connect(url)` usage
+- **Reality:** API now requires `api.connect({ url, timeout })`
+- **Correct:** Update example to current API signature
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+#### 2j. API/Function Reference Validation (COMPREHENSIVE)
+
+**CRITICAL: Verify documented functions, classes, and APIs actually exist**
+
+**Goal:** Find README claims about APIs/functions that don't exist or are misnamed
+
+**Step 1: Extract API References from README**
+
+Look for documented APIs:
+
+- "The `calculateTotal()` function handles..."
+- "Use the `DataProcessor` class to..."
+- "Call `api.authenticate()` to..."
+- "The `useAuth()` hook provides..."
+
+**Step 2: Validation Process**
+
+For EACH mentioned function/class/API:
+
+```bash
+README mentions: "calculateTotal() function"
+
+Use Grep to search entire codebase:
+  Pattern 1: "function calculateTotal"
+  Pattern 2: "calculateTotal ="
+  Pattern 3: "def calculateTotal"
+  Pattern 4: "fn calculate_total"
+
+If NO matches found:
+  ❌ Inaccuracy: Function documented but doesn't exist
+  Add to Phase 2.5 commitment
+```
+
+**Step 3: Common Validation Patterns**
+
+**JavaScript/TypeScript:**
+
+```bash
+README claims: "useAuth() hook"
+Grep for: "export.*useAuth" OR "function useAuth"
+If not found: ❌ Hook doesn't exist
+```
+
+**Python:**
+
+```bash
+README claims: "DataProcessor class"
+Grep for: "class DataProcessor"
+If not found: ❌ Class doesn't exist
+```
+
+**Rust:**
+
+```bash
+README claims: "parse_config() function"
+Grep for: "pub fn parse_config" OR "fn parse_config"
+If not found: ❌ Function doesn't exist
+```
+
+**Step 4: Name Mismatch Detection**
+
+Common issues:
+
+- README says `getUserData()` but code has `fetchUserData()`
+- README says `AuthService` but code has `AuthenticationService`
+- README says `validate()` but code has `validateInput()`
+
+**Step 5: Record Inaccuracies**
+
+```markdown
+❌ **Non-existent API Reference**
+
+- **File:** README.md (line X)
+- **Current (WRONG):** "Call the `processPayment()` function"
+- **Reality:** No function named `processPayment` exists in codebase
+- **Correct:** Remove reference OR verify correct function name
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+#### 2k. Dependency Claims Validation (COMPREHENSIVE)
+
+**CRITICAL: Verify documented dependencies match actual project dependencies**
+
+**Goal:** Find mismatches between README claims and actual package manifests
+
+**Step 1: Identify Package Manifest File**
+
+Detect project type and read manifest:
+
+```javascript
+if exists("package.json"):
+  manifest = "package.json"
+  type = "Node.js"
+
+else if exists("pyproject.toml"):
+  manifest = "pyproject.toml"
+  type = "Python"
+
+else if exists("Cargo.toml"):
+  manifest = "Cargo.toml"
+  type = "Rust"
+
+else if exists("go.mod"):
+  manifest = "go.mod"
+  type = "Go"
+
+Read {manifest}
+```
+
+**Step 2: Extract Dependency Claims from README**
+
+Look for:
+
+- "Requires React 18+"
+- "Built with Express.js"
+- "Uses PostgreSQL database"
+- "Depends on axios, lodash, and moment"
+- Version badges showing specific versions
+
+**Step 3: Validation Process**
+
+**For Version Claims:**
+
+```bash
+README claims: "Requires Node 16+"
+
+Read package.json
+Check "engines" field:
+  "engines": { "node": ">=14.0.0" }  ← Mismatch!
+
+❌ Inaccuracy: README says Node 16+, package.json says 14+
+Add to Phase 2.5 commitment
+```
+
+**For Dependency Lists:**
+
+```bash
+README claims: "Built with Express, MongoDB, and Redis"
+
+Read package.json dependencies
+Check if listed:
+  ✅ express: found
+  ❌ mongodb: NOT found (uses mongoose instead)
+  ✅ redis: found
+
+❌ Inaccuracy: MongoDB not directly listed as dependency
+Add to Phase 2.5 commitment
+```
+
+**For Framework Claims:**
+
+```bash
+README claims: "React 17 application"
+
+Read package.json
+Check react version:
+  "react": "^18.2.0"  ← Mismatch!
+
+❌ Inaccuracy: README says React 17, actually using React 18
+Add to Phase 2.5 commitment
+```
+
+**Step 4: Common Validation Checks**
+
+1. **Node version mismatch:**
+   - README: "Node 14+"
+   - package.json engines: "node": ">=16.0.0"
+   - Result: ❌ Outdated requirement
+
+2. **Missing dependencies:**
+   - README: "Uses axios for HTTP"
+   - package.json: No axios dependency
+   - Result: ❌ Dependency not installed
+
+3. **Wrong framework version:**
+   - README: "Vue 2 project"
+   - package.json: "vue": "^3.0.0"
+   - Result: ❌ Wrong major version
+
+4. **Deprecated package claims:**
+   - README: "Uses moment.js"
+   - package.json: Uses date-fns instead
+   - Result: ❌ Wrong package reference
+
+**Step 5: Record Inaccuracies**
+
+```markdown
+❌ **Dependency Mismatch**
+
+- **File:** README.md (line X)
+- **Current (WRONG):** "Requires Node.js 14+"
+- **Reality:** package.json specifies "node": ">=16.9.0"
+- **Correct:** "Requires Node.js 16.9+"
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+#### 2l. Stale Content Detection (COMPREHENSIVE)
+
+**CRITICAL: Find markers of outdated/unmaintained content in README**
+
+**Goal:** Detect TODO markers, outdated dates, and other staleness indicators
+
+**Step 1: Search for Staleness Markers**
+
+Scan README.md for common stale content patterns:
+
+**TODO/WIP Markers:**
+
+```markdown
+- TODO: Add authentication docs
+- [ ] Update installation section
+- WIP: This section is under construction
+- FIXME: Verify these instructions
+- Coming soon: API documentation
+```
+
+**Outdated Date References:**
+
+```markdown
+- "**Last Updated**: 2021"
+- "As of January 2022"
+- "In version 1.0 (released 2020)"
+```
+
+**Placeholder Text:**
+
+```markdown
+- "[Insert description here]"
+- "TBD"
+- "To be documented"
+- "{your-project-name}"
+- "Replace this with..."
+```
+
+**Deprecated Warnings:**
+
+```markdown
+- "⚠️ This feature is deprecated"
+- "DEPRECATED: Use XYZ instead"
+- "⚠️ Legacy API - do not use"
+```
+
+**Step 2: Validation Process**
+
+For EACH staleness marker found:
+
+```bash
+# TODO markers
+if README contains "TODO:":
+  Extract full TODO line
+  Determine if TODO is still valid or should be removed
+
+  if TODO is >6 months old based on git history:
+    ❌ Inaccuracy: Stale TODO marker
+    Add to Phase 2.5 commitment
+
+# Outdated dates
+if README contains year < (current_year - 1):
+  ❌ Inaccuracy: Reference to old year
+  Verify if section needs updating
+  Add to Phase 2.5 commitment
+
+# Placeholder text
+if README contains "[Insert" OR "TBD" OR "{your-":
+  ❌ Inaccuracy: Placeholder text never replaced
+  Add to Phase 2.5 commitment
+```
+
+**Step 3: Cross-Reference with Project State**
+
+**Check if "Coming Soon" features exist:**
+
+```bash
+README says: "Coming soon: Dark mode support"
+
+Use Grep to search codebase for dark mode implementation
+
+if dark mode implementation found:
+  ❌ Inaccuracy: Feature exists but README still says "coming soon"
+  Add to Phase 2.5 commitment
+```
+
+**Check deprecation warnings validity:**
+
+```bash
+README says: "⚠️ DEPRECATED: oldFunction() - use newFunction() instead"
+
+Use Grep to check if oldFunction still exists
+
+if oldFunction() removed from codebase:
+  ❌ Inaccuracy: Deprecation warning for removed function (should be deleted)
+  Add to Phase 2.5 commitment
+```
+
+**Step 4: Version-Specific Content Audit**
+
+Compare README version references with actual version:
+
+```bash
+Read package.json (or Cargo.toml, pyproject.toml)
+current_version = "2.5.0"
+
+Scan README for version mentions:
+  "In version 1.0" ← Outdated reference
+  "As of v2.0" ← Verify if still accurate for v2.5
+  "New in version 2.5" ← Current, keep
+```
+
+**Step 5: Record Inaccuracies**
+
+```markdown
+❌ **Stale Content Marker**
+
+- **File:** README.md (line X)
+- **Current (WRONG):** "TODO: Add deployment docs"
+- **Reality:** Deployment docs exist in docs/deployment.md
+- **Correct:** Replace TODO with link to deployment docs
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+```markdown
+❌ **Outdated Date Reference**
+
+- **File:** README.md (line Y)
+- **Current (WRONG):** "**Last Updated**: January 2022"
+- **Reality:** Current year is 2025, content is stale
+- **Correct:** Update date or remove if unnecessary
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+```markdown
+❌ **Placeholder Text**
+
+- **File:** README.md (line Z)
+- **Current (WRONG):** "Clone the repository: git clone {repository-url}"
+- **Reality:** Actual repository URL should be inserted
+- **Correct:** Replace {repository-url} with actual URL from package.json repository field
+- **Fix in:** Phase 3 (Root README Update)
+```
+
+---
+
+**APO MUST audit ALL existing subdirectory READMEs, not just root.**
+
+---
+
+### Phase 2.5: Fix Commitment (CRITICAL ACCOUNTABILITY)
+
+**Goal:** Create explicit list of ALL inaccuracies found in Phase 2 that MUST be fixed in Phases 3-5
+
+**CRITICAL: This phase creates accountability. APO commits to fixing these issues.**
+
+**APO MUST output:**
+
+```markdown
+=== PHASE 2.5: FIX COMMITMENT LIST ===
+
+**Total Inaccuracies Found:** {count}
+
+**Root README.md Inaccuracies ({count}):**
+
+1. ❌ **{Inaccuracy Title}**
+   - **File:** README.md (line {X})
+   - **Current (WRONG):** "{text}"
+   - **Correct:** "{text}"
+   - **Fix in:** Phase 3 (Root README Update)
+   - **Status:** ⏳ COMMITTED TO FIX
+
+2. ❌ **{Inaccuracy Title}**
+   - **File:** README.md (line {Y})
+   - **Current (WRONG):** "{text}"
+   - **Correct:** "{text}"
+   - **Fix in:** Phase 3 (Root README Update)
+   - **Status:** ⏳ COMMITTED TO FIX
+
+**Subdirectory README Inaccuracies ({count}):**
+
+1. ❌ **{Inaccuracy Title}**
+   - **File:** {directory}/README.md (line {Z})
+   - **Current (WRONG):** "{text}"
+   - **Correct:** "{text}"
+   - **Fix in:** Phase 5 (Existing README Updates)
+   - **Status:** ⏳ COMMITTED TO FIX
+
+**Commitment:**
+
+- APO commits to fixing ALL {total_count} inaccuracies
+- Phase 3 will fix {root_readme_count} root README inaccuracies
+- Phase 5 will fix {subdirectory_count} subdirectory README inaccuracies
+- Phase 7 report will show ✅ FIXED status for each item
+
+**If APO skips ANY fix, APO MUST explain WHY in Phase 7 report.**
+```
+
+**CRITICAL: Every inaccuracy in this list MUST be fixed. No exceptions without valid reason.**
+
+---
+
+### Phase 3: Root README Update
+
+**⚠️ CRITICAL: THIS PHASE IS MANDATORY - CANNOT BE SKIPPED**
+
+**Execution Policy:**
+
+- ✅ APO MUST execute this phase regardless of perceived need
+- ✅ APO MUST read root README.md even if it appears current
+- ✅ APO MUST audit ALL sections (Features, Installation, Usage, etc.)
+- ✅ APO MUST apply ALL Phase 2.5 inaccuracy corrections for root README.md
+- ❌ APO CANNOT skip this phase with "no updates needed" reasoning
+- ❌ APO CANNOT defer this phase to "future work"
+- ❌ APO CANNOT prioritize Phase 4 over Phase 3
+
+**Valid Skip Conditions:** NONE (this phase always executes)
+
+**Invalid Skip Justifications (FORBIDDEN):**
+
+- ❌ "Root README.md appears current"
+- ❌ "No inaccuracies found in Phase 2"
+- ❌ "Prioritizing subdirectory READMEs"
+- ❌ "Token budget optimization"
+- ❌ "README is already comprehensive"
+
+---
+
+**MANDATORY ACTIONS (APO MUST Complete ALL - Cannot Skip):**
+
+1. **Read Current README.md:**
+
+   ```bash
+   Read README.md
+   ```
+
+2. **Apply Phase 2.5 Fixes for Root README:**
+   - For EACH inaccuracy marked "Fix in: Phase 3" in Phase 2.5 list
+   - Use Edit tool to apply correction
+   - Update status from ⏳ COMMITTED to ✅ FIXED
+
+3. **Update Project Description:**
+   - Verify description matches current project state
+   - Update if project scope has changed
+
+4. **Update Features Section:**
+   - Add any new features discovered in Phase 2
+   - Remove deprecated/removed features
+   - Ensure feature list is accurate
+
+5. **Update Installation/Setup:**
+   - Verify prerequisites are current
+   - Check installation steps still work
+   - Update configuration examples if needed
+
+6. **Update Version/Compatibility:**
+   - Verify version badges are current
+   - Update compatibility claims (Node version, dependencies, etc.)
+
+7. **Update Links:**
+   - Fix any broken internal links
+   - Update references to renamed/moved files
+   - Verify external links still work
+
+**APO Output:**
+
+- Number of Phase 2.5 fixes applied: {count}
+- Number of sections updated: {count}
+- Total edits made: {count}
+
+---
+
+### Phase 3-checkpoint: Root README Verification (MANDATORY GATE)
+
+**CRITICAL: APO CANNOT proceed to Phase 4 until this checkpoint PASSES**
+
+**Goal:** Verify Phase 3 executed completely and root README.md is accurate
+
+**Step 1: Verify Phase 3 Execution**
+
+APO MUST verify:
+
+```
+Did APO use Read tool on README.md? (YES/NO)
+Did APO apply ALL Phase 2.5 fixes for root README? (count applied / count committed)
+Did APO update outdated sections? (list sections updated)
+```
+
+**Step 2: Count Changes Made**
+
+```javascript
+changes_made = {
+  phase_2_5_fixes: 0, // Corrections from Phase 2.5
+  section_updates: 0, // Updates to Features, Installation, etc.
+  total_edits: 0, // Total Edit tool calls on README.md
+};
+```
+
+**Step 3: Checkpoint Decision (BINARY)**
+
+```
+IF Phase 3 was executed (Read tool used + audit performed):
+  IF changes_made.total_edits > 0 OR changes_made.phase_2_5_fixes == phase_2_5_root_count:
+    status = PASSED (changes applied OR all fixes applied)
+  ELSE:
+    IF all_sections_verified AND no_inaccuracies_found:
+      status = PASSED (file is 100% correct)
+    ELSE:
+      status = FAILED (audit incomplete)
+ELSE:
+  status = FAILED (Phase 3 was skipped)
+```
+
+**ONLY TWO VALID STATUSES:**
+
+- ✅ **PASSED** - Phase 3 executed AND (changes applied OR file verified 100% correct)
+- ❌ **FAILED** - Phase 3 skipped OR audit incomplete
+
+**Step 4: Checkpoint Report**
+
+APO MUST output:
+
+```markdown
+=== PHASE 3-CHECKPOINT: ROOT README VERIFICATION ===
+
+**Phase 3 Execution:** {✅ EXECUTED | ❌ SKIPPED}
+**Read tool used on README.md:** {✅ YES | ❌ NO}
+**Changes applied:** {count} edits
+**Phase 2.5 fixes applied:** {count}/{total} fixes
+
+**Checkpoint Status:** {✅ PASSED | ❌ FAILED}
+
+**If PASSED:**
+✅ Root README.md was properly audited and updated.
+Proceeding to Phase 4 (Subdirectory README Creation).
+
+**If FAILED:**
+❌ Phase 3-checkpoint FAILED
+Reason: {specific reason}
+
+**ACTION REQUIRED:**
+APO MUST immediately return to Phase 3 and execute it completely:
+
+1. Read root README.md
+2. Apply ALL Phase 2.5 corrections
+3. Update outdated sections
+4. Re-run Phase 3-checkpoint
+```
+
+**Step 5: Checkpoint Action (ENFORCED)**
+
+```python
+if status == PASSED:
+  print("✅ Phase 3-checkpoint PASSED - Proceeding to Phase 4")
+  goto Phase_4
+
+elif status == FAILED:
+  print("❌ Phase 3-checkpoint FAILED")
+  print("Root README.md was not properly updated. Returning to Phase 3.")
+
+  # MANDATORY LOOP-BACK
+  goto Phase_3
+  # Execute Phase 3 completely
+  # Re-run Phase 3-checkpoint
+  # Repeat until PASSED
+```
+
+**APO CANNOT execute Phase 4 until this checkpoint returns PASSED.**
+
+---
+
+### Phase 4: Subdirectory README Creation
+
+**Goal:** Create README.md for EVERY directory with CLAUDE.md (100% coverage)
+
+**CRITICAL: This phase creates NEW READMEs only. Phase 5 updates existing ones.**
+
+**Step 1: Identify Directories Needing READMEs**
+
+Use the `missing_readmes` list from Phase 1 Discovery.
+
+```javascript
+directories_to_create = missing_readmes; // From Phase 1
+total_to_create = directories_to_create.length;
+```
+
+**Step 2: For EACH Missing README, Create It**
+
+```javascript
+for each directory in directories_to_create:
+  // 1. Read CLAUDE.md for context
+  Read {directory}/CLAUDE.md
+
+  // 2. Determine directory type (see templates below)
+  type = detectDirectoryType(directory)
+
+  // 3. Generate README content using appropriate template
+  readme_content = generateREADME(type, claude_md_content, directory)
+
+  // 4. Write README.md
+  Write {directory}/README.md
+  readme_content
+```
+
+**README Templates by Directory Type:**
+
+**Type A: Root Directory**
+
+- **Detection:** Directory is "." or root
+- **Template:** Standard root README (Features, Installation, Usage, etc.)
+
+**Type B: Feature/Component Directory**
+
+- **Detection:** Directory name like "api/", "web/", "backend/", "frontend/"
+- **Template:**
+
+  ```markdown
+  # {Directory Name}
+
+  {Purpose extracted from CLAUDE.md}
+
+  ## Overview
+
+  {Brief description of what this directory contains}
+
+  ## Structure
+
+  {Use ls to show subdirectories and key files}
+
+  ## Key Components
+
+  {List major files/modules with descriptions}
+
+  ## Documentation
+
+  See [{directory}/CLAUDE.md](CLAUDE.md) for architecture details.
+  ```
+
+**Type D: Test Directory**
+
+- **Detection:** Directory name contains "test", "**tests**", "spec"
+- **Template:**
+
+  ```markdown
+  # {Directory Name}
+
+  {Extract testing info from CLAUDE.md}
+
+  ## Test Structure
+
+  {Use ls to show test files and subdirectories}
+
+  ## Running Tests
+
+  {Extract test commands from CLAUDE.md or package.json scripts}
+
+  ## Documentation
+
+  See [{directory}/CLAUDE.md](CLAUDE.md) for testing patterns.
+  ```
+
+**Type E: Nested Subdirectory (2+ levels deep)**
+
+- **Detection:** Path has 2+ levels (e.g., `backend/src`, `frontend/app`)
+- **Template:**
+
+  ```markdown
+  # {Directory Name}
+
+  {Purpose extracted from CLAUDE.md}
+
+  ## Location in Project
+
+  **Path:** `{relative_path_from_root}`
+  **Parent:** `{parent_directory_name}`
+  **Level:** {depth} levels from root
+
+  ## Directory Contents
+
+  {Use ls to show subdirectories and files}
+
+  ## Purpose
+
+  {Extract from CLAUDE.md}
+
+  ## Key Components
+
+  {List major files/subdirectories with descriptions}
+
+  ## Documentation
+
+  See [{directory}/CLAUDE.md](CLAUDE.md) for details.
+  ```
+
+**Step 3: Track Creation**
+
+```javascript
+created_readmes = []  // List of paths created
+for each directory in directories_to_create:
+  if README created successfully:
+    created_readmes.push(directory)
+```
+
+**APO Output:**
+
+```markdown
+=== PHASE 4: SUBDIRECTORY README CREATION ===
+
+**READMEs to Create:** {total_to_create}
+**READMEs Created:** {created_readmes.length}
+
+**Created:**
+
+1. ✅ {directory1}/README.md ({line_count} lines)
+2. ✅ {directory2}/README.md ({line_count} lines)
+   ...
+
+**Completion:** {(created_readmes.length / total_to_create) \* 100}%
+```
+
+---
+
+### Phase 4-checkpoint: README Coverage Verification (MANDATORY CHECKPOINT)
+
+**CRITICAL: APO CANNOT proceed to Phase 5 until this checkpoint PASSES**
+
+**Goal:** Ensure 100% completion of Phase 4 README creation requirements
+
+**Step 1: Re-run Glob for Independent Validation (MANDATORY)**
+
+**CRITICAL: DO NOT use Phase 1 cached count. Run fresh Glob for cross-validation.**
+
+```bash
+Use Glob with pattern: "**/CLAUDE.md"
+```
+
+**Paste Fresh Glob Output:**
+
+```
+=== PHASE 4-CHECKPOINT FRESH GLOB OUTPUT START ===
+{paste complete Glob output here}
+=== PHASE 4-CHECKPOINT FRESH GLOB OUTPUT END ===
+```
+
+Count lines in fresh Glob output:
+
+```javascript
+fresh_glob_count = {count lines in fresh Glob output above}
+```
+
+**Step 2: Validate Phase 1 Accuracy (CROSS-CHECK)**
+
+```javascript
+phase1_count = {count from Phase 1 Discovery}
+fresh_glob_count = {count from Step 1 fresh Glob}
+
+if (fresh_glob_count !== phase1_count) {
+  ❌ CRITICAL ERROR: Phase 1 discovery was INCOMPLETE
+
+  - Phase 1 reported: {phase1_count} CLAUDE.md files
+  - Fresh Glob found: {fresh_glob_count} CLAUDE.md files
+  - Discrepancy: {Math.abs(fresh_glob_count - phase1_count)} files
+
+  **PHASE 1 ERROR DETECTED - MANDATORY LOOP-BACK**
+
+  **ACTION REQUIRED:**
+  1. RETURN TO PHASE 1
+  2. Re-run discovery with fresh Glob count: {fresh_glob_count}
+  3. Update missing_readmes list with ALL missing READMEs
+  4. RETURN TO PHASE 4 with corrected list
+  5. Create ALL missing READMEs
+  6. Re-run Phase 4-checkpoint
+
+  **APO CANNOT proceed until Phase 1 count matches fresh Glob count**
+
+} else {
+  ✅ Phase 1 validation PASSED: {phase1_count} == {fresh_glob_count}
+}
+```
+
+**Step 3: Calculate Coverage (Using Validated Count)**
+
+Use fresh_glob_count as source of truth:
+
+```javascript
+total_claude_directories = fresh_glob_count  // VALIDATED count
+total_with_readmes = {count directories that have README.md}
+total_missing = total_claude_directories - total_with_readmes
+
+coverage_percentage = (total_with_readmes / total_claude_directories) * 100
+```
+
+**Step 4: Pass/Fail Decision (BINARY - NO "PARTIAL")**
+
+```
+if coverage == 100%:
+  status = PASS
+else:
+  status = FAIL
+```
+
+**ONLY TWO VALID STATUSES:**
+
+- ✅ **PASSED** - Coverage = 100%
+- ❌ **FAILED** - Coverage < 100%
+
+**APO MUST Output Checkpoint Report:**
+
+```markdown
+=== PHASE 4-CHECKPOINT: README COVERAGE VERIFICATION ===
+
+**Phase 1 Count:** {phase1_count}
+**Fresh Glob Count:** {fresh_glob_count}
+**Count Validation:** {✅ PASSED | ❌ FAILED}
+
+**Total CLAUDE.md Directories:** {fresh_glob_count}
+**Directories with READMEs:** {total_with_readmes}
+**Coverage:** {coverage_percentage}% ({total_with_readmes}/{fresh_glob_count})
+
+**Checkpoint Status:** {✅ PASS | ❌ FAIL}
+
+**If PASS:**
+✅ 100% README coverage achieved. All directories with CLAUDE.md have READMEs.
+Proceeding to Phase 5.
+
+**If FAIL:**
+❌ Phase 4-checkpoint FAILED
+Coverage: {coverage_percentage}% (< 100%)
+
+**Missing READMEs:**
+{list directories that have CLAUDE.md but no README.md}
+
+**ACTION REQUIRED:**
+APO MUST immediately return to Phase 4 and create the missing READMEs.
+DO NOT proceed to Phase 5 until Phase 4-checkpoint PASSES.
+```
+
+**Step 5: Checkpoint Action (ENFORCED)**
+
+```python
+if status == PASS:
+  print("✅ Phase 4-checkpoint PASSED - Proceeding to Phase 5")
+  goto Phase_5
+
+elif status == FAIL:
+  print("❌ Phase 4-checkpoint FAILED")
+  print(f"Coverage = {coverage_percentage}% (need 100%)")
+
+  # MANDATORY LOOP-BACK
+  goto Phase_4
+  # Create ALL missing READMEs
+  # Re-run Phase 4-checkpoint
+  # Repeat until PASSED
+```
+
+---
+
+### Phase 5: Existing README Updates
+
+**Goal:** Apply Phase 2.5 fixes to subdirectory READMEs
+
+**CRITICAL: This phase fixes inaccuracies in READMEs that already existed before this command.**
+
+**Step 1: Get List of Subdirectory Fixes**
+
+From Phase 2.5 commitment list, filter for:
+
+- Inaccuracies marked "Fix in: Phase 5"
+- These are subdirectory README inaccuracies (not root)
+
+```javascript
+subdirectory_fixes = phase_2_5_list.filter((fix) => fix.phase == 'Phase 5');
+total_fixes = subdirectory_fixes.length;
+```
+
+**Step 2: Apply Each Fix**
+
+```javascript
+for each fix in subdirectory_fixes:
+  // 1. Read the README with the inaccuracy
+  Read {fix.file}
+
+  // 2. Apply correction using Edit tool
+  Edit {fix.file}
+  old_string = {fix.current_wrong}
+  new_string = {fix.correct}
+
+  // 3. Update fix status
+  fix.status = ✅ FIXED
+```
+
+**Step 3: Verify All Fixes Applied**
+
+```javascript
+fixes_applied = subdirectory_fixes.filter((fix) => fix.status == '✅ FIXED').length;
+fixes_skipped = total_fixes - fixes_applied;
+completion = (fixes_applied / total_fixes) * 100;
+```
+
+**APO Output:**
+
+```markdown
+=== PHASE 5: EXISTING README UPDATES ===
+
+**Subdirectory Fixes to Apply:** {total_fixes}
+**Fixes Applied:** {fixes_applied}
+**Fixes Skipped:** {fixes_skipped}
+**Completion:** {completion}%
+
+**Applied Fixes:**
+
+1. ✅ {directory1}/README.md - {inaccuracy description}
+2. ✅ {directory2}/README.md - {inaccuracy description}
+   ...
+
+**Skipped Fixes (If Any):**
+
+1. ⏭️ {directory}/README.md - {inaccuracy description}
+   - **Reason:** {valid skip reason}
+```
+
+**If APO skips ANY Phase 2.5 inaccuracy fix, APO MUST explain WHY with valid skip reason in Phase 7 report "Skipped Updates" section.**
+
+---
+
+### Phase 6: Final Validation (MANDATORY OVERRIDE)
+
+**CRITICAL: This validation runs before Phase 7 and OVERRIDES any previous checkpoint results if coverage < 100%.**
+
+**Goal:** Independent verification of 100% README coverage
+
+**Step 1: Independent Final Glob (FORCED EXECUTION)**
+
+```bash
+Use Glob with pattern: "**/CLAUDE.md"
+```
+
+**Paste Final Glob Output:**
+
+```
+=== PHASE 6 FINAL GLOB OUTPUT START ===
+{paste complete Glob output here}
+=== PHASE 6 FINAL GLOB OUTPUT END ===
+```
+
+Count lines:
+
+```javascript
+final_glob_count = {count lines in final Glob output above}
+```
+
+**Step 2: Verify README.md Exists for EACH CLAUDE.md**
+
+APO MUST check EACH path in the final Glob output:
+
+```javascript
+missing_readmes = []
+
+for each_path in final_glob_output:
+  directory = dirname(each_path)
+  readme_path = directory + "/README.md"
+
+  if exists(readme_path):
+    ✅ {directory}: README.md EXISTS
+  else:
+    ❌ {directory}: README.md MISSING
+    missing_readmes.push(directory)
+```
+
+**Required Output:**
+
+```markdown
+=== PHASE 6: FINAL README VERIFICATION ===
+
+1. ✅ {directory1}: README.md exists
+2. ✅ {directory2}: README.md exists
+3. ❌ {directory3}: README.md MISSING ← COVERAGE FAILURE
+   ...
+
+**Total CLAUDE.md directories:** {final_glob_count}
+**READMEs existing:** {existing_count}
+**Final Coverage:** {(existing_count / final_glob_count) \* 100}%
+```
+
+**Step 3: Coverage Validation**
+
+```javascript
+final_coverage = (existing_count / final_glob_count) * 100
+
+if (final_coverage < 100) {
+  validation_status = "❌ FAILED"
+  reason = f"README coverage = {final_coverage}% (< 100%)"
+} else {
+  validation_status = "✅ PASSED"
+  reason = "100% README coverage verified"
+}
+```
+
+**Step 4: Validation Report**
+
+```markdown
+=== PHASE 6: FINAL VALIDATION RESULT ===
+
+**Final Coverage:** {final_coverage}%
+**Validation Status:** {validation_status}
+
+**If FAILED:**
+❌ README coverage is incomplete
+
+- Required: 100%
+- Actual: {final_coverage}%
+- Missing: {final_glob_count - existing_count} READMEs
+
+**Missing READMEs:**
+{list all directories from missing_readmes array}
+
+**This validation OVERRIDES previous checkpoint claims if coverage < 100%.**
+
+**If PASSED:**
+✅ 100% README coverage verified
+All directories with CLAUDE.md have README.md files.
+```
+
+**If validation FAILED, overall command status is ❌ FAILED regardless of checkpoint results.**
+
+---
+
+### Phase 7: README Audit Report
+
+**APO Generates:** `.claude/trinity/reports/README-AUDIT-{date}.md`
+
+**CRITICAL: Report MUST document COMPLETED work, not future recommendations.**
+
+**Required Report Structure:**
+
+```markdown
+# README Audit Report
+
+**Project:** {project-name}
+**Audit Date:** {date}
+**Auditor:** APO (Documentation Specialist)
+**Command:** /trinity-readme
+
+---
+
+## Executive Summary
+
+**README Coverage:** {final_coverage}% ({existing_count}/{total_count} directories)
+**Inaccuracies Found:** {total_inaccuracies}
+**Inaccuracies Fixed:** {fixed_count}/{total_inaccuracies}
+**READMEs Created:** {created_count}
+**READMEs Updated:** {updated_count}
+
+**COMMAND EXECUTION STATUS:** {✅ SUCCESS | ❌ FAILED}
+
+---
+
+## Hard Requirements Status
+
+1. **Phase Execution:** {executed}/7 phases {✅ PASS | ❌ FAIL}
+2. **README Coverage:** {final_coverage}% {✅ PASS (100%) | ❌ FAIL (< 100%)}
+3. **Phase 2.5 Fixes:** {fixes_completion}% {✅ PASS (100%) | ❌ FAIL (< 100%)}
+4. **Phase 3-checkpoint:** {✅ PASSED | ❌ FAILED}
+5. **Phase 4-checkpoint:** {✅ PASSED | ❌ FAILED}
+6. **Phase 6 Validation:** {✅ PASSED | ❌ FAILED}
+
+**If ALL 6 hard requirements = ✅: STATUS = ✅ SUCCESS**
+**If ANY hard requirement = ❌: STATUS = ❌ FAILED**
+
+---
+
+## Phase Execution Summary
+
+### Phase 1: Discovery
+
+- **CLAUDE.md files found:** {count}
+- **Existing READMEs:** {count}
+- **Missing READMEs:** {count}
+- **Initial coverage:** {percentage}%
+
+### Phase 2: Audit
+
+- **Root README inaccuracies:** {count}
+- **Subdirectory README inaccuracies:** {count}
+- **Total inaccuracies found:** {total_count}
+
+### Phase 2.5: Fix Commitment
+
+- **Committed to fix:** {total_count} inaccuracies
+
+### Phase 3: Root README Update
+
+- **Phase 2.5 fixes applied:** {count}/{total_root_fixes}
+- **Sections updated:** {list}
+- **Total edits:** {count}
+
+### Phase 3-checkpoint
+
+- **Status:** {✅ PASSED | ❌ FAILED}
+
+### Phase 4: Subdirectory README Creation
+
+- **READMEs created:** {created_count}
+- **Directories covered:** {list}
+
+### Phase 4-checkpoint
+
+- **Fresh Glob count:** {count}
+- **Coverage:** {percentage}%
+- **Status:** {✅ PASSED | ❌ FAILED}
+
+### Phase 5: Existing README Updates
+
+- **Subdirectory fixes applied:** {count}/{total_subdirectory_fixes}
+
+### Phase 6: Final Validation
+
+- **Final Glob count:** {count}
+- **Final coverage:** {percentage}%
+- **Status:** {✅ PASSED | ❌ FAILED}
+
+---
+
+## Phase 2.5 Inaccuracies → Fixes Applied
+
+**Root README.md Fixes ({count}):**
+
+1. ✅ **{Inaccuracy Title}**
+   - **Was (WRONG):** "{text}"
+   - **Now (CORRECT):** "{text}"
+   - **Status:** ✅ FIXED
+
+{list all root README fixes}
+
+**Subdirectory README Fixes ({count}):**
+
+1. ✅ **{Inaccuracy Title}**
+   - **File:** {directory}/README.md
+   - **Was (WRONG):** "{text}"
+   - **Now (CORRECT):** "{text}"
+   - **Status:** ✅ FIXED
+
+{list all subdirectory README fixes}
+
+**Phase 2.5 Completion:** ✅ {fixed_count}/{total_count} inaccuracies fixed ({percentage}%)
+
+---
+
+## README Coverage Report
+
+**Total CLAUDE.md Files:** {count}
+**Directories with READMEs:** {count}/{total} ({percentage}%)
+
+### Created READMEs ({created_count} total):
+
+- ✅ `{directory1}/README.md` ({line_count} lines)
+- ✅ `{directory2}/README.md` ({line_count} lines)
+  ...
+
+### Updated READMEs ({updated_count} total):
+
+- ✅ `README.md` (root) - Fixed {count} inaccuracies
+- ✅ `{directory}/README.md` - Fixed {count} inaccuracies
+  ...
+
+### Existing READMEs (No Changes Needed) ({count} total):
+
+- ✅ `{directory}/README.md` - Already accurate
+  ...
+
+**Coverage:** {percentage}% ({count}/{total} directories)
+**Expected:** 100% coverage
+
+---
+
+## Skipped Updates (With Justification)
+
+{If any Phase 2.5 fixes were skipped, list them here with valid reasons}
+
+**No skipped updates** ✅
+
+OR
+
+1. ⏭️ **{Inaccuracy}**
+   - **File:** {file}
+   - **Reason:** {valid skip reason}
+   - **Impact:** {describe impact}
+
+---
+
+## Validation Results
+
+### Phase 3-checkpoint (Root README Verification)
+
+- **Status:** {✅ PASSED | ❌ FAILED}
+- **Fixes Applied:** {count}/{total_root_fixes}
+
+### Phase 4-checkpoint (Coverage Verification)
+
+- **Status:** {✅ PASSED | ❌ FAILED}
+- **Coverage:** {percentage}%
+- **Phase 1 vs Fresh Glob Match:** {✅ YES | ❌ NO}
+
+### Phase 6 Final Validation
+
+- **Status:** {✅ PASSED | ❌ FAILED}
+- **Final Coverage:** {percentage}%
+- **Missing READMEs:** {list if any}
+
+---
+
+## Command Execution Status
+
+**Hard Requirements Met:** {count}/6
+
+**Execution Status:** {✅ SUCCESS | ❌ FAILED}
+
+**If SUCCESS:**
+✅ All hard requirements met
+✅ 100% README coverage achieved
+✅ All inaccuracies fixed
+✅ All checkpoints passed
+
+**If FAILED:**
+❌ One or more hard requirements NOT met:
+
+- {list failed requirements}
+
+**Recommendation:** {action user should take}
+
+---
+
+**Report Generated:** {timestamp}
+**Report Location:** .claude/trinity/reports/README-AUDIT-{date}.md
+```
+
+---
+
+## Work Completion Criteria
+
+**APO's work is considered COMPLETE when:**
+
+### Hard Requirements (100% Compliance Required):
+
+1. **Phase Execution:** 7/7 phases executed ✅
+2. **README Coverage:** 100% (every directory with CLAUDE.md has README.md) ✅
+3. **Phase 2.5 Fixes:** 100% of inaccuracies fixed ✅
+4. **Phase 3-checkpoint:** PASSED ✅
+5. **Phase 4-checkpoint:** PASSED ✅
+6. **Phase 6 Validation:** PASSED ✅
+
+**If ANY hard requirement ≠ ✅: Command status = ❌ FAILED**
+
+### Soft Requirements (Best Effort):
+
+1. README quality meets documentation standards
+2. READMEs use consistent formatting
+3. All links in READMEs work
+
+**Soft requirements can be partially met without affecting SUCCESS status.**
+
+---
+
+## Success/Failure Determination
+
+```python
+# Hard requirements check
+hard_req_1 = (phases_executed == 7)
+hard_req_2 = (final_coverage == 100)
+hard_req_3 = (phase_2_5_completion == 100)
+hard_req_4 = (phase_3_checkpoint == "PASSED")
+hard_req_5 = (phase_4_checkpoint == "PASSED")
+hard_req_6 = (phase_6_validation == "PASSED")
+
+all_hard_requirements_met = (
+  hard_req_1 and hard_req_2 and hard_req_3 and
+  hard_req_4 and hard_req_5 and hard_req_6
+)
+
+if all_hard_requirements_met:
+  status = "✅ SUCCESS"
+else:
+  status = "❌ FAILED"
+  # List which requirements failed
+```
+
+**CRITICAL: Status determination uses Phase 6 final validation result, not Phase 4-checkpoint.**
+
+If Phase 6 validation shows coverage < 100%, status = ❌ FAILED even if Phase 4-checkpoint claimed PASSED.
+
+---
+
+## Post-Execution Checklist
+
+**After `/trinity-readme` completes, verify:**
+
+1. ✅ Check final report in `.claude/trinity/reports/README-AUDIT-{date}.md`
+2. ✅ Verify coverage = 100% in report
+3. ✅ Verify all Phase 2.5 fixes show "✅ FIXED" status
+4. ✅ Verify all checkpoints show "✅ PASSED"
+5. ✅ Check "COMMAND EXECUTION STATUS" = "✅ SUCCESS"
+
+**If status ≠ SUCCESS:**
+
+- Review which hard requirements failed
+- Check missing READMEs list
+- Re-run command if failures detected
+
+---
