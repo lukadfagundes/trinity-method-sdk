@@ -14,15 +14,16 @@ export interface LegacyInfo {
   legacyVersion: string | null;
 }
 
-/** Old gitignore patterns from pre-2.2.0 deployments */
-const OLD_GITIGNORE_PATTERNS = ['trinity/', '*CLAUDE.md', 'TRINITY.md'];
-
-/** Current gitignore patterns */
-const CURRENT_GITIGNORE_PATTERNS = [
+/** Old gitignore patterns from previous deployments */
+const OLD_GITIGNORE_PATTERNS = [
+  'trinity/',
+  'TRINITY.md',
   '.claude/trinity/archive/',
   '.claude/trinity/templates/',
-  '*CLAUDE.md',
 ];
+
+/** Current gitignore patterns */
+const CURRENT_GITIGNORE_PATTERNS = ['.claude/', '*CLAUDE.md'];
 
 /**
  * Detect if the project has a legacy (pre-2.2.0) Trinity deployment
@@ -125,6 +126,7 @@ export async function updateGitignoreForMigration(spinner: Ora): Promise<boolean
           trimmed === 'trinity/' ||
           trimmed === '*CLAUDE.md' ||
           trimmed === 'TRINITY.md' ||
+          trimmed === '.claude/' ||
           trimmed === '.claude/trinity/archive/' ||
           trimmed === '.claude/trinity/templates/'
         ) {

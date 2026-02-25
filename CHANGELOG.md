@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Simplified gitignore patterns** - Deploy and update commands now add `.claude/` and
+  `*CLAUDE.md` to `.gitignore` instead of granular `.claude/trinity/archive/` and
+  `.claude/trinity/templates/` patterns. Migration handles cleanup of old patterns. (Issue #18)
+
+### Fixed
+
+- **Work order numbering scans archive directory** - Added explicit WO numbering instructions to
+  `/utility:trinity-workorder` template. Numbers now derived only from `work-orders/` and
+  `sessions/` directories, ignoring archives. New sessions start fresh at WO-001. (Issue #19)
+- **trinity-end command not archiving all session files** - Updated STRICT ARCHIVING PROTOCOL
+  in `/session:trinity-end` template to archive from all `.claude/trinity/` subdirectories
+  (Issue #17)
+  - Added archiving of completed work orders from `work-orders/` directory
+  - Added archiving of completed investigations and plans from `investigations/` directory
+  - Added archiving of Claude Code plan mode files from `plans/` directory
+  - Added loose archive file organization into YYYY-MM-DD date folders
+  - Expanded clean slate verification to cover `plans/` directory
+
 ## [2.2.1] - 2026-02-24
 
 ### Added
