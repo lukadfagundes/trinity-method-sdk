@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Simplified gitignore patterns** - Deploy and update commands now add `.claude/` and
+  `*CLAUDE.md` to `.gitignore` instead of granular `.claude/trinity/archive/` and
+  `.claude/trinity/templates/` patterns. Migration handles cleanup of old patterns. (Issue #18)
+
 ### Fixed
 
 - **trinity-end command not archiving all session files** - Updated STRICT ARCHIVING PROTOCOL
