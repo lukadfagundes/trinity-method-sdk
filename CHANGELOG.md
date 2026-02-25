@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **trinity-end command not archiving all session files** - Updated STRICT ARCHIVING PROTOCOL
+  in `/session:trinity-end` template to archive from all `.claude/trinity/` subdirectories
+  (Issue #17)
+  - Added archiving of completed work orders from `work-orders/` directory
+  - Added archiving of completed investigations and plans from `investigations/` directory
+  - Added archiving of Claude Code plan mode files from `plans/` directory
+  - Added loose archive file organization into YYYY-MM-DD date folders
+  - Expanded clean slate verification to cover `plans/` directory
+
 ## [2.2.1] - 2026-02-24
 
 ### Added
