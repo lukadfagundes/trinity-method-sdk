@@ -13,6 +13,11 @@ import { UpdateOptions } from '../../types.js';
 import { runUpdatePreflightChecks } from './pre-flight.js';
 import { detectInstalledSDKVersion } from './version.js';
 import {
+  detectLegacyDeployment,
+  migrateLegacyDeployment,
+  updateGitignoreForMigration,
+} from './migration.js';
+import {
   createUpdateBackup,
   restoreUserContent,
   rollbackFromBackup,
@@ -44,11 +49,26 @@ export async function update(options: UpdateOptions): Promise<void> {
     knowledgeBaseUpdated: 0,
     commandsUpdated: 0,
     filesUpdated: 0,
+    legacyMigrated: false,
+    gitignoreUpdated: false,
   };
 
   try {
     // STEP 1: Pre-flight checks
-    await runUpdatePreflightChecks(spinner);
+    const preflight = await runUpdatePreflightChecks(spinner);
+
+    // STEP 1.5: Legacy migration (pre-2.2.0 trinity/ → .claude/trinity/)
+    if (preflight.needsLegacyMigration) {
+      const legacyInfo = await detectLegacyDeployment(spinner);
+      if (legacyInfo.isLegacy) {
+        await migrateLegacyDeployment(spinner);
+        stats.legacyMigrated = true;
+      }
+    }
+
+    // STEP 1.7: Update .gitignore patterns
+    const gitignoreChanged = await updateGitignoreForMigration(spinner);
+    stats.gitignoreUpdated = gitignoreChanged;
 
     // STEP 2: Version check
     const versionInfo = await detectInstalledSDKVersion(spinner);

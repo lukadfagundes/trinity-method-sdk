@@ -30,6 +30,7 @@ export async function updateGitignore(spinner: Spinner): Promise<boolean> {
       '# Trinity Method SDK',
       '.claude/trinity/archive/',
       '.claude/trinity/templates/',
+      '*CLAUDE.md',
     ];
 
     // Check if Trinity section already exists

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Legacy deployment migration in update command** - `trinity update` now detects pre-2.2.0
+  `trinity/` deployments at project root and automatically migrates them to `.claude/trinity/`
+  (Issue #14)
+  - New `migration.ts` module with `detectLegacyDeployment()`, `migrateLegacyDeployment()`,
+    and `updateGitignoreForMigration()`
+  - Pre-flight checks updated to recognize legacy layouts instead of failing
+  - Version detection falls back to `trinity/VERSION` for legacy deployments
+  - User knowledge base files preserved during migration
+- **Gitignore migration in update command** - `trinity update` now updates `.gitignore`
+  patterns on every run, replacing old `trinity/` entries with current `.claude/trinity/`
+  patterns (Issue #14)
+
+### Fixed
+
+- **Restored `*CLAUDE.md` to deploy gitignore patterns** - `trinity deploy` now adds
+  `*CLAUDE.md` back to `.gitignore`, preventing project-specific CLAUDE.md files from being
+  committed to version control (Issue #14)
+- **depcheck false positive for `markdownlint-cli`** - Added `markdownlint-cli` to depcheck
+  ignores in CI workflow since it is used by npm scripts, not imported in code
+- **Integration test timeout on Windows CI** - Bumped integration test timeout from 60s to
+  120s in `jest.config.js` for slow Windows runners
+
 ## [2.2.0] - 2026-02-24
 
 ### Added

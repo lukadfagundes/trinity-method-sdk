@@ -23,11 +23,12 @@ export interface VersionInfo {
 export async function detectInstalledSDKVersion(spinner: Ora): Promise<VersionInfo> {
   spinner.start('Checking versions...');
 
-  // Read current version from trinity/VERSION
-  const versionPath = '.claude/trinity/VERSION';
+  // Read current version from .claude/trinity/VERSION (or legacy trinity/VERSION)
   let currentVersion = '0.0.0';
-  if (await fs.pathExists(versionPath)) {
-    currentVersion = (await fs.readFile(versionPath, 'utf8')).trim();
+  if (await fs.pathExists('.claude/trinity/VERSION')) {
+    currentVersion = (await fs.readFile('.claude/trinity/VERSION', 'utf8')).trim();
+  } else if (await fs.pathExists('trinity/VERSION')) {
+    currentVersion = (await fs.readFile('trinity/VERSION', 'utf8')).trim();
   }
 
   // Read latest version from SDK package.json
