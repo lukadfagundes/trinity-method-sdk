@@ -187,3 +187,44 @@ export async function createMockPackageJson(targetDir: string, version: string):
   const pkgPath = path.join(targetDir, 'package.json');
   await fs.writeFile(pkgPath, JSON.stringify({ version }, null, 2));
 }
+
+/**
+ * Create a legacy (pre-2.2.0) mock Trinity deployment structure
+ * Uses trinity/ at root instead of .claude/trinity/
+ */
+export async function createLegacyMockTrinityDeployment(
+  targetDir: string,
+  version: string = '1.0.0'
+): Promise<void> {
+  // Create old-style trinity directory structure at root
+  await fs.ensureDir(path.join(targetDir, 'trinity/knowledge-base'));
+  await fs.ensureDir(path.join(targetDir, 'trinity/sessions'));
+  await fs.ensureDir(path.join(targetDir, 'trinity/templates'));
+
+  // Create VERSION file in old location
+  await fs.writeFile(path.join(targetDir, 'trinity/VERSION'), version);
+
+  // Create user-managed knowledge base files
+  await fs.writeFile(
+    path.join(targetDir, 'trinity/knowledge-base/ARCHITECTURE.md'),
+    '# Architecture\n\nUser custom architecture content'
+  );
+  await fs.writeFile(
+    path.join(targetDir, 'trinity/knowledge-base/To-do.md'),
+    '# To-Do\n\n- [ ] User task 1'
+  );
+  await fs.writeFile(
+    path.join(targetDir, 'trinity/knowledge-base/ISSUES.md'),
+    '# Issues\n\nUser custom issues'
+  );
+  await fs.writeFile(
+    path.join(targetDir, 'trinity/knowledge-base/Technical-Debt.md'),
+    '# Technical Debt\n\nUser custom debt tracking'
+  );
+
+  // Create old-style .gitignore
+  await fs.writeFile(
+    path.join(targetDir, '.gitignore'),
+    '# Trinity Method SDK\ntrinity/\n*CLAUDE.md\nTRINITY.md\n'
+  );
+}

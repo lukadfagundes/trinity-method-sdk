@@ -400,7 +400,7 @@ describe('Deploy Command - Integration Tests', () => {
       expect(gitignoreContent).toContain('# Trinity Method SDK');
       expect(gitignoreContent).toContain('.claude/trinity/archive/');
       expect(gitignoreContent).toContain('.claude/trinity/templates/');
-      expect(gitignoreContent).not.toContain('*CLAUDE.md');
+      expect(gitignoreContent).toContain('*CLAUDE.md');
     });
 
     it('should not duplicate Trinity exclusions if already present', async () => {

@@ -26,6 +26,12 @@ export function displayUpdateSummary(
   console.log(chalk.white(`   Commands Updated: ${stats.commandsUpdated}`));
   console.log(chalk.white(`   Templates Updated: ${stats.templatesUpdated}`));
   console.log(chalk.white(`   Knowledge Base Updated: ${stats.knowledgeBaseUpdated}`));
+  if (stats.legacyMigrated) {
+    console.log(chalk.yellow(`   Legacy Migration: trinity/ → .claude/trinity/`));
+  }
+  if (stats.gitignoreUpdated) {
+    console.log(chalk.white(`   .gitignore: Updated`));
+  }
   console.log(
     chalk.white(
       `   Total Files Updated: ${stats.agentsUpdated + stats.commandsUpdated + stats.templatesUpdated + stats.knowledgeBaseUpdated}`
