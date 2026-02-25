@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Work order numbering scans archive directory** - Added explicit WO numbering instructions to
+  `/utility:trinity-workorder` template. Numbers now derived only from `work-orders/` and
+  `sessions/` directories, ignoring archives. New sessions start fresh at WO-001. (Issue #19)
 - **trinity-end command not archiving all session files** - Updated STRICT ARCHIVING PROTOCOL
   in `/session:trinity-end` template to archive from all `.claude/trinity/` subdirectories
   (Issue #17)
