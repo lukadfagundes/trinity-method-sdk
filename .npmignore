@@ -22,7 +22,6 @@ jest.config.js
 # Trinity deployment
 .claude/
 trinity/
-trinity-hooks/
 CLAUDE.md
 TRINITY.md
 

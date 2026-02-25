@@ -50,13 +50,11 @@ Thumbs.db
 node_modules/
 settings.local.json
 
-# Trinity Method SDK
-node_modules/
-.claude/
-!src/templates/trinity/
-!src/templates/.claude/
-*CLAUDE.md
-trinity/
-
 # Projects Area
 projects/
+
+important_workflows/
+
+# Trinity Method SDK
+.claude/
+*CLAUDE.md

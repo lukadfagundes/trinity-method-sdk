@@ -161,8 +161,7 @@ describe('Update Migration Module', () => {
       await updateGitignoreForMigration(spinner);
 
       const content = await fs.readFile('.gitignore', 'utf8');
-      expect(content).toContain('.claude/trinity/archive/');
-      expect(content).toContain('.claude/trinity/templates/');
+      expect(content).toContain('.claude/');
       expect(content).toContain('*CLAUDE.md');
       expect(content).not.toMatch(/^trinity\/$/m);
       expect(content).not.toMatch(/^TRINITY\.md$/m);
@@ -177,8 +176,7 @@ describe('Update Migration Module', () => {
 
       const content = await fs.readFile('.gitignore', 'utf8');
       expect(content).toContain('# Trinity Method SDK');
-      expect(content).toContain('.claude/trinity/archive/');
-      expect(content).toContain('.claude/trinity/templates/');
+      expect(content).toContain('.claude/');
       expect(content).toContain('*CLAUDE.md');
     });
 
@@ -187,8 +185,7 @@ describe('Update Migration Module', () => {
         'node_modules/',
         '',
         '# Trinity Method SDK',
-        '.claude/trinity/archive/',
-        '.claude/trinity/templates/',
+        '.claude/',
         '*CLAUDE.md',
       ].join('\n')}\n`;
       await fs.writeFile('.gitignore', gitignore);
@@ -238,8 +235,29 @@ describe('Update Migration Module', () => {
 
       const content = await fs.readFile('.gitignore', 'utf8');
       expect(content).toContain('# Trinity Method SDK');
-      expect(content).toContain('.claude/trinity/archive/');
+      expect(content).toContain('.claude/');
       expect(content).not.toMatch(/^trinity\/$/m);
+    });
+
+    it('should migrate v2.2.1 granular patterns to simplified patterns', async () => {
+      const gitignore = [
+        'node_modules/',
+        '',
+        '# Trinity Method SDK',
+        '.claude/trinity/archive/',
+        '.claude/trinity/templates/',
+        '*CLAUDE.md',
+      ].join('\n');
+      await fs.writeFile('.gitignore', gitignore);
+
+      await updateGitignoreForMigration(spinner);
+
+      const content = await fs.readFile('.gitignore', 'utf8');
+      expect(content).toContain('.claude/');
+      expect(content).toContain('*CLAUDE.md');
+      expect(content).not.toMatch(/^\.claude\/trinity\/archive\/$/m);
+      expect(content).not.toMatch(/^\.claude\/trinity\/templates\/$/m);
+      expect(content).toContain('node_modules/');
     });
   });
 });

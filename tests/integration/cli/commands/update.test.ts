@@ -639,8 +639,7 @@ describe('Update Command - Integration Tests', () => {
       // Check gitignore was updated (migration runs before version check)
       if (await fs.pathExists('.gitignore')) {
         const content = await fs.readFile('.gitignore', 'utf8');
-        expect(content).toContain('.claude/trinity/archive/');
-        expect(content).toContain('.claude/trinity/templates/');
+        expect(content).toContain('.claude/');
         expect(content).toContain('*CLAUDE.md');
       }
     });

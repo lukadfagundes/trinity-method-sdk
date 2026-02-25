@@ -32,6 +32,23 @@ Examples: WO-042-jwt-refresh-implementation.md
 
 ---
 
+## Work Order Numbering
+
+**To determine the next WO number:**
+
+1. Scan `.claude/trinity/work-orders/` for files matching `WO-*.md`
+2. Scan `.claude/trinity/sessions/` for files matching `WO-*.md`
+3. From all matches in those two directories, extract the highest `XXX` number
+4. New WO number = highest + 1 (zero-padded to 3 digits)
+5. If NO work orders are found in either directory, start at `WO-001`
+
+**IMPORTANT:**
+- Do **NOT** scan `.claude/trinity/archive/` — archived WOs belong to past sessions
+- Do **NOT** scan any other directories
+- Each new session with no active or pending WOs starts fresh at WO-001
+
+---
+
 ## Direct Work Order Creation
 
 When `/trinity-workorder` is invoked, the agent will:

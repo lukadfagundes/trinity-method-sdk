@@ -17,17 +17,29 @@ End current Trinity Method session and prepare for commit.
 
    **STRICT ARCHIVING PROTOCOL:**
 
-   a. **Archive Completed Work Orders:**
+   a. **Archive Completed Work Orders from sessions/:**
       - Read all files from `.claude/trinity/sessions/` matching `WO-*.md`
       - Move each to `.claude/trinity/archive/work-orders/YYYY-MM-DD/`
       - These were moved to sessions/ after completion per work order template
 
-   b. **Archive Completed Investigations:**
+   b. **Archive Completed Work Orders from work-orders/:**
+      - Check `.claude/trinity/work-orders/` for any completed work orders
+      - Completed work orders have status marked as "COMPLETED" or "CLOSED"
+      - Move completed ones to `.claude/trinity/archive/work-orders/YYYY-MM-DD/`
+      - Leave active/in-progress work orders in place
+
+   c. **Archive Completed Investigations from sessions/:**
       - Read all files from `.claude/trinity/sessions/` matching `INV-*.md`
       - Move each to `.claude/trinity/archive/investigations/YYYY-MM-DD/`
       - These were moved to sessions/ after completion per investigation template
 
-   c. **Archive ALL Reports:**
+   d. **Archive Completed Investigations from investigations/:**
+      - Check `.claude/trinity/investigations/` for any completed investigations
+      - Move completed ones to `.claude/trinity/archive/investigations/YYYY-MM-DD/`
+      - Also check `.claude/trinity/investigations/plans/` and archive any completed investigation plans
+      - Leave active/in-progress investigations in place
+
+   e. **Archive ALL Reports:**
       - Move ALL files from `.claude/trinity/reports/` to `.claude/trinity/archive/reports/YYYY-MM-DD/`
       - This includes:
         - Implementation completion reports
@@ -36,15 +48,26 @@ End current Trinity Method session and prepare for commit.
         - Any other session reports
       - **NO EXCEPTIONS:** Every file in reports/ must be archived
 
-   d. **Archive Session Files:**
+   f. **Archive Plan Mode Files:**
+      - Move ALL files from `.claude/trinity/plans/` to `.claude/trinity/archive/sessions/YYYY-MM-DD/`
+      - These are created by Claude Code during plan mode sessions
+      - They are session artifacts and should be archived with session files
+
+   g. **Archive Session Files:**
       - Move ALL remaining files from `.claude/trinity/sessions/` to `.claude/trinity/archive/sessions/YYYY-MM-DD/`
       - Create session summary document in `.claude/trinity/archive/sessions/YYYY-MM-DD/SESSION-SUMMARY-{date}.md`
 
-   e. **Verify Clean Slate:**
+   h. **Organize Loose Archive Files:**
+      - Check each `.claude/trinity/archive/` subdirectory (work-orders/, investigations/, reports/, sessions/)
+      - If any files exist directly in a subdirectory (not inside a YYYY-MM-DD/ date folder), move them into the appropriate `YYYY-MM-DD/` folder based on their modification date
+      - This ensures all archived files are properly organized in date folders
+
+   i. **Verify Clean Slate:**
       - **CRITICAL:** After archiving, `.claude/trinity/sessions/` MUST be empty
       - **CRITICAL:** After archiving, `.claude/trinity/reports/` MUST be empty
+      - **CRITICAL:** After archiving, `.claude/trinity/plans/` MUST be empty
       - If any files remain, archive them or report error
-      - Next session MUST start with completely empty sessions/ and reports/ folders
+      - Next session MUST start with completely empty sessions/, reports/, and plans/ folders
 
    **Archive Structure:**
    ```
@@ -56,6 +79,7 @@ End current Trinity Method session and prepare for commit.
    ├── investigations/YYYY-MM-DD/
    │   ├── INV-001-*.md
    │   ├── INV-002-*.md
+   │   ├── INV-001-plan-*.md
    │   └── ...
    ├── reports/YYYY-MM-DD/
    │   ├── WO-001-IMPLEMENTATION-COMPLETE-*.md
@@ -64,6 +88,7 @@ End current Trinity Method session and prepare for commit.
    │   └── ...
    └── sessions/YYYY-MM-DD/
        ├── SESSION-SUMMARY-{date}.md
+       ├── [plan mode files]
        └── [any other session files]
    ```
 
@@ -71,8 +96,10 @@ End current Trinity Method session and prepare for commit.
    - Keep ONLY active/in-progress work orders in `.claude/trinity/work-orders/`
    - Keep ONLY active/in-progress investigations in `.claude/trinity/investigations/`
    - Do NOT archive incomplete work
-   - Completed work is identified by presence in `.claude/trinity/sessions/` folder
+   - Completed work may exist in both `sessions/` AND their source directories (`work-orders/`, `investigations/`)
+   - The `plans/` directory is created by Claude Code during plan mode — always archive all contents
    - All reports are archived regardless of status
+   - Loose files in archive subdirectories should be organized into YYYY-MM-DD date folders
 
 2. **ALY analyzes session events:**
    - Review all work completed during session
@@ -87,6 +114,8 @@ End current Trinity Method session and prepare for commit.
    - Verify .claude/trinity/investigations/ contains only active investigations
    - Verify .claude/trinity/reports/ is empty
    - Verify .claude/trinity/sessions/ is empty
+   - Verify .claude/trinity/plans/ is empty
+   - Verify all files in .claude/trinity/archive/ subdirectories are in YYYY-MM-DD date folders
    - Ready for next session
 
 4. **Git commit instructions:**

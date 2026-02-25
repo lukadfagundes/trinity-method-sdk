@@ -398,8 +398,7 @@ describe('Deploy Command - Integration Tests', () => {
 
       const gitignoreContent = await fs.readFile('.gitignore', 'utf8');
       expect(gitignoreContent).toContain('# Trinity Method SDK');
-      expect(gitignoreContent).toContain('.claude/trinity/archive/');
-      expect(gitignoreContent).toContain('.claude/trinity/templates/');
+      expect(gitignoreContent).toContain('.claude/');
       expect(gitignoreContent).toContain('*CLAUDE.md');
     });
 
