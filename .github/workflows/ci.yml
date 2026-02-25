@@ -673,7 +673,7 @@ jobs:
         continue-on-error: true
 
       - name: Run dependency check
-        run: npx depcheck --ignores="rimraf,ts-jest,trinity-method-sdk"
+        run: npx depcheck --ignores="rimraf,ts-jest,trinity-method-sdk,markdownlint-cli"
         continue-on-error: true
 
   # =============================================
