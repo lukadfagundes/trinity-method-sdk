@@ -152,7 +152,7 @@ describe('Deploy Configuration - Integration', () => {
         expect.objectContaining({
           type: 'confirm',
           name: 'setupLinting',
-          message: 'Setup linting configuration? (y/n)',
+          message: 'Setup linting configuration?',
           default: true,
         }),
       ]);
@@ -215,7 +215,7 @@ describe('Deploy Configuration - Integration', () => {
         expect.objectContaining({
           type: 'confirm',
           name: 'setupLinting',
-          message: 'Setup linting configuration? (y/n)',
+          message: 'Setup linting configuration?',
         }),
       ]);
     });
@@ -266,8 +266,8 @@ describe('Deploy Configuration - Integration', () => {
     });
   });
 
-  describe('CI/CD configuration', () => {
-    test('should enable CI/CD when confirmed', async () => {
+  describe('CI configuration', () => {
+    test('should enable CI when confirmed', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
         .mockResolvedValueOnce({ setupLinting: false })
@@ -279,7 +279,7 @@ describe('Deploy Configuration - Integration', () => {
       expect(result.enableCICD).toBe(true);
     });
 
-    test('should disable CI/CD when declined', async () => {
+    test('should disable CI when declined', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
         .mockResolvedValueOnce({ setupLinting: false })
@@ -291,7 +291,7 @@ describe('Deploy Configuration - Integration', () => {
       expect(result.enableCICD).toBe(false);
     });
 
-    test('should prompt with true as default for CI/CD', async () => {
+    test('should prompt with true as default for CI', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'test-project' })
         .mockResolvedValueOnce({ setupLinting: false })
@@ -444,7 +444,7 @@ describe('Deploy Configuration - Integration', () => {
       expect(result.lintingTools!.length).toBeGreaterThan(0);
     });
 
-    test('should handle minimal setup (no linting, no CI/CD)', async () => {
+    test('should handle minimal setup (no linting, no CI)', async () => {
       promptSpy
         .mockResolvedValueOnce({ projectName: 'minimal-project' })
         .mockResolvedValueOnce({ setupLinting: false })

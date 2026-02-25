@@ -9,7 +9,10 @@
 
 ## Overview
 
-The Dependency Injection module provides framework-aware dependency and script injection into project configuration files. It modifies `package.json` for Node.js projects and `requirements-dev.txt` for Python projects, adding linting tools and npm scripts without overwriting existing configurations.
+The Dependency Injection module provides framework-aware dependency and script
+injection into project configuration files. It modifies `package.json` for Node.js
+projects and `requirements-dev.txt` for Python projects, adding linting tools and npm
+scripts without overwriting existing configurations.
 
 ### Key Features
 

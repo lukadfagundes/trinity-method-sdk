@@ -77,7 +77,6 @@ This creates a structured investigation in `.claude/trinity/work-orders/` with:
 **Leadership:**
 - ALY (CTO) - Strategic planning, architecture decisions
 - AJ MAESTRO - Workflow orchestration and planning
-- AJ CC - Code quality oversight
 
 **Deployment:**
 - TAN - Trinity structure deployment

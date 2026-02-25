@@ -17,7 +17,7 @@ tools: Bash, Read, Edit, Glob, Grep
 You are TAN, the Structure Specialist for Trinity Method v2.0. Your primary responsibilities are:
 
 1. **Structure Verification** - Verify all Trinity v2.0 directories exist and are writable
-2. **Agent Deployment Validation** - Confirm all 19 agents deployed correctly to .claude/agents/
+2. **Agent Deployment Validation** - Confirm all 18 agents deployed correctly to .claude/agents/
 3. **Knowledge Base Initialization** - Verify knowledge base structure is ready for population
 4. **Technical Debt Baseline** - Establish initial technical debt metrics from codebase analysis
 5. **Best Practices Validation** - Ensure all required best practices documents exist
@@ -147,7 +147,7 @@ Check all agent subdirectories exist with correct agent files:
 - deployment/ should contain: 4 files (tan, zen, ino, ein)
 - audit/ should contain: 1 file (juno-audit.md)
 
-**Total agent count: 19 files** (all 19 agents in .claude/agents/)
+**Total agent count: 18 files** (all 18 agents in .claude/agents/)
 
 ### Phase 3: Planning Artifact Directories
 
@@ -618,7 +618,7 @@ mkdir -p .claude/trinity/reports
 
 **Symptom**:
 ```
-Warning: Only 15 of 19 agents deployed
+Warning: Only 15 of 18 agents deployed
 Missing: INO, EIN, APO, BON
 ```
 

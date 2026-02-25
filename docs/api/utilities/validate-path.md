@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Path Validation module provides security-critical utilities for safely handling file paths in Trinity Method operations. It prevents common security vulnerabilities including path traversal attacks, symlink attacks, and null byte injection.
+The Path Validation module provides security-critical utilities for safely handling
+file paths in Trinity Method operations. It prevents common security vulnerabilities
+including path traversal attacks, symlink attacks, and null byte injection.
 
 **Key Features:**
 
@@ -508,7 +510,7 @@ async function updateKnowledgeBase() {
 
 ### Path Traversal Error
 
-```
+```text
 Path traversal detected: ../../../etc/passwd
 Path must be within project directory: /home/user/project
 Attempted to access: /etc/passwd
@@ -516,14 +518,14 @@ Attempted to access: /etc/passwd
 
 ### Absolute Path Error
 
-```
+```text
 Absolute paths are not allowed: /etc/passwd
 Use relative paths within project directory.
 ```
 
 ### Symlink Error
 
-```
+```text
 Symlink detected: /home/user/project/link-to-secret
 For security, symlinks are not allowed in Trinity operations.
 Please use the actual file or directory instead.
@@ -531,7 +533,7 @@ Please use the actual file or directory instead.
 
 ### Symlink in Directory Error
 
-```
+```text
 Symlink detected in directory: /home/user/project/templates/malicious-link
 For security, symlinks are not allowed in Trinity operations.
 Please remove the symlink and use the actual file or directory instead.
@@ -539,14 +541,14 @@ Please remove the symlink and use the actual file or directory instead.
 
 ### Null Byte Error
 
-```
+```text
 Invalid path: null byte detected in "file\0.txt"
 Null bytes are not allowed in file paths.
 ```
 
 ### Source Not Found Error
 
-```
+```text
 Source path does not exist: nonexistent.txt
 Resolved to: /home/user/project/nonexistent.txt
 ```
@@ -712,7 +714,7 @@ describe('safeCopy', () => {
 
 ## Security Best Practices
 
-### ✅ DO:
+### Recommended Practices
 
 - Always call `validatePath()` on user-provided paths
 - Use `safeCopy()` instead of `fs.copy()` for user-controlled sources
@@ -720,7 +722,7 @@ describe('safeCopy', () => {
 - Use `validateNotSymlink()` before reading sensitive files
 - Log security violations for audit trail
 
-### ❌ DON'T:
+### Anti-Patterns to Avoid
 
 - Trust user-provided paths without validation
 - Use `fs.copy()` with user-controlled sources
@@ -740,11 +742,11 @@ describe('safeCopy', () => {
 
 ## References
 
-- **OWASP Path Traversal:** https://owasp.org/www-community/attacks/Path_Traversal
+- **OWASP Path Traversal:** <https://owasp.org/www-community/attacks/Path_Traversal>
 - **CWE-22:** Path Traversal Vulnerability
 - **CWE-61:** UNIX Symbolic Link Following
-- **Node.js Path Module:** https://nodejs.org/api/path.html
-- **fs-extra Security:** https://github.com/jprichardson/node-fs-extra
+- **Node.js Path Module:** <https://nodejs.org/api/path.html>
+- **fs-extra Security:** <https://github.com/jprichardson/node-fs-extra>
 
 ---
 

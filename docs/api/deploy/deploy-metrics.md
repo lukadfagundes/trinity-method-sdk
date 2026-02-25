@@ -9,7 +9,10 @@
 
 ## Overview
 
-The Metrics Collection module gathers comprehensive codebase statistics during Trinity Method SDK deployment. It collects data on code quality, file complexity, dependencies, and git history to establish a baseline for the project's ARCHITECTURE.md document.
+The Metrics Collection module gathers comprehensive codebase statistics during
+Trinity Method SDK deployment. It collects data on code quality, file
+complexity, dependencies, and git history to establish a baseline for the
+project's ARCHITECTURE.md document.
 
 ### Key Features
 
@@ -142,14 +145,14 @@ await enrichTemplate('ARCHITECTURE.md', variables);
 
 ### Phase 1: Initialization
 
-```
+```text
 Spinner: "Collecting codebase metrics..."
 Status: Running metrics collection
 ```
 
 ### Phase 2: Multi-Dimensional Collection
 
-```
+```text
 1. Code Quality Metrics (code-quality.ts)
    - Scan for TODO/FIXME/HACK comments
    - Count console statements
@@ -177,7 +180,7 @@ Status: Running metrics collection
 
 ### Phase 3: Success / Graceful Failure
 
-```
+```text
 Success Path:
   Spinner: ✓ "Codebase metrics collected"
   Console: Display metrics summary (4 key stats)
@@ -194,7 +197,7 @@ Failure Path:
 
 ### Success Output
 
-```
+```text
 ✓ Codebase metrics collected
 
 📊 Codebase Metrics:
@@ -206,7 +209,7 @@ Failure Path:
 
 ### Partial Failure Output
 
-```
+```text
 ⚠ Could not collect all metrics
   Some metrics collection failed, continuing...
 

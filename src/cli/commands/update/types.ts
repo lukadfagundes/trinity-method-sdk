@@ -10,4 +10,6 @@ export interface UpdateStats {
   knowledgeBaseUpdated: number;
   commandsUpdated: number;
   filesUpdated: number;
+  legacyMigrated: boolean;
+  gitignoreUpdated: boolean;
 }

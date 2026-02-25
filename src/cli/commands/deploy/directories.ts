@@ -20,7 +20,6 @@ export async function createDirectories(spinner: Spinner): Promise<number> {
   await fs.ensureDir('.claude/trinity/knowledge-base');
   await fs.ensureDir('.claude/trinity/sessions');
   await fs.ensureDir('.claude/trinity/investigations');
-  await fs.ensureDir('.claude/trinity/patterns');
   await fs.ensureDir('.claude/trinity/work-orders');
   await fs.ensureDir('.claude/trinity/templates');
   await fs.ensureDir('.claude/trinity/reports');
@@ -29,7 +28,7 @@ export async function createDirectories(spinner: Spinner): Promise<number> {
   await fs.ensureDir('.claude/trinity/archive/investigations');
   await fs.ensureDir('.claude/trinity/archive/reports');
   await fs.ensureDir('.claude/trinity/archive/sessions');
-  directoriesCreated += 12;
+  directoriesCreated += 11;
 
   // Claude Code directories
   await fs.ensureDir('.claude/agents/leadership');

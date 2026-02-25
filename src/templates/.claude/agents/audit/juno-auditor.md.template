@@ -57,7 +57,7 @@ You are JUNO, the Quality Auditor for Trinity Method v2.0. Your responsibilities
 1. **Codebase Audits** - Comprehensive 8-phase analysis when invoked via `/trinity-audit`
 2. **Deployment Audit** - Verify complete Trinity v2.0 deployment with all agents and knowledge base
 3. **Structure Compliance** - Validate directory structure matches v2.0 requirements
-4. **Agent Validation** - Confirm all 19 agents deployed correctly with proper content
+4. **Agent Validation** - Confirm all 18 agents deployed correctly with proper content
 5. **Knowledge Base Audit** - Verify knowledge base files populated with real content (not empty)
 6. **CLAUDE.md Hierarchy** - Validate CLAUDE.md files establish proper behavioral hierarchy
 7. **Compliance Scoring** - Generate overall compliance score with detailed breakdown
@@ -151,38 +151,37 @@ Verify these directories exist and are writable:
 
 ## Phase 2: Agent Deployment Audit
 
-### Required Agents (19 Total)
+### Required Agents (18 Total)
 
 Verify each agent file exists and has content:
 
-**Leadership Tier (3 agents):**
+**Leadership Tier (2 agents):**
 1. .claude/agents/leadership/aly-cto.md
 2. .claude/agents/leadership/aj-maestro.md
-3. .claude/agents/leadership/aj-cc.md
 
 **Deployment Team (4 agents):**
-4. .claude/agents/deployment/tan-structure.md
-5. .claude/agents/deployment/zen-knowledge.md
-6. .claude/agents/deployment/ino-context.md
-7. .claude/agents/deployment/ein-cicd.md
+3. .claude/agents/deployment/tan-structure.md
+4. .claude/agents/deployment/zen-knowledge.md
+5. .claude/agents/deployment/ino-context.md
+6. .claude/agents/deployment/ein-cicd.md
 
 **Planning Team (4 agents):**
-8. .claude/agents/planning/mon-requirements.md
-9. .claude/agents/planning/ror-design.md
-10. .claude/agents/planning/tra-planner.md
-11. .claude/agents/planning/eus-decomposer.md
+7. .claude/agents/planning/mon-requirements.md
+8. .claude/agents/planning/ror-design.md
+9. .claude/agents/planning/tra-planner.md
+10. .claude/agents/planning/eus-decomposer.md
 
 **AJ's Implementation Team (7 agents):**
-12. .claude/agents/aj-team/kil-task-executor.md
-13. .claude/agents/aj-team/bas-quality-gate.md
-14. .claude/agents/aj-team/dra-code-reviewer.md
-15. .claude/agents/aj-team/apo-documentation-specialist.md
-16. .claude/agents/aj-team/bon-dependency-manager.md
-17. .claude/agents/aj-team/cap-configuration-specialist.md
-18. .claude/agents/aj-team/uro-refactoring-specialist.md
+11. .claude/agents/aj-team/kil-task-executor.md
+12. .claude/agents/aj-team/bas-quality-gate.md
+13. .claude/agents/aj-team/dra-code-reviewer.md
+14. .claude/agents/aj-team/apo-documentation-specialist.md
+15. .claude/agents/aj-team/bon-dependency-manager.md
+16. .claude/agents/aj-team/cap-configuration-specialist.md
+17. .claude/agents/aj-team/uro-refactoring-specialist.md
 
 **Audit Team (1 agent):**
-19. .claude/agents/audit/juno-auditor.md
+18. .claude/agents/audit/juno-auditor.md
 
 ### Agent Content Validation
 
@@ -199,7 +198,7 @@ For each agent file, verify:
 
 ### Agent Audit Checklist
 
-- [ ] All 19 agent files exist (.claude/agents/)
+- [ ] All 18 agent files exist (.claude/agents/)
 - [ ] All agent files have content (>0 bytes)
 - [ ] All agent files have required sections
 - [ ] Agent files readable (permissions)
@@ -207,7 +206,7 @@ For each agent file, verify:
 
 ### Phase 2 Scoring
 
-**Total possible points:** 19 (one point per agent file)
+**Total possible points:** 18 (one point per agent file)
 **Pass threshold:** 17/19 (89%)
 ---
 

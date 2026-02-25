@@ -86,7 +86,7 @@ async function promptLintingChoice(stack: Stack): Promise<string> {
     {
       type: 'confirm',
       name: 'setupLinting',
-      message: 'Setup linting configuration? (y/n)',
+      message: 'Setup linting configuration?',
       default: true,
     },
   ]);
@@ -107,7 +107,6 @@ async function configureRecommendedLinting(stack: Stack): Promise<{
   scripts: Record<string, string>;
 }> {
   const tools = getRecommendedTools(stack.framework, stack.language);
-  console.log(chalk.green('\n✔ Setup linting configuration?'), 'Recommended\n');
 
   const dependencies = getDependenciesForTools(tools);
   const scripts = getScriptsForTools(tools);
@@ -138,7 +137,7 @@ async function detectGitPlatform(): Promise<string> {
  * Display CI/CD configuration summary
  */
 function displayCICDConfig(platform: string): void {
-  console.log(chalk.green('\n✔ Deploy CI/CD workflow templates?'), 'Yes');
+  console.log(chalk.green('\n✔ Deploy CI workflow templates?'), 'yes');
 
   if (platform !== 'unknown') {
     console.log(chalk.cyan(`📦 Detected platform: ${platform}\n`));
@@ -160,16 +159,14 @@ function displayCICDConfig(platform: string): void {
  * Prompt for CI/CD setup
  */
 async function promptCICDSetup(): Promise<boolean> {
-  console.log(chalk.cyan('\n⚙️  Optional: CI/CD Automation\n'));
-  console.log(
-    chalk.white('Trinity can setup automated testing workflows for your CI/CD platform.\n')
-  );
+  console.log(chalk.cyan('\n⚙️  Optional: CI Automation\n'));
+  console.log(chalk.white('Trinity can setup automated testing workflows for your CI platform.\n'));
 
   const ciChoice = await inquirer.prompt([
     {
       type: 'confirm',
       name: 'setupCI',
-      message: 'Deploy CI/CD workflow templates?',
+      message: 'Deploy CI workflow templates?',
       default: true,
     },
   ]);
@@ -179,7 +176,7 @@ async function promptCICDSetup(): Promise<boolean> {
     displayCICDConfig(platform);
     return true;
   } else {
-    console.log(chalk.gray('\n✔ Deploy CI/CD workflow templates?'), 'Skip\n');
+    console.log(chalk.gray('\n✔ Deploy CI workflow templates?'), 'Skip\n');
     return false;
   }
 }

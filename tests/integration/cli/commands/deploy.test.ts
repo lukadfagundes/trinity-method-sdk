@@ -62,14 +62,13 @@ describe('Deploy Command - Integration Tests', () => {
   });
 
   describe('Directory Structure Creation', () => {
-    it('should create all 14 Trinity core directories', async () => {
+    it('should create all 13 Trinity core directories', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       const trinityDirs = [
         '.claude/trinity/knowledge-base',
         '.claude/trinity/sessions',
         '.claude/trinity/investigations',
-        '.claude/trinity/patterns',
         '.claude/trinity/work-orders',
         '.claude/trinity/templates',
         '.claude/trinity/templates/work-orders',
@@ -124,7 +123,7 @@ describe('Deploy Command - Integration Tests', () => {
   });
 
   describe('Agent Template Deployment', () => {
-    it('should deploy all 19 agents to correct subdirectories', async () => {
+    it('should deploy all 18 agents to correct subdirectories', async () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // Leadership agents (2)
@@ -399,6 +398,9 @@ describe('Deploy Command - Integration Tests', () => {
 
       const gitignoreContent = await fs.readFile('.gitignore', 'utf8');
       expect(gitignoreContent).toContain('# Trinity Method SDK');
+      expect(gitignoreContent).toContain('.claude/trinity/archive/');
+      expect(gitignoreContent).toContain('.claude/trinity/templates/');
+      expect(gitignoreContent).toContain('*CLAUDE.md');
     });
 
     it('should not duplicate Trinity exclusions if already present', async () => {
@@ -453,7 +455,7 @@ describe('Deploy Command - Integration Tests', () => {
       await deploy({ yes: true, name: 'test-project', skipAudit: true });
 
       // Expected minimum files:
-      // - 19 agents
+      // - 18 agents
       // - 21 slash commands (added trinity-docs-update)
       // - 9 knowledge base files
       // - 6 work order templates

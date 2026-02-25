@@ -5,7 +5,9 @@
 
 ## Overview
 
-Trinity Method SDK - Investigation-first development methodology for any project. This CLI tool deploys a complete 19-agent team, 20 slash commands, and comprehensive investigation templates to transform your development workflow.
+Trinity Method SDK - Investigation-first development methodology for any project.
+This CLI tool deploys a complete 18-agent team, 21 slash commands, and comprehensive
+investigation templates to transform your development workflow.
 
 ## Prerequisites
 
@@ -57,7 +59,9 @@ trinity deploy
 
 ### 2. Codebase Metrics Collection
 
-During deployment (Step 3.5), Trinity automatically collects metrics about your codebase to create a baseline in `ARCHITECTURE.md`. This provides institutional knowledge about your project's state.
+During deployment (Step 3.5), Trinity automatically collects metrics about your codebase
+to create a baseline in `ARCHITECTURE.md`. This provides institutional knowledge about
+your project's state.
 
 **Metrics Collected:**
 
@@ -87,21 +91,22 @@ Metrics provide a quantitative baseline for:
 
 Trinity deploys **64 production-ready components** to your project:
 
-**Agent System (19 agents):**
+**Agent System (18 agents):**
 
-- `.claude/agents/leadership/` - ALY (CTO)
+- `.claude/agents/leadership/` - ALY (CTO), AJ MAESTRO (Orchestrator)
 - `.claude/agents/audit/` - JUNO (Quality Auditor)
 - `.claude/agents/planning/` - MON, ROR, TRA, EUS
 - `.claude/agents/aj-team/` - KIL, BAS, DRA, APO, BON, CAP, URO
-- `.claude/agents/deployment/` - TAN, ZEN, INO, EIN, AJ MAESTRO
+- `.claude/agents/deployment/` - TAN, ZEN, INO, EIN
 
-**Slash Commands (20 commands):**
+**Slash Commands (21 commands):**
 
 - `.claude/commands/session/` - start, continue, end
 - `.claude/commands/planning/` - requirements, design, decompose, plan
-- `.claude/commands/execution/` - orchestrate, audit, readme, docs, changelog
+- `.claude/commands/execution/` - orchestrate, breakdown, audit
 - `.claude/commands/investigation/` - create, plan, templates
 - `.claude/commands/infrastructure/` - init
+- `.claude/commands/maintenance/` - readme, docs, docs-update, changelog
 - `.claude/commands/utility/` - verify, agents, workorder
 
 **Knowledge Base:**
@@ -142,7 +147,7 @@ Trinity deploys **64 production-ready components** to your project:
 
 After deploying Trinity, your project structure includes:
 
-```
+```text
 your-project/
 ├── .claude/
 │   ├── agents/
@@ -152,13 +157,14 @@ your-project/
 │   │   ├── leadership/           # ALY strategic leadership
 │   │   └── planning/             # MON, ROR, EUS, TRA agents
 │   ├── commands/
-│   │   ├── execution/            # Orchestrate, audit, docs commands
+│   │   ├── execution/            # Orchestrate, breakdown, audit commands
 │   │   ├── infrastructure/       # Trinity initialization
 │   │   ├── investigation/        # Investigation workflows
+│   │   ├── maintenance/          # README, docs, docs-update, changelog
 │   │   ├── planning/             # Requirements, design, decompose, plan
 │   │   ├── session/              # Start, continue, end session
 │   │   └── utility/              # Verify, agents, workorder commands
-│   ├── EMPLOYEE-DIRECTORY.md     # 19-agent team guide
+│   ├── EMPLOYEE-DIRECTORY.md     # 18-agent team guide
 │   └── trinity/
 │       ├── knowledge-base/       # ARCHITECTURE.md, ISSUES.md, To-do.md
 │       ├── templates/
@@ -201,7 +207,7 @@ Every task completion triggers BAS (Quality Gate) validation:
 
 - [Architecture Overview](../architecture/overview.md) - Understand SDK design
 - [API Documentation](../api/) - Explore Trinity SDK API
-- [Agent Directory](../../.claude/EMPLOYEE-DIRECTORY.md) - Meet the 19-agent team
+- [Agent Directory](../../.claude/EMPLOYEE-DIRECTORY.md) - Meet the 18-agent team
 - [Investigation Templates](../../.claude/trinity/templates/investigations/) - Investigation workflows
 
 ## Common Issues

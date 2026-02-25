@@ -35,14 +35,15 @@ AI coding assistants are powerful, but without structure they become expensive g
 
 Trinity Method rejects "prompt and pray" development. Instead, we enforce **systematic investigation before implementation**:
 
-**1. Investigation-First Principle**
+#### 1. Investigation-First Principle
 
-```
+```text
 WRONG: "Build authentication" → AI generates code → Debug for hours
 RIGHT: "Investigate authentication requirements" → Understand problem → Design solution → Implement correctly
 ```
 
-**2. Evidence-Based Decisions**
+#### 2. Evidence-Based Decisions
+
 Every decision backed by documentation, codebase metrics, and historical patterns. No guessing.
 
 **3. Knowledge Preservation**
@@ -58,15 +59,16 @@ Quality isn't aspirational—it's systematically enforced through automated gate
 - **Investigation before coding** → Understand the problem first
 - **Persistent knowledge base** → Learn from every session
 - **Automated quality enforcement** → BAS gates ensure standards
-- **19-agent team coordination** → Right specialist for each task
+- **18-agent team coordination** → Right specialist for each task
 - **Institutional memory** → Patterns, strategies, and lessons preserved
 - **90-second deployment** → Complete development environment instantly
 
 ---
 
-## What is Trinity Method SDK?
+## What is Trinity Method SDK
 
-Trinity Method SDK is a **production-ready development methodology** that transforms AI-assisted coding from random generation into systematic engineering.
+Trinity Method SDK is a **production-ready development methodology** that transforms AI-assisted coding
+from random generation into systematic engineering.
 
 ### Core Philosophy
 
@@ -87,9 +89,9 @@ Trinity Method SDK is a **production-ready development methodology** that transf
    - Crisis management system for 5 crisis types (build, test, error, performance, security)
    - Automated codebase metrics collection and technical debt tracking
 
-### The 19-Agent Team
+### The 18-Agent Team
 
-Trinity SDK includes **19 specialized agents** organized across 5 functional teams:
+Trinity SDK includes **18 specialized agents** organized across 5 functional teams:
 
 **Planning Layer:**
 
@@ -111,19 +113,21 @@ Trinity SDK includes **19 specialized agents** organized across 5 functional tea
 - **CAP** - Configuration Specialist (env vars, config files)
 - **URO** - Refactoring Specialist (technical debt reduction)
 
-**Leadership & Audit:**
+**Leadership:**
 
 - **ALY** - Chief Technology Officer (investigation orchestration, strategic coordination)
-- **JUNO** - Quality Auditor (comprehensive codebase audits, deployment verification)
+- **AJ MAESTRO** - Orchestrator (multi-agent workflow orchestration, task delegation)
 
-**Infrastructure & Legacy:**
+**Deployment:**
 
 - **TAN** - Structure Specialist (directory structure validation)
 - **ZEN** - Knowledge Base Specialist (comprehensive documentation)
 - **INO** - Context Specialist (CLAUDE.md hierarchy management)
 - **EIN** - CI/CD Specialist (continuous integration/deployment automation)
-- **AJ-CC** - Claude Code Orchestrator (specialized v2.0 orchestration)
-- **AJ MAESTRO** - Legacy Orchestrator (deprecated v1.0, replaced by ALY in v2.0)
+
+**Audit:**
+
+- **JUNO** - Quality Auditor (comprehensive codebase audits, deployment verification)
 
 ### What Gets Deployed
 
@@ -149,16 +153,15 @@ Trinity deploys **88 production-ready components** in 90 seconds:
 - `.claude/trinity/sessions/` - Session archives
 - `.claude/trinity/reports/` - Audit and integration reports
 - `.claude/trinity/work-orders/` - Active work orders
-- `.claude/trinity/patterns/` - Reusable patterns library
 - `.claude/trinity/archive/` - Archived sessions, reports, and investigations
 
 **Agent System:**
 
-- `.claude/agents/` - 19 specialized agents organized by category:
+- `.claude/agents/` - 18 specialized agents organized by category:
   - `aj-team/` - 7 execution agents (APO, BAS, BON, CAP, DRA, KIL, URO)
   - `audit/` - 1 quality auditor (JUNO)
   - `deployment/` - 4 infrastructure agents (EIN, INO, TAN, ZEN)
-  - `leadership/` - 3 orchestration agents (ALY, AJ-CC, AJ-MAESTRO)
+  - `leadership/` - 2 orchestration agents (ALY, AJ MAESTRO)
   - `planning/` - 4 planning agents (MON, ROR, EUS, TRA)
 - `.claude/commands/` - 21 slash commands organized in 7 categories:
   - `execution/` - 3 commands (orchestrate, audit, breakdown)
@@ -168,7 +171,7 @@ Trinity deploys **88 production-ready components** in 90 seconds:
   - `planning/` - 4 commands (requirements, design, decompose, plan)
   - `session/` - 3 commands (start, continue, end)
   - `utility/` - 3 commands (verify, agents, workorder)
-- `.claude/EMPLOYEE-DIRECTORY.md` - Complete 19-agent team guide
+- `.claude/EMPLOYEE-DIRECTORY.md` - Complete 18-agent team guide
 
 **Context Hierarchy:**
 
@@ -179,7 +182,7 @@ Trinity deploys **88 production-ready components** in 90 seconds:
 **Quality Automation:**
 
 - Linting tools (ESLint, Prettier, Black, Flake8, Clippy, Rustfmt)
-- Pre-commit hooks (Python's pre-commit framework for ALL languages)
+- Pre-commit hooks (Husky + lint-staged for Node.js; Python's pre-commit framework for Python, Flutter, Rust)
 - Automatic dependency injection to package.json/requirements.txt
 - Real codebase metrics: TODO counts, console statements, file complexity, git metrics
 
@@ -189,14 +192,14 @@ Trinity deploys **88 production-ready components** in 90 seconds:
 
 ### Installation
 
-**Option 1: Use npx (Recommended - No installation needed)**
+#### Option 1: Use npx (Recommended - No installation needed)
 
 ```bash
 # Runs latest version without installing
 npx trinity-method-sdk deploy
 ```
 
-**Option 2: Global Installation**
+#### Option 2: Global Installation
 
 ```bash
 # Install once globally
@@ -222,9 +225,10 @@ npx trinity-method-sdk deploy
 2. ✅ **Linting Setup**: Choose "Recommended" for one-click best practices
 3. ✅ **Deploy**: 90-second deployment with full infrastructure
 4. ✅ **Install Dependencies**: `npm install` (or `pip install -r requirements-dev.txt`)
-5. ✅ **Setup Pre-commit**: `pip install pre-commit && pre-commit install`
+5. ✅ **Setup Hooks**: Automatic for Node.js (Husky via `npm install`);
+   for Python/Flutter/Rust: `pip install pre-commit && pre-commit install`
 
-**Result:** Production-ready development environment with 19 agents, 21 slash commands, quality gates, and documentation.
+**Result:** Production-ready development environment with 18 agents, 21 slash commands, quality gates, and documentation.
 
 ### Available Commands
 
@@ -257,6 +261,10 @@ After deployment, access Trinity functionality through Claude Code slash command
 
 - `/trinity-orchestrate` - Execute with ALY orchestration
 - `/trinity-audit` - Run codebase audit (JUNO)
+- `/trinity-breakdown` - Guided step-by-step implementation walkthrough
+
+**Maintenance:**
+
 - `/trinity-readme` - Update README coverage (APO)
 - `/trinity-docs` - Generate new documentation (JUNO + 3 parallel APOs)
 - `/trinity-docs-update` - Update existing documentation (JUNO audit → 3 APOs → verification loop)
@@ -268,6 +276,10 @@ After deployment, access Trinity functionality through Claude Code slash command
 - `/trinity-plan-investigation` - Generate investigation plan
 - `/trinity-investigate-templates` - View investigation templates
 
+**Infrastructure:**
+
+- `/trinity-init` - Initialize Trinity configuration
+
 **Utility:**
 
 - `/trinity-verify` - Verify Trinity deployment
@@ -276,7 +288,7 @@ After deployment, access Trinity functionality through Claude Code slash command
 
 ### Linting & Code Quality (85-90% Time Savings)
 
-**Before Trinity (Manual Setup): ~50 minutes per project**
+#### Before Trinity (Manual Setup): ~50 minutes per project
 
 1. Research tools for your framework
 2. Install dependencies
@@ -284,15 +296,15 @@ After deployment, access Trinity functionality through Claude Code slash command
 4. Configure pre-commit hooks
 5. Test and debug configuration
 
-**With Trinity (Automated): ~6 minutes per project**
+#### With Trinity (Automated): ~6 minutes per project
 
 1. Select "Recommended" during deployment (30 seconds)
-2. Run `npm install` (3-5 minutes)
-3. Setup pre-commit: `pip install pre-commit && pre-commit install` (30 seconds)
+2. Run `npm install` (3-5 minutes, automatically sets up Husky hooks for Node.js)
+3. For Python/Flutter/Rust only: `pip install pre-commit && pre-commit install` (30 seconds)
 
 **Supported Frameworks:**
 
-- **Node.js/React**: ESLint + Prettier + Pre-commit
+- **Node.js/React**: ESLint + Prettier + Husky + lint-staged
 - **Python**: Black + Flake8 + isort + Pre-commit
 - **Flutter**: Dart Analyzer + Pre-commit
 - **Rust**: Clippy + Rustfmt + Pre-commit
@@ -301,18 +313,21 @@ After deployment, access Trinity functionality through Claude Code slash command
 
 ## Designed for Claude Code
 
-Trinity Method SDK is built exclusively for [Claude Code](https://claude.com/claude-code), Anthropic's AI pair programming environment.
+Trinity Method SDK is built exclusively for
+[Claude Code](https://claude.com/claude-code), Anthropic's AI pair programming environment.
 
-### Why Claude Code?
+### Why Claude Code
 
-- **Deep Integration**: Trinity's 19-agent team leverages Claude Code's agent architecture
+- **Deep Integration**: Trinity's 18-agent team leverages Claude Code's agent architecture
 - **Slash Commands**: Built-in `/trinity-*` commands for instant workflow access
-- **Hooks System**: Pre/post-action automation via Claude Code hooks
+- **Context System**: Layered CLAUDE.md hierarchy for persistent project knowledge
 - **Quality Focus**: Exceptional single-agent experience optimized for Claude
 
-### Other AI Assistants?
+### Other AI Assistants
 
-The Trinity Method **philosophy** is agent-agnostic, but this SDK is optimized for Claude Code's capabilities. Want to use Trinity with Cursor, Copilot, or others? We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md).
+The Trinity Method **philosophy** is agent-agnostic, but this SDK is optimized for Claude Code's
+capabilities. Want to use Trinity with Cursor, Copilot, or others? We welcome contributions!
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 
@@ -323,7 +338,7 @@ The Trinity Method **philosophy** is agent-agnostic, but this SDK is optimized f
 ```bash
 # Node.js/Express API
 cd my-api && npx trinity-method-sdk deploy
-# Result: API with ESLint, Prettier, pre-commit, 19 agents, quality gates
+# Result: API with ESLint, Prettier, Husky, 18 agents, quality gates
 
 # Python/Django Project
 cd my-django && npx trinity-method-sdk deploy
@@ -355,7 +370,7 @@ After deploying Trinity to your project, comprehensive documentation is availabl
 **Agent System:**
 
 - `.claude/EMPLOYEE-DIRECTORY.md` - Complete agent reference and selection guide
-- `.claude/agents/` - 19 specialized agent markdown files
+- `.claude/agents/` - 18 specialized agent markdown files
 
 **SDK Documentation:**
 
@@ -368,8 +383,9 @@ After deploying Trinity to your project, comprehensive documentation is availabl
 Your project contains:
 
 - **88 production-ready components** deployed in 90 seconds
-- **19 specialized agents** in `.claude/agents/` (7 execution + 1 audit + 4 infrastructure + 3 leadership + 4 planning)
-- **21 slash commands** in `.claude/commands/` (3 execution + 1 infrastructure + 3 investigation + 4 maintenance + 4 planning + 3 session + 3 utility)
+- **18 specialized agents** in `.claude/agents/` (7 execution + 1 audit + 4 deployment + 2 leadership + 4 planning)
+- **21 slash commands** in `.claude/commands/`
+  (3 execution + 1 infrastructure + 3 investigation + 4 maintenance + 4 planning + 3 session + 3 utility)
 - **Complete knowledge base** in `.claude/trinity/knowledge-base/` (ARCHITECTURE.md, ISSUES.md, To-do.md, Technical-Debt.md)
 - **Investigation templates** in `.claude/trinity/templates/investigations/` (bug, feature, performance, security, technical)
 - **Work order templates** in `.claude/trinity/templates/work-orders/`
@@ -379,14 +395,14 @@ Your project contains:
 
 **Complete Deployed Structure:**
 
-```
+```text
 your-project/
 ├── .claude/
 │   ├── agents/
 │   │   ├── aj-team/              # 7 execution agents (APO, BAS, BON, CAP, DRA, KIL, URO)
 │   │   ├── audit/                # 1 quality auditor (JUNO)
 │   │   ├── deployment/           # 4 infrastructure agents (EIN, INO, TAN, ZEN)
-│   │   ├── leadership/           # 3 orchestration agents (ALY, AJ-CC, AJ-MAESTRO)
+│   │   ├── leadership/           # 2 orchestration agents (ALY, AJ MAESTRO)
 │   │   └── planning/             # 4 planning agents (MON, ROR, EUS, TRA)
 │   ├── commands/
 │   │   ├── execution/            # trinity-orchestrate, trinity-audit, trinity-breakdown
@@ -407,9 +423,8 @@ your-project/
 │   │   ├── sessions/             # Session archives
 │   │   ├── reports/              # Audit and integration reports
 │   │   ├── work-orders/          # Active work orders
-│   │   ├── patterns/             # Reusable patterns library
 │   │   └── archive/              # Archived sessions, reports, investigations
-│   └── EMPLOYEE-DIRECTORY.md     # 19-agent team guide
+│   └── EMPLOYEE-DIRECTORY.md     # 18-agent team guide
 ├── CLAUDE.md                     # Root context file
 └── src/CLAUDE.md                 # Framework-specific context
 ```
@@ -464,7 +479,7 @@ Trinity uses GitHub Actions for comprehensive continuous integration and deploym
 
 - ✅ Multi-platform testing (Ubuntu, Windows, macOS)
 - ✅ Multi-version testing (Node.js 18.x, 20.x, 22.x)
-- ✅ Trinity component validation (19 agents, 21 slash commands, knowledge base, CI/CD templates)
+- ✅ Trinity component validation (18 agents, 21 slash commands, knowledge base, CI/CD templates)
 - ✅ Test suite execution (unit, integration, e2e, performance)
 - ✅ Code coverage validation (80%+ threshold enforced)
 - ✅ Linting and type checking
@@ -496,7 +511,7 @@ npm run build
 npm publish --access public
 
 # 3. Create git tag and push
-git tag -a v2.0.9 -m "Release v2.0.9"
+git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin main --follow-tags
 ```
 
@@ -533,7 +548,3 @@ MIT License - see [LICENSE](LICENSE) for details
 - **Changelog**: [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
 
 ---
-
-**Built with ❤️ by the Trinity Method Team**
-
-_Trinity Method: Investigation-first development for the AI age_

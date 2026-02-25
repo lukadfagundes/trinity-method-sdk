@@ -9,7 +9,10 @@
 
 ## Overview
 
-The Knowledge Base Updates module synchronizes SDK-managed knowledge base files from the Trinity Method SDK to the project's `.claude/trinity/knowledge-base/` directory. It updates **only SDK-managed files** (5 templates), preserving user-created content like ARCHITECTURE.md, ISSUES.md, and To-do.md.
+The Knowledge Base Updates module synchronizes SDK-managed knowledge base files from the Trinity
+Method SDK to the project's `.claude/trinity/knowledge-base/` directory. It updates **only
+SDK-managed files** (5 templates), preserving user-created content like ARCHITECTURE.md, ISSUES.md,
+and To-do.md.
 
 ### Key Features
 
@@ -57,7 +60,7 @@ async function updateKnowledgeBase(spinner: Ora, stats: UpdateStats): Promise<vo
 
 These 5 files are **overwritten** during updates:
 
-```
+```text
 .claude/trinity/knowledge-base/
 ├── Trinity.md                    ← SDK-managed (updated)
 ├── CODING-PRINCIPLES.md          ← SDK-managed (updated)
@@ -87,7 +90,7 @@ These 5 files are **overwritten** during updates:
 
 These files are **never touched** by updates:
 
-```
+```text
 .claude/trinity/knowledge-base/
 ├── ARCHITECTURE.md       ← User content (PRESERVED)
 ├── ISSUES.md             ← User content (PRESERVED)
@@ -117,7 +120,7 @@ These files are **never touched** by updates:
 
 ### Phase 1: SDK Path Resolution
 
-```
+```text
 Call: getSDKPath()
 Purpose: Locate SDK installation (dev/local/global)
 Result: Path to SDK root directory
@@ -125,14 +128,14 @@ Result: Path to SDK root directory
 
 ### Phase 2: Template Path Construction
 
-```
+```text
 Construct: ${SDK_PATH}/dist/templates/trinity/knowledge-base
 Result: Path to SDK knowledge base templates
 ```
 
 ### Phase 3: File Iteration
 
-```
+```text
 For each SDK-managed file:
   1. Trinity.md.template
   2. CODING-PRINCIPLES.md.template
@@ -150,7 +153,7 @@ For each file:
 
 ### Phase 4: Completion
 
-```
+```text
 Spinner: ✓ "Knowledge base updated (N files)"
 Where N = number of SDK-managed files updated
 ```
@@ -226,13 +229,13 @@ console.log(userContent === postUpdateContent); // true (preserved)
 
 **Source File (SDK):**
 
-```
+```text
 dist/templates/trinity/knowledge-base/Trinity.md.template
 ```
 
 **Target File (Project):**
 
-```
+```text
 .claude/trinity/knowledge-base/Trinity.md
 ```
 
@@ -257,7 +260,7 @@ await fs.copy(sourcePath, targetPath, { overwrite: true });
 
 **Before Update:**
 
-```
+```text
 .claude/trinity/knowledge-base/
 ├── Trinity.md (v2.0.0 - outdated)
 ├── CODING-PRINCIPLES.md (v2.0.0 - outdated)
@@ -268,7 +271,7 @@ await fs.copy(sourcePath, targetPath, { overwrite: true });
 
 **After Update:**
 
-```
+```text
 .claude/trinity/knowledge-base/
 ├── Trinity.md (v2.1.0 - UPDATED)
 ├── CODING-PRINCIPLES.md (v2.1.0 - UPDATED)
@@ -441,7 +444,7 @@ stats.knowledgeBaseUpdated++;
 
 ### Console Output
 
-```
+```text
 ⠋ Updating knowledge base...
 ✓ Knowledge base updated (5 files)
 ```
@@ -465,23 +468,23 @@ if (await fs.pathExists(sourcePath)) {
 
 ### Common Error Scenarios
 
-**1. Permission Denied**
+#### 1. Permission Denied
 
-```
+```text
 Error: EACCES: permission denied, open '.claude/trinity/knowledge-base/Trinity.md'
 Solution: Fix file permissions or run with appropriate privileges
 ```
 
-**2. SDK Not Installed**
+#### 2. SDK Not Installed
 
-```
+```text
 Error: SDK path not found
 Solution: Install Trinity Method SDK (npm install trinity-method-sdk)
 ```
 
-**3. Target Directory Missing**
+#### 3. Target Directory Missing
 
-```
+```text
 Error: ENOENT: no such file or directory '.claude/trinity/knowledge-base'
 Solution: Ensure Trinity structure exists (run trinity-deploy first)
 ```
@@ -492,7 +495,7 @@ Solution: Ensure Trinity structure exists (run trinity-deploy first)
 
 ### How User Files Are Protected
 
-**1. Explicit File List**
+#### 1. Explicit File List
 
 ```typescript
 const SDK_MANAGED_KB_FILES = [
@@ -507,7 +510,7 @@ const SDK_MANAGED_KB_FILES = [
 // Everything else is ignored
 ```
 
-**2. No Directory Overwrite**
+#### 2. No Directory Overwrite
 
 ```typescript
 // Does NOT do this:
@@ -519,7 +522,7 @@ for (const file of SDK_MANAGED_KB_FILES) {
 }
 ```
 
-**3. User Files Never Referenced**
+#### 3. User Files Never Referenced
 
 ```typescript
 // These files are never touched:

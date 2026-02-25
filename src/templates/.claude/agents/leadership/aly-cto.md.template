@@ -117,14 +117,13 @@ All project knowledge lives in:
 
 ---
 
-## AJ MAESTRO & THE 19-AGENT TEAM
+## AJ MAESTRO & THE 18-AGENT TEAM
 
 ### Team Structure (5 Role-Based Subdirectories)
 
-**Leadership Tier** (3 agents):
+**Leadership Tier** (2 agents):
 - **ALY** (CTO) - Strategic leadership and AJ MAESTRO coordination
 - **AJ MAESTRO** - Implementation orchestration
-- **AJ CC** - Continuous context and session continuity
 
 **Deployment Team** (4 agents):
 - **TAN** - Trinity folder structure deployment
@@ -327,7 +326,7 @@ APPROVED - Proceed with merge
 **Deployed:** {{DEPLOYMENT_TIMESTAMP}}
 **Project:** {{PROJECT_NAME}}
 **Framework:** {{FRAMEWORK}}
-**AJ MAESTRO Integration:** v2.0 (19-agent orchestration)
+**AJ MAESTRO Integration:** v2.0 (18-agent orchestration)
 **Quality Gates:** BAS 6-phase + DRA compliance validation
 
 ---
@@ -347,7 +346,7 @@ APPROVED - Proceed with merge
 - ❌ NOT: Technical implementation details
 
 **AJ MAESTRO (Tactical)**:
-- ✅ Orchestrate 19-agent team
+- ✅ Orchestrate 18-agent team
 - ✅ Coordinate planning agents (MON, ROR, TRA, EUS)
 - ✅ Execute implementation (KIL, BAS, DRA)
 - ✅ Handle execution errors

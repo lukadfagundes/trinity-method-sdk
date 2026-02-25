@@ -1,8 +1,10 @@
-# deploy-ci-cd.md
+# Deploy CI/CD
 
 ## Overview
 
-The `deploy-ci-cd` module handles the deployment of CI/CD workflow templates to the target project. It automatically detects the Git platform (GitHub, GitLab, or generic) and deploys appropriate CI/CD configuration files.
+The `deploy-ci-cd` module handles the deployment of CI/CD workflow templates to the
+target project. It automatically detects the Git platform (GitHub, GitLab, or generic)
+and deploys appropriate CI/CD configuration files.
 
 **Module:** `src/cli/commands/deploy/ci-cd.ts`
 **Purpose:** Deploy platform-specific CI/CD workflow templates
@@ -10,7 +12,6 @@ The `deploy-ci-cd` module handles the deployment of CI/CD workflow templates to 
 **Dependencies:**
 
 - `deploy-ci.ts` (utility) - CI/CD template deployment logic
-- `fs-extra` - File system operations
 - `chalk` - Terminal output styling
 
 ---
@@ -149,7 +150,7 @@ console.log(`Deployed ${filesDeployed} CI files`);
 
 **Typical Output:**
 
-```
+```text
 ✔ CI/CD templates deployed (2 files)
   ✓ .github/workflows/ci.yml
   ✓ .claude/trinity/templates/ci/generic-ci.yml
@@ -174,7 +175,7 @@ console.log(`Deployed ${filesDeployed} CI files`);
 
 **Typical Output:**
 
-```
+```text
 ✔ CI/CD templates deployed (2 files)
   ✓ .gitlab-ci.yml
   ✓ .claude/trinity/templates/ci/generic-ci.yml
@@ -182,7 +183,7 @@ console.log(`Deployed ${filesDeployed} CI files`);
 
 **Skipped Case:**
 
-```
+```text
 ℹ CI/CD templates deployed (1 file)
   ✓ .claude/trinity/templates/ci/generic-ci.yml
   Skipped:
@@ -406,7 +407,7 @@ if (ciDeploy) {
 
 **Example:**
 
-```
+```text
 ℹ No CI/CD templates deployed
 ```
 
@@ -425,7 +426,7 @@ if (ciDeploy) {
 
 **Example:**
 
-```
+```text
 ⚠ Some CI/CD templates failed to deploy
   ✗ .github/workflows/ci.yml: EACCES: permission denied
   ✓ .claude/trinity/templates/ci/generic-ci.yml
@@ -446,7 +447,7 @@ if (ciDeploy) {
 
 **Example:**
 
-```
+```text
 ✔ CI/CD templates deployed (1 file)
   ✓ .claude/trinity/templates/ci/generic-ci.yml
   Skipped:

@@ -542,7 +542,7 @@ git log origin/main..HEAD --oneline
 **/trinity-continue**:
 - Analyzes current state (git, work orders, sessions)
 - Provides recovery options
-- Resumes with AJ MAESTRO or AJ CC
+- Resumes with AJ MAESTRO
 
 **/trinity-end**:
 - Creates session summary

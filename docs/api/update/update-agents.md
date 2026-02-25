@@ -1,7 +1,7 @@
 # Agent Updates - Update Command
 
 **Module:** `src/cli/commands/update/agents.ts`
-**Purpose:** Update 19 agent templates while preserving user content
+**Purpose:** Update 18 agent templates while preserving user content
 **Category:** Update Command - Agent Management
 **Priority:** MEDIUM
 
@@ -9,7 +9,14 @@
 
 ## Overview
 
-The Agent Updates module synchronizes agent template files from the Trinity Method SDK to the project's `.claude/agents/` directory. It updates all 19 specialized agents across 5 categories, ensuring projects have the latest agent capabilities while preserving user customizations.
+The Agent Updates module synchronizes agent template files from the Trinity Method SDK to the
+project's `.claude/agents/` directory. It dynamically scans template directories using `fs.readdir()`
+and updates all agent files found across 5 categories, ensuring projects have the latest agent
+capabilities while preserving user customizations.
+
+**Note:** Unlike the deploy command (which has a hardcoded list of 18 agents), the update
+command dynamically discovers all `.md.template` files in each agent directory. This means
+if new agent templates are added to the SDK, they will automatically be included during updates.
 
 ### Key Features
 
@@ -55,18 +62,18 @@ async function updateAgents(spinner: Ora, stats: UpdateStats): Promise<void>;
 
 ### 5 Agent Categories
 
-The Trinity Method SDK includes 19 agents organized into 5 categories:
+The Trinity Method SDK deploys 18 agents organized into 5 categories:
 
 #### 1. Leadership (1 agent)
 
-```
+```text
 .claude/agents/leadership/
 └── AJ-MAESTRO.md - Master orchestrator and strategic director
 ```
 
 #### 2. Planning (3 agents)
 
-```
+```text
 .claude/agents/planning/
 ├── JUNO.md - Analysis & Planning Specialist
 ├── RAVEN.md - Requirement Validator
@@ -75,7 +82,7 @@ The Trinity Method SDK includes 19 agents organized into 5 categories:
 
 #### 3. AJ-Team (10 agents)
 
-```
+```text
 .claude/agents/aj-team/
 ├── KIL.md - Task Executor
 ├── APO.md - Documentation Specialist
@@ -91,7 +98,7 @@ The Trinity Method SDK includes 19 agents organized into 5 categories:
 
 #### 4. Deployment (3 agents)
 
-```
+```text
 .claude/agents/deployment/
 ├── HARBOR.md - Release Manager
 ├── NOVA.md - CI/CD Integration Specialist
@@ -100,7 +107,7 @@ The Trinity Method SDK includes 19 agents organized into 5 categories:
 
 #### 5. Audit (2 agents)
 
-```
+```text
 .claude/agents/audit/
 ├── CHRONICLE.md - Project Historian
 └── GUARDIAN.md - Security Auditor
@@ -112,7 +119,7 @@ The Trinity Method SDK includes 19 agents organized into 5 categories:
 
 ### Phase 1: SDK Path Resolution
 
-```
+```text
 Call: getSDKPath()
 Purpose: Locate SDK installation (dev/local/global)
 Result: Path to SDK root directory
@@ -125,7 +132,7 @@ Example Paths:
 
 ### Phase 2: Directory Iteration
 
-```
+```text
 For each agent category:
   leadership → planning → aj-team → deployment → audit
 
@@ -141,7 +148,7 @@ For each agent category:
 
 ### Phase 3: File Processing
 
-```
+```text
 For each file in source directory:
   1. Check if filename ends with '.md.template'
   2. If yes:
@@ -154,7 +161,7 @@ For each file in source directory:
 
 ### Phase 4: Completion
 
-```
+```text
 Spinner: ✓ "Agents updated (N files)"
 Where N = total agent files updated
 ```
@@ -234,13 +241,13 @@ await updateAgents(spinner, stats);
 
 **Source File (SDK):**
 
-```
+```text
 dist/templates/.claude/agents/aj-team/APO.md.template
 ```
 
 **Target File (Project):**
 
-```
+```text
 .claude/agents/aj-team/APO.md
 ```
 
@@ -265,7 +272,7 @@ await fs.copy(sourceFile, targetFile, { overwrite: true });
 
 **Before Update:**
 
-```
+```text
 .claude/
 └── agents/
     ├── leadership/
@@ -276,7 +283,7 @@ await fs.copy(sourceFile, targetFile, { overwrite: true });
 
 **After Update:**
 
-```
+```text
 .claude/
 └── agents/
     ├── leadership/
@@ -302,7 +309,7 @@ await fs.copy(sourceFile, targetFile, { overwrite: true });
 
 ## Overwrite Strategy
 
-### Why Overwrite?
+### Why Overwrite
 
 **Agent templates are meant to be updated**, not customized:
 
@@ -315,16 +322,16 @@ await fs.copy(sourceFile, targetFile, { overwrite: true });
 
 **If users need to customize agents:**
 
-**Option 1: Custom Agents Directory**
+#### Option 1 - Custom Agents Directory
 
-```
+```text
 .claude/
 ├── agents/          (managed by SDK)
 └── custom-agents/   (user-managed)
     └── MY-CUSTOM-AGENT.md
 ```
 
-**Option 2: Fork and Modify SDK**
+#### Option 2 - Fork and Modify SDK
 
 ```bash
 # Fork SDK repository
@@ -335,9 +342,9 @@ git clone https://github.com/user/trinity-method-sdk-fork.git
 npm install user/trinity-method-sdk-fork
 ```
 
-**Option 3: Agent Configuration Files**
+#### Option 3 - Agent Configuration Files
 
-```
+```text
 .claude/
 ├── agents/          (managed by SDK)
 └── agent-config.json (user preferences)
@@ -370,14 +377,14 @@ stats.agentsUpdated++;
 // After planning: stats.agentsUpdated = 4
 // After aj-team: stats.agentsUpdated = 14
 // After deployment: stats.agentsUpdated = 17
-// After audit: stats.agentsUpdated = 19
+// After audit: stats.agentsUpdated = 18
 ```
 
 ### Console Output
 
-```
+```text
 ⠋ Updating agents...
-✓ Agents updated (19 files)
+✓ Agents updated (18 files)
 ```
 
 ---
@@ -412,23 +419,23 @@ try {
 
 ### Common Error Scenarios
 
-**1. Permission Denied**
+#### 1. Permission Denied
 
-```
+```text
 Error: EACCES: permission denied, open '.claude/agents/aj-team/KIL.md'
 Solution: Run with appropriate permissions or fix file ownership
 ```
 
-**2. SDK Not Installed**
+#### 2. SDK Not Installed
 
-```
+```text
 Error: SDK path not found
 Solution: Install Trinity Method SDK first
 ```
 
-**3. Disk Full**
+#### 3. Disk Full
 
-```
+```text
 Error: ENOSPC: no space left on device
 Solution: Free up disk space
 ```
@@ -515,7 +522,7 @@ describe('Agent Updates Integration', () => {
   it('should integrate with update command', async () => {
     const result = await runUpdateCommand(['--agents-only']);
 
-    expect(result.agentsUpdated).toBe(19);
+    expect(result.agentsUpdated).toBe(18);
     expect(await fs.pathExists('.claude/agents/leadership/AJ-MAESTRO.md')).toBe(true);
   });
 });
@@ -529,7 +536,7 @@ describe('Agent Updates Integration', () => {
 
 - **SDK path resolution**: ~10ms
 - **Directory traversal**: ~50ms per category (5 total)
-- **File operations**: ~5-10ms per agent (19 total)
+- **File operations**: ~5-10ms per agent (18 total)
 - **Total time**: ~500ms - 1 second typical
 
 ### Optimization Strategies
@@ -583,7 +590,7 @@ await Promise.all(files.map((file) => fs.copy(sourceFile, targetFile)));
 
 ## Agent Categories Reference
 
-### Complete Agent List (19 total)
+### Complete Agent List (18 total)
 
 | Category   | Agent      | Role                     | File          |
 | ---------- | ---------- | ------------------------ | ------------- |
@@ -613,7 +620,7 @@ await Promise.all(files.map((file) => fs.copy(sourceFile, targetFile)));
 
 | Version | Date       | Changes                               |
 | ------- | ---------- | ------------------------------------- |
-| 2.0.0   | 2025-12-28 | Initial implementation with 19 agents |
+| 2.0.0   | 2025-12-28 | Initial implementation with 18 agents |
 | 2.1.0   | 2026-01-21 | Documentation created by APO-3        |
 
 ---

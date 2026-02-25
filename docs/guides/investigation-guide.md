@@ -5,7 +5,10 @@
 
 ## Overview
 
-Trinity Method provides structured investigation templates for systematic problem-solving. This guide covers how to use investigation templates effectively, create custom investigations, and leverage the investigation workflow for complex debugging, performance analysis, and system understanding.
+Trinity Method provides structured investigation templates for systematic problem-solving.
+This guide covers how to use investigation templates effectively, create custom investigations,
+and leverage the investigation workflow for complex debugging, performance analysis,
+and system understanding.
 
 ## Table of Contents
 
@@ -19,9 +22,10 @@ Trinity Method provides structured investigation templates for systematic proble
 
 ---
 
-## What are Investigations?
+## What are Investigations
 
-Investigations are structured documents that guide systematic problem-solving. Unlike ad-hoc debugging, investigations provide:
+Investigations are structured documents that guide systematic problem-solving.
+Unlike ad-hoc debugging, investigations provide:
 
 - **Structured approach** - Follow proven problem-solving frameworks
 - **Documentation** - Capture hypothesis, data, and conclusions
@@ -216,7 +220,7 @@ Trinity provides 5 investigation template types:
 
 Use `/trinity-create-investigation` to launch the investigation wizard:
 
-```
+```text
 /trinity-create-investigation
 ```
 
@@ -231,7 +235,7 @@ Use `/trinity-create-investigation` to launch the investigation wizard:
 
 **Example:**
 
-```
+```text
 User: /trinity-create-investigation
 
 Investigation Wizard
@@ -255,7 +259,7 @@ Investigation Type:
 [ ] Security Audit
 [ ] Incident Post-Mortem
 
-✅ Investigation Created: .claude/trinity/investigations/INVESTIGATION-memory-leak-api-2025-12-28.md
+Investigation Created: .claude/trinity/investigations/INVESTIGATION-memory-leak-api-2025-12-28.md
 
 Open the investigation file to begin documenting your findings.
 
@@ -268,7 +272,7 @@ Next: Create investigation plan with /trinity-plan-investigation
 
 Use `/trinity-plan-investigation` to generate a structured investigation plan:
 
-```
+```text
 /trinity-plan-investigation
 ```
 
@@ -284,7 +288,7 @@ Use `/trinity-plan-investigation` to generate a structured investigation plan:
 
 **Example:**
 
-````
+````text
 User: /trinity-plan-investigation
 
 Analyzing Investigation: Memory leak in API server
@@ -359,7 +363,7 @@ graph TD
     VALIDATE --> TEST[Extended Load Test]
     TEST --> DEPLOY[Deploy to Production]
     DEPLOY --> MONITOR[Monitor & Verify]
-````
+```
 
 Data Collection Checklist:
 ───────────────────────────
@@ -380,10 +384,9 @@ Success Criteria:
 - No OOM errors in extended testing
 - Production deployment shows stable memory
 
-✅ Investigation plan saved to investigation document
+Investigation plan saved to investigation document
 
 Use this plan to systematically resolve the memory leak.
-
 ````
 
 ---
@@ -399,6 +402,7 @@ Follow the investigation plan step-by-step:
 5. **Capture decisions** - Note why you pursued certain paths
 
 **Tips:**
+
 - Work through phases sequentially
 - Don't skip data collection
 - Document dead ends (save time for others)
@@ -426,13 +430,15 @@ Once root cause is identified:
    - Test results
 
 **Example:**
-```markdown
+
+````markdown
 ## Root Cause
 
 Event listeners registered in middleware were not being removed after request
 completion, causing listener accumulation and memory retention.
 
 **Evidence:**
+
 - Heap snapshot showed 50,000+ EventEmitter instances
 - Each EventEmitter retained request context (~100KB)
 - EventEmitters grew linearly with request count
@@ -449,7 +455,7 @@ app.use((req, res, next) => {
   });
   next();
 });
-````
+```
 
 ## Solution
 
@@ -486,14 +492,13 @@ app.use((req, res, next) => {
 - Baseline memory: 200MB
 - After 10,000 requests: 220MB (stable)
 - After 100,000 requests: 230MB (stable)
-- 24-hour load test: No memory growth ✅
+- 24-hour load test: No memory growth
 
 **Test Results:**
 
 - Unit test added: `tests/middleware/requestLogger.test.ts`
 - Integration test: 10,000 request loop with memory monitoring
-- All tests pass ✅
-
+- All tests pass
 ````
 
 ---
@@ -522,7 +527,7 @@ app.use((req, res, next) => {
 
 ```bash
 /trinity-create-investigation
-````
+```
 
 Follow prompts to create investigation document.
 
@@ -691,7 +696,7 @@ Always complete investigations:
 
 1. **Create Investigation**
 
-   ```
+   ```text
    /trinity-create-investigation
    Title: Random authentication failures
    Type: Bug Investigation
@@ -700,7 +705,7 @@ Always complete investigations:
 
 2. **Plan Investigation**
 
-   ```
+   ```text
    /trinity-plan-investigation
    ```
 
@@ -803,7 +808,8 @@ Always complete investigations:
 
 ## Additional Resources
 
-- [Slash Commands Reference](../reference/slash-commands-reference.md) - `/trinity-create-investigation`, `/trinity-plan-investigation`
+- [Slash Commands Reference](../reference/slash-commands-reference.md) -
+  `/trinity-create-investigation`, `/trinity-plan-investigation`
 - [Agent Guide](agent-guide.md) - Agents can help with investigations
 - [Getting Started](getting-started.md) - Trinity basics
 

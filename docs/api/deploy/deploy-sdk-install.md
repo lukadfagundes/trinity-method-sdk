@@ -9,7 +9,10 @@
 
 ## Overview
 
-The SDK Installation module adds Trinity Method SDK as a dependency to the target project's `package.json` and runs `npm install` to complete the installation. It intelligently detects if the SDK is already installed and provides helpful guidance if installation fails.
+The SDK Installation module adds Trinity Method SDK as a dependency to the
+target project's `package.json` and runs `npm install` to complete the
+installation. It intelligently detects if the SDK is already installed and
+provides helpful guidance if installation fails.
 
 ### Key Features
 
@@ -49,7 +52,7 @@ async function installSDK(spinner: Spinner): Promise<boolean>;
 
 ### Phase 1: Validation
 
-```
+```text
 Check for package.json existence
   ├─ Found → Continue to Phase 2
   └─ Not Found → Warn user, provide manual instructions
@@ -57,7 +60,7 @@ Check for package.json existence
 
 ### Phase 2: Detection
 
-```
+```text
 Read package.json
 Check dependencies object
 Check devDependencies object
@@ -67,7 +70,7 @@ Check devDependencies object
 
 ### Phase 3: Package.json Modification
 
-```
+```text
 1. Ensure dependencies object exists
 2. Add "trinity-method-sdk": "^2.1.0"
 3. Write package.json with 2-space indentation
@@ -75,7 +78,7 @@ Check devDependencies object
 
 ### Phase 4: Installation Execution
 
-```
+```text
 Run: npm install
 Options:
   - stdio: 'pipe' (suppress npm output)
@@ -84,7 +87,7 @@ Options:
 
 ### Phase 5: Completion
 
-```
+```text
 Success:
   Spinner: ✓ "Trinity Method SDK installed successfully"
   Return: true
@@ -154,7 +157,7 @@ if (!result) {
 
 ### Scenario 1: Fresh Installation
 
-```
+```text
 Input: package.json exists, SDK not present
 Process:
   1. Add SDK to dependencies
@@ -168,7 +171,7 @@ Output:
 
 ### Scenario 2: Already Installed (dependencies)
 
-```
+```text
 Input: package.json contains "trinity-method-sdk" in dependencies
 Process:
   1. Detect existing installation
@@ -182,7 +185,7 @@ Output:
 
 ### Scenario 3: Already Installed (devDependencies)
 
-```
+```text
 Input: package.json contains "trinity-method-sdk" in devDependencies
 Process:
   1. Detect existing installation in devDependencies
@@ -196,7 +199,7 @@ Output:
 
 ### Scenario 4: No package.json
 
-```
+```text
 Input: package.json does not exist
 Process:
   1. Warn user
@@ -211,7 +214,7 @@ Output:
 
 ### Scenario 5: Installation Failure
 
-```
+```text
 Input: npm install fails (network, permissions, etc.)
 Process:
   1. Catch error
@@ -280,7 +283,7 @@ Output:
 
 ### Current Version: `^2.1.0`
 
-```
+```text
 Semver Range: >=2.1.0 <3.0.0
 Allows:
   - 2.1.0 ✓
@@ -290,7 +293,7 @@ Allows:
   - 3.0.0 ✗ (major version bump)
 ```
 
-### Why Caret (^) Range?
+### Why Caret (^) Range
 
 - **Flexibility**: Allow minor and patch updates
 - **Safety**: Prevent breaking changes (major version)
@@ -328,30 +331,30 @@ execSync('npm install', {
 
 ---
 
-## Error Handling
+## Error Handling and Recovery
 
 ### Error Categories
 
-**1. File System Errors**
+#### 1. File System Errors
 
-```
+```text
 - package.json not found
 - Permission denied (write to package.json)
 - Disk full
 ```
 
-**2. npm Errors**
+#### 2. npm Errors
 
-```
+```text
 - Network failure (registry unreachable)
 - Authentication failure (private registry)
 - Dependency conflict
 - npm not installed
 ```
 
-**3. Process Errors**
+#### 3. Process Errors
 
-```
+```text
 - execSync failure
 - Child process error
 - Timeout

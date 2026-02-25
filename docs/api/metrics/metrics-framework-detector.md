@@ -9,7 +9,10 @@
 
 ## Overview
 
-The Framework Detection module identifies the version of the currently used framework and the package manager in use. It provides version detection for Node.js, React, Next.js, Flutter, Python, and Rust projects, as well as package manager identification (npm, yarn, pnpm, pip, cargo, pub).
+The Framework Detection module identifies the version of the currently used framework
+and the package manager in use. It provides version detection for Node.js, React,
+Next.js, Flutter, Python, and Rust projects, as well as package manager identification
+(npm, yarn, pnpm, pip, cargo, pub).
 
 ### Key Features
 

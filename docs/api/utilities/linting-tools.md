@@ -9,7 +9,10 @@
 
 ## Overview
 
-The Linting Tools Configuration module provides metadata for all supported linting tools across 5 frameworks. It defines tool specifications, dependencies, npm scripts, and provides helper functions for selecting and configuring tools based on framework and language.
+The Linting Tools Configuration module provides metadata for all supported linting
+tools across 5 frameworks. It defines tool specifications, dependencies, npm scripts,
+and provides helper functions for selecting and configuring tools based on framework
+and language.
 
 ### Key Features
 

@@ -9,7 +9,10 @@
 
 ## Overview
 
-The Template Updates module synchronizes template files from the Trinity Method SDK to the project's `.claude/trinity/templates/` directory. It recursively updates 3 template categories: work orders, documentation templates, and investigation templates, ensuring projects have the latest scaffolding tools.
+The Template Updates module synchronizes template files from the Trinity Method SDK to the project's
+`.claude/trinity/templates/` directory. It recursively updates 3 template categories: work orders,
+documentation templates, and investigation templates, ensuring projects have the latest scaffolding
+tools.
 
 ### Key Features
 
@@ -90,7 +93,7 @@ async function copyTemplatesRecursively(
 
 #### 1. Work Orders
 
-```
+```text
 .claude/trinity/templates/work-orders/
 ├── WORKORDER-TEMPLATE.md - Standard work order template
 ├── BUGFIX-WORKORDER.md - Bug fix work order
@@ -105,7 +108,7 @@ async function copyTemplatesRecursively(
 
 #### 2. Documentation
 
-```
+```text
 .claude/trinity/templates/documentation/
 ├── API-DOCUMENTATION-TEMPLATE.md - API documentation structure
 ├── README-TEMPLATE.md - README file template
@@ -123,7 +126,7 @@ async function copyTemplatesRecursively(
 
 #### 3. Investigations
 
-```
+```text
 .claude/trinity/templates/investigations/
 ├── INVESTIGATION-TEMPLATE.md - Generic investigation template
 ├── BUG-INVESTIGATION.md - Bug investigation structure
@@ -140,7 +143,7 @@ async function copyTemplatesRecursively(
 
 ### Phase 1: SDK Path Resolution
 
-```
+```text
 Call: getSDKPath()
 Purpose: Locate SDK installation (dev/local/global)
 Result: Path to SDK root directory
@@ -148,7 +151,7 @@ Result: Path to SDK root directory
 
 ### Phase 2: Category Iteration
 
-```
+```text
 For each template category:
   work-orders → documentation → investigations
 
@@ -165,7 +168,7 @@ For each template category:
 
 ### Phase 3: Recursive File Processing
 
-```
+```text
 For each entry in directory:
   If directory:
     1. Create target subdirectory
@@ -186,7 +189,7 @@ For each entry in directory:
 
 ### Phase 4: Completion
 
-```
+```text
 Spinner: ✓ "Templates updated (N files)"
 Where N = total template files updated
 ```
@@ -254,13 +257,13 @@ if (await fs.pathExists(sourcePath)) {
 
 **Source File (SDK):**
 
-```
+```text
 dist/templates/trinity/templates/work-orders/WORKORDER-TEMPLATE.md.template
 ```
 
 **Target File (Project):**
 
-```
+```text
 .claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md
 ```
 
@@ -286,13 +289,13 @@ if (entry.name.endsWith('.md.template')) {
 
 **Source File (SDK):**
 
-```
+```text
 dist/templates/trinity/templates/documentation/diagrams/sequence-diagram.md
 ```
 
 **Target File (Project):**
 
-```
+```text
 .claude/trinity/templates/documentation/diagrams/sequence-diagram.md
 ```
 
@@ -321,7 +324,7 @@ if (entry.name.endsWith('.md')) {
 
 **SDK Source:**
 
-```
+```text
 dist/templates/trinity/templates/
 ├── work-orders/
 │   ├── WORKORDER-TEMPLATE.md.template
@@ -337,7 +340,7 @@ dist/templates/trinity/templates/
 
 **Processing Flow:**
 
-```
+```text
 1. Process work-orders/
    ├── Copy WORKORDER-TEMPLATE.md.template → WORKORDER-TEMPLATE.md
    └── Copy BUGFIX-WORKORDER.md.template → BUGFIX-WORKORDER.md
@@ -358,7 +361,7 @@ dist/templates/trinity/templates/
 
 **Before Update:**
 
-```
+```text
 .claude/trinity/templates/
 ├── work-orders/
 │   └── WORKORDER-TEMPLATE.md (v2.0.0 - outdated)
@@ -368,7 +371,7 @@ dist/templates/trinity/templates/
 
 **After Update:**
 
-```
+```text
 .claude/trinity/templates/
 ├── work-orders/
 │   ├── WORKORDER-TEMPLATE.md (v2.1.0 - updated)
@@ -423,7 +426,7 @@ stats.templatesUpdated++;
 
 ### Console Output
 
-```
+```text
 ⠋ Updating templates...
 ✓ Templates updated (17 files)
 ```
@@ -459,23 +462,23 @@ try {
 
 ### Common Error Scenarios
 
-**1. Permission Denied**
+#### 1. Permission Denied
 
-```
+```text
 Error: EACCES: permission denied, open '.claude/trinity/templates/work-orders/WORKORDER-TEMPLATE.md'
 Solution: Fix file permissions or run with appropriate privileges
 ```
 
-**2. SDK Not Installed**
+#### 2. SDK Not Installed
 
-```
+```text
 Error: SDK path not found
 Solution: Install Trinity Method SDK (npm install trinity-method-sdk)
 ```
 
-**3. Target Directory Missing**
+#### 3. Target Directory Missing
 
-```
+```text
 Error: ENOENT: no such file or directory '.claude/trinity/templates'
 Solution: Ensure Trinity structure exists (run trinity-deploy first)
 ```

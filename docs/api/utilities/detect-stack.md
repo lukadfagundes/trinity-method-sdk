@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Framework Detection module automatically identifies project type, language, framework, package manager, and source directories. It supports Node.js, Python, Rust, Flutter, and Go projects with monorepo detection capabilities.
+The Framework Detection module automatically identifies project type, language,
+framework, package manager, and source directories. It supports Node.js, Python, Rust,
+Flutter, and Go projects with monorepo detection capabilities.
 
 **Key Features:**
 
@@ -97,7 +99,8 @@ Detects Flutter/Dart projects.
 ```
 
 **Why Flutter First?**
-Flutter projects may have `package.json` if using Trinity SDK, causing false Node.js detection. Flutter check runs first to prevent this.
+Flutter projects may have `package.json` if using Trinity SDK, causing false Node.js
+detection. Flutter check runs first to prevent this.
 
 ---
 
@@ -250,14 +253,14 @@ Discovers all source directories for monorepo support.
 
 **Detection Levels:**
 
-1. **Top-level directories** (18 common names):
+1. **Top-level directories** (11 common names):
    - `src`, `lib`, `app`, `backend`, `frontend`, `server`, `client`, `database`
    - `packages`, `apps`, `bot`
 
 2. **2-level nested patterns** (e.g., `backend/src`, `frontend/lib`)
 3. **3-level nested patterns** (e.g., `src/backend/src`, `frontend/app/lib`)
 
-**Total Patterns Checked:** 44 combinations
+**Total Patterns Checked:** 47 combinations
 
 **Returns:** `string[]` - Array of relative paths
 
@@ -313,33 +316,33 @@ Checks if file or directory exists.
 
 ## Detection Flow Diagram
 
-```
+```text
 detectStack()
-    ↓
+    |
 Initialize default Stack object
-    ↓
+    |
 Run detectors in order:
-    ├→ detectFlutter()
-    │   └→ pubspec.yaml exists? → Return Flutter stack
-    ├→ detectRust()
-    │   └→ Cargo.toml exists? → Return Rust stack
-    ├→ detectGo()
-    │   └→ go.mod exists? → Return Go stack
-    ├→ detectNodeJs()
-    │   ├→ package.json exists?
-    │   ├→ Parse JSON
-    │   ├→ detectNodeFramework() (check dependencies)
-    │   ├→ detectPackageManager() (check lock files)
-    │   └→ Return Node stack
-    └→ detectPython()
-        ├→ requirements.txt/setup.py/pyproject.toml exists?
-        ├→ Check requirements.txt for Flask
-        └→ Return Python stack
-    ↓
+    +-> detectFlutter()
+    |   +-> pubspec.yaml exists? -> Return Flutter stack
+    +-> detectRust()
+    |   +-> Cargo.toml exists? -> Return Rust stack
+    +-> detectGo()
+    |   +-> go.mod exists? -> Return Go stack
+    +-> detectNodeJs()
+    |   +-> package.json exists?
+    |   +-> Parse JSON
+    |   +-> detectNodeFramework() (check dependencies)
+    |   +-> detectPackageManager() (check lock files)
+    |   +-> Return Node stack
+    +-> detectPython()
+        +-> requirements.txt/setup.py/pyproject.toml exists?
+        +-> Check requirements.txt for Flask
+        +-> Return Python stack
+    |
 Detect all source directories (monorepo)
-    ↓
+    |
 Finalize source directories (consistency check)
-    ↓
+    |
 Return Stack object
 ```
 
@@ -581,5 +584,5 @@ it('should integrate with deploy command', async () => {
 ---
 
 **Last Updated:** 2026-01-21
-**Trinity Version:** 2.0.0
+**Trinity Version:** 2.1.0
 **Module Stability:** Stable (production-ready)

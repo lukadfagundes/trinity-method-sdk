@@ -8,7 +8,9 @@
 
 ## Overview
 
-The Update Verification module ensures that Trinity Method SDK updates were applied successfully. It performs post-update integrity checks, verifies critical files exist, and confirms VERSION file was updated correctly.
+The Update Verification module ensures that Trinity Method SDK updates were applied successfully. It
+performs post-update integrity checks, verifies critical files exist, and confirms VERSION file was
+updated correctly.
 
 **Key Features:**
 
@@ -114,7 +116,7 @@ try {
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Verifying update...
 ✓ Verification passed
 ```
@@ -163,7 +165,7 @@ await updateVersionFile(spinner, '2.1.0');
 
 **Spinner Messages:**
 
-```
+```text
 ⠙ Updating version file...
 ✓ Version file updated
 ```
@@ -340,7 +342,7 @@ if (!(await fs.pathExists('.claude/agents/leadership'))) {
 
 **User Message:**
 
-```
+```text
 ✗ Verification failed: Leadership agents missing
 ❌ Update failed - Rolling back changes...
 ```
@@ -364,7 +366,7 @@ if (updatedVersion !== expectedVersion) {
 
 **User Message:**
 
-```
+```text
 ✗ Version file not updated correctly
 ❌ Update failed - Rolling back changes...
 ```
@@ -399,7 +401,7 @@ if (updatedVersion !== expectedVersion) {
 
 **User Message:**
 
-```
+```text
 ✗ Verification failed: Leadership agents missing
 ✗ Verification failed: Planning agents missing
 ✗ Version file not updated correctly
@@ -557,7 +559,7 @@ describe('updateVersionFile', () => {
 
 ### Planned Improvements
 
-- [ ] Per-agent file verification (check all 19 agent files)
+- [ ] Per-agent file verification (check all 18 agent files)
 - [ ] Checksum verification (SHA-256 hashes)
 - [ ] Content validation (validate VERSION format, Trinity.md structure)
 - [ ] Permission verification (check read/write permissions)
@@ -599,7 +601,7 @@ const maliciousPath = validatePath('../../../etc/passwd');
 
 ## Verification Flow Diagram
 
-```
+```text
 verifyUpdateDeployment(spinner, expectedVersion)
     ↓
 [Check 1] .claude/trinity/VERSION exists?

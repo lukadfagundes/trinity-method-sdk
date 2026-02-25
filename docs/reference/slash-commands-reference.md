@@ -3,17 +3,18 @@
 **Trinity Version:** 2.1.0
 **Last Updated:** 2026-01-12
 
-Complete reference for Trinity Method's 19 slash commands.
+Complete reference for Trinity Method's 21 slash commands.
 
 ## Overview
 
-Trinity Method deploys 19 slash commands to `.claude/commands/` organized by category:
+Trinity Method deploys 21 slash commands to `.claude/commands/` organized by category:
 
 - **Session Management** (3 commands)
 - **Planning** (4 commands)
-- **Execution** (5 commands)
+- **Execution** (3 commands)
 - **Investigation** (3 commands)
 - **Infrastructure** (1 command)
+- **Maintenance** (4 commands)
 - **Utility** (3 commands)
 
 ---
@@ -44,7 +45,7 @@ Trinity Method deploys 19 slash commands to `.claude/commands/` organized by cat
 
 **Usage:**
 
-```
+```text
 /trinity-start
 ```
 
@@ -57,14 +58,14 @@ Trinity Method deploys 19 slash commands to `.claude/commands/` organized by cat
 
 **Example:**
 
-```
+```text
 User: /trinity-start
 
-ALY: 🎯 Trinity Session Initialization
+ALY: Trinity Session Initialization
 
 ✅ Trinity Deployment Verified
-- 19 agents deployed
-- 20 slash commands active
+- 18 agents deployed
+- 21 slash commands active
 - Knowledge base initialized
 
 📋 Project Context
@@ -108,7 +109,7 @@ How can I assist you today?
 
 **Usage:**
 
-```
+```text
 /trinity-continue
 ```
 
@@ -121,10 +122,10 @@ How can I assist you today?
 
 **Example:**
 
-```
+```text
 User: /trinity-continue
 
-ALY: 🔄 Trinity Session Continuation
+ALY: Trinity Session Continuation
 
 📂 Latest Session: 2025-12-28T10:30:00
 
@@ -173,7 +174,7 @@ Ready to continue. What would you like to work on?
 
 **Usage:**
 
-```
+```text
 /trinity-end
 ```
 
@@ -186,10 +187,10 @@ Ready to continue. What would you like to work on?
 
 **Example:**
 
-```
+```text
 User: /trinity-end
 
-ALY: 🏁 Trinity Session End
+ALY: Trinity Session End
 
 Session Summary (2025-12-28T10:30:00 - 2025-12-28T16:45:00)
 Duration: 6h 15m
@@ -247,7 +248,7 @@ Session ended successfully.
 
 **Usage:**
 
-```
+```text
 /trinity-requirements
 ```
 
@@ -269,11 +270,11 @@ Session ended successfully.
 
 **Example:**
 
-```
+```text
 User: /trinity-requirements
 I need to add user authentication to my app.
 
-MON: 📋 Requirements Analysis
+MON: Requirements Analysis
 
 Analyzing: User authentication system
 
@@ -340,7 +341,7 @@ Next Step: Technical design with /trinity-design (ROR)
 
 **Usage:**
 
-```
+```text
 /trinity-design
 ```
 
@@ -354,10 +355,10 @@ Next Step: Technical design with /trinity-design (ROR)
 
 **Example:**
 
-```
+```text
 User: /trinity-design
 
-ROR: 🏗️ Technical Design
+ROR: Technical Design
 
 Reviewing Requirements:
 - User authentication system (MEDIUM scale)
@@ -535,7 +536,7 @@ Next Step: Task decomposition with /trinity-decompose (EUS)
 
 **Usage:**
 
-```
+```text
 /trinity-decompose
 ```
 
@@ -549,10 +550,10 @@ Next Step: Task decomposition with /trinity-decompose (EUS)
 
 **Example:**
 
-```
+```text
 User: /trinity-decompose
 
-EUS: ⚙️ Task Decomposition
+EUS: Task Decomposition
 
 Reviewing Design Doc: .claude/trinity/knowledge-base/design-doc-authentication.md
 
@@ -789,7 +790,7 @@ Next Step: Implementation planning with /trinity-plan (TRA)
 
 **Usage:**
 
-```
+```text
 /trinity-plan
 ```
 
@@ -803,10 +804,10 @@ Next Step: Implementation planning with /trinity-plan (TRA)
 
 **Example:**
 
-```
+```text
 User: /trinity-plan
 
-TRA: 📅 Implementation Planning
+TRA: Implementation Planning
 
 Reviewing Task Breakdown: 25 tasks across 6 phases
 
@@ -959,7 +960,7 @@ Ready to start implementation?
 
 **Usage:**
 
-```
+```text
 /trinity-orchestrate
 ```
 
@@ -973,29 +974,29 @@ Ready to start implementation?
 
 **Workflow:**
 
-```
+```text
 AJ MAESTRO
-  ↓
-MON (Requirements) → ROR (Design) → EUS (Decompose) → TRA (Plan)
-  ↓
-KIL (Execute Task 1) → BAS (Validate)
-  ↓ [Pass]
-KIL (Execute Task 2) → BAS (Validate)
-  ↓ [Pass]
+  |
+MON (Requirements) -> ROR (Design) -> EUS (Decompose) -> TRA (Plan)
+  |
+KIL (Execute Task 1) -> BAS (Validate)
+  | [Pass]
+KIL (Execute Task 2) -> BAS (Validate)
+  | [Pass]
 ... (Continue for all tasks)
-  ↓
+  |
 DRA (Final Review)
-  ↓
-✅ Complete
+  |
+Complete
 ```
 
 **Example:**
 
-```
+```text
 User: /trinity-orchestrate
 I need to add user authentication to my app.
 
-AJ MAESTRO: 🎼 Orchestrating Trinity Workflow
+AJ MAESTRO: Orchestrating Trinity Workflow
 
 Task: User authentication system
 Complexity: MEDIUM
@@ -1135,7 +1136,7 @@ Orchestration complete.
 
 **Usage:**
 
-```
+```text
 /trinity-breakdown
 ```
 
@@ -1158,7 +1159,7 @@ Orchestration complete.
 
 **Example:**
 
-```
+```text
 User: /trinity-breakdown @WO-042-jwt-refresh-implementation.md
 
 AJ MAESTRO: Reading work order WO-042...
@@ -1212,14 +1213,14 @@ Ready for Step 2? (Say "next" to continue)
 
 1. Audits all 64 Trinity components
 2. Verifies directory structure
-3. Checks agent files (19 agents)
-4. Validates slash commands (19 commands)
+3. Checks agent files (18 agents)
+4. Validates slash commands (21 commands)
 5. Reviews knowledge base
 6. Generates comprehensive audit report
 
 **Usage:**
 
-```
+```text
 /trinity-audit
 ```
 
@@ -1233,10 +1234,10 @@ Ready for Step 2? (Say "next" to continue)
 
 **Example:**
 
-```
+```text
 User: /trinity-audit
 
-JUNO: 🔍 Trinity Deployment Audit
+JUNO: Trinity Deployment Audit
 
 Auditing Trinity deployment...
 
@@ -1249,6 +1250,7 @@ Auditing Trinity deployment...
 │ ✓ .claude/commands/execution/                     │
 │ ✓ .claude/commands/investigation/                 │
 │ ✓ .claude/commands/infrastructure/                │
+│ ✓ .claude/commands/maintenance/                   │
 │ ✓ .claude/commands/utility/                       │
 │ ✓ .claude/trinity/                                         │
 │ ✓ .claude/trinity/knowledge-base/                         │
@@ -1259,7 +1261,7 @@ Auditing Trinity deployment...
 │ ✅ 14/14 directories present                      │
 └──────────────────────────────────────────────────┘
 
-┌─ Agent Files (19) ───────────────────────────────┐
+┌─ Agent Files (18) ───────────────────────────────┐
 │ Planning:                                          │
 │   ✓ mon-requirements.md                           │
 │   ✓ ror-design.md                                 │
@@ -1287,11 +1289,10 @@ Auditing Trinity deployment...
 │   ✓ ino-context.md                                │
 │   ✓ ein-cicd.md                                   │
 │   ✓ aj-maestro.md                                 │
-│   ✓ aj-cc.md                                      │
-│ ✅ 19/19 agents present                           │
+│ ✅ 18/18 agents present                           │
 └──────────────────────────────────────────────────┘
 
-┌─ Slash Commands (19) ────────────────────────────┐
+┌─ Slash Commands (21) ────────────────────────────┐
 │ Session:                                           │
 │   ✓ trinity-start.md                              │
 │   ✓ trinity-continue.md                           │
@@ -1305,9 +1306,13 @@ Auditing Trinity deployment...
 │                                                    │
 │ Execution:                                         │
 │   ✓ trinity-orchestrate.md                        │
+│   ✓ trinity-breakdown.md                          │
 │   ✓ trinity-audit.md                              │
+│                                                    │
+│ Maintenance:                                       │
 │   ✓ trinity-readme.md                             │
 │   ✓ trinity-docs.md                               │
+│   ✓ trinity-docs-update.md                        │
 │   ✓ trinity-changelog.md                          │
 │                                                    │
 │ Investigation:                                     │
@@ -1322,7 +1327,7 @@ Auditing Trinity deployment...
 │   ✓ trinity-verify.md                             │
 │   ✓ trinity-agents.md                             │
 │   ✓ trinity-workorder.md                          │
-│ ✅ 19/19 commands present                         │
+│ ✅ 21/21 commands present                         │
 └──────────────────────────────────────────────────┘
 
 ┌─ Knowledge Base ─────────────────────────────────┐
@@ -1359,8 +1364,8 @@ Audit Summary:
 ✅ Trinity deployment: HEALTHY
 ✅ Components: 64/64 (100%)
 ✅ Directory structure: Valid
-✅ Agents: All 19 present
-✅ Commands: All 19 present
+✅ Agents: All 18 present
+✅ Commands: All 21 present
 ✅ Knowledge base: Complete
 ✅ Configuration: Valid
 ✅ Version: 2.1.0 (latest)
@@ -1374,9 +1379,11 @@ Trinity is ready for use! Start with /trinity-start
 
 ---
 
+## Maintenance Commands
+
 ### `/trinity-readme`
 
-**Location:** `.claude/commands/execution/trinity-readme.md`
+**Location:** `.claude/commands/maintenance/trinity-readme.md`
 **Agent:** APO (Documentation Specialist)
 
 **Purpose:** Create or update comprehensive README.md
@@ -1399,7 +1406,7 @@ Trinity is ready for use! Start with /trinity-start
 
 **Usage:**
 
-```
+```text
 /trinity-readme
 ```
 
@@ -1415,10 +1422,10 @@ Trinity is ready for use! Start with /trinity-start
 
 **Example:**
 
-```
+```text
 User: /trinity-readme
 
-APO: 📝 README Documentation
+APO: README Documentation
 
 Analyzing project structure...
 - Framework: Node.js (TypeScript)
@@ -1457,7 +1464,7 @@ README.md is now comprehensive and production-ready.
 
 ### `/trinity-docs`
 
-**Location:** `.claude/commands/execution/trinity-docs.md`
+**Location:** `.claude/commands/maintenance/trinity-docs.md`
 **Agent:** APO (Documentation Specialist)
 
 **Purpose:** Organize docs/ directory with comprehensive structure
@@ -1480,7 +1487,7 @@ README.md is now comprehensive and production-ready.
 
 **Usage:**
 
-```
+```text
 /trinity-docs
 ```
 
@@ -1495,10 +1502,10 @@ README.md is now comprehensive and production-ready.
 
 **Example:**
 
-```
+```text
 User: /trinity-docs
 
-APO: 📚 Documentation Organization
+APO: Documentation Organization
 
 Phase 1: Discovery & Codebase Analysis
   ✓ docs/ structure analyzed
@@ -1552,9 +1559,96 @@ Documentation is now well-organized and production-ready.
 
 ---
 
+### `/trinity-docs-update`
+
+**Location:** `.claude/commands/maintenance/trinity-docs-update.md`
+**Agent:** JUNO (Quality Auditor) + APO-1, APO-2, APO-3 (Documentation Specialists)
+
+**Purpose:** Update existing documentation to reflect codebase changes using autonomous multi-agent orchestration
+
+**When to Use:**
+
+- Documentation has drifted from actual codebase behavior
+- After significant code changes that affect documented APIs, commands, or architecture
+- Periodic documentation accuracy maintenance
+- When `docs/` directory already exists (created by `/trinity-docs`)
+
+**What It Does:**
+
+1. Verifies `docs/` directory exists (aborts if not -- run `/trinity-docs` first)
+2. Launches JUNO to perform comprehensive documentation audit against actual codebase
+3. JUNO generates audit report with categorized work assignments for three APO agents
+4. Launches APO-1, APO-2, APO-3 in parallel to execute documentation updates
+5. JUNO verifies APO completion status and restarts incomplete APOs if needed
+6. JUNO performs final quality audit for accuracy and coverage
+7. Loops verification until 100% completion and accuracy achieved
+
+**Usage:**
+
+```text
+/trinity-docs-update
+```
+
+**Expected Output:**
+
+- Comprehensive documentation audit report (`.claude/trinity/reports/DOCS-UPDATE-AUDIT-{date}.md`)
+- Individual APO checklists tracking task completion (`.claude/trinity/reports/apo-{1,2,3}-docs-update-checklist.md`)
+- Updated documentation files across `docs/` reflecting current codebase reality
+- Final verification report (`.claude/trinity/reports/DOCS-UPDATE-VERIFICATION-{date}.md`)
+- 100% documentation accuracy against source code
+
+**Example:**
+
+```text
+User: /trinity-docs-update
+
+Phase 0: Pre-Flight Check
+  docs/ directory exists
+
+Phase 1: JUNO Comprehensive Audit
+  Reading codebase source files...
+  Comparing against existing documentation...
+  21 discrepancies identified across 12 documentation files
+
+  Audit Report: .claude/trinity/reports/DOCS-UPDATE-AUDIT-2025-12-28.md
+
+  Work Assignments:
+  - APO-1: 24 base documentation fixes (counts, versions, categories)
+  - APO-2: 12 API documentation accuracy fixes (deploy/update docs)
+  - APO-3: 4 items (new command documentation + verification)
+
+Phase 2: APO Documentation Updates (Parallel)
+  Launching APO-1, APO-2, APO-3 simultaneously...
+
+  APO-1: Updating slash-commands-reference.md, agents-quick-reference.md,
+         getting-started.md, agent-guide.md, architecture/overview.md...
+  APO-2: Updating deploy-command.md, deploy-agents.md, update-agents.md,
+         update-summary.md...
+  APO-3: Creating /trinity-docs-update documentation, verifying
+         command template accuracy...
+
+Phase 3: JUNO Verification Loop
+  Step 3.1: Checking APO completion...
+  - APO-1: 24/24 tasks complete (100%)
+  - APO-2: 12/12 tasks complete (100%)
+  - APO-3: 4/4 tasks complete (100%)
+  PROCEED TO STEP 3.2
+
+  Step 3.2: Final Quality Audit...
+  - Coverage: 100% (all audit items addressed)
+  - Accuracy: 100% (documentation matches codebase)
+  VERIFICATION PASSED
+
+Documentation update complete.
+40 documentation items updated across 16 files.
+All documentation now reflects current codebase state.
+```
+
+---
+
 ### `/trinity-changelog`
 
-**Location:** `.claude/commands/execution/trinity-changelog.md`
+**Location:** `.claude/commands/maintenance/trinity-changelog.md`
 **Agent:** APO (Documentation Specialist)
 
 **Purpose:** Maintain CHANGELOG.md in Keep-a-Changelog format
@@ -1576,7 +1670,7 @@ Documentation is now well-organized and production-ready.
 
 **Usage:**
 
-```
+```text
 /trinity-changelog
 ```
 
@@ -1589,10 +1683,10 @@ Documentation is now well-organized and production-ready.
 
 **Example:**
 
-```
+```text
 User: /trinity-changelog
 
-APO: 📋 CHANGELOG Maintenance
+APO: CHANGELOG Maintenance
 
 Analyzing recent changes...
 - 12 commits since last release
@@ -1667,13 +1761,13 @@ CHANGELOG follows Keep-a-Changelog format and is ready for release.
 
 **Usage:**
 
-```
+```text
 /trinity-create-investigation
 ```
 
 **Example:**
 
-```
+```text
 User: /trinity-create-investigation
 
 Investigation Wizard
@@ -1733,13 +1827,13 @@ Start investigation with /trinity-plan-investigation
 
 **Usage:**
 
-```
+```text
 /trinity-plan-investigation
 ```
 
 **Example:**
 
-````
+````text
 User: /trinity-plan-investigation
 
 Analyzing Investigation: Memory leak in API server
@@ -1786,13 +1880,12 @@ graph TD
     IDENTIFY --> IMPLEMENT[Implement Fix]
     IMPLEMENT --> VALIDATE[Validate Fix]
     VALIDATE --> DEPLOY[Deploy to Production]
-````
+```
 
-✅ Investigation plan saved to investigation document
+Investigation plan saved to investigation document
 
 Use this plan to systematically resolve the issue.
-
-```
+````
 
 ---
 
@@ -1802,27 +1895,28 @@ Use this plan to systematically resolve the issue.
 **Purpose:** Guide to Trinity investigation templates
 
 **When to Use:**
+
 - Learning about investigation templates
 - Understanding investigation types
 - Choosing right template
 - Best practices for investigations
 
 **What It Does:**
+
 1. Lists available investigation templates
 2. Explains each template type
 3. Provides usage examples
 4. Recommends template selection
 
 **Usage:**
-```
 
+```text
 /trinity-investigate-templates
-
 ```
 
 **Example:**
-```
 
+```text
 User: /trinity-investigate-templates
 
 Trinity Investigation Templates
@@ -1879,12 +1973,14 @@ Create investigation: /trinity-create-investigation
 **Purpose:** Complete Trinity integration workflow (Deploy + Initialize + Audit)
 
 **When to Use:**
+
 - First-time Trinity setup
 - Complete infrastructure initialization
 - Setting up new project with Trinity
 - Comprehensive Trinity deployment
 
 **What It Does:**
+
 1. TAN: Verifies Trinity deployment structure
 2. ZEN: Creates comprehensive knowledge base
 3. INO: Sets up CLAUDE.md hierarchy and ISSUES.md
@@ -1892,13 +1988,13 @@ Create investigation: /trinity-create-investigation
 5. JUNO: Audits complete deployment
 
 **Usage:**
-```
 
+```text
 /trinity-init
-
 ```
 
 **Expected Output:**
+
 - Complete Trinity infrastructure
 - Knowledge base initialized
 - CLAUDE.md hierarchy established
@@ -1906,8 +2002,8 @@ Create investigation: /trinity-create-investigation
 - Deployment audit report
 
 **Example:**
-```
 
+```text
 User: /trinity-init
 
 Trinity Initialization Workflow
@@ -1982,35 +2078,36 @@ Trinity is ready for use!
 **Purpose:** Verify Trinity folder structure and deployment integrity
 
 **When to Use:**
+
 - Checking Trinity deployment status
 - Troubleshooting deployment issues
 - Verifying structure compliance
 - Quick health check
 
 **What It Does:**
+
 1. Verifies directory structure (14 directories)
 2. Checks file organization
 3. Validates component counts
 4. Generates structure report
 
 **Usage:**
-```
 
+```text
 /trinity-verify
-
 ```
 
 **Example:**
-```
 
+```text
 User: /trinity-verify
 
 TAN: ✓ Trinity Structure Verification
 
 Directory Structure:
 ✓ .claude/
-✓ .claude/agents/ (19 files)
-✓ .claude/commands/ (19 files)
+✓ .claude/agents/ (18 files)
+✓ .claude/commands/ (21 files)
 ✓ .claude/trinity/
 ✓ .claude/trinity/knowledge-base/ (9 files)
 ✓ .claude/trinity/templates/
@@ -2034,27 +2131,28 @@ All Trinity components are properly organized.
 **Purpose:** Display Trinity agent directory
 
 **When to Use:**
+
 - Learning about agents
 - Quick agent reference
 - Understanding agent roles
 - Finding agent capabilities
 
 **What It Does:**
-1. Lists all 19 agents
+
+1. Lists all 18 agents
 2. Shows agent roles
 3. Displays agent categories
 4. Provides usage guidance
 
 **Usage:**
-```
 
+```text
 /trinity-agents
-
 ```
 
 **Example:**
-```
 
+```text
 User: /trinity-agents
 
 Trinity Agent Directory
@@ -2085,14 +2183,13 @@ Leadership Agents (2):
 - ALY: Chief Technology Officer
 - JUNO: Quality Auditor
 
-Infrastructure Agents (6):
+Infrastructure Agents (5):
 
 - TAN: Structure Specialist
 - ZEN: Knowledge Base Specialist
 - INO: Context Specialist
 - EIN: CI/CD Specialist
 - AJ MAESTRO: Orchestration Coordinator
-- AJ (CC): Collaboration Coordinator
 
 For detailed agent guide: See docs/guides/agent-guide.md
 For quick reference: See docs/reference/agents-quick-reference.md
@@ -2107,27 +2204,28 @@ For quick reference: See docs/reference/agents-quick-reference.md
 **Purpose:** Create Trinity Method work orders interactively
 
 **When to Use:**
+
 - Creating structured work orders
 - Documenting feature requests
 - Planning work items
 - Using work order templates
 
 **What It Does:**
+
 1. Launches work order wizard
 2. Prompts for work order details
 3. Creates structured work order document
 4. Saves to .claude/trinity/templates/work-orders/
 
 **Usage:**
-```
 
+```text
 /trinity-workorder
-
 ```
 
 **Example:**
-```
 
+```text
 User: /trinity-workorder
 
 Work Order Wizard
@@ -2173,37 +2271,38 @@ Next Steps:
 1. Review work order
 2. Start with /trinity-requirements
 3. Or orchestrate: /trinity-orchestrate
-
-````
+```
 
 ---
 
 ## Command Categories Summary
 
-| Category | Command Count | Purpose |
-|----------|---------------|---------|
-| **Session Management** | 3 | Session lifecycle (start, continue, end) |
-| **Planning** | 4 | Requirements, design, decomposition, planning |
-| **Execution** | 6 | Orchestration, guided implementation, quality assurance, documentation |
-| **Investigation** | 3 | Structured problem-solving and investigations |
-| **Infrastructure** | 1 | Complete Trinity initialization |
-| **Utility** | 3 | Verification, agent directory, work orders |
-| **Total** | **20** | Complete Trinity Method toolkit |
+| Category               | Command Count | Purpose                                                 |
+| ---------------------- | ------------- | ------------------------------------------------------- |
+| **Session Management** | 3             | Session lifecycle (start, continue, end)                |
+| **Planning**           | 4             | Requirements, design, decomposition, planning           |
+| **Execution**          | 3             | Orchestration, guided implementation, quality assurance |
+| **Investigation**      | 3             | Structured problem-solving and investigations           |
+| **Infrastructure**     | 1             | Complete Trinity initialization                         |
+| **Maintenance**        | 4             | README, docs, docs-update, changelog                    |
+| **Utility**            | 3             | Verification, agent directory, work orders              |
+| **Total**              | **21**        | Complete Trinity Method toolkit                         |
 
 ---
 
 ## Command Execution Patterns
 
 ### Sequential Planning Flow
-```bash
+
+```text
 /trinity-requirements  # MON
-↓
+|
 /trinity-design        # ROR
-↓
+|
 /trinity-decompose     # EUS
-↓
+|
 /trinity-plan          # TRA
-````
+```
 
 ### Orchestrated Execution
 
@@ -2226,6 +2325,7 @@ Next Steps:
 ```bash
 /trinity-readme        # Update README
 /trinity-docs          # Organize docs/
+/trinity-docs-update   # Update existing docs to match codebase
 /trinity-changelog     # Update CHANGELOG
 ```
 
@@ -2258,4 +2358,4 @@ Next Steps:
 
 ---
 
-**Trinity Method SDK v2.0.9** - 19 Slash Commands Reference
+**Trinity Method SDK v2.1.0** - 21 Slash Commands Reference

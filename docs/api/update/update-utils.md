@@ -9,7 +9,9 @@
 
 ## Overview
 
-The Update Utilities module provides shared helper functions for the update command workflow. Currently, it provides a single utility function for SDK path resolution, delegating to the centralized SDK path utility.
+The Update Utilities module provides shared helper functions for the update command workflow.
+Currently, it provides a single utility function for SDK path resolution, delegating to the
+centralized SDK path utility.
 
 ### Key Features
 
@@ -107,7 +109,7 @@ const sdkPath = await getSDKPath();
 
 ## Centralized SDK Path Resolution
 
-### Why Delegation?
+### Why Delegation
 
 The `getSDKPath()` function in this module is intentionally thin, delegating to the centralized utility:
 

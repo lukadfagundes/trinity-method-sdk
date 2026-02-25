@@ -55,14 +55,14 @@ jobs:
       - name: Extract changelog section
         id: extract-notes
         run: |
-          node -e "
+          node <<'SCRIPT'
             const fs = require('fs');
             const version = process.env.GITHUB_REF_NAME.replace(/^v/, '');
             const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
 
             // Find the section for this version: ## [X.Y.Z]
             const sectionRegex = new RegExp(
-              '## \\\\[' + version.replace(/\\./g, '\\\\.') + '\\\\][^\\n]*\\n([\\s\\S]*?)(?=\\n## \\\\[|$)'
+              '## \\[' + version.replace(/\./g, '\\.') + '\\][^\\n]*\\n([\\s\\S]*?)(?=\\n## \\[|$)'
             );
             const match = changelog.match(sectionRegex);
 
@@ -83,7 +83,7 @@ jobs:
             // Write to GITHUB_OUTPUT with EOF delimiter for multiline
             const output = 'notes<<RELEASE_NOTES_EOF\n' + notes + '\nRELEASE_NOTES_EOF\n';
             fs.appendFileSync(process.env.GITHUB_OUTPUT, output);
-          "
+          SCRIPT
 
   # =============================================
   # Job 3: Validate tag version matches package.json

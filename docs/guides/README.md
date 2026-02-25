@@ -10,11 +10,11 @@ User guides and tutorials for Trinity Method SDK.
   - Prerequisites (Node.js ≥16.9.0)
   - Installation (global and local)
   - Trinity deployment walkthrough
-  - What gets deployed (64 components)
+  - What gets deployed (88 components)
   - Core workflow explanation
   - Common troubleshooting
 
-- **[Agent Guide](agent-guide.md)** - Deep dive into the 19-agent Trinity team ⭐ **ESSENTIAL**
+- **[Agent Guide](agent-guide.md)** - Deep dive into the 18-agent Trinity team ⭐ **ESSENTIAL**
   - Agent categories (Planning, Execution, Support, Leadership, Infrastructure)
   - Detailed agent profiles with roles and tools
   - When to use each agent
@@ -55,7 +55,7 @@ User guides and tutorials for Trinity Method SDK.
 | Category            | Guides   | Purpose                                |
 | ------------------- | -------- | -------------------------------------- |
 | **Getting Started** | 1 guide  | Quick start and basic setup            |
-| **Core Concepts**   | 1 guide  | Understanding the 19-agent system      |
+| **Core Concepts**   | 1 guide  | Understanding the 18-agent system      |
 | **Deployment**      | 2 guides | Deployment and multi-framework support |
 | **Problem-Solving** | 1 guide  | Investigation templates and workflows  |
 

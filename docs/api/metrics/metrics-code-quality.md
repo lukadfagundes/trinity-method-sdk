@@ -9,7 +9,9 @@
 
 ## Overview
 
-The Code Quality Metrics module scans source files to identify code quality indicators such as TODO comments, console statements, and commented-out code blocks. It provides quantitative metrics for technical debt and debugging artifacts.
+The Code Quality Metrics module scans source files to identify code quality indicators
+such as TODO comments, console statements, and commented-out code blocks. It provides
+quantitative metrics for technical debt and debugging artifacts.
 
 ### Key Features
 
@@ -96,7 +98,7 @@ async function countCommentsInFile(file: string): Promise<number>;
 
 **Algorithm:**
 
-```
+```text
 1. Read file content
 2. Split into lines
 3. For each line:
@@ -275,7 +277,7 @@ const code = 'active';
 
 ### TODO Count Thresholds
 
-```
+```text
 0-10:    Excellent (minimal technical debt)
 11-50:   Good (manageable technical debt)
 51-100:  Fair (consider cleanup sprint)
@@ -284,16 +286,16 @@ const code = 'active';
 
 ### Console Statements Thresholds
 
-```
+```text
 0-5:     Production-ready (debugging removed)
 6-20:    Development (some debugging left)
 21-50:   Needs cleanup (too many debug statements)
 50+:     Critical (excessive debugging artifacts)
 ```
 
-### Commented Code Blocks
+### Commented Code Block Thresholds
 
-```
+```text
 0:       Clean (no dead code)
 1-5:     Acceptable (minor dead code)
 6-15:    Needs review (moderate dead code)
@@ -432,7 +434,7 @@ describe('Code Quality Metrics', () => {
 
 ## Commented Code Detection Algorithm
 
-### Why 3+ Consecutive Lines?
+### Why 3+ Consecutive Lines
 
 The heuristic balances false positives and false negatives:
 

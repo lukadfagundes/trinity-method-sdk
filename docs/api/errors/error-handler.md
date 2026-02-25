@@ -8,7 +8,8 @@
 
 ## Overview
 
-The Error Handler provides centralized error handling with automatic cleanup task execution, graceful error display, and debug mode support.
+The Error Handler provides centralized error handling with automatic cleanup task
+execution, graceful error display, and debug mode support.
 
 ---
 
@@ -110,7 +111,7 @@ DEBUG=true trinity deploy
 
 **Example Cleanup:**
 
-```
+```text
 Cleaning up...
   ✓ Remove backup directory
   ✓ Restore original files

@@ -29,7 +29,7 @@
 ### Feature Development
 - [ ] **{{FEATURE_1}}**
   - Investigation Required: YES
-  - Pattern Check: .claude/trinity/patterns/
+  - Pattern Check: Technical-Debt.md#pattern-library
   - Tests Required: Unit + Integration
   - Documentation: Update ARCHITECTURE.md
   - Estimated: {{TIME_ESTIMATE}}
