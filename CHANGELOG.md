@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **CLAUDE.md context file refresh in `trinity update`** - Update command now refreshes
+  CLAUDE.md hierarchy and EMPLOYEE-DIRECTORY.md during updates (Issue #23)
+  - Root `CLAUDE.md` and `.claude/trinity/CLAUDE.md` are always overwritten (SDK-managed)
+  - `.claude/EMPLOYEE-DIRECTORY.md` is always overwritten (SDK-managed)
+  - Source directory `CLAUDE.md` files are deployed if missing, skipped if they exist
+  - `tests/CLAUDE.md` is deployed if `tests/` exists but `CLAUDE.md` is missing
+  - New `claudeFilesUpdated` stat displayed in update summary
+  - Dry-run preview now lists CLAUDE.md and Employee Directory updates
+
 ## [2.2.2] - 2026-02-25
 
 ### Changed

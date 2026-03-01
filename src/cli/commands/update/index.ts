@@ -27,6 +27,7 @@ import { updateAgents } from './agents.js';
 import { updateCommands } from './commands.js';
 import { updateTemplates } from './templates.js';
 import { updateKnowledgeBase } from './knowledge-base.js';
+import { updateClaudeFiles } from './claude-files.js';
 import { verifyUpdateDeployment, updateVersionFile } from './verification.js';
 import { displayUpdateSummary, displayDryRunPreview } from './summary.js';
 import { UpdateStats } from './types.js';
@@ -48,6 +49,7 @@ export async function update(options: UpdateOptions): Promise<void> {
     templatesUpdated: 0,
     knowledgeBaseUpdated: 0,
     commandsUpdated: 0,
+    claudeFilesUpdated: 0,
     filesUpdated: 0,
     legacyMigrated: false,
     gitignoreUpdated: false,
@@ -117,6 +119,9 @@ export async function update(options: UpdateOptions): Promise<void> {
     await updateCommands(spinner, stats);
     await updateTemplates(spinner, stats);
     await updateKnowledgeBase(spinner, stats);
+
+    // STEP 8.5: Update CLAUDE.md context files and EMPLOYEE-DIRECTORY
+    await updateClaudeFiles(spinner, stats);
 
     // STEP 9: Restore user content
     await restoreUserContent(backupDir, spinner);

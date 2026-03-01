@@ -52,8 +52,10 @@ settings.local.json
 
 # Projects Area
 projects/
-
 important_workflows/
+
+# Temp Files
+temp/
 
 # Trinity Method SDK
 .claude/
