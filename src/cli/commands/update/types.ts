@@ -9,6 +9,7 @@ export interface UpdateStats {
   templatesUpdated: number;
   knowledgeBaseUpdated: number;
   commandsUpdated: number;
+  claudeFilesUpdated: number;
   filesUpdated: number;
   legacyMigrated: boolean;
   gitignoreUpdated: boolean;

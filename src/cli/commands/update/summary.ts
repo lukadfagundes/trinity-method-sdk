@@ -26,6 +26,7 @@ export function displayUpdateSummary(
   console.log(chalk.white(`   Commands Updated: ${stats.commandsUpdated}`));
   console.log(chalk.white(`   Templates Updated: ${stats.templatesUpdated}`));
   console.log(chalk.white(`   Knowledge Base Updated: ${stats.knowledgeBaseUpdated}`));
+  console.log(chalk.white(`   Claude Files Updated: ${stats.claudeFilesUpdated}`));
   if (stats.legacyMigrated) {
     console.log(chalk.yellow(`   Legacy Migration: trinity/ → .claude/trinity/`));
   }
@@ -34,7 +35,7 @@ export function displayUpdateSummary(
   }
   console.log(
     chalk.white(
-      `   Total Files Updated: ${stats.agentsUpdated + stats.commandsUpdated + stats.templatesUpdated + stats.knowledgeBaseUpdated}`
+      `   Total Files Updated: ${stats.agentsUpdated + stats.commandsUpdated + stats.templatesUpdated + stats.knowledgeBaseUpdated + stats.claudeFilesUpdated}`
     )
   );
   console.log('');
@@ -53,6 +54,8 @@ export function displayDryRunPreview(oldVersion: string, newVersion: string): vo
   console.log(chalk.gray(`   • 16 slash commands in .claude/commands/`));
   console.log(chalk.gray(`   • 6 work order templates in .claude/trinity/templates/`));
   console.log(chalk.gray(`   • Knowledge base files (Trinity.md, CODING-PRINCIPLES.md, etc.)`));
+  console.log(chalk.gray(`   • CLAUDE.md context files (root, trinity, source dirs, tests)`));
+  console.log(chalk.gray(`   • Employee Directory`));
   console.log(chalk.gray(`   • Version file: ${oldVersion} → ${newVersion}`));
   console.log('');
   console.log(chalk.white('   Would preserve:'));
