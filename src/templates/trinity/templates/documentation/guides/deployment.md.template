@@ -107,48 +107,16 @@ heroku logs --tail
 
 ---
 
-### Option 2: Vercel
+### Option 2: Platform-as-a-Service
 
-#### Setup
+Many PaaS providers support deployment via Git push or CLI:
 
-1. Install Vercel CLI:
-```bash
-npm install -g vercel
-```
+- **Vercel:** Best for frontend/serverless
+- **Railway:** Supports many languages and databases
+- **Render:** Auto-detects framework, supports background workers
+- **Fly.io:** Global deployment with Docker support
 
-2. Login to Vercel:
-```bash
-vercel login
-```
-
-#### Deploy
-
-```bash
-vercel --prod
-```
-
-#### Configuration
-
-Create `vercel.json`:
-
-```json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "{{MAIN_SERVER_FILE}}",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "{{MAIN_SERVER_FILE}}"
-    }
-  ],
-  "env": {{VERCEL_ENV_VARS}}
-}
-```
+Follow the chosen platform's documentation for the project's {{FRAMEWORK}}.
 
 ---
 
@@ -156,21 +124,22 @@ Create `vercel.json`:
 
 #### Dockerfile
 
+Create a Dockerfile appropriate for the project's {{LANGUAGE}} and {{FRAMEWORK}}:
+
 ```dockerfile
-FROM node:{{NODE_VERSION}}-alpine
+# Use the official base image for the project's language/runtime
+FROM <language-runtime-image>
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
+# Copy dependency manifest and install dependencies
+COPY <manifest-files> ./
 RUN {{PACKAGE_MANAGER}} install --production
 
 # Copy application code
 COPY . .
 
-# Build application
+# Build application (if applicable)
 RUN {{BUILD_COMMAND}}
 
 # Expose port
@@ -227,15 +196,13 @@ docker-compose up -d
 # Update system
 sudo apt update && sudo apt upgrade -y
 
-# Install Node.js
-curl -fsSL https://deb.nodesource.com/setup_{{NODE_VERSION}}.x | sudo -E bash -
-sudo apt install -y nodejs
+# Install the project's language runtime
+# Follow the official installation guide for {{LANGUAGE}}
 
-# Install {{PACKAGE_MANAGER}}
+# Install {{PACKAGE_MANAGER}} (if not bundled with the runtime)
 {{PACKAGE_MANAGER_INSTALL_COMMAND}}
 
-# Install PM2 (process manager)
-sudo npm install -g pm2
+# Install a process manager (e.g., PM2, supervisord, systemd service)
 ```
 
 #### Deploy Application
@@ -255,10 +222,8 @@ cd {{PROJECT_NAME}}
 cp .env.example .env
 nano .env  # Edit environment variables
 
-# Start with PM2
-pm2 start {{START_SCRIPT}} --name {{PROJECT_NAME}}
-pm2 save
-pm2 startup
+# Start with a process manager
+# Configure the chosen process manager to run and restart the application
 ```
 
 #### Nginx Configuration
@@ -303,7 +268,6 @@ services:
     build_command: {{BUILD_COMMAND}}
     run_command: {{START_COMMAND}}
     http_port: {{PORT}}
-    environment_slug: node-js
     envs:
 {{DIGITALOCEAN_ENV_VARS}}
 
@@ -354,34 +318,10 @@ sudo systemctl enable certbot.timer
 
 ### Production Optimizations
 
-1. **Enable Compression:**
-```typescript
-import compression from 'compression';
-app.use(compression());
-```
-
-2. **Enable Caching:**
-```typescript
-app.use((req, res, next) => {
-  res.set('Cache-Control', 'public, max-age=300');
-  next();
-});
-```
-
-3. **Connection Pooling:**
-{{CONNECTION_POOLING_CONFIG}}
-
-4. **Rate Limiting:**
-```typescript
-import rateLimit from 'express-rate-limit';
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-});
-
-app.use('/api/', limiter);
-```
+1. **Enable Compression:** Use response compression middleware appropriate for {{FRAMEWORK}}
+2. **Enable Caching:** Set `Cache-Control` headers for static assets and cacheable responses
+3. **Connection Pooling:** Configure database connection pooling via {{CONNECTION_POOLING_CONFIG}}
+4. **Rate Limiting:** Implement rate limiting for API endpoints (e.g., 100 requests per 15 minutes per IP) using {{FRAMEWORK}}-appropriate middleware
 
 ---
 
@@ -389,30 +329,23 @@ app.use('/api/', limiter);
 
 ### Health Check Endpoint
 
-```typescript
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    database: await checkDatabaseConnection()
-  });
-});
+Implement a `GET /health` endpoint that returns:
+
+```json
+{
+  "status": "healthy",
+  "timestamp": "ISO-8601 timestamp",
+  "uptime": "process uptime",
+  "database": "connection status"
+}
 ```
 
 ### Readiness Check
 
-```typescript
-app.get('/ready', async (req, res) => {
-  const checks = {
-    database: await checkDatabaseConnection(),
-    dependencies: await checkDependencies()
-  };
-
-  const ready = Object.values(checks).every(check => check === true);
-  res.status(ready ? 200 : 503).json(checks);
-});
-```
+Implement a `GET /ready` endpoint that:
+- Checks database connectivity
+- Checks external dependency availability
+- Returns 200 if all checks pass, 503 if any fail
 
 ---
 
@@ -479,10 +412,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '{{NODE_VERSION}}'
+      - name: Setup runtime
+        # Use the appropriate setup action for the project's language
 
       - name: Install dependencies
         run: {{PACKAGE_MANAGER}} install

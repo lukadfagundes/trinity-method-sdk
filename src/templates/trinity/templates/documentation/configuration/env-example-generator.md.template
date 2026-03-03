@@ -11,6 +11,7 @@
 This template provides a **rule-based engine** for generating sensible .env.example values. You MUST apply these rules in priority order to each discovered environment variable.
 
 **Critical Requirements:**
+
 - Apply rules in the order listed (Rule 1 has highest priority)
 - Stop at the first matching rule for each variable
 - NEVER create empty values (KEY= with no value)
@@ -23,70 +24,42 @@ This template provides a **rule-based engine** for generating sensible .env.exam
 ### Rule 1: Database URLs (Highest Priority)
 
 **Pattern Match:**
+
 - Key contains "DATABASE" AND "URL"
 - Key contains "DB_URL"
 - Key equals "DATABASE_URL"
 
 **Generation Logic:**
 
-```javascript
-if (original_value.includes("file:")) {
-  // SQLite detected
-  example_value = original_value; // Keep SQLite paths (not sensitive)
-}
-else if (original_value.includes("postgresql") || original_value.includes("postgres")) {
-  example_value = "postgresql://user:password@localhost:5432/{{PROJECT_NAME}}_db";
-}
-else if (original_value.includes("mongodb") || original_value.includes("mongo")) {
-  example_value = "mongodb://localhost:27017/{{PROJECT_NAME}}_db";
-}
-else if (original_value.includes("mysql")) {
-  example_value = "mysql://user:password@localhost:3306/{{PROJECT_NAME}}_db";
-}
-else if (original_value.includes("redis")) {
-  example_value = "redis://localhost:6379";
-}
-else {
-  // Generic database URL fallback
-  example_value = "file:./dev.db"; // Safe SQLite default
-}
-```
+Detect the database type from the original value or project dependencies:
 
-**Examples:**
-- `DATABASE_URL=postgresql://prod@aws.com/db` → `postgresql://user:password@localhost:5432/myapp_db`
-- `DATABASE_URL=file:./dev.db` → `file:./dev.db` (kept as-is)
+- **PostgreSQL** (value contains "postgresql" or "postgres") -> `postgresql://user:password@localhost:5432/{{PROJECT_NAME}}_db`
+- **MongoDB** (value contains "mongodb" or "mongo") -> `mongodb://localhost:27017/{{PROJECT_NAME}}_db`
+- **MySQL** (value contains "mysql") -> `mysql://user:password@localhost:3306/{{PROJECT_NAME}}_db`
+- **Redis** (value contains "redis") -> `redis://localhost:6379`
+- **SQLite** (value contains "file:" or "sqlite") -> Keep original value (SQLite paths are not sensitive)
+- **Default fallback** -> `file:./dev.db` (safe SQLite default)
 
 ---
 
 ### Rule 2: Port Numbers
 
 **Pattern Match:**
+
 - Key equals "PORT"
 - Key ends with "_PORT"
 
 **Generation Logic:**
 
-```javascript
-if (/^\d+$/.test(original_value)) {
-  // Original value is numeric - keep it (ports aren't sensitive)
-  example_value = original_value;
-}
-else {
-  // Non-numeric or missing - use sensible default
-  example_value = "3001"; // Common backend port
-}
-```
-
-**Examples:**
-- `PORT=3000` → `3000` (kept as-is)
-- `API_PORT=8080` → `8080` (kept as-is)
-- `PORT=` → `3001` (default)
+- If original value is numeric, keep it (ports are not sensitive)
+- If missing or non-numeric, use the default port for the project's {{FRAMEWORK}} or `8080` as a generic fallback
 
 ---
 
 ### Rule 3: Frontend/CORS URLs
 
 **Pattern Match:**
+
 - Key contains "FRONTEND"
 - Key contains "ORIGIN"
 - Key contains "CLIENT_URL"
@@ -94,127 +67,80 @@ else {
 
 **Generation Logic:**
 
-```javascript
-// Check if Next.js project
-if ({{FRAMEWORK}} === "Next.js" || exists("next.config.js")) {
-  example_value = "http://localhost:3000"; // Next.js default
-}
-// Check if Vite project
-else if (exists("vite.config.ts") || exists("vite.config.js")) {
-  example_value = "http://localhost:5173"; // Vite default
-}
-// Check if Create React App
-else if (exists("react-scripts") in package.json) {
-  example_value = "http://localhost:3000"; // CRA default
-}
-else {
-  example_value = "http://localhost:5173"; // Modern default (Vite)
-}
-```
-
-**Examples:**
-- `FRONTEND_URL=https://prod.app.com` → `http://localhost:5173`
-- `CORS_ORIGIN=*` → `http://localhost:3000` (if Next.js detected)
+- Use `http://localhost:<port>` where `<port>` is the default development port for the project's {{FRAMEWORK}}
+- If no framework-specific default is known, use `http://localhost:3000`
 
 ---
 
 ### Rule 4: API Keys
 
 **Pattern Match:**
+
 - Key contains "API_KEY"
 - Key contains "APIKEY"
 - Key ends with "_KEY" (but not SECRET or JWT)
 
 **Generation Logic:**
 
-```javascript
-// Extract service name from key (first word before underscore)
-const service_name = key.split('_')[0].toLowerCase();
-example_value = `your_${service_name}_api_key_here`;
-```
+- Extract service name from key (text before first underscore, lowercased)
+- Generate: `your_<service_name>_api_key_here`
 
 **Examples:**
-- `STRIPE_API_KEY=sk_live_xxx` → `your_stripe_api_key_here`
-- `OPENAI_API_KEY=sk-xxx` → `your_openai_api_key_here`
-- `GITHUB_APIKEY=ghp_xxx` → `your_github_api_key_here`
+
+- `STRIPE_API_KEY=sk_live_xxx` -> `your_stripe_api_key_here`
+- `OPENAI_API_KEY=sk-xxx` -> `your_openai_api_key_here`
 
 ---
 
 ### Rule 5: Client IDs (OAuth)
 
 **Pattern Match:**
+
 - Key contains "CLIENT_ID"
 - Key contains "APP_ID"
 
 **Generation Logic:**
 
-```javascript
-// Extract service name from key
-const service_name = key.split('_')[0].toLowerCase();
-example_value = `your_${service_name}_client_id_here`;
-```
-
-**Examples:**
-- `GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com` → `your_google_client_id_here`
-- `GITHUB_CLIENT_ID=Iv1.xxx` → `your_github_client_id_here`
+- Extract service name from key
+- Generate: `your_<service_name>_client_id_here`
 
 ---
 
 ### Rule 6: Client Secrets (OAuth)
 
 **Pattern Match:**
+
 - Key contains "SECRET"
 - Key contains "CLIENT_SECRET"
 - Key ends with "_SECRET" (but not JWT_SECRET)
 
 **Generation Logic:**
 
-```javascript
-// Extract service name from key
-const service_name = key.split('_')[0].toLowerCase();
-example_value = `your_${service_name}_client_secret_here`;
-```
-
-**Examples:**
-- `GOOGLE_CLIENT_SECRET=GOCSPX-xxx` → `your_google_client_secret_here`
-- `AWS_SECRET_ACCESS_KEY=xxx` → `your_aws_secret_access_key_here`
+- Extract service name from key
+- Generate: `your_<service_name>_client_secret_here`
 
 ---
 
 ### Rule 7: OAuth Redirect URIs
 
 **Pattern Match:**
+
 - Key contains "REDIRECT" AND "URI"
 - Key contains "CALLBACK" AND "URL"
 
 **Generation Logic:**
 
-```javascript
-// Extract service name from key
-const service_name = key.match(/^([A-Z]+)_/)?.[1]?.toLowerCase() || "oauth";
-
-// Check discovered endpoints for matching callback route
-const callback_endpoint = {{DISCOVERED_ENDPOINTS}}.find(ep =>
-  ep.path.includes(service_name) && ep.path.includes("callback")
-);
-
-if (callback_endpoint) {
-  example_value = `http://localhost:{{PORT}}${callback_endpoint.path}`;
-}
-else {
-  example_value = `http://localhost:{{PORT}}/api/${service_name}/callback`;
-}
-```
-
-**Examples:**
-- `GOOGLE_REDIRECT_URI=https://prod.com/auth/google/callback` → `http://localhost:3001/api/auth/google/callback`
-- `OAUTH_CALLBACK_URL=https://prod.com/callback` → `http://localhost:3001/api/oauth/callback`
+- Extract service name from key
+- Check discovered endpoints for a matching callback route
+- If found: `http://localhost:{{PORT}}<callback_path>`
+- If not found: `http://localhost:{{PORT}}/api/<service_name>/callback`
 
 ---
 
 ### Rule 8: JWT Secrets
 
 **Pattern Match:**
+
 - Key contains "JWT" AND "SECRET"
 - Key equals "JWT_SECRET"
 - Key equals "ACCESS_TOKEN_SECRET"
@@ -222,88 +148,69 @@ else {
 
 **Generation Logic:**
 
-```javascript
-example_value = "your_jwt_secret_key_here_min_32_chars";
-```
-
-**Examples:**
-- `JWT_SECRET=prod-secret-xxx` → `your_jwt_secret_key_here_min_32_chars`
-- `ACCESS_TOKEN_SECRET=xxx` → `your_jwt_secret_key_here_min_32_chars`
+- Generate: `your_jwt_secret_key_here_min_32_chars`
 
 ---
 
 ### Rule 9: Boolean Flags
 
 **Pattern Match:**
+
 - Original value is exactly "true" or "false" (case-insensitive)
 
 **Generation Logic:**
 
-```javascript
-// Keep original boolean value (not sensitive)
-example_value = original_value.toLowerCase();
-```
-
-**Examples:**
-- `DEBUG=true` → `true`
-- `ENABLE_LOGGING=false` → `false`
+- Keep original boolean value (not sensitive)
 
 ---
 
-### Rule 10: Node Environment
+### Rule 10: Environment Mode
 
 **Pattern Match:**
-- Key equals "NODE_ENV"
+
+- Key equals "NODE_ENV", "FLASK_ENV", "RAILS_ENV", "RACK_ENV", "GO_ENV", "APP_ENV", "ENVIRONMENT", or "ENV"
 
 **Generation Logic:**
 
-```javascript
-example_value = "development";
-```
-
-**Examples:**
-- `NODE_ENV=production` → `development`
+- Generate: `development`
 
 ---
 
 ### Rule 11: Default Fallback (Lowest Priority)
 
 **Pattern Match:**
+
 - No other rule matched
 
 **Generation Logic:**
 
-```javascript
-// Generate helpful TODO comment
-example_value = `# TODO: Add example value for ${key}`;
-```
-
-**Examples:**
-- `CUSTOM_CONFIG=xxx` → `# TODO: Add example value for CUSTOM_CONFIG`
-- `MY_SPECIAL_KEY=xxx` → `# TODO: Add example value for MY_SPECIAL_KEY`
+- Generate: `# TODO: Add example value for <KEY>`
 
 ---
 
 ## Enforcement Requirements
 
 **APO-3 MUST:**
-1. ✅ Apply these rules to EVERY environment variable
-2. ✅ Apply rules in priority order (stop at first match)
-3. ✅ NEVER create empty values (KEY= with no value)
-4. ✅ Use {{PROJECT_NAME}}, {{PORT}}, {{FRAMEWORK}} variables where applicable
-5. ✅ Check {{DISCOVERED_ENDPOINTS}} for OAuth callback routes
+
+1. Apply these rules to EVERY environment variable
+2. Apply rules in priority order (stop at first match)
+3. NEVER create empty values (KEY= with no value)
+4. Use {{PROJECT_NAME}}, {{PORT}}, {{FRAMEWORK}} variables where applicable
+5. Check {{DISCOVERED_ENDPOINTS}} for OAuth callback routes
 
 **APO-3 MUST NOT:**
-1. ❌ Skip any environment variable keys
-2. ❌ Create keys with empty values
-3. ❌ Use production URLs or secrets in examples
-4. ❌ Ignore the rule priority order
+
+1. Skip any environment variable keys
+2. Create keys with empty values
+3. Use production URLs or secrets in examples
+4. Ignore the rule priority order
 
 ---
 
 ## Validation
 
 **Phase 2.5 Validation 7 will verify:**
+
 - No empty values in .env.example
 - All keys from .env are present in .env.example
 - All values are sensible examples or placeholders
@@ -317,70 +224,9 @@ APO-3 will receive these pre-filled variables from JUNO's audit report:
 
 - `{{PROJECT_NAME}}` - Project name
 - `{{PORT}}` - Discovered backend port
-- `{{FRAMEWORK}}` - Frontend framework (if detected)
+- `{{FRAMEWORK}}` - Framework (if detected)
 - `{{DISCOVERED_ENDPOINTS}}` - Array of API endpoint objects with path and method
 - `{{ENV_KEYS}}` - Array of environment variable keys discovered
-
-**Example JUNO SECTION C Structure:**
-
-```markdown
-## File 1: .env.example
-
-**Template:** .claude/trinity/templates/documentation/config/env-example-generator.md.template
-
-**Variables to Replace:**
-- {{PROJECT_NAME}}: "dnd-tool"
-- {{PORT}}: "3001"
-- {{FRAMEWORK}}: "React (Vite)"
-- {{DISCOVERED_ENDPOINTS}}: [...]
-- {{ENV_KEYS}}: ["DATABASE_URL", "PORT", "JWT_SECRET", "STRIPE_API_KEY", ...]
-
-**Output:** .env.example
-**Required:** YES
-```
-
----
-
-## Usage Example
-
-**Input (from .env):**
-```
-DATABASE_URL=postgresql://prod@aws.rds.com/mydb
-PORT=3001
-FRONTEND_URL=https://app.production.com
-STRIPE_API_KEY=sk_live_xxxxxxxxxx
-GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=GOCSPX-xxxxxx
-JWT_SECRET=prod-secret-key-do-not-share
-DEBUG=true
-NODE_ENV=production
-```
-
-**Output (.env.example after applying rules):**
-```
-# Database Configuration
-DATABASE_URL=postgresql://user:password@localhost:5432/dnd_tool_db
-
-# Server Configuration
-PORT=3001
-NODE_ENV=development
-
-# Frontend Configuration
-FRONTEND_URL=http://localhost:5173
-
-# Stripe Integration
-STRIPE_API_KEY=your_stripe_api_key_here
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your_google_client_id_here
-GOOGLE_CLIENT_SECRET=your_google_client_secret_here
-
-# Security
-JWT_SECRET=your_jwt_secret_key_here_min_32_chars
-
-# Development
-DEBUG=true
-```
 
 ---
 

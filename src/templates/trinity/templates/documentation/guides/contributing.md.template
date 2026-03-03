@@ -180,30 +180,17 @@ Closes #123
 
 ### Writing Tests
 
-**Unit Tests:**
-```typescript
-describe('{{EXAMPLE_FUNCTION}}', () => {
-  it('should {{EXPECTED_BEHAVIOR}}', () => {
-    const result = {{EXAMPLE_FUNCTION}}(input);
-    expect(result).toBe(expectedOutput);
-  });
+Write tests using the project's test framework and conventions:
 
-  it('should handle edge case', () => {
-    expect(() => {{EXAMPLE_FUNCTION}}(null)).toThrow();
-  });
-});
-```
+**Unit Tests:**
+- Test individual functions with expected inputs and outputs
+- Test edge cases (null, empty, invalid input)
+- Test error conditions
 
 **Integration Tests:**
-```typescript
-describe('{{EXAMPLE_API_ENDPOINT}}', () => {
-  it('should return {{EXPECTED_RESPONSE}}', async () => {
-    const response = await request(app).get('/api/{{ENDPOINT}}');
-    expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({{EXPECTED_SHAPE}});
-  });
-});
-```
+- Test API endpoints with HTTP requests
+- Verify status codes and response shapes
+- Test with authentication where applicable
 
 ---
 
@@ -339,7 +326,7 @@ Update documentation when:
 - Steps to reproduce
 - Expected behavior
 - Actual behavior
-- Environment details (OS, Node version, etc.)
+- Environment details (OS, language runtime version, etc.)
 - Error messages and stack traces
 
 **Template:**
@@ -360,7 +347,7 @@ Update documentation when:
 
 ## Environment
 - OS: [e.g., macOS 12.0]
-- Node: [e.g., 16.14.0]
+- Runtime: [e.g., language version]
 - {{PROJECT_NAME}} Version: [e.g., 1.2.3]
 
 ## Additional Context
@@ -408,13 +395,13 @@ Update documentation when:
 ### Common Issues
 
 **Issue:** Tests fail locally but pass in CI
-- **Solution:** Ensure your environment matches CI (Node version, dependencies)
+- **Solution:** Ensure your environment matches CI (runtime version, dependencies)
 
 **Issue:** Linter fails with "unknown rule"
-- **Solution:** Run `{{PACKAGE_MANAGER}} install` to update ESLint plugins
+- **Solution:** Run `{{PACKAGE_MANAGER}} install` to update linter plugins
 
-**Issue:** Build fails with type errors
-- **Solution:** Run `{{PACKAGE_MANAGER}} install` and restart TypeScript server
+**Issue:** Build fails with type or compilation errors
+- **Solution:** Run `{{PACKAGE_MANAGER}} install` and restart the language server
 
 ---
 

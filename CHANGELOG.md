@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Trinity docs templates are now framework-agnostic** - Removed Node.js/Express/TypeScript bias
+  from 21 templates across discovery, guides, investigations, validation, and reports (Issue #25)
+  - Replaced framework-specific code examples with generic instructions using `{{FRAMEWORK}}`,
+    `{{LANGUAGE}}`, and `{{PACKAGE_MANAGER}}` template variables
+  - Templates now work correctly for Node.js, Python, Rust, Flutter, and Go projects
+  - Net reduction of 684 lines by replacing verbose code samples with concise instructions
+
 ## [2.2.3] - 2026-02-25
 
 ### Added

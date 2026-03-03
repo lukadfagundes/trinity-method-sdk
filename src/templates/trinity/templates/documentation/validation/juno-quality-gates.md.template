@@ -52,12 +52,8 @@ This template defines the quality gates JUNO uses to validate documentation audi
 ### Gate 1: Report Existence
 
 **Check:** JUNO report file exists in session state
-```javascript
-if (!global.trinity_docs_session.audit_report) {
-  ERROR: "CRITICAL - JUNO audit report missing";
-  ABORT_COMMAND();
-}
-```
+
+If the audit report is missing → CRITICAL error, abort command.
 
 **Pass Criteria:** Report object exists in global state
 
@@ -66,15 +62,10 @@ if (!global.trinity_docs_session.audit_report) {
 ### Gate 2: Report Size Validation
 
 **Check:** Report has minimum required content
-```javascript
-const report_json = JSON.stringify(global.trinity_docs_session.audit_report);
-if (report_json.length < 500) {
-  ERROR: "CRITICAL - JUNO report too small, likely incomplete";
-  ABORT_COMMAND();
-}
-```
 
-**Pass Criteria:** Report JSON representation ≥500 characters
+If the report content is less than 500 characters → CRITICAL error, abort command.
+
+**Pass Criteria:** Report representation ≥500 characters
 
 ---
 
@@ -87,14 +78,9 @@ if (report_json.length < 500) {
 - **Section B:** API Documentation & Development Guides
 - **Section C:** Configuration & Setup Documentation
 
-```javascript
-if (!report.section_a || !report.section_b || !report.section_c) {
-  ERROR: "CRITICAL - Missing required sections";
-  ABORT_COMMAND();
-}
-```
+If any of the 3 sections are missing → CRITICAL error, abort command.
 
-**Pass Criteria:** All 3 sections exist as objects
+**Pass Criteria:** All 3 sections exist
 
 ---
 
@@ -114,21 +100,12 @@ if (!report.section_a || !report.section_b || !report.section_c) {
 **Critical Variables (Section C):**
 - `{{ENV_VARIABLES}}` - Can be empty but must exist as field
 
-```javascript
-// Example validation logic
-const missing_critical = [];
-if (!report.variables.PROJECT_NAME) missing_critical.push('PROJECT_NAME');
-if (!report.variables.ARCHITECTURE_TYPE) missing_critical.push('ARCHITECTURE_TYPE');
+**Validation Logic:**
 
-if (missing_critical.length > 0) {
-  WARNING: `HIGH - Critical variables missing: ${missing_critical.join(', ')}`;
-  global.trinity_docs_session.juno_incomplete = true;
-  global.trinity_docs_session.juno_issues.push({
-    severity: 'HIGH',
-    variables: missing_critical
-  });
-}
-```
+Check each critical variable. If any are missing:
+- Log a HIGH severity warning listing the missing variables
+- Set `juno_incomplete = true`
+- Record the missing variables for fallback handling
 
 **Pass Criteria (CRITICAL):** PROJECT_NAME exists
 **Pass Criteria (HIGH):** At least 70% of expected variables populated
@@ -146,21 +123,12 @@ if (missing_critical.length > 0) {
 - `"N/A"` (in critical fields)
 - Empty strings for required fields
 
-```javascript
-const report_str = JSON.stringify(report);
-const placeholders = [
-  /\[TODO\]/gi,
-  /\[PLACEHOLDER\]/gi,
-  /{{[A-Z_]+}}/g  // Unreplaced template variables
-];
+**Forbidden Placeholders:**
+- `[TODO]`
+- `[PLACEHOLDER]`
+- `{{VARIABLE_NAME}}` (unreplaced template variables)
 
-placeholders.forEach(pattern => {
-  if (pattern.test(report_str)) {
-    WARNING: `HIGH - Placeholder detected in JUNO report: ${pattern}`;
-    global.trinity_docs_session.juno_incomplete = true;
-  }
-});
-```
+If any are found in the report → HIGH warning, set `juno_incomplete = true`.
 
 **Pass Criteria:** Zero placeholders in critical sections
 
@@ -170,16 +138,9 @@ placeholders.forEach(pattern => {
 
 **Check:** All listed components exist in codebase
 
-```javascript
-// For each component in report.section_a.components
-for (const component of report.section_a.components) {
-  const files = Glob(component.glob_pattern);
-  if (files.length === 0) {
-    ERROR: `CRITICAL - Component ${component.name} not found in codebase`;
-    ABORT_COMMAND();
-  }
-}
-```
+For each component listed in the report, verify it exists in the codebase using Glob.
+
+If any listed component is not found → CRITICAL error, abort command.
 
 **Pass Criteria:** 100% of listed components verified via Glob
 **Note:** This is ZERO TOLERANCE - fake components cause abort
@@ -190,17 +151,16 @@ for (const component of report.section_a.components) {
 
 ### Score Formula
 
-```javascript
-let score = 100;
+```
+score = 100
 
-// Deductions
-if (juno_incomplete) score -= 15;
-if (placeholders_found > 0) score -= (placeholders_found * 5);
-if (missing_variables > 3) score -= ((missing_variables - 3) * 3);
-if (section_quality < 70) score -= (70 - section_quality);
+Deductions:
+- If juno_incomplete: -15
+- Per placeholder found: -5 each
+- Per missing variable (beyond 3): -3 each
+- If section quality < 70%: -(70 - section_quality)
 
-// Minimum score
-score = Math.max(score, 0);
+Minimum score: 0
 ```
 
 ### Score Thresholds

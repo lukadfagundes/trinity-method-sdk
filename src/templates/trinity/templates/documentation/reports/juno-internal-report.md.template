@@ -441,7 +441,7 @@ This report provides ALL data needed for parallel documentation generation.
 - [ ] Model names exist in codebase (verified with Glob)
 - [ ] Endpoint count matches actual route files
 - [ ] Component names exist in codebase (verified with Glob)
-- [ ] Technology versions from package.json
+- [ ] Technology versions from project manifest
 
 ✅ **Format:**
 - [ ] Report ≥2000 characters

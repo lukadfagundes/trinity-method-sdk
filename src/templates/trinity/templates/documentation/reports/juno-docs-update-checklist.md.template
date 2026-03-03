@@ -93,7 +93,7 @@ fi
    - [ ] `.env` file for DATABASE_URL or DB_* variables
    - [ ] `.env.local` for local database config
    - [ ] `docker-compose.yml` for database service configuration
-   - [ ] Application config files (config/database.js, database.config.ts, etc.)
+   - [ ] Application config files (framework-specific config files in config/ or project root)
    - [ ] README.md for database setup instructions
 
    **Document what you found:**
@@ -263,91 +263,32 @@ Common patterns across frameworks:
 ```
 
 **File Naming Patterns:**
-```
-*Controller.ts, *Controller.js
-*Service.ts, *Service.js
-*Repository.ts, *Repository.js
-*Model.ts, *Model.js
-*Helper.ts, *Helper.js
-*Util.ts, *Util.js
-*Middleware.ts, *Middleware.js
-*Handler.ts, *Handler.js
-*Provider.ts, *Provider.js
-```
+
+Search for files following the project's {{LANGUAGE}} naming conventions that match these role patterns:
+- Controllers / Handlers / Views (request handling)
+- Services / Domain (business logic)
+- Repositories / DAOs (data access)
+- Models / Entities / Schemas (data models)
+- Helpers / Utilities (shared utilities)
+- Middleware / Interceptors / Guards (request processing)
+- Providers / Factories (dependency management)
 
 **Code Structure Markers:**
-```typescript
-// Classes (business logic)
-export class UserService { ... }
-export class PaymentProcessor { ... }
 
-// Interfaces (data contracts)
-export interface User { ... }
-export interface PaymentRequest { ... }
+Search for {{LANGUAGE}}-appropriate patterns that indicate business logic:
+- Class/module definitions that implement domain logic
+- Interface/type/protocol definitions that define data contracts
+- Enum/constant definitions that define business states
+- Exported functions that implement business rules
 
-// Enums (business constants)
-export enum OrderStatus { ... }
-export enum PaymentMethod { ... }
+### Framework-Adaptive Detection:
 
-// Custom functions (business rules)
-export function calculateTax(...) { ... }
-export function validateOrder(...) { ... }
-```
+Use {{FRAMEWORK}} and {{LANGUAGE}} to determine the appropriate detection patterns:
 
-### Framework-Specific Patterns:
-
-**Express.js:**
-```javascript
-// Route handlers
-app.get('/api/users', (req, res) => { ... })
-router.post('/orders', orderController.create)
-
-// Middleware
-app.use(authMiddleware)
-```
-
-**NestJS:**
-```typescript
-@Controller('users')
-@Injectable()
-@Module({ ... })
-```
-
-**React/Next.js:**
-```typescript
-// Components
-export function UserDashboard() { ... }
-
-// Hooks
-export function useAuth() { ... }
-
-// API routes (Next.js)
-export default function handler(req, res) { ... }
-```
-
-**Django:**
-```python
-# Views
-class UserViewSet(viewsets.ModelViewSet):
-    ...
-
-# Models
-class User(models.Model):
-    ...
-```
-
-**Ruby on Rails:**
-```ruby
-# Controllers
-class UsersController < ApplicationController
-  ...
-end
-
-# Models
-class User < ApplicationRecord
-  ...
-end
-```
+- **Route/endpoint definitions** — Look for the routing mechanism used by {{FRAMEWORK}}
+- **Dependency injection** — Look for DI patterns appropriate to {{FRAMEWORK}}
+- **Component definitions** — Look for UI component patterns if the project has a frontend
+- **Model definitions** — Look for ORM/data model patterns used by the project
 
 ### What Makes Code "Business Logic":
 
@@ -358,9 +299,9 @@ end
 
 ### Exclude:
 
-- Generic framework setup (config/webpack.config.js, etc.)
-- Node modules and dependencies
-- Build artifacts and dist/
+- Generic framework setup and build configuration files
+- Installed dependencies (the project's dependency directory)
+- Build artifacts and output directories
 - Test fixtures and mocks (unless they define API contracts)
 
 ---
@@ -380,9 +321,9 @@ end
 2. **FORBIDDEN operations:**
    - ❌ Write/Edit source code files in `src/`, `backend/`, `frontend/`, `app/` directories
    - ❌ Modify database schemas (`database/`, `migrations/`, `*.sql`)
-   - ❌ Modify configuration (`package.json`, `tsconfig.json`, `*.config.js`)
+   - ❌ Modify project manifest or configuration files (e.g., package.json, Cargo.toml, pyproject.toml, build configs)
    - ❌ Modify build files (`Dockerfile`, `docker-compose.yml`, `.github/`)
-   - ❌ Modify test files (`*.test.js`, `*.spec.ts`)
+   - ❌ Modify test files (files matching the project's test naming conventions)
    - ❌ Modify any file outside `docs/` directory
 
    **EXCEPTIONS (Simple consistency fixes only):**
@@ -416,9 +357,9 @@ end
    **Scenario B: API Endpoint Mismatch**
    ```
    Documentation: docs/api/README.md shows GET /api/users
-   Code: backend/src/api/routes/users.js shows GET /api/v1/users
+   Code: Route file shows GET /api/v1/users
 
-   ❌ WRONG: Modify routes/users.js to remove /v1 prefix
+   ❌ WRONG: Modify route file to remove /v1 prefix
    ✅ RIGHT: Update docs/api/README.md to show GET /api/v1/users
    ```
 
@@ -427,7 +368,7 @@ end
    Documentation: docs/guides/getting-started.md shows backend on port 3001
    .env.example: Shows API_PORT=3001
    Actual .env: Shows API_PORT=3001
-   Code Default: server.js shows `const PORT = process.env.API_PORT || 4000`
+   Code Default: Entry point file has fallback value of 4000
 
    Analysis:
    - Actual config: 3001 ✅
@@ -437,7 +378,7 @@ end
 
    ✅ RIGHT: Assign APO-1 to:
    1. Verify documentation is correct (no update needed)
-   2. Fix backend/src/server.js line 8: Change `|| 4000` to `|| 3001`
+   2. Fix the code default to use 3001 instead of 4000
    3. Rationale: Align code default with documented standard
 
    ❌ WRONG: Update documentation to show port 4000
@@ -492,7 +433,12 @@ fi
 
 # Priority 3: Check code for default values
 echo "🔍 Checking code for default values..."
-grep -rn "process.env.*||" backend/src/ src/ 2>/dev/null --include="*.js" --include="*.ts" | head -20
+# Search for environment variable access patterns with fallback values
+# Adapt the search pattern for the project's {{LANGUAGE}}:
+#   - Node.js/TypeScript: grep -rn "process.env.*||" src/ --include="*.js" --include="*.ts"
+#   - Python: grep -rn "os.environ\|os.getenv" src/ --include="*.py"
+#   - Go: grep -rn "os.Getenv" . --include="*.go"
+#   - Rust: grep -rn "std::env::var" . --include="*.rs"
 ```
 
 ### Document All Findings
@@ -578,23 +524,17 @@ grep -rn "process.env.*||" backend/src/ src/ 2>/dev/null --include="*.js" --incl
 
 ### Example Cross-Reference:
 
-```typescript
-// CODE: src/services/payment.service.ts
-export class PaymentService {
-  async processPayment(
-    orderId: string,
-    amount: number,
-    method: PaymentMethod
-  ): Promise<PaymentResult> {
-    // Implementation
-  }
-}
+```
+CODE: {{SOURCE_DIR}}/services/payment-service (language-appropriate extension)
+  - Class/module: PaymentService
+  - Method: processPayment(orderId, amount, method) → PaymentResult
+  - Error cases: InvalidAmount, PaymentDeclined, NetworkError
 
-// DOCS: docs/api/payment.md
+DOCS: docs/api/payment.md
 Should document:
 ✅ Function name: processPayment
 ✅ Parameters: orderId (string), amount (number), method (PaymentMethod)
-✅ Return type: Promise<PaymentResult>
+✅ Return type: PaymentResult
 ✅ Behavior: Processes payment for given order
 ✅ Error cases: InvalidAmount, PaymentDeclined, NetworkError
 
@@ -623,8 +563,9 @@ If docs reference deprecated processCreditCard method → STALENESS (outdated)
    # Check example/template files
    cat .env.example 2>/dev/null
 
-   # Search code for default values
-   grep -r "PORT.*||.*[0-9]" backend/ src/ 2>/dev/null
+   # Search code for default port/URL values
+   # Adapt search pattern for the project's language
+   grep -r "PORT" {{SOURCE_DIR}}/ 2>/dev/null | head -20
    ```
 
 3. **Resolution Rules:**
@@ -653,22 +594,22 @@ If docs reference deprecated processCreditCard method → STALENESS (outdated)
 
 ### Conditional Discovery (Graceful Degradation):
 
+Search for service/business logic directories using common patterns:
+
 ```bash
-# Check if services directory exists
-if [ ! -d "backend/src/services" ] && [ ! -d "src/services" ] && [ ! -d "services" ] && [ ! -d "server/services" ]; then
+# Check if services/business logic directories exist
+# Common locations across frameworks:
+#   services/, src/services/, app/services/, server/services/
+#   domain/, business/, lib/services/
+# Adapt paths for the project's {{FRAMEWORK}} conventions
+
+SERVICE_DIRS=$(find . -type d -name "services" -o -name "domain" -o -name "business" 2>/dev/null | grep -v node_modules | grep -v vendor | grep -v __pycache__ | grep -v target || true)
+
+if [ -z "$SERVICE_DIRS" ]; then
   echo "ℹ️ No services directory detected - skipping service documentation"
-  # Continue to next step - NOT an error
 else
   echo "✅ Services detected - scanning for service modules"
-
-  # Scan for service files
-  SERVICE_FILES=$(find backend/src/services src/services services server/services -name "*.js" -o -name "*.ts" 2>/dev/null || true)
-
-  if [ -z "$SERVICE_FILES" ]; then
-    echo "ℹ️ Services directory exists but no service files found"
-  else
-    echo "Found service modules - documenting..."
-  fi
+  # Scan for service files using {{LANGUAGE}}-appropriate extensions
 fi
 ```
 
@@ -677,8 +618,8 @@ fi
 For each service file discovered:
 
 1. **Extract information:**
-   - Service name (emailService.js → EmailService)
-   - Methods exported (public API)
+   - Service name (from filename or class/module declaration)
+   - Methods/functions exported (public API)
    - Dependencies
 
 2. **Documentation Requirements:**
@@ -693,8 +634,8 @@ For each service file discovered:
 
 3. **Verification:**
    ```bash
-   # Count services in codebase
-   SERVICE_COUNT=$(find backend/src/services src/services services server/services -name "*.js" -o -name "*.ts" 2>/dev/null | wc -l || echo 0)
+   # Count services in codebase (adapt file extensions for {{LANGUAGE}})
+   SERVICE_COUNT=$(find . -path "*/services/*" -type f ! -path "*/node_modules/*" ! -path "*/vendor/*" ! -path "*/__pycache__/*" ! -path "*/target/*" 2>/dev/null | wc -l || echo 0)
 
    # Count service API docs
    SERVICE_DOCS=$(find docs/services -name "*.md" ! -name "README.md" 2>/dev/null | wc -l || echo 0)
@@ -711,11 +652,11 @@ When assigning services to APO-2 or APO-3:
 
 ```json
 {
-  "component": "emailService",
+  "component": "EmailService",
   "type": "service",
-  "source_file": "backend/src/services/emailService.js",
+  "source_file": "<path to service source file>",
   "output_type": "API_REFERENCE",
-  "output_file": "docs/services/emailService.md",
+  "output_file": "docs/services/EmailService.md",
   "required_sections": [
     "Class/Module Description",
     "Dependencies",
@@ -754,22 +695,21 @@ When assigning services to APO-2 or APO-3:
 
 ### Conditional Discovery (Graceful Degradation):
 
+Search for frontend/UI directories using common patterns:
+
 ```bash
-# Check if frontend exists
-if [ ! -d "frontend" ] && [ ! -d "src/app" ] && [ ! -d "client" ] && [ ! -d "src/components" ]; then
+# Check if frontend/UI code exists
+# Common locations across frameworks:
+#   frontend/, client/, src/app/, src/components/, web/, ui/
+#   lib/widgets/ (Flutter), templates/ (Django/Rails), views/ (MVC)
+
+FRONTEND_DIRS=$(find . -maxdepth 2 -type d \( -name "frontend" -o -name "client" -o -name "components" -o -name "widgets" -o -name "views" -o -name "pages" -o -name "ui" \) 2>/dev/null | grep -v node_modules | grep -v vendor | grep -v __pycache__ | grep -v target || true)
+
+if [ -z "$FRONTEND_DIRS" ]; then
   echo "ℹ️ No frontend detected - skipping frontend documentation"
-  # Continue to next step - NOT an error
 else
   echo "✅ Frontend detected - scanning for components"
-
-  # Scan for React/Next.js components
-  COMPONENT_FILES=$(find frontend src/app client src/components -name "*.jsx" -o -name "*.tsx" 2>/dev/null || true)
-
-  if [ -z "$COMPONENT_FILES" ]; then
-    echo "ℹ️ Frontend directory exists but no component files found"
-  else
-    echo "Found frontend modules - documenting..."
-  fi
+  # Scan for UI component files using {{LANGUAGE}}-appropriate extensions
 fi
 ```
 
@@ -778,9 +718,9 @@ fi
 For each frontend module discovered:
 
 1. **Module Categories:**
-   - **Components:** Reusable UI components (Button, Modal, Card)
-   - **Pages:** Route-level components (HomePage, DashboardPage)
-   - **Hooks:** Custom React hooks (useAuth, useFetch)
+   - **Components/Widgets:** Reusable UI elements (buttons, cards, modals)
+   - **Pages/Screens/Views:** Route-level components
+   - **Hooks/Composables/Mixins:** Reusable state/logic patterns (framework-dependent)
    - **Utilities:** Frontend utility modules (formatters, validators)
 
 2. **Documentation Requirements:**
@@ -788,16 +728,16 @@ For each frontend module discovered:
    **Location:** `docs/frontend/{category}/{moduleName}.md`
 
    **Required Content:**
-   - Component props (name, type, required, description)
+   - Component properties/props/parameters (name, type, required, description)
    - State management
-   - Event handlers
+   - Event handlers / callbacks
    - Usage examples
    - Integration points
 
 3. **Verification:**
    ```bash
-   # Count frontend modules
-   COMPONENT_COUNT=$(find frontend src/app client src/components -name "*.jsx" -o -name "*.tsx" 2>/dev/null | wc -l || echo 0)
+   # Count frontend modules (adapt extensions for {{LANGUAGE}}/{{FRAMEWORK}})
+   COMPONENT_COUNT=$(find . -path "*/components/*" -o -path "*/widgets/*" -o -path "*/views/*" -o -path "*/pages/*" 2>/dev/null | grep -v node_modules | grep -v vendor | grep -v __pycache__ | grep -v target | wc -l || echo 0)
 
    # Count frontend docs
    FRONTEND_DOCS=$(find docs/frontend -name "*.md" ! -name "README.md" 2>/dev/null | wc -l || echo 0)
@@ -815,12 +755,12 @@ When assigning frontend modules to APO-3:
 ```json
 {
   "component": "UserProfile",
-  "type": "react_component",
-  "source_file": "frontend/src/components/UserProfile.tsx",
+  "type": "ui_component",
+  "source_file": "<path to component source file>",
   "output_file": "docs/frontend/components/UserProfile.md",
   "required_sections": [
     "Component Description",
-    "Props Documentation",
+    "Properties/Props Documentation",
     "State Management",
     "Event Handlers",
     "Usage Examples",
@@ -849,7 +789,7 @@ List all documentation files requiring updates:
 ### Part 2: Existing Business Logic Requiring Updates
 
 List all business logic components with existing docs that need updates:
-- **Component:** UserService (`src/services/user.service.ts`)
+- **Component:** UserService (`{{SOURCE_DIR}}/services/user-service`)
   - **Current Documentation:** `docs/api/user-service.md`
   - **Issues:** Missing new `suspendUser()` method, incorrect parameter for `updateUser()`
   - **Required Updates:** Add suspendUser docs, fix updateUser signature
@@ -861,7 +801,7 @@ List all business logic components with existing docs that need updates:
 ### Part 3: Missing Business Logic Requiring New Documentation
 
 List all business logic components without documentation:
-- **Component:** NotificationService (`src/services/notification.service.ts`)
+- **Component:** NotificationService (`{{SOURCE_DIR}}/services/notification-service`)
   - **Why Undocumented:** New feature added in recent sprint
   - **Uniqueness:** Implements multi-channel notifications (email, SMS, push) with templating
   - **Modularity Analysis:**
@@ -1003,9 +943,9 @@ When assigning collections to APO-3, specify:
 ### Granularity Rules:
 
 1. **One component = One file**
-   - LionMachineryScraper.js → LionMachineryScraper.md
-   - EmailService.js → email-service.md
-   - Equipment.js → Equipment.md
+   - LionMachineryScraper → LionMachineryScraper.md
+   - EmailService → email-service.md
+   - Equipment → Equipment.md
 
 2. **Collections get overview + individuals**
    - 19 scrapers → 1 overview.md + 19 individual .md files
@@ -1145,7 +1085,7 @@ Aborting documentation update.
 
 - **`.env` file:** [FOUND/NOT FOUND] - [Variables found: DATABASE_URL=...]
 - **`docker-compose.yml`:** [FOUND/NOT FOUND] - [Service: postgres, port: 5432]
-- **Config files:** [FOUND/NOT FOUND] - [Files checked: config/database.js]
+- **Config files:** [FOUND/NOT FOUND] - [Files checked: config/, settings/]
 - **README instructions:** [Connection instructions found: YES/NO]
 
 ### Production Database Connection Attempt
@@ -1241,7 +1181,7 @@ Aborting documentation update.
 - [ ] `UserService` (docs/api/user-service.md)
   - Issue: Missing suspendUser() method
   - Required: Add suspendUser documentation
-  - Source: src/services/user.service.ts
+  - Source: {{SOURCE_DIR}}/services/user-service
   - Priority: HIGH
 
 [Continue for each component...]
@@ -1260,7 +1200,7 @@ Aborting documentation update.
 
 - [ ] `ServiceName`
   - Output file: docs/services/service-name.md
-  - Source: src/services/service-name.js
+  - Source: {{SOURCE_DIR}}/services/service-name
   - Purpose: [Description]
   - Priority: HIGH
 
@@ -1278,13 +1218,13 @@ Aborting documentation update.
 
 - [ ] `NotificationService`
   - Output file: docs/services/notification-service.md
-  - Source: src/services/notification.service.ts
+  - Source: {{SOURCE_DIR}}/services/notification-service
   - Purpose: Multi-channel notification system
   - Priority: MEDIUM
 
 - [ ] `CacheHelper`
   - Output file: docs/utilities/cache-helper.md
-  - Source: src/utils/cache-helper.ts
+  - Source: {{SOURCE_DIR}}/utils/cache-helper
   - Purpose: Redis caching utility
   - Priority: LOW
 
