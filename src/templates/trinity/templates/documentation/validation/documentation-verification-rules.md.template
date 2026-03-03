@@ -54,44 +54,36 @@ This template defines the 4-tier verification system used in Phase 3 to validate
 
 ### Verification Logic
 
-```javascript
-const expected_files = [
-  'docs/architecture/diagrams/mvc-flow.md',
-  'docs/architecture/diagrams/database-er.md',
-  'docs/architecture/diagrams/api-endpoint-map.md',
-  'docs/architecture/diagrams/component-hierarchy.md',
-  'docs/guides/getting-started.md',
-  'docs/guides/api-development.md',
-  'docs/guides/deployment.md',
-  'docs/guides/contributing.md',
-  'docs/api/README.md',
-  '.env.example',
-  'README.md'
-];
+Check each expected file exists. Calculate the score:
 
-let files_created = 0;
-for (const file of expected_files) {
-  if (file_exists(file)) files_created++;
-}
-
-const tier1_score = (files_created / expected_files.length) * 30;
 ```
+Score = (files_created / expected_files_count) * 30
+```
+
+Expected files:
+1. `docs/architecture/diagrams/mvc-flow.md`
+2. `docs/architecture/diagrams/database-er.md`
+3. `docs/architecture/diagrams/api-endpoint-map.md`
+4. `docs/architecture/diagrams/component-hierarchy.md`
+5. `docs/guides/getting-started.md`
+6. `docs/guides/api-development.md`
+7. `docs/guides/deployment.md`
+8. `docs/guides/contributing.md`
+9. `docs/api/README.md`
+10. `.env.example`
+11. `README.md`
 
 ### Conditional Files
 
 Some files are optional based on project type:
-- **MVC Flow:** Only required if Express/NestJS/Fastify detected
-- **Database ER:** Only required if Prisma/TypeORM/Mongoose detected
+- **MVC Flow:** Only required if the project uses an MVC/request-handler framework
+- **Database ER:** Only required if a database ORM/schema is detected
 - **API Endpoint Map:** Only required if API endpoints discovered
-- **Component Hierarchy:** Only required if React/Vue/Angular components exist
+- **Component Hierarchy:** Only required if UI components exist
 - **API Development Guide:** Only required if API exists
 - **API README:** Only required if API exists
 
-**Scoring Adjustment:**
-```javascript
-// If no database, remove database-er.md from expected count
-if (!has_database) expected_files = expected_files.filter(f => !f.includes('database-er'));
-```
+**Scoring Adjustment:** Remove conditional files from the expected count if the corresponding feature is not detected in the project.
 
 ---
 
@@ -115,40 +107,22 @@ if (!has_database) expected_files = expected_files.filter(f => !f.includes('data
 
 ### Verification Logic
 
-```javascript
-for (const file of created_files) {
-  const content = read_file(file);
-  const line_count = content.split('\n').length;
+For each created file, check:
 
-  if (file.includes('/diagrams/')) {
-    // Diagram file
-    if (line_count < 10) {
-      deduct_points(3, `${file} too short (${line_count} lines < 10 minimum)`);
-    }
-    if (!content.includes('```mermaid')) {
-      deduct_points(5, `${file} missing Mermaid diagram`);
-    }
-  } else if (file.includes('/guides/')) {
-    // Guide file
-    if (line_count < 50) {
-      deduct_points(3, `${file} too short (${line_count} lines < 50 minimum)`);
-    }
-    if (!content.match(/##\s/)) {
-      deduct_points(2, `${file} missing structure (no ## headings)`);
-    }
-    if (!content.includes('```')) {
-      deduct_points(2, `${file} missing code examples`);
-    }
-  }
-}
-```
+**Diagram files (`/diagrams/`):**
+- Line count < 10 → deduct 3 points (too short)
+- Missing `` ```mermaid `` code block → deduct 5 points
+
+**Guide files (`/guides/`):**
+- Line count < 50 → deduct 3 points (too short)
+- No `##` headings → deduct 2 points (missing structure)
+- No code blocks → deduct 2 points (missing examples)
 
 ### Content Quality Score
 
-```javascript
-let tier2_score = 30;
-tier2_score -= total_deductions;
-tier2_score = Math.max(tier2_score, 0);
+```
+tier2_score = 30 - total_deductions
+tier2_score = max(tier2_score, 0)
 ```
 
 ---
@@ -165,26 +139,18 @@ tier2_score = Math.max(tier2_score, 0);
 - `FIXME` - Known issues
 
 **Detection:**
-```javascript
-const forbidden_patterns = [
-  /{{[A-Z_]+}}/g,
-  /\[TODO\]/gi,
-  /\[PLACEHOLDER\]/gi,
-  /lorem ipsum/gi,
-  /FIXME/gi
-];
 
-let placeholder_count = 0;
-for (const file of created_files) {
-  const content = read_file(file);
-  for (const pattern of forbidden_patterns) {
-    const matches = content.match(pattern);
-    if (matches) placeholder_count += matches.length;
-  }
-}
+Search all created files for these forbidden patterns:
+- `{{VARIABLE_NAME}}` — unreplaced template variables
+- `[TODO]` — incomplete sections
+- `[PLACEHOLDER]` — temporary content
+- `Lorem ipsum` — demo text
+- `FIXME` — known issues
 
-const placeholder_penalty = Math.min(placeholder_count * 2, 20);
-tier3_score -= placeholder_penalty;
+**Penalty calculation:**
+```
+placeholder_penalty = min(placeholder_count * 2, 20)
+tier3_score -= placeholder_penalty
 ```
 
 **Penalty:** -2 points per placeholder (max -20 points)
@@ -193,29 +159,12 @@ tier3_score -= placeholder_penalty;
 
 **Check:** All internal links resolve to existing files
 
-```javascript
-// Find all Markdown links: [text](path)
-const link_pattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+Find all Markdown links `[text](path)` in created files. For each internal link (not starting with `http`), verify the target file exists.
 
-let broken_links = 0;
-for (const file of created_files) {
-  const content = read_file(file);
-  const links = [...content.matchAll(link_pattern)];
-
-  for (const link of links) {
-    const href = link[2];
-    if (!href.startsWith('http')) {
-      // Internal link - verify file exists
-      if (!file_exists(resolve_path(file, href))) {
-        broken_links++;
-        LOG(`⚠️ Broken link in ${file}: ${href}`);
-      }
-    }
-  }
-}
-
-const link_penalty = Math.min(broken_links * 2, 10);
-tier3_score -= link_penalty;
+**Penalty calculation:**
+```
+link_penalty = min(broken_links * 2, 10)
+tier3_score -= link_penalty
 ```
 
 **Penalty:** -2 points per broken link (max -10 points)
@@ -228,65 +177,39 @@ tier3_score -= link_penalty;
 
 **Check:** All Mermaid diagrams are syntactically valid
 
-```javascript
-for (const diagram_file of diagram_files) {
-  const content = read_file(diagram_file);
-  const mermaid_blocks = extract_code_blocks(content, 'mermaid');
-
-  for (const block of mermaid_blocks) {
-    if (is_valid_mermaid(block)) {
-      bonus_points += 0.5;
-    } else {
-      LOG(`⚠️ Invalid Mermaid syntax in ${diagram_file}`);
-    }
-  }
-}
-
-bonus_points = Math.min(bonus_points, 3);
-```
+For each diagram file, extract `` ```mermaid `` code blocks and validate syntax:
+- +0.5 points per valid Mermaid block (max +3 points)
+- Log warning for invalid syntax
 
 ### Bonus 2: Comprehensive API Coverage (+3 points)
 
 **Check:** API documentation covers all discovered endpoints
 
-```javascript
-const discovered_endpoints = get_endpoint_count_from_juno();
-const documented_endpoints = count_endpoints_in_api_docs();
-
-const coverage_ratio = documented_endpoints / discovered_endpoints;
-if (coverage_ratio >= 0.9) bonus_points += 3;      // ≥90% coverage
-else if (coverage_ratio >= 0.75) bonus_points += 2; // ≥75% coverage
-else if (coverage_ratio >= 0.5) bonus_points += 1;  // ≥50% coverage
+```
+coverage_ratio = documented_endpoints / discovered_endpoints
+if coverage_ratio >= 0.9  → +3 points
+if coverage_ratio >= 0.75 → +2 points
+if coverage_ratio >= 0.5  → +1 point
 ```
 
 ### Bonus 3: Complete Environment Variables (+2 points)
 
 **Check:** `.env.example` documents all discovered variables
 
-```javascript
-const discovered_vars = get_env_vars_from_juno();
-const documented_vars = parse_env_example('.env.example');
-
-const var_coverage = documented_vars.length / discovered_vars.length;
-if (var_coverage >= 1.0) bonus_points += 2; // 100% coverage
-else if (var_coverage >= 0.8) bonus_points += 1; // ≥80% coverage
+```
+var_coverage = documented_vars / discovered_vars
+if var_coverage >= 1.0 → +2 points
+if var_coverage >= 0.8 → +1 point
 ```
 
 ### Bonus 4: Rich Code Examples (+2 points)
 
 **Check:** Guides contain diverse, realistic code examples
 
-```javascript
-for (const guide_file of guide_files) {
-  const content = read_file(guide_file);
-  const code_blocks = extract_code_blocks(content);
-
-  if (code_blocks.length >= 3) bonus_points += 0.5;
-  if (code_blocks.some(b => b.length > 100)) bonus_points += 0.5; // Substantial examples
-}
-
-bonus_points = Math.min(bonus_points, 2);
-```
+For each guide file:
+- +0.5 points if guide has >= 3 code blocks
+- +0.5 points if any code block is substantial (> 100 chars)
+- Max +2 points total
 
 ---
 
@@ -294,23 +217,9 @@ bonus_points = Math.min(bonus_points, 2);
 
 ### Final Score Formula
 
-```javascript
-let quality_score = 0;
-
-// Tier 1: File Completion (0-30 points)
-quality_score += tier1_score;
-
-// Tier 2: Content Quality (0-30 points)
-quality_score += tier2_score;
-
-// Tier 3: Content Accuracy (0-30 points)
-quality_score += tier3_score;
-
-// Tier 4: Excellence Bonus (0-10 points)
-quality_score += tier4_bonus;
-
-// Clamp to 0-100 range
-quality_score = Math.max(0, Math.min(100, quality_score));
+```
+quality_score = tier1_score + tier2_score + tier3_score + tier4_bonus
+quality_score = clamp(quality_score, 0, 100)
 ```
 
 ### Quality Grades

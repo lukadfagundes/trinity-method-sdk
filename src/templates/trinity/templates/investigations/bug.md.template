@@ -143,8 +143,7 @@
 **Debug Commands:**
 ```bash
 # Add your debugging commands here
-npm run debug
-node --inspect app.js
+# Use the project's debug configuration or language-specific debugger
 ```
 
 **Success Criteria:**
@@ -178,31 +177,22 @@ node --inspect app.js
 
 ### Test Cases to Add
 **1. Reproduction Test:**
-```typescript
-describe('Bug: {{title}}', () => {
-  it('should reproduce the bug', () => {
-    // Steps that currently fail
-  });
-});
-```
+
+Write a test using the project's test framework that reproduces the bug:
+- Set up the conditions that trigger the bug
+- Assert the current (broken) behavior
 
 **2. Fix Validation Test:**
-```typescript
-describe('Fix: {{title}}', () => {
-  it('should verify the bug is fixed', () => {
-    // Steps that should now pass
-  });
-});
-```
+
+Write a test that verifies the bug is fixed:
+- Same conditions as the reproduction test
+- Assert the correct (expected) behavior
 
 **3. Regression Prevention Tests:**
-```typescript
-describe('Regression: {{title}}', () => {
-  it('should prevent this bug from recurring', () => {
-    // Edge cases to prevent future regressions
-  });
-});
-```
+
+Write tests for edge cases to prevent this bug from recurring:
+- Test boundary conditions
+- Test related scenarios that could trigger similar issues
 
 ### Manual Testing Checklist
 - [ ] Test exact reproduction steps (should now pass)
@@ -282,8 +272,8 @@ describe('Regression: {{title}}', () => {
 
 ### Fix Implementation
 **Files Changed:**
-- `path/to/file1.ts` - [Brief description of change]
-- `path/to/file2.ts` - [Brief description of change]
+- `path/to/file1` - [Brief description of change]
+- `path/to/file2` - [Brief description of change]
 
 **Code Changes:**
 ```diff
@@ -333,8 +323,8 @@ describe('Regression: {{title}}', () => {
 - Coverage increased by: N%
 
 **Test Files:**
-- `path/to/test1.spec.ts`
-- `path/to/test2.spec.ts`
+- `path/to/test1`
+- `path/to/test2`
 
 ---
 

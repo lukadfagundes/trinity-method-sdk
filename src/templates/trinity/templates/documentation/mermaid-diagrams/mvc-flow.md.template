@@ -5,7 +5,7 @@
 
   Variables:
   - {{DATABASE}}: Database type (e.g., "PostgreSQL", "SQLite", "MongoDB")
-  - {{FRAMEWORK}}: Backend framework name (e.g., "Express", "Fastify", "Koa")
+  - {{FRAMEWORK}}: Backend framework name (e.g., "Express", "Django", "Gin", "Actix")
 
   Usage: Replace variables with actual project values before writing to docs/images/
 -->

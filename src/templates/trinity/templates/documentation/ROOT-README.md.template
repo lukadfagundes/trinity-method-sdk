@@ -194,9 +194,9 @@ Check out the [examples/](examples/) directory for more usage examples:
 ## Development
 
 [APO: Provide development setup instructions based on:
-1. package.json scripts (Node.js)
-2. Makefile targets
-3. Build system files (CMakeLists.txt, Cargo.toml, etc.)
+1. Project manifest scripts (package.json, Makefile, Cargo.toml, pyproject.toml, etc.)
+2. Build system configuration
+3. CI/CD pipeline definitions
 4. Contributing guidelines
 Remove this instruction and add actual development instructions below]
 

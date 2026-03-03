@@ -163,13 +163,11 @@ Content-Type: application/json
 
 ### Code Analysis
 **Vulnerable Code:**
-```typescript
-// File: path/to/file.ts
-// Line: XX
-function vulnerableFunction(userInput) {
-  // Unsafe operation
-  db.query(`SELECT * FROM users WHERE id = ${userInput}`);
-}
+```
+File: path/to/vulnerable/file
+Line: XX
+
+[Paste the vulnerable code section here]
 ```
 
 **Why is this vulnerable?**
@@ -192,9 +190,9 @@ function vulnerableFunction(userInput) {
 
 **Test Environment:**
 ```bash
-# Setup commands
+# Setup isolated test environment
 docker-compose up -d test-env
-npm run test:security
+# Run security tests using the project's test runner
 ```
 
 **Reproduction Confirmed:**
@@ -276,13 +274,10 @@ aws secretsmanager rotate-secret --secret-id prod/api-key
 5. [ ] Monitoring alerts
 
 **Mitigation Code:**
-```typescript
-// Temporary input validation
-function sanitizeInput(input: string): string {
-  // Remove dangerous characters
-  return input.replace(/[^a-zA-Z0-9]/g, '');
-}
-```
+
+Implement temporary input sanitization using the project's {{LANGUAGE}} and {{FRAMEWORK}}:
+- Strip or escape dangerous characters from user input
+- Use the framework's built-in sanitization utilities where available
 
 ### Long-term Fix (1-2 weeks)
 **Goal:** Permanent security enhancement
@@ -294,141 +289,67 @@ function sanitizeInput(input: string): string {
 5. [ ] Security training for team
 
 **Secure Implementation:**
-```typescript
-// Permanent fix using parameterized queries
-async function getUserById(userId: string): Promise<User> {
-  // Input validation
-  if (!/^\d+$/.test(userId)) {
-    throw new ValidationError('Invalid user ID format');
-  }
 
-  // Parameterized query (prevents SQL injection)
-  const result = await db.query(
-    'SELECT * FROM users WHERE id = $1',
-    [userId]
-  );
-
-  return result.rows[0];
-}
-```
+Apply these security patterns using the project's {{LANGUAGE}} and {{FRAMEWORK}}:
+1. **Input validation:** Validate format before processing (e.g., numeric IDs must match `^\d+$`)
+2. **Parameterized queries:** Use the ORM/database driver's parameter binding (never string interpolation)
+3. **Error handling:** Throw validation errors with safe messages (no internal details)
 
 ---
 
 ## 🔐 Security Controls
 
 ### Input Validation
-```typescript
-// Whitelist validation
-function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
 
-// Sanitization
-import DOMPurify from 'dompurify';
-const clean = DOMPurify.sanitize(dirty);
-```
+Implement input validation using the project's {{FRAMEWORK}} conventions:
+- **Whitelist validation:** Validate email, IDs, and other inputs against expected patterns
+- **Sanitization:** Use a sanitization library appropriate for the project's {{LANGUAGE}} to clean user input
+- **Length limits:** Enforce maximum input lengths to prevent buffer overflow and DoS
 
 ### Output Encoding
-```typescript
-// HTML encoding
-function escapeHtml(unsafe: string): string {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
-// SQL parameterization
-const result = await db.query(
-  'SELECT * FROM users WHERE email = $1',
-  [userEmail]  // Parameter binding prevents injection
-);
-```
+- **HTML encoding:** Escape `&`, `<`, `>`, `"`, `'` characters before rendering in HTML
+- **SQL parameterization:** Always use the ORM/database driver's parameter binding — never interpolate user input into queries
+- **JSON encoding:** Use the language's built-in JSON serializer for API responses
 
 ### Authentication & Authorization
-```typescript
-// Require authentication
-app.use('/api/admin', requireAuth, requireRole('admin'));
 
-// Check authorization
-function checkPermission(user: User, resource: Resource): boolean {
-  return user.permissions.includes(resource.requiredPermission);
-}
-```
+- **Route protection:** Apply authentication middleware to protected routes
+- **Role-based access:** Check user permissions against resource requirements
+- **Principle of least privilege:** Grant minimum necessary permissions
 
 ### Cryptography
-```typescript
-// Password hashing
-import bcrypt from 'bcrypt';
-const saltRounds = 12;
-const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
 
-// Secure random tokens
-import crypto from 'crypto';
-const token = crypto.randomBytes(32).toString('hex');
-
-// Encryption (AES-256-GCM)
-const algorithm = 'aes-256-gcm';
-const key = crypto.randomBytes(32);
-const iv = crypto.randomBytes(16);
-const cipher = crypto.createCipheriv(algorithm, key, iv);
-```
+- **Password hashing:** Use bcrypt, argon2, or equivalent with appropriate salt rounds (minimum 12)
+- **Secure random tokens:** Use the language's cryptographic random number generator
+- **Encryption:** Use AES-256-GCM or equivalent for data at rest encryption
+- **Key management:** Store keys in environment variables or a secrets manager, never in code
 
 ### HTTPS/TLS
-```typescript
-// Enforce HTTPS
-app.use((req, res, next) => {
-  if (!req.secure && process.env.NODE_ENV === 'production') {
-    return res.redirect(`https://${req.headers.host}${req.url}`);
-  }
-  next();
-});
 
-// Security headers
-import helmet from 'helmet';
-app.use(helmet());
-```
+- **Enforce HTTPS:** Redirect HTTP to HTTPS in production
+- **Security headers:** Apply security headers (HSTS, CSP, X-Frame-Options, etc.) using the framework's security middleware
+- **TLS configuration:** Use TLS 1.2+ with strong cipher suites
 
 ---
 
 ## 🧪 Security Testing
 
 ### Automated Security Tests
-```typescript
-describe('Security: SQL Injection Prevention', () => {
-  it('should reject SQL injection attempts', async () => {
-    const maliciousInput = "1' OR '1'='1";
 
-    await expect(getUserById(maliciousInput))
-      .rejects
-      .toThrow(ValidationError);
-  });
+Write security tests using the project's test framework:
 
-  it('should use parameterized queries', async () => {
-    const spy = jest.spyOn(db, 'query');
+**SQL Injection Prevention:**
+- Test that SQL injection payloads (e.g., `1' OR '1'='1`) are rejected with a validation error
+- Test that database queries use parameterized statements, not string interpolation
 
-    await getUserById('123');
+**XSS Prevention:**
+- Test that HTML tags in user input are escaped in output
+- Test that `<script>` tags are converted to safe entities
 
-    expect(spy).toHaveBeenCalledWith(
-      expect.stringContaining('$1'),
-      expect.arrayContaining(['123'])
-    );
-  });
-});
-
-describe('Security: XSS Prevention', () => {
-  it('should escape HTML in user input', () => {
-    const malicious = '<script>alert("XSS")</script>';
-    const safe = escapeHtml(malicious);
-
-    expect(safe).not.toContain('<script>');
-    expect(safe).toContain('&lt;script&gt;');
-  });
-});
-```
+**Authentication:**
+- Test that unauthenticated requests to protected endpoints return 401
+- Test that unauthorized requests return 403
 
 ### Manual Security Testing
 - [ ] Test with common attack payloads
@@ -516,8 +437,8 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
 ### Code Changes
 **Files Modified:**
-- `path/to/vulnerable/file.ts`
-- `path/to/tests/security.spec.ts`
+- `path/to/vulnerable/file`
+- `path/to/tests/security-tests`
 
 **Security Fix:**
 ```diff
@@ -590,9 +511,9 @@ security:
 - [ ] Use parameterized queries (prevent SQL injection)
 - [ ] Validate and sanitize all input
 - [ ] Encode all output
-- [ ] Use security libraries (helmet, DOMPurify)
+- [ ] Use security libraries appropriate for the project's framework
 - [ ] Implement principle of least privilege
-- [ ] Enable security linters (ESLint security rules)
+- [ ] Enable security linters appropriate for the project's language
 
 ### Security Testing
 - [ ] Add security tests to CI/CD

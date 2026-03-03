@@ -94,9 +94,9 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
 2. **Verify the correct value in the codebase:**
 
    Examples:
-   - API port numbers → Read .env, backend/server.js, or backend/src/app.js
-   - Table names → Read database/init.sql or check production database
-   - Endpoint URLs → Read route files (routes/*.js, api/*.ts)
+   - API port numbers → Read .env or application config files
+   - Table names → Read schema files or check production database
+   - Endpoint URLs → Read route/controller files
    - Method signatures → Read actual source file
    - Configuration values → Read config files
 
@@ -131,9 +131,9 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
 ```markdown
 - [x] Fixed API base URL in docs/api/README.md
   - Verification: Read .env and backend/src/app.js
-  - Found: process.env.PORT defaults to 3001
-  - Found: Production URL from fly.toml is https://rinoa.sunny-stack.com
-  - Changes: Updated base URL to https://rinoa.sunny-stack.com/api
+  - Found: Port defaults to 3001 in application config
+  - Found: Production URL from deployment config
+  - Changes: Updated base URL to match production URL
 ```
 
 **Use Read tool to verify EVERY factual claim BEFORE documenting it.**
@@ -143,7 +143,7 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
 **Use Task skill Read to read the source code file:**
 ```
 Use Task tool with subagent_type="APO (Documentation Specialist)" to read:
-- File path: backend/src/services/emailService.js (example)
+- File path: <path to source file> (e.g., services/emailService)
 ```
 
 **Analyze the component:**
@@ -155,7 +155,7 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to read:
 **Use Task skill Write to create comprehensive documentation:**
 ```
 Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
-- File path: docs/backend/services/emailService.md (example)
+- File path: docs/services/emailService.md (example)
 - Content: Complete documentation with all sections
 ```
 
@@ -192,8 +192,8 @@ Use Task tool with subagent_type="APO (Documentation Specialist)" to write:
 **Returns:** (type) description
 
 **Example:**
-```js
-// Usage example
+```
+// Usage example in the project's language
 ```
 
 ## Error Handling
@@ -256,10 +256,8 @@ curl http://localhost:4000/api/resource
 
 ## Usage
 
-```tsx
-import ComponentName from './ComponentName';
-
-<ComponentName prop1="value" />
+```
+// Import and use the component following the project's framework conventions
 ```
 
 ## State Management

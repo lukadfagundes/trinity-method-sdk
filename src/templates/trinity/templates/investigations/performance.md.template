@@ -135,25 +135,16 @@
 
 ### Backend Profiling
 
-**Node.js Profiling:**
+Use profiling tools appropriate for the project's language and runtime:
+
+- **CPU profiling:** Use the language's built-in profiler or a third-party tool to capture CPU usage
+- **Memory profiling:** Use heap/memory analysis tools to detect leaks and excessive allocation
+- **Flame graphs:** Generate flame graphs to visualize hot code paths
+
 ```bash
-# Generate CPU profile
-node --prof app.js
-node --prof-process isolate-*.log > profile.txt
-
-# Heap snapshot for memory
-node --inspect app.js
-# Open chrome://inspect, take heap snapshot
-```
-
-**Python Profiling:**
-```bash
-# cProfile
-python -m cProfile -o output.prof app.py
-python -m pstats output.prof
-
-# memory_profiler
-python -m memory_profiler app.py
+# Run the project's profiling tool (language-specific)
+# Capture both CPU and memory profiles
+# Analyze output for hot paths and memory growth
 ```
 
 **Findings:**
@@ -300,19 +291,16 @@ ab -n 1000 -c 10 http://localhost:3000/api/endpoint
 - [ ] Application-level caching
 - [ ] Database query caching
 
-**Cache Implementation:**
-```typescript
-// Example caching code
-const cacheKey = generateKey(params);
-let result = await cache.get(cacheKey);
+**Cache Implementation Pattern:**
 
-if (!result) {
-  result = await expensiveOperation(params);
-  await cache.set(cacheKey, result, 3600); // 1 hour TTL
-}
-
-return result;
 ```
+1. Generate cache key from request parameters
+2. Check cache for existing result
+3. If cache miss: execute expensive operation, store result with TTL
+4. Return cached or fresh result
+```
+
+Implement this pattern using the caching library appropriate for the project's {{FRAMEWORK}}.
 
 ### Database Optimizations
 
@@ -342,14 +330,11 @@ JOIN users ON orders.user_id = users.id;
 ```
 
 **Connection Pooling:**
-```typescript
-// Configure connection pool
-const pool = new Pool({
-  max: 20,           // Max connections
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-```
+
+Configure connection pooling using the project's database driver/ORM:
+- Set maximum connections (e.g., 20)
+- Set idle timeout (e.g., 30 seconds)
+- Set connection timeout (e.g., 2 seconds)
 
 ### Algorithm Optimizations
 
@@ -359,35 +344,18 @@ const pool = new Pool({
 - [ ] O(n!) → O(n²) [dynamic programming]
 
 **Example:**
-```typescript
-// ❌ Bad: O(n²) nested loops
-function findDuplicates(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[i] === arr[j]) return true;
-    }
-  }
-  return false;
-}
-
-// ✅ Good: O(n) using Set
-function findDuplicates(arr) {
-  const seen = new Set();
-  for (const item of arr) {
-    if (seen.has(item)) return true;
-    seen.add(item);
-  }
-  return false;
-}
 ```
+❌ Bad: O(n²) - Nested loops comparing every pair of elements
+✅ Good: O(n) - Use a hash set to track seen elements, check membership in O(1)
+```
+
+Apply similar optimizations using the idioms and data structures available in the project's {{LANGUAGE}}.
 
 ### Frontend Optimizations
 
-**Code Splitting:**
-```javascript
-// Lazy load components
-const HeavyComponent = lazy(() => import('./HeavyComponent'));
-```
+**Code Splitting / Lazy Loading:**
+- Implement lazy loading for heavy components or routes
+- Use the framework's built-in code splitting mechanism
 
 **Image Optimization:**
 - [ ] Use WebP format
@@ -397,16 +365,9 @@ const HeavyComponent = lazy(() => import('./HeavyComponent'));
 - [ ] Use CDN
 
 **Bundle Size Reduction:**
-```bash
-# Analyze bundle
-npm run build -- --analyze
-
-# Remove unused dependencies
-npx depcheck
-
-# Use production builds
-NODE_ENV=production npm run build
-```
+- Analyze the bundle using the project's build tool
+- Remove unused dependencies
+- Use production build configuration
 
 ---
 
@@ -435,32 +396,18 @@ NODE_ENV=production npm run build
 ### Performance Regression Prevention
 
 **Automated Performance Tests:**
-```typescript
-// Performance test example
-describe('Performance: getUserOrders', () => {
-  it('should complete in < 500ms for 1000 orders', async () => {
-    const start = performance.now();
-    await getUserOrders(userId);
-    const duration = performance.now() - start;
 
-    expect(duration).toBeLessThan(500);
-  });
-});
-```
+Write performance tests using the project's test framework:
+- Measure execution time of critical operations
+- Assert that response time stays under budget (e.g., < 500ms)
+- Test with realistic data sizes (e.g., 1000 records)
 
 **CI/CD Performance Gates:**
-```yaml
-# GitHub Actions example
-- name: Performance Test
-  run: npm run test:performance
 
-- name: Check Performance Budget
-  run: |
-    if [ $P95_RESPONSE_TIME -gt 500 ]; then
-      echo "Performance regression detected"
-      exit 1
-    fi
-```
+Add a performance gate to the CI/CD pipeline:
+- Run performance benchmarks as part of the build
+- Fail the build if p95 response time exceeds the budget
+- Track metrics over time to detect gradual regressions
 
 ---
 
