@@ -1,6 +1,6 @@
 {
   "name": "trinity-method-sdk",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Trinity Method SDK - Investigation-first development methodology for any project",
   "type": "module",
   "main": "dist/index.js",
