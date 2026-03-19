@@ -240,7 +240,7 @@ After deploying Trinity to your project:
 
 ## Support
 
-- **GitHub Issues:** [trinity-method-sdk/issues](https://github.com/lukadfagundes/trinity-method-sdk/issues)
+- **GitHub Issues:** [trinity-method-sdk/issues](https://github.com/strawhatluka/trinity-method-sdk/issues)
 - **Documentation:** [docs/](../)
 - **Contributing:** [CONTRIBUTING.md](../../CONTRIBUTING.md)
 

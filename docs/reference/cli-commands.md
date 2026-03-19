@@ -343,7 +343,7 @@ Examples:
   $ trinity update
   $ trinity --version
 
-Documentation: https://github.com/lukadfagundes/trinity-method-sdk
+Documentation: https://github.com/strawhatluka/trinity-method-sdk
 ```
 
 ### Help Examples

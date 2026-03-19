@@ -771,4 +771,4 @@ the package was renamed to `trinity-method-sdk`.
 **Note:** This version was published as `@trinity-method/cli`. Starting with v2.0.0,
 the package was renamed to `trinity-method-sdk`.
 
-[1.0.0]: https://github.com/lukadfagundes/trinity-method-sdk/releases/tag/v1.0.0
+[1.0.0]: https://github.com/strawhatluka/trinity-method-sdk/releases/tag/v1.0.0

@@ -396,7 +396,7 @@ Trinity uses GitHub Actions for automated quality assurance:
    git push origin main
 
    # Wait for CI to complete
-   # Check: https://github.com/lukadfagundes/trinity-method-sdk/actions
+   # Check: https://github.com/strawhatluka/trinity-method-sdk/actions
    ```
 
    All CI jobs must pass before publishing:
@@ -447,7 +447,7 @@ Trinity uses GitHub Actions for automated quality assurance:
    All releases require manual `npm publish` after successful CI validation.
 
 7. **Create GitHub Release:**
-   - Go to [Releases](https://github.com/lukadfagundes/trinity-method-sdk/releases)
+   - Go to [Releases](https://github.com/strawhatluka/trinity-method-sdk/releases)
    - Click "Draft a new release"
    - Select the version tag
    - Copy CHANGELOG.md content for that version
@@ -519,8 +519,8 @@ Major architectural decisions are documented in `docs/architecture/adr/`:
 
 - **Documentation:** [README.md](README.md)
 - **API Docs:** [docs/](docs/)
-- **Issues:** [GitHub Issues](https://github.com/lukadfagundes/trinity-method-sdk/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/lukadfagundes/trinity-method-sdk/discussions)
+- **Issues:** [GitHub Issues](https://github.com/strawhatluka/trinity-method-sdk/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/strawhatluka/trinity-method-sdk/discussions)
 
 ### Asking Questions
 

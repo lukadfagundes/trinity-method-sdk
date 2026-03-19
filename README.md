@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/trinity-method-sdk?color=success)](https://www.npmjs.com/package/trinity-method-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.9.0-brightgreen)](https://nodejs.org/)
-[![AI Agents](https://img.shields.io/badge/AI%20Agent-Claude%20Code-blue)](https://github.com/lukadfagundes/trinity-method-sdk)
+[![AI Agents](https://img.shields.io/badge/AI%20Agent-Claude%20Code-blue)](https://github.com/strawhatluka/trinity-method-sdk)
 
 > Investigation-first development methodology for Claude Code
 
@@ -449,7 +449,7 @@ Trinity Method SDK is open source and welcomes contributions!
 
 ```bash
 # Clone repository
-git clone https://github.com/lukadfagundes/trinity-method-sdk.git
+git clone https://github.com/strawhatluka/trinity-method-sdk.git
 cd trinity-method-sdk
 
 # Install dependencies
@@ -537,9 +537,9 @@ MIT License - see [LICENSE](LICENSE) for details
 ### Project Resources
 
 - **npm Package**: [trinity-method-sdk](https://www.npmjs.com/package/trinity-method-sdk)
-- **GitHub**: [lukadfagundes/trinity-method-sdk](https://github.com/lukadfagundes/trinity-method-sdk)
-- **Issues**: [GitHub Issues](https://github.com/lukadfagundes/trinity-method-sdk/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/lukadfagundes/trinity-method-sdk/discussions)
+- **GitHub**: [strawhatluka/trinity-method-sdk](https://github.com/strawhatluka/trinity-method-sdk)
+- **Issues**: [GitHub Issues](https://github.com/strawhatluka/trinity-method-sdk/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/strawhatluka/trinity-method-sdk/discussions)
 
 ### Documentation
 
